@@ -84,8 +84,8 @@ export default function Navbar() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 ${isScrolled
-                                ? 'bg-black text-white hover:bg-gray-800 hover:shadow-black/20'
-                                : 'bg-white text-black hover:bg-gray-100 hover:shadow-white/20'
+                                ? 'bg-primary text-white hover:opacity-90 hover:shadow-primary/20'
+                                : 'bg-white text-primary hover:bg-gray-100 hover:shadow-white/20'
                                 }`}
                         >
                             <ShoppingBag size={15} />
@@ -149,7 +149,7 @@ export default function Navbar() {
                                         href={orderLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-full text-sm uppercase tracking-widest font-semibold mt-4"
+                                        className="flex items-center gap-2 bg-primary text-white px-8 py-3.5 rounded-full text-sm uppercase tracking-widest font-semibold mt-4"
                                         onClick={() => setIsOpen(false)}
                                     >
                                         <ShoppingBag size={18} />

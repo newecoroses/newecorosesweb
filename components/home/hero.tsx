@@ -123,10 +123,10 @@ export default function Hero() {
                 >
                     <Link
                         href="/shop"
-                        className="group relative overflow-hidden bg-white text-black px-8 py-4 rounded-full min-w-[200px] flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.7)] hover:scale-105"
+                        className="group relative overflow-hidden bg-primary text-white px-8 py-4 rounded-full min-w-[200px] flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_0_40px_-5px_var(--color-primary)] hover:scale-105"
                     >
                         <span className="relative z-10 text-sm font-bold uppercase tracking-[0.15em]">Explore</span>
-                        <div className="absolute inset-0 bg-gray-100 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
+                        <div className="absolute inset-0 bg-black/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
                         <svg
                             width="16"
                             height="16"

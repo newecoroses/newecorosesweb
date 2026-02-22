@@ -116,7 +116,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         href={whatsappLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-lg text-xs uppercase tracking-[0.15em] font-medium hover:bg-gray-900 transition-colors shadow-sm hover:shadow-md group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300"
+                        className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-xs uppercase tracking-[0.15em] font-medium hover:opacity-90 transition-colors shadow-sm hover:shadow-md group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <WhatsappIcon size={16} className="opacity-90" />

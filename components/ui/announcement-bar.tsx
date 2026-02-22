@@ -30,7 +30,7 @@ export default function AnnouncementBar() {
     const marqueeItems = [...texts, ...texts, ...texts, ...texts];
 
     return (
-        <div className="bg-black text-white overflow-hidden py-2.5 border-b border-gray-800 relative z-[51]">
+        <div className="bg-primary text-white overflow-hidden py-2.5 border-b border-white/10 relative z-[51]">
             <div className="flex whitespace-nowrap">
                 <motion.div
                     className="flex gap-12 items-center w-max"

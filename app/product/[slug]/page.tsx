@@ -111,7 +111,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             <div className="pt-28 pb-20 min-h-screen bg-background flex flex-col items-center justify-center text-center px-6">
                 <h1 className="font-serif text-3xl text-foreground mb-4">Product Not Found</h1>
                 <p className="text-muted mb-8 font-light">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
-                <Link href="/shop" className="inline-flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold hover:bg-gray-900 transition-all">
+                <Link href="/shop" className="inline-flex items-center gap-2 bg-primary text-white px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold hover:opacity-90 transition-all">
                     <ArrowLeft size={14} /> Browse All Products
                 </Link>
             </div>
@@ -238,7 +238,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             href={whatsappLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full bg-black text-white py-4 px-8 text-center rounded-lg hover:bg-gray-900 transition-all duration-300 flex items-center justify-center gap-3 uppercase tracking-[0.15em] text-sm font-semibold shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-black/10 group"
+                            className="w-full bg-primary text-white py-4 px-8 text-center rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-3 uppercase tracking-[0.15em] text-sm font-semibold shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 group"
                         >
                             <WhatsappIcon size={20} className="group-hover:text-[#25D366] transition-colors" />
                             Enquire via WhatsApp

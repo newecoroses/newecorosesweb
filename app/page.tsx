@@ -346,11 +346,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-white/80" />
         <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="text-center mb-16">
-            <span className="inline-block text-[10px] uppercase tracking-[0.3em] font-medium mb-4" style={{ color: '#C6A75E' }}>Our Promise</span>
+            <span className="inline-block text-[10px] uppercase tracking-[0.3em] font-medium mb-4 text-primary">Our Promise</span>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-5 leading-tight">Why New Eco Roses?</h2>
             <div className="flex items-center justify-center gap-3 mb-5">
               <div className="h-px w-12 bg-gray-200" />
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#C6A75E' }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
               <div className="h-px w-12 bg-gray-200" />
             </div>
             <p className="text-muted text-sm font-light max-w-md mx-auto leading-relaxed tracking-wide">Every detail is crafted to make your gifting experience effortless, elegant, and unforgettable.</p>
@@ -379,16 +379,16 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: idx * 0.15 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -6, boxShadow: '0 20px 50px rgba(198,167,94,0.13), 0 8px 24px rgba(0,0,0,0.07)' }}
+                whileHover={{ y: -6, boxShadow: '0 20px 50px rgba(0,0,0,0.13), 0 8px 24px rgba(0,0,0,0.07)' }}
                 className="group relative bg-white rounded-[20px] p-8 lg:p-10 flex flex-col items-center text-center"
                 style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)', transition: 'box-shadow 0.35s ease, transform 0.35s ease' }}
               >
-                <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full transition-all duration-300 group-hover:left-4 group-hover:right-4" style={{ background: 'linear-gradient(90deg, transparent, #C6A75E, transparent)' }} />
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-7 transition-all duration-300" style={{ background: 'linear-gradient(135deg, #fdf8ee 0%, #f9f0d8 100%)', color: '#C6A75E' }}>
-                  <span className="group-hover:scale-110 transition-transform duration-300 inline-flex" style={{ color: '#B8933F' }}>{item.icon}</span>
+                <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full transition-all duration-300 group-hover:left-4 group-hover:right-4" style={{ background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)' }} />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-7 transition-all duration-300 bg-primary/10 text-primary">
+                  <span className="group-hover:scale-110 transition-transform duration-300 inline-flex text-primary">{item.icon}</span>
                 </div>
                 <h3 className="font-serif text-xl lg:text-2xl text-foreground mb-4 leading-snug">{item.title}</h3>
-                <div className="w-8 h-px mb-4 mx-auto" style={{ backgroundColor: '#C6A75E', opacity: 0.5 }} />
+                <div className="w-8 h-px mb-4 mx-auto bg-primary/50" />
                 <p className="text-muted text-sm font-light leading-[1.85] max-w-[240px]">{item.desc}</p>
               </motion.div>
             ))}
