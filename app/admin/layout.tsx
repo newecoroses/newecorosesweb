@@ -22,6 +22,7 @@ import {
     Megaphone,
     Video,
     Sparkles,
+    Palette
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -37,6 +38,7 @@ const NAV_ITEMS = [
     { href: '/admin/review-videos', label: 'Review Videos', icon: Video },
     { href: '/admin/whatsapp', label: 'WhatsApp', icon: MessageSquare },
     { href: '/admin/banned-words', label: 'Banned Words', icon: Shield },
+    { href: '/admin/theme', label: 'Theme Colors', icon: Palette },
     { href: '/admin/settings', label: 'Site Settings', icon: Settings },
 ];
 
