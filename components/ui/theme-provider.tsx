@@ -11,10 +11,10 @@ export default function ThemeProvider() {
             try {
                 const parsed = JSON.parse(value);
                 let css = ':root {\n';
-                if (parsed.primary) css += `  --color-primary: ${parsed.primary};\n`;
-                if (parsed.primaryDark) css += `  --color-primary-dark: ${parsed.primaryDark};\n`;
-                if (parsed.background) css += `  --color-background: ${parsed.background};\n`;
-                if (parsed.foreground) css += `  --color-foreground: ${parsed.foreground};\n`;
+                if (parsed.primary) css += `  --color-primary: ${parsed.primary} !important;\n`;
+                if (parsed.primaryDark) css += `  --color-primary-dark: ${parsed.primaryDark} !important;\n`;
+                if (parsed.background) css += `  --color-background: ${parsed.background} !important;\n`;
+                if (parsed.foreground) css += `  --color-foreground: ${parsed.foreground} !important;\n`;
                 css += '}\n';
                 setThemeCSS(css);
             } catch {
@@ -22,20 +22,18 @@ export default function ThemeProvider() {
             }
         };
 
-        // 1. Fetch initial theme immediately
+        // 1. Fetch initial theme on page load
         const fetchTheme = async () => {
             try {
-                // using a timestamp to bypass any Next.js client-side fetch cache
-                const timestamp = Date.now();
                 const { data, error } = await supabase
                     .from('site_settings')
                     .select('value')
                     .eq('key', 'theme_colors')
-                    .lte('created_at', new Date(timestamp).toISOString()) // just to force a unique query param for cache busting
                     .single();
 
                 if (error) {
                     console.error('ThemeProvider fetch error:', error);
+                    return;
                 }
 
                 if (data?.value) {
@@ -47,7 +45,7 @@ export default function ThemeProvider() {
         };
         fetchTheme();
 
-        // 2. Subscribe to realtime updates
+        // 2. Subscribe to realtime updates for instant changes
         const channel = supabase.channel('theme-updates')
             .on(
                 'postgres_changes',
