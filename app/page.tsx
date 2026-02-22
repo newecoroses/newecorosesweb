@@ -169,7 +169,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 className={COLLECTION_SPANS[idx] || ''}
               >
-                <Link href={`/shop?cat=${cat.slug}`} className="group relative block h-full overflow-hidden rounded-xl">
+                <Link href={`/shop?cat=${cat.slug}`} className="group relative block h-full overflow-hidden rounded-xl img-shimmer">
                   <Image src={cat.image_url || `/images/collections/${cat.slug}.webp`} alt={cat.name} fill className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" sizes="(max-width: 768px) 100vw, 50vw" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/50 transition-all duration-500" />
                   <div className="absolute bottom-0 left-0 p-6">
@@ -199,7 +199,7 @@ export default function Home() {
                         {event.date_label}
                       </div>
                     )}
-                    <div className="relative aspect-square">
+                    <div className="relative aspect-square img-shimmer">
                       <Image src={event.image_url} alt={event.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 20vw" />
                     </div>
                   </div>

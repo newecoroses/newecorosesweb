@@ -76,7 +76,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             className="group card-lift flex flex-col h-full"
         >
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary mb-4">
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary img-shimmer mb-4">
                 {/* Tag badge */}
                 {tagBadge && product.tag && (
                     <span className={`absolute top-2 left-2 z-10 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${tagBadge}`}>

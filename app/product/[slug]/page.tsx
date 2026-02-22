@@ -147,7 +147,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         </div>
 
                         {/* Main Image */}
-                        <div className="relative aspect-[4/5] bg-secondary rounded-2xl overflow-hidden mb-4">
+                        <div className="relative aspect-[4/5] bg-secondary img-shimmer rounded-2xl overflow-hidden mb-4">
                             <Image
                                 src={images[selectedImage] || '/images/placeholder.webp'}
                                 alt={product.name}
