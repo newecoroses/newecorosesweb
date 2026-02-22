@@ -5,6 +5,34 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// ── In-memory cache to prevent duplicate Supabase calls ──
+// Multiple components fetch the same data (e.g., whatsapp_settings called 4x per page load)
+// This caches results for 60 seconds so each query only runs once
+const queryCache = new Map<string, { data: unknown; timestamp: number }>();
+const CACHE_TTL = 60_000; // 60 seconds
+
+async function cachedQuery<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
+    const cached = queryCache.get(key);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.data as T;
+    }
+    // If another call is already in flight for the same key, reuse its promise
+    const existing = inflightQueries.get(key);
+    if (existing) return existing as Promise<T>;
+
+    const promise = fetcher().then(result => {
+        queryCache.set(key, { data: result, timestamp: Date.now() });
+        inflightQueries.delete(key);
+        return result;
+    }).catch(err => {
+        inflightQueries.delete(key);
+        throw err;
+    });
+    inflightQueries.set(key, promise);
+    return promise;
+}
+const inflightQueries = new Map<string, Promise<unknown>>();
+
 // ── DB Types ──────────────────────────────────────────────
 export interface DBProduct {
     id: string; name: string; slug: string; description: string;
@@ -71,24 +99,28 @@ export interface DBReviewVideo {
 
 // ── Frontend Helpers ──────────────────────────────────────
 /** Fetch all visible products from Supabase */
-export async function fetchProducts(): Promise<DBProduct[]> {
-    const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_visible', true)
-        .order('sort_order');
-    return (data ?? []) as DBProduct[];
+export function fetchProducts(): Promise<DBProduct[]> {
+    return cachedQuery('products:all', async () => {
+        const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq('is_visible', true)
+            .order('sort_order');
+        return (data ?? []) as DBProduct[];
+    });
 }
 
 /** Fetch visible products by tag */
-export async function fetchProductsByTag(tag: string): Promise<DBProduct[]> {
-    const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_visible', true)
-        .eq('tag', tag)
-        .order('sort_order');
-    return (data ?? []) as DBProduct[];
+export function fetchProductsByTag(tag: string): Promise<DBProduct[]> {
+    return cachedQuery(`products:tag:${tag}`, async () => {
+        const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq('is_visible', true)
+            .eq('tag', tag)
+            .order('sort_order');
+        return (data ?? []) as DBProduct[];
+    });
 }
 
 /** Fetch visible products by collection slug */
@@ -113,43 +145,51 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
 }
 
 /** Fetch all visible collections */
-export async function fetchCollections(): Promise<DBCollection[]> {
-    const { data } = await supabase
-        .from('collections')
-        .select('*')
-        .eq('is_visible', true)
-        .order('sort_order');
-    return (data ?? []) as DBCollection[];
+export function fetchCollections(): Promise<DBCollection[]> {
+    return cachedQuery('collections', async () => {
+        const { data } = await supabase
+            .from('collections')
+            .select('*')
+            .eq('is_visible', true)
+            .order('sort_order');
+        return (data ?? []) as DBCollection[];
+    });
 }
 
 /** Fetch visible celebrations */
-export async function fetchCelebrations(): Promise<DBCelebration[]> {
-    const { data } = await supabase
-        .from('celebrations')
-        .select('*')
-        .eq('is_visible', true)
-        .order('sort_order');
-    return (data ?? []) as DBCelebration[];
+export function fetchCelebrations(): Promise<DBCelebration[]> {
+    return cachedQuery('celebrations', async () => {
+        const { data } = await supabase
+            .from('celebrations')
+            .select('*')
+            .eq('is_visible', true)
+            .order('sort_order');
+        return (data ?? []) as DBCelebration[];
+    });
 }
 
 /** Fetch visible relationships */
-export async function fetchRelationships(): Promise<DBRelationship[]> {
-    const { data } = await supabase
-        .from('relationships')
-        .select('*')
-        .eq('is_visible', true)
-        .order('sort_order');
-    return (data ?? []) as DBRelationship[];
+export function fetchRelationships(): Promise<DBRelationship[]> {
+    return cachedQuery('relationships', async () => {
+        const { data } = await supabase
+            .from('relationships')
+            .select('*')
+            .eq('is_visible', true)
+            .order('sort_order');
+        return (data ?? []) as DBRelationship[];
+    });
 }
 
 /** Fetch visible testimonials */
-export async function fetchTestimonials(): Promise<DBTestimonial[]> {
-    const { data } = await supabase
-        .from('testimonials')
-        .select('*')
-        .eq('is_visible', true)
-        .order('sort_order');
-    return (data ?? []) as DBTestimonial[];
+export function fetchTestimonials(): Promise<DBTestimonial[]> {
+    return cachedQuery('testimonials', async () => {
+        const { data } = await supabase
+            .from('testimonials')
+            .select('*')
+            .eq('is_visible', true)
+            .order('sort_order');
+        return (data ?? []) as DBTestimonial[];
+    });
 }
 
 /** Fetch visible featured items by section */
@@ -174,31 +214,37 @@ export async function fetchSetting(key: string): Promise<string | null> {
 }
 
 /** Fetch all site settings as a key-value map */
-export async function fetchAllSettings(): Promise<Record<string, string>> {
-    const { data } = await supabase.from('site_settings').select('key, value');
-    const map: Record<string, string> = {};
-    (data ?? []).forEach(s => { map[s.key] = s.value ?? ''; });
-    return map;
+export function fetchAllSettings(): Promise<Record<string, string>> {
+    return cachedQuery('site_settings:all', async () => {
+        const { data } = await supabase.from('site_settings').select('key, value');
+        const map: Record<string, string> = {};
+        (data ?? []).forEach(s => { map[s.key] = s.value ?? ''; });
+        return map;
+    });
 }
 
 /** Fetch WhatsApp settings */
-export async function fetchWhatsappSettings(): Promise<DBWhatsappSettings | null> {
-    const { data } = await supabase
-        .from('whatsapp_settings')
-        .select('*')
-        .limit(1)
-        .single();
-    return data as DBWhatsappSettings | null;
+export function fetchWhatsappSettings(): Promise<DBWhatsappSettings | null> {
+    return cachedQuery('whatsapp_settings', async () => {
+        const { data } = await supabase
+            .from('whatsapp_settings')
+            .select('*')
+            .limit(1)
+            .single();
+        return data as DBWhatsappSettings | null;
+    });
 }
 
 /** Fetch visible announcements */
-export async function fetchAnnouncements(): Promise<DBAnnouncement[]> {
-    const { data } = await supabase
-        .from('announcements')
-        .select('*')
-        .eq('is_visible', true)
-        .order('sort_order');
-    return (data ?? []) as DBAnnouncement[];
+export function fetchAnnouncements(): Promise<DBAnnouncement[]> {
+    return cachedQuery('announcements', async () => {
+        const { data } = await supabase
+            .from('announcements')
+            .select('*')
+            .eq('is_visible', true)
+            .order('sort_order');
+        return (data ?? []) as DBAnnouncement[];
+    });
 }
 
 /** Fetch visible review videos */
