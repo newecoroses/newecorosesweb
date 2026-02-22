@@ -6,11 +6,13 @@ import { Save, AlertCircle, Palette } from 'lucide-react';
 
 const PRESET_THEMES = [
     { name: 'Classic Black', primary: '#000000', primaryDark: '#333333', background: '#ffffff', foreground: '#000000' },
+    { name: 'Premium Gold', primary: '#bfaf1a', primaryDark: '#9c8f15', background: '#ffffff', foreground: '#000000' },
     { name: 'Forest Green', primary: '#32745c', primaryDark: '#235240', background: '#ffffff', foreground: '#000000' },
     { name: 'Burgundy', primary: '#800020', primaryDark: '#5e0017', background: '#ffffff', foreground: '#000000' },
     { name: 'Ruby Red', primary: '#9b111e', primaryDark: '#750d17', background: '#ffffff', foreground: '#000000' },
-    { name: 'Dark Red', primary: '#8b0000', primaryDark: '#660000', background: '#ffffff', foreground: '#000000' },
-    { name: 'Midnight Blue', primary: '#0A2540', primaryDark: '#051424', background: '#ffffff', foreground: '#000000' },
+    { name: 'Royal Sapphire', primary: '#0f52ba', primaryDark: '#0a3d8c', background: '#ffffff', foreground: '#000000' },
+    { name: 'Velvet Purple', primary: '#5a3962', primaryDark: '#432949', background: '#ffffff', foreground: '#000000' },
+    { name: 'Rose Gold', primary: '#b76e79', primaryDark: '#8f535d', background: '#ffffff', foreground: '#000000' },
 ];
 
 export default function ThemeSettingsPage() {
@@ -104,9 +106,11 @@ export default function ThemeSettingsPage() {
             if (saveError) {
                 setError('Failed to save. You may need to run the SQL script to update database policies: ' + saveError.message);
             } else {
-                setSuccess('Theme updated successfully! Refresh the website to see the changes.');
+                setSuccess('Theme updated successfully! It has been applied to the live website instantly.');
                 document.documentElement.style.setProperty('--color-primary', colors.primary);
                 document.documentElement.style.setProperty('--color-primary-dark', colors.primaryDark);
+                document.documentElement.style.setProperty('--color-background', colors.background);
+                document.documentElement.style.setProperty('--color-foreground', colors.foreground);
                 setTimeout(() => setSuccess(''), 4000);
             }
         } catch (err: unknown) {
