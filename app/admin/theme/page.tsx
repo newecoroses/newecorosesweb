@@ -53,64 +53,60 @@ export default function ThemeSettingsPage() {
     const handleSave = async () => {
         setSaving(true);
         setError('');
+        setSuccess('');
 
-        // Convert to JSON
         const colorData = JSON.stringify(colors);
 
         try {
-            // First check if it exists
-            const { data: existing, error: fetchError } = await supabase
+            // Use upsert - this handles both insert and update in one call
+            const { data, error: upsertError } = await supabase
                 .from('site_settings')
-                .select('id')
-                .eq('key', 'theme_colors')
-                .maybeSingle();
-
-            if (fetchError && fetchError.code !== 'PGRST116') {
-                throw new Error(fetchError.message);
-            }
-
-            let saveError;
-
-            if (existing) {
-                // Update existing
-                const { error: updateError } = await supabase
-                    .from('site_settings')
-                    .update({ value: colorData })
-                    .eq('key', 'theme_colors');
-                saveError = updateError;
-            } else {
-                // Try direct insert, bypassing checking constraints (sometimes RLS blocks new rows if not set right)
-                const { error: insertError } = await supabase
-                    .from('site_settings')
-                    .insert([{
+                .upsert(
+                    {
                         key: 'theme_colors',
                         value: colorData,
                         label: 'Theme Colors',
                         type: 'text'
-                    }]);
+                    },
+                    { onConflict: 'key' }
+                )
+                .select();
 
-                // If it fails with constraint/RLS, try updating just in case
-                if (insertError) {
-                    if (insertError.code === '23505') { // unique violation
-                        const { error: fallbackUpdateError } = await supabase
-                            .from('site_settings')
-                            .update({ value: colorData })
-                            .eq('key', 'theme_colors');
-                        saveError = fallbackUpdateError;
-                    } else {
-                        saveError = insertError;
-                    }
-                }
+            if (upsertError) {
+                console.error('Theme save upsert error:', upsertError);
+                setError('Failed to save: ' + upsertError.message);
+                setSaving(false);
+                return;
             }
 
-            if (saveError) {
-                setError('Failed to save. You may need to run the SQL script to update database policies: ' + saveError.message);
-            } else {
-                setSuccess('Theme updated successfully! It has been applied to the live website instantly.');
-                setTimeout(() => setSuccess(''), 4000);
+            // Verify the save actually worked by reading it back
+            const { data: verify, error: verifyError } = await supabase
+                .from('site_settings')
+                .select('value')
+                .eq('key', 'theme_colors')
+                .single();
+
+            if (verifyError) {
+                console.error('Theme verify error:', verifyError);
+                setError('Save may have failed - verification error: ' + verifyError.message);
+                setSaving(false);
+                return;
             }
+
+            const savedValue = verify?.value;
+            if (savedValue !== colorData) {
+                console.error('Theme mismatch! Expected:', colorData, 'Got:', savedValue);
+                setError('Theme was not saved correctly. The database may have rejected the update. Please check RLS policies.');
+                setSaving(false);
+                return;
+            }
+
+            console.log('Theme saved and verified successfully:', savedValue);
+            setSuccess('Theme saved and applied! Refresh your website to see the changes.');
+            setTimeout(() => setSuccess(''), 5000);
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
+            console.error('Theme save catch error:', err);
+            setError(err instanceof Error ? err.message : 'An unexpected error occurred');
         }
 
         setSaving(false);

@@ -1,9 +1,13 @@
--- This script updates the database to allow writes without Supabase Authentication
--- This is required since we switched the admin panel to use a custom hardcoded password
--- that is not validated through the Supabase Authentication system.
--- IMPORTANT: Both USING (true) and WITH CHECK (true) are required.
--- USING controls which rows can be read/deleted, WITH CHECK controls which rows can be inserted/updated.
+-- FIX: RLS policies need WITH CHECK for INSERT/UPDATE operations
+-- The previous policies only had USING (true) which covers SELECT/DELETE
+-- but INSERT/UPDATE also need WITH CHECK (true) to pass validation.
+-- Run this in your Supabase SQL Editor (Dashboard > SQL Editor > New Query)
 
+-- Fix site_settings (critical for theme changes)
+drop policy if exists "Admin all site_settings" on site_settings;
+create policy "Admin all site_settings" on site_settings for all using (true) with check (true);
+
+-- Fix all other tables too to prevent similar issues
 drop policy if exists "Admin all products" on products;
 create policy "Admin all products" on products for all using (true) with check (true);
 
@@ -24,9 +28,6 @@ create policy "Admin all banners" on banners for all using (true) with check (tr
 
 drop policy if exists "Admin all featured_items" on featured_items;
 create policy "Admin all featured_items" on featured_items for all using (true) with check (true);
-
-drop policy if exists "Admin all site_settings" on site_settings;
-create policy "Admin all site_settings" on site_settings for all using (true) with check (true);
 
 drop policy if exists "Admin all whatsapp_settings" on whatsapp_settings;
 create policy "Admin all whatsapp_settings" on whatsapp_settings for all using (true) with check (true);
