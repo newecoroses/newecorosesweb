@@ -9,18 +9,18 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                background: "#ffffff",
-                foreground: "#000000",
+                background: "var(--color-background)",
+                foreground: "var(--color-foreground)",
                 primary: {
-                    DEFAULT: "#000000",
-                    light: "#333333",
-                    dark: "#000000",
+                    DEFAULT: "var(--color-primary)",
+                    light: "var(--color-primary-light)",
+                    dark: "var(--color-primary-dark)",
                 },
-                secondary: "#f8f8f8",
-                accent: "#e5e5e5",
-                blush: "#f9f9f9", // Now a very light grey
-                charcoal: "#111111",
-                muted: "#666666",
+                secondary: "var(--color-secondary)",
+                accent: "var(--color-accent)",
+                blush: "var(--color-blush)",
+                charcoal: "var(--color-charcoal)",
+                muted: "var(--color-muted)",
             },
             fontFamily: {
                 sans: ['var(--font-inter)', 'var(--font-poppins)', 'sans-serif'],

@@ -1,17 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export default function ThemeProvider() {
+    const [themeCSS, setThemeCSS] = useState('');
+
     useEffect(() => {
         const applyTheme = (value: string) => {
             try {
                 const parsed = JSON.parse(value);
-                if (parsed.primary) document.documentElement.style.setProperty('--color-primary', parsed.primary);
-                if (parsed.primaryDark) document.documentElement.style.setProperty('--color-primary-dark', parsed.primaryDark);
-                if (parsed.background) document.documentElement.style.setProperty('--color-background', parsed.background);
-                if (parsed.foreground) document.documentElement.style.setProperty('--color-foreground', parsed.foreground);
+                let css = ':root {\n';
+                if (parsed.primary) css += `  --color-primary: ${parsed.primary};\n`;
+                if (parsed.primaryDark) css += `  --color-primary-dark: ${parsed.primaryDark};\n`;
+                if (parsed.background) css += `  --color-background: ${parsed.background};\n`;
+                if (parsed.foreground) css += `  --color-foreground: ${parsed.foreground};\n`;
+                css += '}\n';
+                setThemeCSS(css);
             } catch {
                 // Ignore parse errors
             }
@@ -20,17 +25,29 @@ export default function ThemeProvider() {
         // 1. Fetch initial theme immediately
         const fetchTheme = async () => {
             try {
-                const { data } = await supabase.from('site_settings').select('value').eq('key', 'theme_colors').single();
+                // using a timestamp to bypass any Next.js client-side fetch cache
+                const timestamp = Date.now();
+                const { data, error } = await supabase
+                    .from('site_settings')
+                    .select('value')
+                    .eq('key', 'theme_colors')
+                    .lte('created_at', new Date(timestamp).toISOString()) // just to force a unique query param for cache busting
+                    .single();
+
+                if (error) {
+                    console.error('ThemeProvider fetch error:', error);
+                }
+
                 if (data?.value) {
                     applyTheme(data.value);
                 }
-            } catch {
-                // Silently ignore if no theme is set or fetch fails
+            } catch (err) {
+                console.error('ThemeProvider catch error:', err);
             }
         };
         fetchTheme();
 
-        // 2. Subscribe to realtime updates for instant crossover changes
+        // 2. Subscribe to realtime updates
         const channel = supabase.channel('theme-updates')
             .on(
                 'postgres_changes',
@@ -48,5 +65,7 @@ export default function ThemeProvider() {
         };
     }, []);
 
-    return null;
+    if (!themeCSS) return null;
+
+    return <style dangerouslySetInnerHTML={{ __html: themeCSS }} />;
 }

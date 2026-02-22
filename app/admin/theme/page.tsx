@@ -107,10 +107,6 @@ export default function ThemeSettingsPage() {
                 setError('Failed to save. You may need to run the SQL script to update database policies: ' + saveError.message);
             } else {
                 setSuccess('Theme updated successfully! It has been applied to the live website instantly.');
-                document.documentElement.style.setProperty('--color-primary', colors.primary);
-                document.documentElement.style.setProperty('--color-primary-dark', colors.primaryDark);
-                document.documentElement.style.setProperty('--color-background', colors.background);
-                document.documentElement.style.setProperty('--color-foreground', colors.foreground);
                 setTimeout(() => setSuccess(''), 4000);
             }
         } catch (err: unknown) {
