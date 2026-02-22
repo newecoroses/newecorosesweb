@@ -45,7 +45,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable}`}>
-      <body className="antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden transition-colors duration-500">
+      <body className="antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
         <ThemeProvider />
         <Navbar />
         <main className="flex-grow">

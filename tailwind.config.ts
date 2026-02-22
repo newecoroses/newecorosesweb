@@ -8,25 +8,6 @@ const config: Config = {
     ],
     theme: {
         extend: {
-            colors: {
-                background: "var(--color-background)",
-                foreground: "var(--color-foreground)",
-                primary: {
-                    DEFAULT: "var(--color-primary)",
-                    light: "var(--color-primary-light)",
-                    dark: "var(--color-primary-dark)",
-                },
-                secondary: "var(--color-secondary)",
-                accent: "var(--color-accent)",
-                blush: "var(--color-blush)",
-                charcoal: "var(--color-charcoal)",
-                muted: "var(--color-muted)",
-            },
-            fontFamily: {
-                sans: ['var(--font-inter)', 'var(--font-poppins)', 'sans-serif'],
-                serif: ['var(--font-playfair)', 'serif'],
-                accent: ['var(--font-poppins)', 'var(--font-inter)', 'sans-serif'],
-            },
             boxShadow: {
                 'soft': '0 2px 15px rgba(0, 0, 0, 0.04)',
                 'card': '0 4px 25px rgba(0, 0, 0, 0.06)',
