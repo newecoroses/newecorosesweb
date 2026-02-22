@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
+import { fetchWhatsappSettings } from '@/lib/supabase';
 
 const HERO_IMAGES_DESKTOP = [
     '/images/landing-page/slide-1.webp',
@@ -20,11 +21,19 @@ const HERO_IMAGES_MOBILE = [
 
 export default function Hero() {
     const [tick, setTick] = useState(0);
+    const [waLink, setWaLink] = useState('https://wa.me/918910408544?text=Hello!');
 
     useEffect(() => {
         const interval = setInterval(() => {
             setTick((prev) => prev + 1);
         }, 4000); // changes every 4 seconds
+
+        fetchWhatsappSettings().then((s) => {
+            if (s) {
+                setWaLink(`https://wa.me/${s.phone_number}?text=${encodeURIComponent(s.default_message)}`);
+            }
+        });
+
         return () => clearInterval(interval);
     }, []);
 
@@ -135,7 +144,7 @@ export default function Hero() {
                     </Link>
 
                     <a
-                        href="https://wa.me/919876543210"
+                        href={waLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group relative overflow-hidden bg-[#25D366] text-white px-8 py-4 rounded-full min-w-[200px] flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_0_40px_-10px_rgba(37,211,102,0.6)] hover:scale-105"
