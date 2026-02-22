@@ -7,11 +7,6 @@ import { Save, AlertCircle, Palette } from 'lucide-react';
 const PRESET_THEMES = [
     { name: 'Classic Black', primary: '#000000', primaryDark: '#333333', background: '#ffffff', foreground: '#000000' },
     { name: 'Premium Gold', primary: '#bfaf1a', primaryDark: '#9c8f15', background: '#ffffff', foreground: '#000000' },
-    { name: 'Champagne Gold', primary: '#C6A75E', primaryDark: '#A68B3E', background: '#ffffff', foreground: '#000000' },
-    { name: 'Deep Burgundy Rose', primary: '#6A1E2C', primaryDark: '#4E1520', background: '#ffffff', foreground: '#000000' },
-    { name: 'Dusty Mauve', primary: '#B784A7', primaryDark: '#956489', background: '#ffffff', foreground: '#000000' },
-    { name: 'Sage Green', primary: '#7A9E7E', primaryDark: '#5F7F63', background: '#ffffff', foreground: '#000000' },
-    { name: 'Midnight Blue', primary: '#1F2A44', primaryDark: '#151D30', background: '#ffffff', foreground: '#000000' },
     { name: 'Forest Green', primary: '#32745c', primaryDark: '#235240', background: '#ffffff', foreground: '#000000' },
     { name: 'Burgundy', primary: '#800020', primaryDark: '#5e0017', background: '#ffffff', foreground: '#000000' },
     { name: 'Ruby Red', primary: '#9b111e', primaryDark: '#750d17', background: '#ffffff', foreground: '#000000' },
