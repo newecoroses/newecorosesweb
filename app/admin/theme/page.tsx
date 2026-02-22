@@ -55,34 +55,64 @@ export default function ThemeSettingsPage() {
         // Convert to JSON
         const colorData = JSON.stringify(colors);
 
-        // Upsert into site_settings (delete then insert or try to insert and on conflict update - since RLS is loose, let's just do standard upsert if we know constraint or select+update/insert)
-        const { data: existing } = await supabase.from('site_settings').select('id').eq('key', 'theme_colors').single();
+        try {
+            // First check if it exists
+            const { data: existing, error: fetchError } = await supabase
+                .from('site_settings')
+                .select('id')
+                .eq('key', 'theme_colors')
+                .maybeSingle();
 
-        let err;
-        if (existing) {
-            const { error } = await supabase.from('site_settings').update({ value: colorData }).eq('key', 'theme_colors');
-            err = error;
-        } else {
-            const { error } = await supabase.from('site_settings').insert({
-                key: 'theme_colors',
-                value: colorData,
-                label: 'Theme Colors',
-                type: 'text'
-            });
-            err = error;
+            if (fetchError && fetchError.code !== 'PGRST116') {
+                throw new Error(fetchError.message);
+            }
+
+            let saveError;
+
+            if (existing) {
+                // Update existing
+                const { error: updateError } = await supabase
+                    .from('site_settings')
+                    .update({ value: colorData })
+                    .eq('key', 'theme_colors');
+                saveError = updateError;
+            } else {
+                // Try direct insert, bypassing checking constraints (sometimes RLS blocks new rows if not set right)
+                const { error: insertError } = await supabase
+                    .from('site_settings')
+                    .insert([{
+                        key: 'theme_colors',
+                        value: colorData,
+                        label: 'Theme Colors',
+                        type: 'text'
+                    }]);
+
+                // If it fails with constraint/RLS, try updating just in case
+                if (insertError) {
+                    if (insertError.code === '23505') { // unique violation
+                        const { error: fallbackUpdateError } = await supabase
+                            .from('site_settings')
+                            .update({ value: colorData })
+                            .eq('key', 'theme_colors');
+                        saveError = fallbackUpdateError;
+                    } else {
+                        saveError = insertError;
+                    }
+                }
+            }
+
+            if (saveError) {
+                setError('Failed to save. You may need to run the SQL script to update database policies: ' + saveError.message);
+            } else {
+                setSuccess('Theme updated successfully! Refresh the website to see the changes.');
+                document.documentElement.style.setProperty('--color-primary', colors.primary);
+                document.documentElement.style.setProperty('--color-primary-dark', colors.primaryDark);
+                setTimeout(() => setSuccess(''), 4000);
+            }
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
         }
 
-        if (err) {
-            setError(err.message);
-        } else {
-            setSuccess('Theme updated successfully! Refresh the website to see the changes.');
-
-            // Apply immediately to the admin panel too
-            document.documentElement.style.setProperty('--color-primary', colors.primary);
-            document.documentElement.style.setProperty('--color-primary-dark', colors.primaryDark);
-
-            setTimeout(() => setSuccess(''), 4000);
-        }
         setSaving(false);
     };
 
@@ -141,8 +171,8 @@ export default function ThemeSettingsPage() {
                             key={preset.name}
                             onClick={() => applyPreset(preset)}
                             className={`flex flex-col items-center gap-3 p-4 rounded-xl border transition-all ${colors.primary === preset.primary
-                                    ? 'border-yellow-500 bg-yellow-500/5'
-                                    : 'border-gray-800 bg-gray-950 hover:border-gray-700 hover:bg-gray-800'
+                                ? 'border-yellow-500 bg-yellow-500/5'
+                                : 'border-gray-800 bg-gray-950 hover:border-gray-700 hover:bg-gray-800'
                                 }`}
                         >
                             <div className="w-full h-12 rounded-lg shadow-inner flex overflow-hidden">
