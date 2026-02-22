@@ -62,8 +62,9 @@ export default function Hero() {
                             fill
                             className="object-cover"
                             priority={index === 0}
+                            loading={index === 0 ? 'eager' : 'lazy'}
                             sizes="100vw"
-                            quality={100}
+                            quality={75}
                         />
                     </motion.div>
                 ))}
@@ -89,8 +90,9 @@ export default function Hero() {
                             fill
                             className="object-cover"
                             priority={index === 0}
+                            loading={index === 0 ? 'eager' : 'lazy'}
                             sizes="100vw"
-                            quality={100}
+                            quality={75}
                         />
                     </motion.div>
                 ))}
