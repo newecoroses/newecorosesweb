@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ArrowRight, Star, Quote } from 'lucide-react';
+import { ChevronDown, ArrowRight, Star, Quote, HeartPulse, Sparkles, Filter } from 'lucide-react';
 
 import ReviewVideos from '@/components/home/review-videos';
 import ProductCard from '@/components/product/product-card';
@@ -62,6 +62,7 @@ export default function Home() {
   const [activeSort, setActiveSort] = useState('Recommended');
   const [activeType, setActiveType] = useState('All');
   const [activeOccasion, setActiveOccasion] = useState('All');
+  const [activeRelation, setActiveRelation] = useState('All');
 
   const [collections, setCollections] = useState<DBCollection[]>([]);
   const [celebrations, setCelebrations] = useState<DBCelebration[]>(FALLBACK_CELEBRATIONS as DBCelebration[]);
@@ -117,6 +118,10 @@ export default function Home() {
       filtered = filtered.filter(p => p.celebrations?.includes(activeOccasion));
     }
 
+    if (activeRelation !== 'All') {
+      filtered = filtered.filter(p => p.relationships?.includes(activeRelation));
+    }
+
     if (activeSort === 'Newest') {
       filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     } else if (activeSort === 'Best Seller') {
@@ -125,7 +130,7 @@ export default function Home() {
 
     // Return up to 12 items for the homepage (3 rows of 4)
     return filtered.slice(0, 12);
-  }, [products, activeType, activeOccasion, activeSort]);
+  }, [products, activeType, activeOccasion, activeRelation, activeSort]);
 
   // Use collections from Supabase; fallback to static
   const displayCollections = collections.length > 0 ? collections : FALLBACK_CATEGORIES as unknown as DBCollection[];
@@ -174,49 +179,83 @@ export default function Home() {
 
           {/* Horizontal Filter Bar */}
           <div className="mb-12 mt-10">
-            <div className="flex flex-wrap items-center justify-start lg:justify-center gap-4">
-              {/* Sort By */}
-              <div className="relative group">
-                <select
-                  value={activeSort}
-                  onChange={(e) => setActiveSort(e.target.value)}
-                  className="appearance-none bg-white border border-gray-200 text-foreground px-6 py-3 pr-10 rounded-full text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+
+              {/* Gift Types (Categories) as elegant structural pills at the top */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 w-full lg:w-auto">
+                <button
+                  onClick={() => setActiveType('All')}
+                  className={`px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'All' ? 'bg-foreground text-white shadow-md' : 'bg-white text-muted border border-gray-200 hover:border-foreground hover:text-foreground'}`}
                 >
-                  <option value="Recommended">Sort By: Recommended</option>
-                  <option value="Newest">Sort By: Newest Arrivals</option>
-                  <option value="Best Seller">Sort By: Best Seller</option>
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                  All Gifts
+                </button>
+                {collections.map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => setActiveType(c.name)}
+                    className={`px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === c.name ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
+                  >
+                    {c.name}
+                  </button>
+                ))}
               </div>
 
-              {/* Gift Type (Collection) */}
-              <div className="relative group">
-                <select
-                  value={activeType}
-                  onChange={(e) => setActiveType(e.target.value)}
-                  className="appearance-none bg-white border border-gray-200 text-foreground px-6 py-3 pr-10 rounded-full text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                >
-                  <option value="All">Gift Type: All</option>
-                  {collections.map(c => (
-                    <option key={c.id} value={c.name}>{c.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
-              </div>
+              {/* Dropdown Filters for specific filtering (Mobile + PC structured) */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-auto">
 
-              {/* Occasion (Celebration) */}
-              <div className="relative group">
-                <select
-                  value={activeOccasion}
-                  onChange={(e) => setActiveOccasion(e.target.value)}
-                  className="appearance-none bg-white border border-gray-200 text-foreground px-6 py-3 pr-10 rounded-full text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                >
-                  <option value="All">Occasion: All Occasions</option>
-                  {celebrations.map(c => (
-                    <option key={c.id} value={c.name}>{c.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                {/* Occasion (Celebration) */}
+                <div className="relative group w-full sm:w-auto">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                    <Sparkles size={16} />
+                  </div>
+                  <select
+                    value={activeOccasion}
+                    onChange={(e) => setActiveOccasion(e.target.value)}
+                    className="w-full sm:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  >
+                    <option value="All">All Occasions</option>
+                    {celebrations.map(c => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                </div>
+
+                {/* Relationship Filter */}
+                <div className="relative group w-full sm:w-auto">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                    <HeartPulse size={16} />
+                  </div>
+                  <select
+                    value={activeRelation}
+                    onChange={(e) => setActiveRelation(e.target.value)}
+                    className="w-full sm:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  >
+                    <option value="All">All Relationships</option>
+                    {relationships.map(r => (
+                      <option key={r.id} value={r.name}>{r.name}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                </div>
+
+                {/* Sort By */}
+                <div className="relative group w-full sm:w-auto">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                    <Filter size={16} />
+                  </div>
+                  <select
+                    value={activeSort}
+                    onChange={(e) => setActiveSort(e.target.value)}
+                    className="w-full sm:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  >
+                    <option value="Recommended">Sort: Recommended</option>
+                    <option value="Newest">Sort: Newest Arrivals</option>
+                    <option value="Best Seller">Sort: Best Seller</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                </div>
+
               </div>
             </div>
           </div>
@@ -237,7 +276,7 @@ export default function Home() {
           {filteredProducts.length === 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 text-muted">
               <p className="mb-4">No products found matching these filters.</p>
-              <button onClick={() => { setActiveSort('Recommended'); setActiveType('All'); setActiveOccasion('All'); }} className="text-primary hover:underline font-medium">Clear Filters</button>
+              <button onClick={() => { setActiveSort('Recommended'); setActiveType('All'); setActiveOccasion('All'); setActiveRelation('All'); }} className="text-primary hover:underline font-medium">Clear Filters</button>
             </motion.div>
           )}
 
