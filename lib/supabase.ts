@@ -98,6 +98,16 @@ export interface DBReviewVideo {
     is_visible: boolean; sort_order: number; created_at: string;
 }
 
+const resolveImage = (url: string | null | undefined): string => {
+    if (!url || url.startsWith('HIDDEN::')) return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    return url;
+};
+
+const resolveImages = (images: string[] | null | undefined): string[] => {
+    if (!images) return [];
+    return images.filter(img => img && !img.startsWith('HIDDEN::'));
+};
+
 // ── Frontend Helpers ──────────────────────────────────────
 /** Fetch all visible products from Supabase */
 export function fetchProducts(): Promise<DBProduct[]> {
@@ -107,7 +117,7 @@ export function fetchProducts(): Promise<DBProduct[]> {
             .select('*')
             .eq('is_visible', true)
             .order('sort_order');
-        return (data ?? []) as DBProduct[];
+        return (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
     });
 }
 
@@ -120,7 +130,7 @@ export function fetchProductsByTag(tag: string): Promise<DBProduct[]> {
             .eq('is_visible', true)
             .eq('tag', tag)
             .order('sort_order');
-        return (data ?? []) as DBProduct[];
+        return (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
     });
 }
 
@@ -132,7 +142,7 @@ export async function fetchProductsByCollection(collectionSlug: string): Promise
         .eq('is_visible', true)
         .eq('collection_slug', collectionSlug)
         .order('sort_order');
-    return (data ?? []) as DBProduct[];
+    return (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
 }
 
 /** Fetch a single product by slug */
@@ -142,7 +152,8 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
         .select('*')
         .eq('slug', slug)
         .single();
-    return data as DBProduct | null;
+    if (!data) return null;
+    return { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
 }
 
 /** Fetch all visible collections */
@@ -153,7 +164,7 @@ export function fetchCollections(): Promise<DBCollection[]> {
             .select('*')
             .eq('is_visible', true)
             .order('sort_order');
-        return (data ?? []) as DBCollection[];
+        return (data ?? []).map((c: any) => ({ ...c, image_url: resolveImage(c.image_url) })) as DBCollection[];
     });
 }
 
@@ -165,7 +176,7 @@ export function fetchCelebrations(): Promise<DBCelebration[]> {
             .select('*')
             .eq('is_visible', true)
             .order('sort_order');
-        return (data ?? []) as DBCelebration[];
+        return (data ?? []).map((c: any) => ({ ...c, image_url: resolveImage(c.image_url) })) as DBCelebration[];
     });
 }
 
@@ -177,7 +188,7 @@ export function fetchRelationships(): Promise<DBRelationship[]> {
             .select('*')
             .eq('is_visible', true)
             .order('sort_order');
-        return (data ?? []) as DBRelationship[];
+        return (data ?? []).map((r: any) => ({ ...r, image_url: resolveImage(r.image_url) })) as DBRelationship[];
     });
 }
 
@@ -201,7 +212,7 @@ export async function fetchFeaturedItems(section = 'handpicked'): Promise<DBFeat
         .eq('is_visible', true)
         .eq('section', section)
         .order('sort_order');
-    return (data ?? []) as DBFeaturedItem[];
+    return (data ?? []).map((f: any) => ({ ...f, image_url: resolveImage(f.image_url) })) as DBFeaturedItem[];
 }
 
 /** Fetch site setting value by key */
