@@ -178,14 +178,14 @@ export default function Home() {
           <SectionHeader label="Handpicked Selection" title="Premium Collections" subtitle="Explore a curated selection of our finest roses, boxes, and luxury gifts." />
 
           {/* Horizontal Filter Bar */}
-          <div className="mb-12 mt-10">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="mb-10 mt-8 space-y-6">
 
-              {/* Gift Types (Categories) as elegant structural pills at the top */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2 w-full lg:w-auto">
+            {/* 1. Gift Types (Categories) - Scrollable on Mobile, Centered on PC */}
+            <div className="w-full relative">
+              <div className="flex overflow-x-auto no-scrollbar gap-2 w-full pb-2 px-1 snap-x justify-start lg:justify-center">
                 <button
                   onClick={() => setActiveType('All')}
-                  className={`px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'All' ? 'bg-foreground text-white shadow-md' : 'bg-white text-muted border border-gray-200 hover:border-foreground hover:text-foreground'}`}
+                  className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'All' ? 'bg-foreground text-white shadow-md' : 'bg-white text-muted border border-gray-200 hover:border-foreground hover:text-foreground'}`}
                 >
                   All Gifts
                 </button>
@@ -193,69 +193,67 @@ export default function Home() {
                   <button
                     key={c.id}
                     onClick={() => setActiveType(c.name)}
-                    className={`px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === c.name ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
+                    className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === c.name ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
                   >
                     {c.name}
                   </button>
                 ))}
               </div>
+            </div>
 
-              {/* Dropdown Filters for specific filtering (Mobile + PC structured) */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-auto">
-
-                {/* Occasion (Celebration) */}
-                <div className="relative group w-full sm:w-auto">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
-                    <Sparkles size={16} />
-                  </div>
-                  <select
-                    value={activeOccasion}
-                    onChange={(e) => setActiveOccasion(e.target.value)}
-                    className="w-full sm:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                  >
-                    <option value="All">All Occasions</option>
-                    {celebrations.map(c => (
-                      <option key={c.id} value={c.name}>{c.name}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+            {/* 2. Advanced Dropdown Filters - Stacked on Mobile, Side-by-side on Tablet/PC */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-4xl mx-auto">
+              {/* Occasion (Celebration) */}
+              <div className="relative group w-full">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                  <Sparkles size={16} />
                 </div>
+                <select
+                  value={activeOccasion}
+                  onChange={(e) => setActiveOccasion(e.target.value)}
+                  className="w-full appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                >
+                  <option value="All">All Occasions</option>
+                  {celebrations.map(c => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+              </div>
 
-                {/* Relationship Filter */}
-                <div className="relative group w-full sm:w-auto">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
-                    <HeartPulse size={16} />
-                  </div>
-                  <select
-                    value={activeRelation}
-                    onChange={(e) => setActiveRelation(e.target.value)}
-                    className="w-full sm:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                  >
-                    <option value="All">All Relationships</option>
-                    {relationships.map(r => (
-                      <option key={r.id} value={r.name}>{r.name}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+              {/* Relationship Filter */}
+              <div className="relative group w-full">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                  <HeartPulse size={16} />
                 </div>
+                <select
+                  value={activeRelation}
+                  onChange={(e) => setActiveRelation(e.target.value)}
+                  className="w-full appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                >
+                  <option value="All">All Relationships</option>
+                  {relationships.map(r => (
+                    <option key={r.id} value={r.name}>{r.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+              </div>
 
-                {/* Sort By */}
-                <div className="relative group w-full sm:w-auto">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
-                    <Filter size={16} />
-                  </div>
-                  <select
-                    value={activeSort}
-                    onChange={(e) => setActiveSort(e.target.value)}
-                    className="w-full sm:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                  >
-                    <option value="Recommended">Sort: Recommended</option>
-                    <option value="Newest">Sort: Newest Arrivals</option>
-                    <option value="Best Seller">Sort: Best Seller</option>
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+              {/* Sort By */}
+              <div className="relative group w-full">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                  <Filter size={16} />
                 </div>
-
+                <select
+                  value={activeSort}
+                  onChange={(e) => setActiveSort(e.target.value)}
+                  className="w-full appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                >
+                  <option value="Recommended">Sort: Recommended</option>
+                  <option value="Newest">Sort: Newest Arrivals</option>
+                  <option value="Best Seller">Sort: Best Seller</option>
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
               </div>
             </div>
           </div>
