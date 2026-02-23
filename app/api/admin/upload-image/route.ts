@@ -18,19 +18,20 @@ export async function POST(request: Request) {
         const buffer = Buffer.from(bytes);
 
         const productSlug = formData.get('productSlug') as string;
+        const folder = (formData.get('folder') as string) || 'products';
         const originalExt = file.name.split('.').pop() || 'jpg';
         const rawFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
         const uniqueFileName = productSlug ? `${productSlug}-${Date.now()}.${originalExt}` : `${Date.now()}-${rawFileName}`;
-        const relativePath = `/images/products/${uniqueFileName}`;
+        const relativePath = `/images/${folder}/${uniqueFileName}`;
 
         // Write the file to the local public folder
-        const absolutePath = join(process.cwd(), 'public', 'images', 'products', uniqueFileName);
+        const absolutePath = join(process.cwd(), 'public', 'images', folder, uniqueFileName);
         await writeFile(absolutePath, buffer);
 
         // Attempt to auto-commit to the git repository (silently catch if errors)
         try {
-            await execAsync(`git add "public/images/products/${uniqueFileName}"`);
-            await execAsync(`git commit -m "Admin panel auto-upload: ${uniqueFileName}"`);
+            await execAsync(`git add "public/images/${folder}/${uniqueFileName}"`);
+            await execAsync(`git commit -m "Admin panel auto-upload: ${folder}/${uniqueFileName}"`);
             await execAsync(`git push`);
         } catch (gitErr) {
             console.error('Git auto-commit failed during upload:', gitErr);

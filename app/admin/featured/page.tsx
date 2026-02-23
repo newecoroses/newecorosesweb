@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, DBFeaturedItem } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import SingleImageUpload from '@/components/admin/single-image-upload';
 
 function Modal({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
     if (!open) return null;
@@ -109,9 +110,13 @@ export default function AdminFeaturedPage() {
                             className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
                     </div>
                     <div>
-                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Image URL / Path</label>
-                        <input value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} placeholder="/images/handpicked/red-romance.webp"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-3">Item Image</label>
+                        <SingleImageUpload
+                            value={form.image_url}
+                            onChange={(url) => setForm(f => ({ ...f, image_url: url }))}
+                            folder="handpicked"
+                            slug={form.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'featured'}
+                        />
                     </div>
                     <div className="flex gap-4">
                         <div className="flex-1">

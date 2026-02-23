@@ -3,6 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, DBCelebration } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import SingleImageUpload from '@/components/admin/single-image-upload';
+
+function slugify(t: string) { return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
 
 function Modal({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
     if (!open) return null;
@@ -109,7 +112,6 @@ export default function AdminCelebrationsPage() {
                     {[
                         { label: 'Name *', field: 'name', placeholder: 'Holi' },
                         { label: 'Date Label', field: 'date_label', placeholder: '4TH MAR' },
-                        { label: 'Image URL / Path', field: 'image_url', placeholder: '/images/celebrations/holi.webp' },
                     ].map(({ label, field, placeholder }) => (
                         <div key={field}>
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">{label}</label>
@@ -119,6 +121,15 @@ export default function AdminCelebrationsPage() {
                                 className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
                         </div>
                     ))}
+                    <div>
+                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-3">Celebration Image</label>
+                        <SingleImageUpload
+                            value={form.image_url}
+                            onChange={(url) => setForm(f => ({ ...f, image_url: url }))}
+                            folder="celebrations"
+                            slug={slugify(form.name) || 'unnamed'}
+                        />
+                    </div>
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Sort Order</label>
