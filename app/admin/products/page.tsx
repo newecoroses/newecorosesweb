@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, DBProduct, DBCollection } from '@/lib/supabase';
 import {
-    Plus, Search, Edit2, Trash2, Eye, EyeOff, X, Save, ChevronDown, AlertCircle
+    Plus, Search, Edit2, Trash2, Eye, EyeOff, X, Save, ChevronDown, AlertCircle, UploadCloud, Loader2
 } from 'lucide-react';
 
 const TAGS = ['Best Seller', 'New Arrival', 'Seasonal', 'Standard'];
@@ -18,6 +18,7 @@ interface ProductFormData {
     celebrations: string;
     tag: string;
     image_url: string;
+    images: string[];
     stock: number;
     is_visible: boolean;
     is_featured: boolean;
@@ -28,7 +29,7 @@ interface ProductFormData {
 
 const DEFAULT_FORM: ProductFormData = {
     name: '', slug: '', description: '', collection_name: '', collection_slug: '',
-    relationships: '', celebrations: '', tag: 'Standard', image_url: '',
+    relationships: '', celebrations: '', tag: 'Standard', image_url: '', images: [],
     stock: 10, is_visible: true, is_featured: false, sort_order: 0, image_scale: 1.0,
     item_count: 0,
 };
@@ -60,6 +61,7 @@ export default function AdminProductsPage() {
     const [editingProduct, setEditingProduct] = useState<DBProduct | null>(null);
     const [form, setForm] = useState<ProductFormData>(DEFAULT_FORM);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -100,6 +102,7 @@ export default function AdminProductsPage() {
             celebrations: (p.celebrations ?? []).join(', '),
             tag: p.tag ?? 'Standard',
             image_url: p.image_url ?? '',
+            images: p.images ?? (p.image_url ? [p.image_url] : []),
             stock: p.stock ?? 10,
             is_visible: p.is_visible ?? true,
             is_featured: p.is_featured ?? false,
@@ -127,8 +130,8 @@ export default function AdminProductsPage() {
             relationships: form.relationships.split(',').map(s => s.trim()).filter(Boolean),
             celebrations: form.celebrations.split(',').map(s => s.trim()).filter(Boolean),
             tag: form.tag,
-            image_url: form.image_url,
-            images: form.image_url ? [form.image_url] : [],
+            image_url: form.images.length > 0 ? form.images[0] : (form.image_url || ''),
+            images: form.images.length > 0 ? form.images : (form.image_url ? [form.image_url] : []),
             stock: form.stock,
             is_visible: form.is_visible,
             is_featured: form.is_featured,
@@ -151,6 +154,45 @@ export default function AdminProductsPage() {
             setTimeout(() => setSuccess(''), 3000);
         }
         setSaving(false);
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        setError('');
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const res = await fetch('/api/admin/upload-image', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+            setForm(f => ({
+                ...f,
+                images: [...f.images, data.url],
+            }));
+            setSuccess('Image uploaded securely to Git repository');
+            setTimeout(() => setSuccess(''), 3000);
+        } catch (err: any) {
+            setError(err.message || 'Image upload failed.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const removeImage = (indexToRemove: number) => {
+        setForm(f => ({
+            ...f,
+            images: f.images.filter((_, idx) => idx !== indexToRemove)
+        }));
     };
 
     const handleDelete = async (id: string) => {
@@ -340,11 +382,46 @@ export default function AdminProductsPage() {
                         <input type="number" value={form.item_count} onChange={e => setForm(f => ({ ...f, item_count: parseInt(e.target.value) || 0 }))}
                             className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
                     </div>
-                    <div className="col-span-2">
-                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Image URL or Path</label>
-                        <input value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
-                            placeholder="/images/products/my-product.webp"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                    <div className="col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-4">
+                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-3">Product Images (Hover Slider)</label>
+
+                        {/* Image Gallery */}
+                        <div className="flex flex-wrap gap-4 mb-4">
+                            {form.images.map((img, idx) => (
+                                <div key={idx} className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-yellow-500 transition-colors group">
+                                    <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                    {/* Main Image Badge */}
+                                    {idx === 0 && (
+                                        <div className="absolute top-1 left-1 bg-yellow-500 text-gray-900 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">MAIN</div>
+                                    )}
+                                    {/* Remove button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => removeImage(idx)}
+                                        className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                </div>
+                            ))}
+
+                            {/* Upload Button */}
+                            <label className={`w-24 h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${uploading ? 'border-gray-600 bg-gray-800' : 'border-gray-600 hover:border-yellow-500 hover:bg-gray-800/50'}`}>
+                                {uploading ? (
+                                    <Loader2 size={24} className="text-gray-400 animate-spin" />
+                                ) : (
+                                    <>
+                                        <UploadCloud size={24} className="text-gray-400 mb-2" />
+                                        <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Upload</span>
+                                    </>
+                                )}
+                                <input type="file" className="hidden" accept="image/*" disabled={uploading} onChange={handleFileUpload} />
+                            </label>
+                        </div>
+
+                        <div className="text-xs text-gray-500 leading-tight">
+                            The first image is the main display. Any additional images will appear in the premium hover-slider on the website. Uploaded images instantly sync to the GitHub codebase.
+                        </div>
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Relationships (comma-separated)</label>
