@@ -130,7 +130,7 @@ export default function AdminProductsPage() {
             relationships: form.relationships.split(',').map(s => s.trim()).filter(Boolean),
             celebrations: form.celebrations.split(',').map(s => s.trim()).filter(Boolean),
             tag: form.tag,
-            image_url: form.images.length > 0 ? form.images[0] : (form.image_url || ''),
+            image_url: form.images.filter(i => !i.startsWith('HIDDEN::')).length > 0 ? form.images.filter(i => !i.startsWith('HIDDEN::'))[0] : (form.image_url || ''),
             images: form.images.length > 0 ? form.images : (form.image_url ? [form.image_url] : []),
             stock: form.stock,
             is_visible: form.is_visible,
@@ -166,6 +166,7 @@ export default function AdminProductsPage() {
         try {
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('productSlug', form.slug || slugify(form.name) || 'unnamed');
 
             const res = await fetch('/api/admin/upload-image', {
                 method: 'POST',
@@ -192,6 +193,16 @@ export default function AdminProductsPage() {
         setForm(f => ({
             ...f,
             images: f.images.filter((_, idx) => idx !== indexToRemove)
+        }));
+    };
+
+    const toggleImageHidden = (index: number) => {
+        setForm(f => ({
+            ...f,
+            images: f.images.map((img, idx) => {
+                if (idx !== index) return img;
+                return img.startsWith('HIDDEN::') ? img.replace('HIDDEN::', '') : `HIDDEN::${img}`;
+            })
         }));
     };
 
@@ -388,11 +399,15 @@ export default function AdminProductsPage() {
                         {/* Image Gallery */}
                         <div className="flex flex-wrap gap-4 mb-4">
                             {form.images.map((img, idx) => (
-                                <div key={idx} className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-yellow-500 transition-colors group">
-                                    <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                <div key={idx} className={`relative w-24 h-24 rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-yellow-500 transition-all group ${img.startsWith('HIDDEN::') ? 'opacity-50 grayscale' : ''}`}>
+                                    <img src={img.replace('HIDDEN::', '')} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                                     {/* Main Image Badge */}
-                                    {idx === 0 && (
+                                    {idx === 0 && !img.startsWith('HIDDEN::') && (
                                         <div className="absolute top-1 left-1 bg-yellow-500 text-gray-900 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">MAIN</div>
+                                    )}
+                                    {/* Hidden Badge */}
+                                    {img.startsWith('HIDDEN::') && (
+                                        <div className="absolute top-1 left-1 bg-gray-700 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">HIDDEN</div>
                                     )}
                                     {/* Remove button */}
                                     <button
@@ -401,6 +416,15 @@ export default function AdminProductsPage() {
                                         className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                         <X size={12} />
+                                    </button>
+                                    {/* Toggle Hide button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleImageHidden(idx)}
+                                        className="absolute bottom-1 right-1 bg-gray-900 shadow-xl border border-gray-700 hover:bg-gray-800 text-white rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        title={img.startsWith('HIDDEN::') ? "Unhide Image" : "Hide Image"}
+                                    >
+                                        {img.startsWith('HIDDEN::') ? <Eye size={12} /> : <EyeOff size={12} />}
                                     </button>
                                 </div>
                             ))}

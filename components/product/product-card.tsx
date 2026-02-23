@@ -48,7 +48,9 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
     // Extract an array of all images, deduplicated, starting with the main image
-    const allImages = [...new Set([product.image_url, ...(product.images || [])])].filter(Boolean);
+    const allImages = [...new Set([product.image_url, ...(product.images || [])])]
+        .filter(Boolean)
+        .filter(img => !img.startsWith('HIDDEN::'));
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const productUrl = `${origin}/product/${product.slug}`;
 

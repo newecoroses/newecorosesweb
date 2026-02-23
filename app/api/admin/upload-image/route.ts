@@ -17,9 +17,10 @@ export async function POST(request: Request) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Make filename git-friendly
+        const productSlug = formData.get('productSlug') as string;
+        const originalExt = file.name.split('.').pop() || 'jpg';
         const rawFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
-        const uniqueFileName = `${Date.now()}-${rawFileName}`;
+        const uniqueFileName = productSlug ? `${productSlug}-${Date.now()}.${originalExt}` : `${Date.now()}-${rawFileName}`;
         const relativePath = `/images/products/${uniqueFileName}`;
 
         // Write the file to the local public folder

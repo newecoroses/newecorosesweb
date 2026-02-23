@@ -120,7 +120,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         );
     }
 
-    const images = product.images?.length > 0 ? product.images : [product.image_url];
+    const allImages = product.images?.length > 0 ? product.images : [product.image_url];
+    const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
     return (
         <div className="pt-28 pb-20 bg-background min-h-screen">
