@@ -302,6 +302,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══ REVIEW VIDEOS ═══ */}
+      <ReviewVideos />
+
       {/* ═══ CELEBRATIONS CALENDAR ═══ */}
       {showCelebrations && (
         <section className="py-12 bg-white border-b border-gray-100">
@@ -467,9 +470,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      {/* ═══ REVIEW VIDEOS ═══ */}
-      <ReviewVideos />
 
       {/* ═══ WHY CHOOSE US ═══ */}
       <section className="py-24 lg:py-32 overflow-hidden relative">
