@@ -159,8 +159,7 @@ export default function Home() {
     return (
       <div className="pt-28 pb-20 min-h-[80vh] bg-background">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <SectionHeader label="Handpicked Selection" title="Premium Collections" subtitle="Explore a curated selection of our finest roses, boxes, and luxury gifts." />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="aspect-[3/4] bg-gray-100 rounded-2xl animate-pulse" />
             ))}
@@ -175,14 +174,12 @@ export default function Home() {
       {/* ═══ FILTERED PRODUCT GRID (TOP SECTION) ═══ */}
       <section className="pt-32 pb-24 bg-background border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <SectionHeader label="Handpicked Selection" title="Premium Collections" subtitle="Explore a curated selection of our finest roses, boxes, and luxury gifts." />
-
           {/* Horizontal Filter Bar */}
-          <div className="mb-10 mt-8 space-y-6">
+          <div className="mb-10 space-y-6">
 
-            {/* 1. Gift Types (Categories) - Scrollable on Mobile, Centered on PC */}
+            {/* 1. Gift Types (Categories) - Scrollable on Mobile, Wrap on PC */}
             <div className="w-full relative">
-              <div className="flex overflow-x-auto no-scrollbar gap-2 w-full pb-2 px-1 snap-x justify-start lg:justify-center">
+              <div className="flex overflow-x-auto lg:overflow-visible lg:flex-wrap no-scrollbar gap-2 w-full pb-2 snap-x justify-start items-center">
                 <button
                   onClick={() => setActiveType('All')}
                   className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'All' ? 'bg-foreground text-white shadow-md' : 'bg-white text-muted border border-gray-200 hover:border-foreground hover:text-foreground'}`}
@@ -202,16 +199,16 @@ export default function Home() {
             </div>
 
             {/* 2. Advanced Dropdown Filters - Stacked on Mobile, Side-by-side on Tablet/PC */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-start gap-4 w-full">
               {/* Occasion (Celebration) */}
-              <div className="relative group w-full">
+              <div className="relative group w-full md:w-auto">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
                   <Sparkles size={16} />
                 </div>
                 <select
                   value={activeOccasion}
                   onChange={(e) => setActiveOccasion(e.target.value)}
-                  className="w-full appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
                 >
                   <option value="All">All Occasions</option>
                   {celebrations.map(c => (
@@ -222,14 +219,14 @@ export default function Home() {
               </div>
 
               {/* Relationship Filter */}
-              <div className="relative group w-full">
+              <div className="relative group w-full md:w-auto">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
                   <HeartPulse size={16} />
                 </div>
                 <select
                   value={activeRelation}
                   onChange={(e) => setActiveRelation(e.target.value)}
-                  className="w-full appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
                 >
                   <option value="All">All Relationships</option>
                   {relationships.map(r => (
@@ -240,14 +237,14 @@ export default function Home() {
               </div>
 
               {/* Sort By */}
-              <div className="relative group w-full">
+              <div className="relative group w-full md:w-auto">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
                   <Filter size={16} />
                 </div>
                 <select
                   value={activeSort}
                   onChange={(e) => setActiveSort(e.target.value)}
-                  className="w-full appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
                 >
                   <option value="Recommended">Sort: Recommended</option>
                   <option value="Newest">Sort: Newest Arrivals</option>
