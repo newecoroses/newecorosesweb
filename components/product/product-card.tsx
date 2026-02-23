@@ -13,6 +13,7 @@ interface Product {
     price?: number;
     original_price?: number;
     image_url: string;
+    images?: string[];
     image_scale?: number;
     slug: string;
     stock: number;
@@ -44,16 +45,19 @@ function getWhatsappPhone(): Promise<string> {
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
     const [whatsappLink, setWhatsappLink] = useState('');
+    const [currentImageIdx, setCurrentImageIdx] = useState(0);
+
+    // Extract an array of all images, deduplicated, starting with the main image
+    const allImages = [...new Set([product.image_url, ...(product.images || [])])].filter(Boolean);
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const productUrl = `${origin}/product/${product.slug}`;
 
     useEffect(() => {
-        const origin = window.location.origin;
-        const productUrl = `${origin}/product/${product.slug}`;
-
         getWhatsappPhone().then(phone => {
             const message = `Hi, I'm interested in ${product.name}. Is it available for delivery today? Reference: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
         });
-    }, [product.name, product.slug]);
+    }, [product.name, product.slug, productUrl]);
 
     const stockLabel =
         product.stock === 0
@@ -84,15 +88,50 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         {product.tag}
                     </span>
                 )}
-                <Link href={`/product/${product.slug}`} className="block w-full h-full">
-                    <Image
-                        src={product.image_url || 'https://images.unsplash.com/photo-1596541671913-904e20790409'}
-                        alt={product.name}
-                        fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        style={product.image_scale && product.image_scale !== 1 ? { transform: `scale(${product.image_scale})` } : undefined}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
+                <Link
+                    href={`/product/${product.slug}`}
+                    className="block w-full h-full relative"
+                    onMouseEnter={() => {
+                        if (allImages.length > 1) {
+                            setCurrentImageIdx(1);
+                        }
+                    }}
+                    onMouseLeave={() => setCurrentImageIdx(0)}
+                    onMouseMove={(e) => {
+                        if (allImages.length > 1) {
+                            // Calculate 0 to 1 based on X position of mouse over the image
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const x = e.clientX - rect.left; // x position within the element
+                            const percentage = x / rect.width;
+                            // Map percentage into an index of the available images
+                            const idx = Math.min(Math.floor(percentage * allImages.length), allImages.length - 1);
+                            setCurrentImageIdx(Math.max(0, idx)); // Ensure it's valid, 0 or greater
+                        }
+                    }}
+                >
+                    {allImages.map((img, idx) => (
+                        <Image
+                            key={idx}
+                            src={img}
+                            alt={`${product.name} - view ${idx + 1}`}
+                            fill
+                            className={`object-cover transition-all duration-700 ease-out absolute inset-0 ${currentImageIdx === idx ? 'opacity-100 scale-105' : 'opacity-0 scale-100'}`}
+                            style={product.image_scale && product.image_scale !== 1 ? { transform: `scale(${product.image_scale})` } : undefined}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                    ))}
+
+                    {/* Image indicator dots (only show if it has multiple images and is hovered) */}
+                    {allImages.length > 1 && (
+                        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {allImages.map((_, idx) => (
+                                <div
+                                    key={idx}
+                                    className={`h-1 rounded-full transition-all duration-300 ${currentImageIdx === idx ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </Link>
             </div>
 
