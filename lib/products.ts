@@ -483,8 +483,12 @@ export const PRODUCTS: Product[] = [
         relationships: ['Friend', 'Family', 'Corporate'],
         celebrations: ['Birthday', 'Anniversary'],
         tag: 'Best Seller',
-        image_url: '/images/products/lucky-bamboo.webp',
-        images: ['/images/products/lucky-bamboo.webp'],
+        image_url: '/images/products/lucky-bamboo-1.webp',
+        images: [
+            '/images/products/lucky-bamboo-1.webp',
+            '/images/products/lucky-bamboo-2.webp',
+            '/images/products/lucky-bamboo-3.webp'
+        ],
         stock: 10,
         itemCount: 3, // Number of stalks
     },
@@ -498,8 +502,12 @@ export const PRODUCTS: Product[] = [
         relationships: ['Friend', 'Family', 'Corporate'],
         celebrations: ['Birthday', 'Anniversary'],
         tag: 'New Arrival',
-        image_url: '/images/products/jade-plant.webp',
-        images: ['/images/products/jade-plant.webp'],
+        image_url: '/images/products/jade-plant-1.webp',
+        images: [
+            '/images/products/jade-plant-1.webp',
+            '/images/products/jade-plant-2.webp',
+            '/images/products/jade-plant-3.webp'
+        ],
         stock: 10,
         itemCount: 1,
     },
@@ -513,8 +521,13 @@ export const PRODUCTS: Product[] = [
         relationships: ['Friend', 'Family', 'Corporate'],
         celebrations: ['Birthday', 'Anniversary'],
         tag: 'Standard',
-        image_url: '/images/products/zz-plant.webp',
-        images: ['/images/products/zz-plant.webp'],
+        image_url: '/images/products/zz-plant-1.webp',
+        images: [
+            '/images/products/zz-plant-1.webp',
+            '/images/products/zz-plant-2.webp',
+            '/images/products/zz-plant-3.webp',
+            '/images/products/zz-plant-4.webp'
+        ],
         stock: 10,
         itemCount: 1,
     },
