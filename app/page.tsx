@@ -111,7 +111,13 @@ export default function Home() {
     let filtered = [...products];
 
     if (activeType !== 'All') {
-      filtered = filtered.filter(p => p.collection_name === activeType);
+      if (activeType === 'Birthday') {
+        filtered = filtered.filter(p => p.celebrations?.includes('Birthday'));
+      } else if (activeType === 'Anniversary') {
+        filtered = filtered.filter(p => p.celebrations?.includes('Anniversary'));
+      } else {
+        filtered = filtered.filter(p => p.collection_name === activeType);
+      }
     }
 
     if (activeOccasion !== 'All') {
@@ -195,6 +201,21 @@ export default function Home() {
                     {c.name}
                   </button>
                 ))}
+
+                {/* Fixed special occasion filters masquerading as categories */}
+                <button
+                  onClick={() => setActiveType('Birthday')}
+                  className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'Birthday' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
+                >
+                  Birthday
+                </button>
+
+                <button
+                  onClick={() => setActiveType('Anniversary')}
+                  className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'Anniversary' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
+                >
+                  Anniversary
+                </button>
               </div>
             </div>
 
