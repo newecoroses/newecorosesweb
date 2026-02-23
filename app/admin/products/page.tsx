@@ -23,12 +23,14 @@ interface ProductFormData {
     is_featured: boolean;
     sort_order: number;
     image_scale: number;
+    item_count: number;
 }
 
 const DEFAULT_FORM: ProductFormData = {
     name: '', slug: '', description: '', collection_name: '', collection_slug: '',
     relationships: '', celebrations: '', tag: 'Standard', image_url: '',
     stock: 10, is_visible: true, is_featured: false, sort_order: 0, image_scale: 1.0,
+    item_count: 0,
 };
 
 function slugify(text: string) {
@@ -103,6 +105,7 @@ export default function AdminProductsPage() {
             is_featured: p.is_featured ?? false,
             sort_order: p.sort_order ?? 0,
             image_scale: p.image_scale ?? 1.0,
+            item_count: p.item_count ?? 0,
         });
         setError('');
         setModalOpen(true);
@@ -131,6 +134,7 @@ export default function AdminProductsPage() {
             is_featured: form.is_featured,
             sort_order: form.sort_order,
             image_scale: form.image_scale,
+            item_count: form.item_count,
             updated_at: new Date().toISOString(),
         };
 
@@ -255,9 +259,9 @@ export default function AdminProductsPage() {
                                         <td className="px-5 py-4 text-gray-400">{product.collection_name ?? '—'}</td>
                                         <td className="px-5 py-4">
                                             <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${product.tag === 'Best Seller' ? 'bg-yellow-500/10 text-yellow-400' :
-                                                    product.tag === 'New Arrival' ? 'bg-blue-500/10 text-blue-400' :
-                                                        product.tag === 'Seasonal' ? 'bg-green-500/10 text-green-400' :
-                                                            'bg-gray-700 text-gray-400'
+                                                product.tag === 'New Arrival' ? 'bg-blue-500/10 text-blue-400' :
+                                                    product.tag === 'Seasonal' ? 'bg-green-500/10 text-green-400' :
+                                                        'bg-gray-700 text-gray-400'
                                                 }`}>{product.tag}</span>
                                         </td>
                                         <td className="px-5 py-4 text-gray-400">{product.stock}</td>
@@ -329,6 +333,11 @@ export default function AdminProductsPage() {
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Stock</label>
                         <input type="number" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: parseInt(e.target.value) || 0 }))}
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                    </div>
+                    <div>
+                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Item Count (e.g. 12 Roses)</label>
+                        <input type="number" value={form.item_count} onChange={e => setForm(f => ({ ...f, item_count: parseInt(e.target.value) || 0 }))}
                             className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
                     </div>
                     <div className="col-span-2">

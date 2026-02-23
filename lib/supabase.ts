@@ -42,6 +42,7 @@ export interface DBProduct {
     image_scale: number; stock: number; is_visible: boolean;
     is_featured: boolean; sort_order: number;
     created_at: string; updated_at: string;
+    item_count?: number;
 }
 
 export interface DBCollection {

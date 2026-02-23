@@ -12,6 +12,7 @@
     images: string[];
     imageScale?: number;
     stock: number;
+    itemCount?: number;
 }
 
 export const PRODUCTS: Product[] = [
@@ -29,6 +30,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/crimson-elegance-bouquet.webp',
         images: ['/images/products/crimson-elegance-bouquet.webp'],
         stock: 10,
+        itemCount: 24,
     },
     {
         id: '2',
@@ -43,6 +45,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/blush-harmony-roses.webp',
         images: ['/images/products/blush-harmony-roses.webp'],
         stock: 10,
+        itemCount: 15,
     },
     {
         id: '3',
@@ -57,6 +60,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/ivory-serenity-bloom.webp',
         images: ['/images/products/ivory-serenity-bloom.webp'],
         stock: 10,
+        itemCount: 20,
     },
     {
         id: '4',
@@ -71,6 +75,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/heart-shape-rose-box.webp',
         images: ['/images/products/heart-shape-rose-box.webp'],
         stock: 10,
+        itemCount: 30,
     },
 
     // ── LUXURY BOUQUETS ──
@@ -87,6 +92,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/royal-crimson-symphony.webp',
         images: ['/images/products/royal-crimson-symphony.webp'],
         stock: 10,
+        itemCount: 50,
     },
     {
         id: '6',
@@ -102,6 +108,7 @@ export const PRODUCTS: Product[] = [
         images: ['/images/products/champagne-bloom-delight.webp'],
         imageScale: 1.25,
         stock: 10,
+        itemCount: 18,
     },
     {
         id: '7',
@@ -116,6 +123,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/emerald-luxe-arrangement.webp',
         images: ['/images/products/emerald-luxe-arrangement.webp'],
         stock: 10,
+        itemCount: 12,
     },
     {
         id: '8',
@@ -130,6 +138,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/prestige-floral-ensemble.webp',
         images: ['/images/products/prestige-floral-ensemble.webp'],
         stock: 10,
+        itemCount: 20,
     },
 
     // ── PERSONALIZED GIFTS ──
@@ -174,6 +183,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/personalized-mug-and-roses.webp',
         images: ['/images/products/personalized-mug-and-roses.webp'],
         stock: 10,
+        itemCount: 8,
     },
     {
         id: '12',
@@ -204,6 +214,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/golden-anniversary-bloom.webp',
         images: ['/images/products/golden-anniversary-bloom.webp'],
         stock: 10,
+        itemCount: 25,
     },
     {
         id: '14',
@@ -218,6 +229,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/forever-together-bouquet.webp',
         images: ['/images/products/forever-together-bouquet.webp'],
         stock: 10,
+        itemCount: 40,
     },
     {
         id: '15',
@@ -232,6 +244,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/ruby-romance-collection.webp',
         images: ['/images/products/ruby-romance-collection.webp'],
         stock: 10,
+        itemCount: 36,
     },
 
     // ── CORPORATE GIFTING ──
@@ -292,6 +305,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/holi-color-splash-bouquet.webp',
         images: ['/images/products/holi-color-splash-bouquet.webp'],
         stock: 10,
+        itemCount: 22,
     },
     {
         id: '20',
@@ -320,6 +334,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/divine-navratri-bloom-box.webp',
         images: ['/images/products/divine-navratri-bloom-box.webp'],
         stock: 10,
+        itemCount: 16,
     },
     {
         id: '22',
@@ -350,6 +365,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/mix-flowers.webp',
         images: ['/images/products/mix-flowers.webp'],
         stock: 10,
+        itemCount: 15,
     },
     {
         id: '24',
@@ -364,6 +380,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/roses.webp',
         images: ['/images/products/roses.webp'],
         stock: 10,
+        itemCount: 12,
     },
     {
         id: '25',
@@ -378,6 +395,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/carnation.webp',
         images: ['/images/products/carnation.webp'],
         stock: 10,
+        itemCount: 10,
     },
     {
         id: '26',
@@ -392,6 +410,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/lily.webp',
         images: ['/images/products/lily.webp'],
         stock: 10,
+        itemCount: 5,
     },
     {
         id: '27',
@@ -406,6 +425,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/daisy.webp',
         images: ['/images/products/daisy.webp'],
         stock: 10,
+        itemCount: 20,
     },
     {
         id: '28',
@@ -420,6 +440,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/orchids.webp',
         images: ['/images/products/orchids.webp'],
         stock: 10,
+        itemCount: 10,
     },
     {
         id: '29',
@@ -434,6 +455,7 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/gerbera.webp',
         images: ['/images/products/gerbera.webp'],
         stock: 10,
+        itemCount: 12,
     },
     {
         id: '30',
@@ -448,6 +470,53 @@ export const PRODUCTS: Product[] = [
         image_url: '/images/products/sunflower.webp',
         images: ['/images/products/sunflower.webp'],
         stock: 10,
+        itemCount: 5,
+    },
+    // ── PLANTS ──
+    {
+        id: '31',
+        name: 'Lucky Bamboo',
+        slug: 'lucky-bamboo',
+        description: 'A beautiful indoor Lucky Bamboo plant symbolizing good luck and prosperity. Perfect for gifting and home decor.',
+        collection: 'Plants',
+        collectionSlug: 'plants',
+        relationships: ['Friend', 'Family', 'Corporate'],
+        celebrations: ['Birthday', 'Anniversary'],
+        tag: 'Best Seller',
+        image_url: '/images/products/lucky-bamboo.webp',
+        images: ['/images/products/lucky-bamboo.webp'],
+        stock: 10,
+        itemCount: 3, // Number of stalks
+    },
+    {
+        id: '32',
+        name: 'Jade Plant',
+        slug: 'jade-plant',
+        description: 'A stunning Jade Plant known for attracting wealth and financial success. Easy to care for and highly decorative.',
+        collection: 'Plants',
+        collectionSlug: 'plants',
+        relationships: ['Friend', 'Family', 'Corporate'],
+        celebrations: ['Birthday', 'Anniversary'],
+        tag: 'New Arrival',
+        image_url: '/images/products/jade-plant.webp',
+        images: ['/images/products/jade-plant.webp'],
+        stock: 10,
+        itemCount: 1,
+    },
+    {
+        id: '33',
+        name: 'ZZ Plant',
+        slug: 'zz-plant',
+        description: 'The highly resilient ZZ plant with its glossy, dark green leaves. Perfect for modern spaces and requires very little maintenance.',
+        collection: 'Plants',
+        collectionSlug: 'plants',
+        relationships: ['Friend', 'Family', 'Corporate'],
+        celebrations: ['Birthday', 'Anniversary'],
+        tag: 'Standard',
+        image_url: '/images/products/zz-plant.webp',
+        images: ['/images/products/zz-plant.webp'],
+        stock: 10,
+        itemCount: 1,
     },
 ];
 

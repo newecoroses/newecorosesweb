@@ -17,6 +17,7 @@ interface Product {
     slug: string;
     stock: number;
     tag?: string;
+    item_count?: number;
 }
 
 const FALLBACK_PHONE = '919936911611';
@@ -101,6 +102,11 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     <h3 className="text-[1rem] font-serif text-foreground group-hover:text-primary transition-colors duration-300 truncate tracking-wide">
                         {product.name}
                     </h3>
+                    {product.item_count && product.item_count > 0 && (
+                        <p className="text-muted text-xs font-medium mt-1 uppercase tracking-wider">
+                            Count: {product.item_count}
+                        </p>
+                    )}
                 </Link>
 
                 <div className="mb-4">

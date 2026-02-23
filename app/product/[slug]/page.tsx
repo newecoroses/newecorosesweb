@@ -48,6 +48,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         images: staticProduct.images,
                         image_scale: staticProduct.imageScale ?? 1,
                         stock: staticProduct.stock,
+                        item_count: staticProduct.itemCount ?? 0,
                         is_visible: true,
                         is_featured: false,
                         sort_order: 0,
@@ -71,6 +72,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     celebrations: staticProduct.celebrations, tag: staticProduct.tag,
                     image_url: staticProduct.images[0], images: staticProduct.images,
                     image_scale: staticProduct.imageScale ?? 1, stock: staticProduct.stock,
+                    item_count: staticProduct.itemCount ?? 0,
                     is_visible: true, is_featured: false, sort_order: 0, created_at: '', updated_at: '',
                 });
             }
@@ -188,6 +190,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         <p className="text-muted leading-relaxed font-light mb-8 text-[0.95rem] max-w-md">
                             {product.description}
                         </p>
+
+                        {/* Item Count Display */}
+                        {product.item_count && (product.item_count > 0) ? (
+                            <div className="mb-6 flex items-center gap-3 bg-secondary/30 w-fit px-4 py-2 border border-gray-100 rounded-lg">
+                                <span className="text-primary font-bold text-lg">{product.item_count}</span>
+                                <span className="text-muted text-xs uppercase tracking-wider font-semibold">Items in arrangement</span>
+                            </div>
+                        ) : null}
 
                         {/* Perfect For */}
                         {product.relationships?.length > 0 && (
