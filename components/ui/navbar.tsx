@@ -24,8 +24,7 @@ export default function Navbar() {
     const [hasScrolled, setHasScrolled] = useState(false);
     const [orderLink, setOrderLink] = useState(FALLBACK_ORDER_LINK);
     const pathname = usePathname();
-    const isHome = pathname === '/';
-    const isScrolled = hasScrolled || !isHome;
+    const isScrolled = hasScrolled;
 
     useEffect(() => {
         const handleScroll = () => setHasScrolled(window.scrollY > 30);
@@ -60,11 +59,11 @@ export default function Navbar() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 flex justify-between items-center">
                     {/* Logo */}
                     <Link href="/" className="group relative flex items-center gap-2">
-                        <Gift size={28} className={`${isScrolled ? 'text-foreground' : 'text-white'} group-hover:text-primary transition-colors duration-300`} />
-                        <span className={`font-serif text-2xl lg:text-[1.65rem] font-bold tracking-[0.08em] ${isScrolled ? 'text-foreground' : 'text-white'}`}>
-                            NER
+                        <Gift size={28} className="text-foreground group-hover:text-primary transition-colors duration-300" />
+                        <span className="font-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-[0.08em] text-foreground">
+                            New Eco Roses
                         </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block mb-3" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block mb-3 hidden sm:inline-block" />
                     </Link>
 
                     {/* Desktop Menu */}
@@ -73,7 +72,7 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`link-underline text-[0.8rem] uppercase tracking-[0.18em] font-medium transition-colors duration-300 ${isScrolled ? 'text-muted hover:text-foreground' : 'text-white/90 hover:text-white'}`}
+                                className="link-underline text-[0.8rem] uppercase tracking-[0.18em] font-medium transition-colors duration-300 text-muted hover:text-foreground"
                             >
                                 {link.label}
                             </Link>
@@ -83,10 +82,7 @@ export default function Navbar() {
                             href={orderLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 ${isScrolled
-                                ? 'bg-primary text-white hover:opacity-90 hover:shadow-primary/20'
-                                : 'bg-white text-primary hover:bg-gray-100 hover:shadow-white/20'
-                                }`}
+                            className="flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 bg-primary text-white hover:opacity-90 hover:shadow-primary/20"
                         >
                             <ShoppingBag size={15} />
                             Order Now
@@ -96,7 +92,7 @@ export default function Navbar() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className={`lg:hidden p-1 z-[60] ${isScrolled ? 'text-foreground' : 'text-white'}`}
+                        className="lg:hidden p-1 z-[60] text-foreground"
                         aria-label="Toggle menu"
                     >
                         {isOpen ? <X size={26} className="text-foreground" /> : <Menu size={26} />}
