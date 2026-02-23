@@ -17,8 +17,20 @@ export default function AdminLogin() {
         setError('');
         setLoading(true);
 
-        // Custom fixed password logic
+        // Custom fixed password logic + Supabase Auth
         if (password === 'newecoroses@1209') {
+            const { supabase } = await import('@/lib/supabase');
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: 'admin@newecoroses.com',
+                password: password,
+            });
+
+            if (signInError) {
+                setError('Authentication failed. Please check the backend.');
+                setLoading(false);
+                return;
+            }
+
             // Set an authentication cookie directly
             Cookies.set('admin_auth', 'true', { expires: 7 }); // Expires in 7 days
             router.push('/admin');

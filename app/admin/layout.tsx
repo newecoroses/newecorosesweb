@@ -60,8 +60,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         checkAuth();
     }, [pathname, router]);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         Cookies.remove('admin_auth');
+        const { supabase } = await import('@/lib/supabase');
+        await supabase.auth.signOut();
         router.push('/admin/login');
     };
 
