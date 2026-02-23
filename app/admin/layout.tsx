@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -97,7 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Logo */}
                 <div className="p-6 border-b border-gray-800">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-gray-900 font-bold text-sm">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-zinc-200 to-zinc-400 text-zinc-900 flex items-center justify-center text-gray-900 font-bold text-sm">
                             NER
                         </div>
                         <div>
@@ -118,11 +118,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 href={href}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 text-sm font-medium transition-all group ${isActive
-                                    ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                                    ? 'bg-zinc-100 text-zinc-900/10 text-zinc-100 border border-zinc-100/20'
                                     : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                     }`}
                             >
-                                <Icon size={16} className={isActive ? 'text-yellow-400' : 'text-gray-500 group-hover:text-gray-300'} />
+                                <Icon size={16} className={isActive ? 'text-zinc-100' : 'text-gray-500 group-hover:text-gray-300'} />
                                 {label}
                                 {isActive && <ChevronRight size={12} className="ml-auto" />}
                             </Link>
@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* User */}
                 <div className="p-4 border-t border-gray-800">
                     <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-xs font-bold">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-500 to-zinc-700 flex items-center justify-center text-white text-xs font-bold">
                             N
                         </div>
                         <div className="flex-1 min-w-0">
@@ -171,7 +171,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <Link
                         href="/"
                         target="_blank"
-                        className="text-gray-400 hover:text-yellow-400 text-xs flex items-center gap-1.5 transition-colors"
+                        className="text-gray-400 hover:text-zinc-100 text-xs flex items-center gap-1.5 transition-colors"
                     >
                         View Site
                         <ChevronRight size={12} />

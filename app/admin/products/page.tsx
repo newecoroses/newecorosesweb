@@ -236,7 +236,7 @@ export default function AdminProductsPage() {
                     <h1 className="text-2xl font-bold text-white">Products</h1>
                     <p className="text-gray-400 text-sm mt-0.5">{products.length} total products</p>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Product
                 </button>
             </div>
@@ -253,15 +253,15 @@ export default function AdminProductsPage() {
                 <div className="relative flex-1 min-w-48">
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search products..."
-                        className="w-full bg-gray-900 border border-gray-800 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                        className="w-full bg-gray-900 border border-gray-800 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                 </div>
                 <select value={filterTag} onChange={e => setFilterTag(e.target.value)}
-                    className="bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors">
+                    className="bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors">
                     <option value="All">All Tags</option>
                     {TAGS.map(t => <option key={t}>{t}</option>)}
                 </select>
                 <select value={filterVisible} onChange={e => setFilterVisible(e.target.value)}
-                    className="bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors">
+                    className="bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors">
                     <option value="All">All Visibility</option>
                     <option value="Visible">Visible</option>
                     <option value="Hidden">Hidden</option>
@@ -311,7 +311,7 @@ export default function AdminProductsPage() {
                                         </td>
                                         <td className="px-5 py-4 text-gray-400">{product.collection_name ?? '—'}</td>
                                         <td className="px-5 py-4">
-                                            <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${product.tag === 'Best Seller' ? 'bg-yellow-500/10 text-yellow-400' :
+                                            <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${product.tag === 'Best Seller' ? 'bg-zinc-100 text-zinc-900/10 text-zinc-100' :
                                                 product.tag === 'New Arrival' ? 'bg-blue-500/10 text-blue-400' :
                                                     product.tag === 'Seasonal' ? 'bg-green-500/10 text-green-400' :
                                                         'bg-gray-700 text-gray-400'
@@ -325,7 +325,7 @@ export default function AdminProductsPage() {
                                         </td>
                                         <td className="px-5 py-4">
                                             <div className="flex items-center justify-end gap-2">
-                                                <button onClick={() => openEdit(product)} className="text-gray-500 hover:text-yellow-400 transition-colors p-1.5 hover:bg-yellow-400/10 rounded-lg">
+                                                <button onClick={() => openEdit(product)} className="text-gray-500 hover:text-zinc-100 transition-colors p-1.5 hover:bg-zinc-200/10 rounded-lg">
                                                     <Edit2 size={15} />
                                                 </button>
                                                 <button onClick={() => setDeleteId(product.id)} className="text-gray-500 hover:text-red-400 transition-colors p-1.5 hover:bg-red-400/10 rounded-lg">
@@ -356,29 +356,29 @@ export default function AdminProductsPage() {
                     <div className="col-span-2">
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Product Name *</label>
                         <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value, slug: slugify(e.target.value) }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Slug</label>
                         <input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Tag</label>
                         <select value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors">
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors">
                             {TAGS.map(t => <option key={t}>{t}</option>)}
                         </select>
                     </div>
                     <div className="col-span-2">
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Description</label>
                         <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors resize-none" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors resize-none" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Collection</label>
                         <select value={form.collection_slug} onChange={e => handleCollectionChange(e.target.value)}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors">
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors">
                             <option value="">Select collection</option>
                             {collections.map(c => <option key={c.id} value={c.slug}>{c.name}</option>)}
                         </select>
@@ -386,12 +386,12 @@ export default function AdminProductsPage() {
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Stock</label>
                         <input type="number" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Item Count (e.g. 12 Roses)</label>
                         <input type="number" value={form.item_count} onChange={e => setForm(f => ({ ...f, item_count: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div className="col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-4">
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-3">Product Images (Hover Slider)</label>
@@ -399,11 +399,11 @@ export default function AdminProductsPage() {
                         {/* Image Gallery */}
                         <div className="flex flex-wrap gap-4 mb-4">
                             {form.images.map((img, idx) => (
-                                <div key={idx} className={`relative w-24 h-24 rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-yellow-500 transition-all group ${img.startsWith('HIDDEN::') ? 'opacity-50 grayscale' : ''}`}>
+                                <div key={idx} className={`relative w-24 h-24 rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-zinc-400 transition-all group ${img.startsWith('HIDDEN::') ? 'opacity-50 grayscale' : ''}`}>
                                     <img src={img.replace('HIDDEN::', '')} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                                     {/* Main Image Badge */}
                                     {idx === 0 && !img.startsWith('HIDDEN::') && (
-                                        <div className="absolute top-1 left-1 bg-yellow-500 text-gray-900 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">MAIN</div>
+                                        <div className="absolute top-1 left-1 bg-zinc-100 text-zinc-900 text-gray-900 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">MAIN</div>
                                     )}
                                     {/* Hidden Badge */}
                                     {img.startsWith('HIDDEN::') && (
@@ -430,7 +430,7 @@ export default function AdminProductsPage() {
                             ))}
 
                             {/* Upload Button */}
-                            <label className={`w-24 h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${uploading ? 'border-gray-600 bg-gray-800' : 'border-gray-600 hover:border-yellow-500 hover:bg-gray-800/50'}`}>
+                            <label className={`w-24 h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${uploading ? 'border-gray-600 bg-gray-800' : 'border-gray-600 hover:border-zinc-400 hover:bg-gray-800/50'}`}>
                                 {uploading ? (
                                     <Loader2 size={24} className="text-gray-400 animate-spin" />
                                 ) : (
@@ -451,31 +451,31 @@ export default function AdminProductsPage() {
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Relationships (comma-separated)</label>
                         <input value={form.relationships} onChange={e => setForm(f => ({ ...f, relationships: e.target.value }))}
                             placeholder="Wife, Girlfriend, Him"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Celebrations (comma-separated)</label>
                         <input value={form.celebrations} onChange={e => setForm(f => ({ ...f, celebrations: e.target.value }))}
                             placeholder="Anniversary, Birthday"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Sort Order</label>
                         <input type="number" value={form.sort_order} onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Image Scale (1.0 = normal)</label>
                         <input type="number" step="0.05" value={form.image_scale} onChange={e => setForm(f => ({ ...f, image_scale: parseFloat(e.target.value) || 1.0 }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div className="col-span-2 flex gap-6">
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-yellow-500" />
+                            <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-zinc-400" />
                             <span className="text-gray-300 text-sm">Visible on website</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={form.is_featured} onChange={e => setForm(f => ({ ...f, is_featured: e.target.checked }))} className="w-4 h-4 accent-yellow-500" />
+                            <input type="checkbox" checked={form.is_featured} onChange={e => setForm(f => ({ ...f, is_featured: e.target.checked }))} className="w-4 h-4 accent-zinc-400" />
                             <span className="text-gray-300 text-sm">Featured product</span>
                         </label>
                     </div>
@@ -483,7 +483,7 @@ export default function AdminProductsPage() {
 
                 <div className="flex gap-3 mt-6">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-zinc-100 hover:bg-white text-zinc-900 font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save Product'}
                     </button>

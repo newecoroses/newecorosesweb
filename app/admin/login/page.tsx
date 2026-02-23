@@ -43,14 +43,14 @@ export default function AdminLogin() {
     return (
         <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
             {/* Background glow */}
-            <div className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-zinc-100 text-zinc-900/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative w-full max-w-md">
                 {/* Card */}
                 <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8">
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center mb-4 shadow-lg">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-400 text-zinc-900 flex items-center justify-center mb-4 shadow-lg">
                             <Flower size={28} className="text-white" />
                         </div>
                         <h1 className="text-white text-2xl font-bold">Admin Login</h1>
@@ -70,7 +70,7 @@ export default function AdminLogin() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     placeholder="••••••••"
-                                    className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 transition-all placeholder:text-gray-600"
+                                    className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-300/30 transition-all placeholder:text-gray-600"
                                 />
                                 <button
                                     type="button"
@@ -91,7 +91,7 @@ export default function AdminLogin() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-gray-900 font-bold py-3 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                            className="w-full bg-gradient-to-r from-zinc-200 to-zinc-400 text-zinc-900 hover:from-white hover:to-zinc-200 text-gray-900 font-bold py-3 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">

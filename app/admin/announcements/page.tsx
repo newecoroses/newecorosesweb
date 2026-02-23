@@ -61,15 +61,15 @@ export default function AdminAnnouncementsPage() {
         <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-yellow-500/10 rounded-xl flex items-center justify-center">
-                        <Megaphone size={20} className="text-yellow-400" />
+                    <div className="w-10 h-10 bg-zinc-100 text-zinc-900/10 rounded-xl flex items-center justify-center">
+                        <Megaphone size={20} className="text-zinc-100" />
                     </div>
                     <div>
                         <h1 className="text-2xl font-bold text-white">Announcements</h1>
                         <p className="text-gray-400 text-sm mt-0.5">The scrolling ticker bar at the top of your website</p>
                     </div>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Text
                 </button>
             </div>
@@ -117,7 +117,7 @@ export default function AdminAnnouncementsPage() {
                                     <button onClick={() => toggleVisible(item)} className={`w-10 h-5 rounded-full transition-colors relative ${item.is_visible ? 'bg-green-500' : 'bg-gray-700'}`}>
                                         <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${item.is_visible ? 'left-[22px]' : 'left-0.5'}`} />
                                     </button>
-                                    <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-yellow-400 p-1.5 hover:bg-yellow-400/10 rounded-lg transition-colors"><Edit2 size={14} /></button>
+                                    <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-zinc-100 p-1.5 hover:bg-zinc-200/10 rounded-lg transition-colors"><Edit2 size={14} /></button>
                                     <button onClick={() => setDeleteId(item.id)} className="text-gray-500 hover:text-red-400 p-1.5 hover:bg-red-400/10 rounded-lg transition-colors"><Trash2 size={14} /></button>
                                 </div>
                             </div>
@@ -137,18 +137,18 @@ export default function AdminAnnouncementsPage() {
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Announcement Text *</label>
                         <input value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
                             placeholder="SAME DAY DELIVERY WITHIN 10KM"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                         <p className="text-gray-600 text-xs mt-1">Will be shown in ALL CAPS automatically</p>
                     </div>
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Sort Order</label>
                             <input type="number" value={form.sort_order} onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                         </div>
                         <div className="flex items-end pb-2.5">
                             <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-yellow-500" />
+                                <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-zinc-400" />
                                 <span className="text-gray-300 text-sm">Visible</span>
                             </label>
                         </div>
@@ -156,7 +156,7 @@ export default function AdminAnnouncementsPage() {
                 </div>
                 <div className="flex gap-3 mt-5">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm hover:bg-gray-700">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-zinc-100 hover:bg-white text-zinc-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save'}
                     </button>

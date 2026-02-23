@@ -63,10 +63,10 @@ export default function AdminBannedWordsPage() {
                         onChange={e => setNewWord(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handleAdd()}
                         placeholder="Type a word to ban..."
-                        className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600"
+                        className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600"
                     />
                     <button onClick={handleAdd} disabled={adding}
-                        className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                        className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                         {adding ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Plus size={16} />}
                         Add
                     </button>
@@ -112,10 +112,10 @@ export default function AdminBannedWordsPage() {
                 )}
             </div>
 
-            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 mt-6">
+            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-4 mt-6">
                 <div className="flex gap-2">
-                    <AlertCircle size={16} className="text-yellow-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-yellow-300/80 text-xs">
+                    <AlertCircle size={16} className="text-zinc-100 flex-shrink-0 mt-0.5" />
+                    <p className="text-zinc-300/80 text-xs">
                         Banned words are checked against product names, descriptions, and search queries. Inactive words are stored but not enforced.
                     </p>
                 </div>

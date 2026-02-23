@@ -114,10 +114,10 @@ export default function AdminWhatsAppPage() {
                 )}
             </div>
 
-            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 mt-4">
+            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-4 mt-4">
                 <div className="flex gap-2">
-                    <AlertCircle size={16} className="text-yellow-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-yellow-300/80 text-xs">
+                    <AlertCircle size={16} className="text-zinc-100 flex-shrink-0 mt-0.5" />
+                    <p className="text-zinc-300/80 text-xs">
                         After saving, your frontend must read WhatsApp settings from Supabase. Update the WhatsApp float component and nav to use the number from this table.
                     </p>
                 </div>

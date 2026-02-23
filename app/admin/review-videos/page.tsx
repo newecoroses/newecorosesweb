@@ -69,16 +69,16 @@ export default function AdminReviewVideosPage() {
                         <p className="text-gray-400 text-sm mt-0.5">{items.length} videos in the scrolling section</p>
                     </div>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Video
                 </button>
             </div>
 
             {success && <div className="bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-xl px-4 py-3 mb-4">{success}</div>}
 
-            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 mb-6">
-                <p className="text-yellow-300/80 text-xs">
-                    <strong>Video URL formats:</strong> Use local paths like <code className="bg-yellow-500/10 px-1 rounded">/review%20videos/review1.mp4</code> for videos in the <code className="bg-yellow-500/10 px-1 rounded">public/review videos/</code> folder, or a full HTTPS URL for external videos.
+            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-4 mb-6">
+                <p className="text-zinc-300/80 text-xs">
+                    <strong>Video URL formats:</strong> Use local paths like <code className="bg-zinc-100 text-zinc-900/10 px-1 rounded">/review%20videos/review1.mp4</code> for videos in the <code className="bg-zinc-100 text-zinc-900/10 px-1 rounded">public/review videos/</code> folder, or a full HTTPS URL for external videos.
                 </p>
             </div>
 
@@ -119,7 +119,7 @@ export default function AdminReviewVideosPage() {
                                     <button onClick={() => toggleVisible(item)} className={`w-10 h-5 rounded-full transition-colors relative ${item.is_visible ? 'bg-green-500' : 'bg-gray-700'}`}>
                                         <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${item.is_visible ? 'left-[22px]' : 'left-0.5'}`} />
                                     </button>
-                                    <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-yellow-400 p-1.5 hover:bg-yellow-400/10 rounded-lg transition-colors"><Edit2 size={14} /></button>
+                                    <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-zinc-100 p-1.5 hover:bg-zinc-200/10 rounded-lg transition-colors"><Edit2 size={14} /></button>
                                     <button onClick={() => setDeleteId(item.id)} className="text-gray-500 hover:text-red-400 p-1.5 hover:bg-red-400/10 rounded-lg transition-colors"><Trash2 size={14} /></button>
                                 </div>
                             </div>
@@ -139,23 +139,23 @@ export default function AdminReviewVideosPage() {
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Video URL or Path *</label>
                         <input value={form.video_url} onChange={e => setForm(f => ({ ...f, video_url: e.target.value }))}
                             placeholder="/review%20videos/review1.mp4"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors font-mono placeholder:text-gray-600 placeholder:font-sans" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors font-mono placeholder:text-gray-600 placeholder:font-sans" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Title (optional)</label>
                         <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                             placeholder="Customer Review 1"
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                     </div>
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Sort Order</label>
                             <input type="number" value={form.sort_order} onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                         </div>
                         <div className="flex items-end pb-2.5">
                             <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-yellow-500" />
+                                <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-zinc-400" />
                                 <span className="text-gray-300 text-sm">Visible</span>
                             </label>
                         </div>
@@ -163,7 +163,7 @@ export default function AdminReviewVideosPage() {
                 </div>
                 <div className="flex gap-3 mt-5">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm hover:bg-gray-700">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-zinc-100 hover:bg-white text-zinc-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save'}
                     </button>

@@ -79,7 +79,7 @@ export default function AdminDashboard() {
         { label: 'Collections', value: stats?.collections, icon: FolderOpen, color: 'from-purple-500 to-purple-600', href: '/admin/collections' },
         { label: 'Celebrations', value: stats?.celebrations, icon: Calendar, color: 'from-orange-500 to-orange-600', href: '/admin/celebrations' },
         { label: 'Relationships', value: stats?.relationships, icon: Users, color: 'from-green-500 to-green-600', href: '/admin/relationships' },
-        { label: 'Testimonials', value: stats?.testimonials, icon: Star, color: 'from-yellow-500 to-yellow-600', href: '/admin/testimonials' },
+        { label: 'Testimonials', value: stats?.testimonials, icon: Star, color: 'from-zinc-200 to-zinc-400 text-zinc-900', href: '/admin/testimonials' },
         { label: 'Visible Products', value: stats?.visibleProducts, icon: Eye, color: 'from-emerald-500 to-emerald-600', href: '/admin/products' },
         { label: 'Hidden Products', value: stats?.hiddenProducts, icon: EyeOff, color: 'from-gray-500 to-gray-600', href: '/admin/products' },
         { label: 'Best Sellers', value: stats?.bestSellers, icon: TrendingUp, color: 'from-rose-500 to-rose-600', href: '/admin/products' },
@@ -129,11 +129,11 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {QUICK_LINKS.map(({ href, label, desc, icon: Icon }) => (
                         <Link key={href} href={href} className="group">
-                            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-yellow-500/30 hover:bg-yellow-500/5 transition-all">
+                            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-zinc-400/30 hover:bg-zinc-100 text-zinc-900/5 transition-all">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <Icon size={18} className="text-yellow-400" />
+                                    <Icon size={18} className="text-zinc-100" />
                                     <p className="text-white font-medium text-sm">{label}</p>
-                                    <ChevronRight size={14} className="ml-auto text-gray-600 group-hover:text-yellow-400 transition-colors" />
+                                    <ChevronRight size={14} className="ml-auto text-gray-600 group-hover:text-zinc-100 transition-colors" />
                                 </div>
                                 <p className="text-gray-500 text-xs pl-7">{desc}</p>
                             </div>
@@ -143,11 +143,11 @@ export default function AdminDashboard() {
             </div>
 
             {/* Info Box */}
-            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-5">
+            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-5">
                 <div className="flex gap-3">
-                    <AlertCircle size={18} className="text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle size={18} className="text-zinc-100 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p className="text-yellow-300 font-medium text-sm">How the admin panel works</p>
+                        <p className="text-zinc-300 font-medium text-sm">How the admin panel works</p>
                         <p className="text-gray-400 text-xs mt-1 leading-relaxed">
                             All changes made here instantly update your live website. You can show/hide products, collections, testimonials, and more.
                             Product data from Supabase overrides the static data in your code. Make sure to run the SQL schema first!

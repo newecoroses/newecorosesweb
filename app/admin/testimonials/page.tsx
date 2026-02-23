@@ -60,7 +60,7 @@ export default function AdminTestimonialsPage() {
     const Stars = ({ rating }: { rating: number }) => (
         <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={12} className={i < rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'} />
+                <Star key={i} size={12} className={i < rating ? 'text-zinc-100 fill-zinc-300' : 'text-gray-600'} />
             ))}
         </div>
     );
@@ -72,7 +72,7 @@ export default function AdminTestimonialsPage() {
                     <h1 className="text-2xl font-bold text-white">Testimonials</h1>
                     <p className="text-gray-400 text-sm mt-0.5">{items.length} reviews</p>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Review
                 </button>
             </div>
@@ -109,7 +109,7 @@ export default function AdminTestimonialsPage() {
                                 </td>
                                 <td className="px-5 py-4">
                                     <div className="flex gap-2">
-                                        <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-yellow-400 p-1.5 hover:bg-yellow-400/10 rounded-lg transition-colors"><Edit2 size={15} /></button>
+                                        <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-zinc-100 p-1.5 hover:bg-zinc-200/10 rounded-lg transition-colors"><Edit2 size={15} /></button>
                                         <button onClick={() => setDeleteId(item.id)} className="text-gray-500 hover:text-red-400 p-1.5 hover:bg-red-400/10 rounded-lg transition-colors"><Trash2 size={15} /></button>
                                     </div>
                                 </td>
@@ -129,33 +129,33 @@ export default function AdminTestimonialsPage() {
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Customer Name *</label>
                         <input value={form.customer_name} onChange={e => setForm(f => ({ ...f, customer_name: e.target.value }))}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                     </div>
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Review Text *</label>
                         <textarea value={form.review_text} onChange={e => setForm(f => ({ ...f, review_text: e.target.value }))} rows={3}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors resize-none" />
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors resize-none" />
                     </div>
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Rating (1-5)</label>
                             <input type="number" min={1} max={5} step={0.5} value={form.rating} onChange={e => setForm(f => ({ ...f, rating: parseFloat(e.target.value) }))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                         </div>
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Sort Order</label>
                             <input type="number" value={form.sort_order} onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                         </div>
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-yellow-500" />
+                        <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-zinc-400" />
                         <span className="text-gray-300 text-sm">Visible on website</span>
                     </label>
                 </div>
                 <div className="flex gap-3 mt-5">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-700">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-zinc-100 hover:bg-white text-zinc-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save'}
                     </button>

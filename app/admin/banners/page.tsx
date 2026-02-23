@@ -68,7 +68,7 @@ export default function AdminBannersPage() {
                     <h1 className="text-2xl font-bold text-white">Banners</h1>
                     <p className="text-gray-400 text-sm mt-0.5">Hero, CTA and popup banners — {items.length} total</p>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Banner
                 </button>
             </div>
@@ -95,7 +95,7 @@ export default function AdminBannersPage() {
                                     <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${item.is_visible ? 'left-[22px]' : 'left-0.5'}`} />
                                 </button>
                                 <div className="flex gap-2">
-                                    <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-yellow-400 p-1.5 hover:bg-yellow-400/10 rounded-lg transition-colors"><Edit2 size={14} /></button>
+                                    <button onClick={() => openEdit(item)} className="text-gray-500 hover:text-zinc-100 p-1.5 hover:bg-zinc-200/10 rounded-lg transition-colors"><Edit2 size={14} /></button>
                                     <button onClick={() => setDeleteId(item.id)} className="text-gray-500 hover:text-red-400 p-1.5 hover:bg-red-400/10 rounded-lg transition-colors"><Trash2 size={14} /></button>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ export default function AdminBannersPage() {
                             <input value={(form as Record<string, unknown>)[field] as string ?? ''}
                                 onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
                                 placeholder={ph}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors placeholder:text-gray-600" />
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                         </div>
                     ))}
                     <div>
@@ -139,7 +139,7 @@ export default function AdminBannersPage() {
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Position</label>
                             <select value={form.position} onChange={e => setForm(f => ({ ...f, position: e.target.value }))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors">
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors">
                                 <option value="hero">Hero</option>
                                 <option value="cta">CTA</option>
                                 <option value="popup">Popup</option>
@@ -148,17 +148,17 @@ export default function AdminBannersPage() {
                         <div className="flex-1">
                             <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Sort Order</label>
                             <input type="number" value={form.sort_order} onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors" />
+                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors" />
                         </div>
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-yellow-500" />
+                        <input type="checkbox" checked={form.is_visible} onChange={e => setForm(f => ({ ...f, is_visible: e.target.checked }))} className="w-4 h-4 accent-zinc-400" />
                         <span className="text-gray-300 text-sm">Visible</span>
                     </label>
                 </div>
                 <div className="flex gap-3 mt-5">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm hover:bg-gray-700">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-zinc-100 hover:bg-white text-zinc-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save'}
                     </button>

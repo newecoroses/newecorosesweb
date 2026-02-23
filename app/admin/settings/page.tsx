@@ -68,14 +68,14 @@ export default function AdminSettingsPage() {
                     <input
                         value={values[s.key] ?? ''}
                         onChange={e => setValues(v => ({ ...v, [s.key]: e.target.value }))}
-                        className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors"
+                        className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors"
                     />
                 ) : (
                     <input
                         type="number"
                         value={values[s.key] ?? ''}
                         onChange={e => setValues(v => ({ ...v, [s.key]: e.target.value }))}
-                        className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-yellow-500 transition-colors"
+                        className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors"
                     />
                 )}
             </div>
@@ -94,7 +94,7 @@ export default function AdminSettingsPage() {
                         <RefreshCw size={16} />
                     </button>
                     <button onClick={handleSaveAll} disabled={saving}
-                        className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50">
+                        className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={16} />}
                         {saving ? 'Saving...' : 'Save All'}
                     </button>
@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
                 <div className="space-y-6">
                     {Object.entries(groupedSettings).map(([group, groupSettings]) => (
                         <div key={group} className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-                            <h2 className="text-yellow-400 text-xs uppercase tracking-widest font-bold mb-4">{group}</h2>
+                            <h2 className="text-zinc-100 text-xs uppercase tracking-widest font-bold mb-4">{group}</h2>
                             {groupSettings.map(s => <SettingInput key={s.key} s={s} />)}
                         </div>
                     ))}

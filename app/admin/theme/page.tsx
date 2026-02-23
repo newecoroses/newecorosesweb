@@ -131,7 +131,7 @@ export default function ThemeSettingsPage() {
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                        <Palette className="text-yellow-500" />
+                        <Palette className="text-zinc-300" />
                         Website Theme & Colors
                     </h1>
                     <p className="text-gray-400 text-sm mt-1">Change the look and feel of your website.</p>
@@ -139,7 +139,7 @@ export default function ThemeSettingsPage() {
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-6 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-6 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50"
                 >
                     {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={16} />}
                     {saving ? 'Saving...' : 'Save Theme'}
@@ -167,7 +167,7 @@ export default function ThemeSettingsPage() {
                             key={preset.name}
                             onClick={() => applyPreset(preset)}
                             className={`flex flex-col items-center gap-3 p-4 rounded-xl border transition-all ${colors.primary === preset.primary
-                                ? 'border-yellow-500 bg-yellow-500/5'
+                                ? 'border-zinc-400 bg-zinc-100 text-zinc-900/5'
                                 : 'border-gray-800 bg-gray-950 hover:border-gray-700 hover:bg-gray-800'
                                 }`}
                         >
@@ -202,7 +202,7 @@ export default function ThemeSettingsPage() {
                                 type="text"
                                 value={colors.primary}
                                 onChange={(e) => setColors({ ...colors, primary: e.target.value })}
-                                className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-yellow-500 transition-colors uppercase font-mono"
+                                className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors uppercase font-mono"
                             />
                         </div>
                     </div>
@@ -222,7 +222,7 @@ export default function ThemeSettingsPage() {
                                 type="text"
                                 value={colors.primaryDark}
                                 onChange={(e) => setColors({ ...colors, primaryDark: e.target.value })}
-                                className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-yellow-500 transition-colors uppercase font-mono"
+                                className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors uppercase font-mono"
                             />
                         </div>
                     </div>

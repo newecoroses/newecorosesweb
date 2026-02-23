@@ -49,7 +49,7 @@ export default function SingleImageUpload({ value, onChange, folder, slug, class
     return (
         <div>
             {value ? (
-                <div className={`relative rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-yellow-500 transition-all group ${isHidden ? 'opacity-50 grayscale' : ''} ${className}`}>
+                <div className={`relative rounded-xl overflow-hidden bg-gray-800 border-2 border-transparent hover:border-zinc-400 transition-all group ${isHidden ? 'opacity-50 grayscale' : ''} ${className}`}>
                     <img src={displayUrl} alt="Preview" className="w-full h-full object-cover" />
 
                     {isHidden && (
@@ -74,7 +74,7 @@ export default function SingleImageUpload({ value, onChange, folder, slug, class
                     </button>
                 </div>
             ) : (
-                <label className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${className} ${uploading ? 'border-gray-600 bg-gray-800' : 'border-gray-600 hover:border-yellow-500 hover:bg-gray-800/50'}`}>
+                <label className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${className} ${uploading ? 'border-gray-600 bg-gray-800' : 'border-gray-600 hover:border-zinc-400 hover:bg-gray-800/50'}`}>
                     {uploading ? (
                         <Loader2 size={24} className="text-gray-400 animate-spin" />
                     ) : (
