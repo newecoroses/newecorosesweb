@@ -9,27 +9,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Multiple components fetch the same data (e.g., whatsapp_settings called 4x per page load)
 // This caches results for 60 seconds so each query only runs once
 const queryCache = new Map<string, { data: unknown; timestamp: number }>();
-const CACHE_TTL = 60_000; // 60 seconds
+const CACHE_TTL = 0; // Disabled cache to allow instant updates from Admin panel
 
 async function cachedQuery<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
-    const cached = queryCache.get(key);
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-        return cached.data as T;
-    }
-    // If another call is already in flight for the same key, reuse its promise
-    const existing = inflightQueries.get(key);
-    if (existing) return existing as Promise<T>;
-
-    const promise = fetcher().then(result => {
-        queryCache.set(key, { data: result, timestamp: Date.now() });
-        inflightQueries.delete(key);
-        return result;
-    }).catch(err => {
-        inflightQueries.delete(key);
-        throw err;
-    });
-    inflightQueries.set(key, promise);
-    return promise;
+    // Cache permanently disabled for real-time admin sync
+    return fetcher();
 }
 const inflightQueries = new Map<string, Promise<unknown>>();
 
@@ -99,7 +83,7 @@ export interface DBReviewVideo {
 }
 
 const resolveImage = (url: string | null | undefined): string => {
-    if (!url || url.startsWith('HIDDEN::')) return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    if (!url || url.startsWith('HIDDEN::')) return '';
     return url;
 };
 

@@ -43,8 +43,8 @@ export default function SingleImageUpload({ value, onChange, folder, slug, class
         }
     };
 
-    const isHidden = value.startsWith('HIDDEN::');
-    const displayUrl = value.replace('HIDDEN::', '');
+    const isHidden = (value || '').startsWith('HIDDEN::');
+    const displayUrl = (value || '').replace('HIDDEN::', '');
 
     return (
         <div>
