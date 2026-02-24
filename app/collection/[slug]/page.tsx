@@ -62,7 +62,7 @@ export default function CollectionPage({ params }: { params: Promise<{ slug: str
                 />
 
                 {loading ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-8">
                         {Array.from({ length: 8 }).map((_, i) => <div key={i} className="aspect-square bg-gray-100 rounded-lg animate-pulse" />)}
                     </div>
                 ) : products.length === 0 ? (
@@ -71,7 +71,7 @@ export default function CollectionPage({ params }: { params: Promise<{ slug: str
                         <Link href="/shop" className="text-primary text-sm font-medium hover:underline">Browse All Products</Link>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-8">
                         {products.map((product, idx) => (
                             <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
                         ))}

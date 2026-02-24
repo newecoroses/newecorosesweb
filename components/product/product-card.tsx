@@ -83,7 +83,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             className="group card-lift flex flex-col h-full"
         >
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary img-shimmer mb-4">
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary img-shimmer mb-2 sm:mb-4">
                 {/* Tag badge */}
                 {tagBadge && product.tag && (
                     <span className={`absolute top-2 left-2 z-10 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${tagBadge}`}>
@@ -138,9 +138,9 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             </div>
 
             {/* Product Info */}
-            <div className="flex flex-col flex-grow px-1">
+            <div className="flex flex-col flex-grow px-0.5 sm:px-1">
                 <Link href={`/product/${product.slug}`} className="mb-2">
-                    <h3 className="text-[1rem] font-serif text-foreground group-hover:text-primary transition-colors duration-300 truncate tracking-wide">
+                    <h3 className="text-xs sm:text-[1rem] font-serif text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-2 sm:truncate tracking-wide leading-tight">
                         {product.name}
                     </h3>
                     {product.item_count && product.item_count > 0 && (
@@ -150,7 +150,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     )}
                 </Link>
 
-                <div className="mb-4">
+                <div className="mb-2 sm:mb-4">
                     {stockLabel.text && (
                         <span className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${stockLabel.color}`}>
                             {stockLabel.text}
@@ -163,7 +163,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         href={whatsappLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-xs uppercase tracking-[0.15em] font-medium hover:opacity-90 transition-colors shadow-sm hover:shadow-md group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300"
+                        className="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-primary text-white py-2 sm:py-3 rounded-lg text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.15em] font-medium hover:opacity-90 transition-colors shadow-sm hover:shadow-md group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <WhatsappIcon size={16} className="opacity-90" />

@@ -124,7 +124,7 @@ function ShopContent() {
             <div className="pt-28 pb-20 min-h-screen bg-background">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <SectionHeader label="Browse" title="Our Collection" subtitle="Find the perfect gift — thoughtfully curated for every occasion." />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mt-10">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-8 mt-10">
                         {Array.from({ length: 9 }).map((_, i) => (
                             <div key={i} className="aspect-square bg-gray-100 rounded-2xl animate-pulse" />
                         ))}
@@ -193,7 +193,7 @@ function ShopContent() {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-8">
                             <AnimatePresence mode="wait">
                                 {filteredProducts.map((product, idx) => (
                                     <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
