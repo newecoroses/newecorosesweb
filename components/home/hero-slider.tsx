@@ -29,7 +29,7 @@ export default function HeroSlider() {
 
     return (
         <section className="w-full px-3 md:px-8 pt-3 md:pt-4">
-            <div className="relative w-full aspect-[16/7] md:aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
+            <div className="relative w-full aspect-[16/9] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={BANNERS[current].id}
@@ -58,8 +58,8 @@ export default function HeroSlider() {
                             key={idx}
                             onClick={() => setCurrent(idx)}
                             className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${current === idx
-                                    ? 'w-6 md:w-8 bg-white shadow-sm'
-                                    : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
+                                ? 'w-6 md:w-8 bg-white shadow-sm'
+                                : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
                                 }`}
                         />
                     ))}
