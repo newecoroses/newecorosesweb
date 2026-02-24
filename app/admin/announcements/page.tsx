@@ -61,7 +61,7 @@ export default function AdminAnnouncementsPage() {
         <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-zinc-100 text-zinc-900/10 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-zinc-800/80 rounded-xl flex items-center justify-center">
                         <Megaphone size={20} className="text-zinc-100" />
                     </div>
                     <div>

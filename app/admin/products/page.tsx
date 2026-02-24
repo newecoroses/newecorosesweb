@@ -311,7 +311,7 @@ export default function AdminProductsPage() {
                                         </td>
                                         <td className="px-5 py-4 text-gray-400">{product.collection_name ?? '—'}</td>
                                         <td className="px-5 py-4">
-                                            <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${product.tag === 'Best Seller' ? 'bg-zinc-100 text-zinc-900/10 text-zinc-100' :
+                                            <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${product.tag === 'Best Seller' ? 'bg-zinc-800 text-zinc-300 border border-zinc-700' :
                                                 product.tag === 'New Arrival' ? 'bg-blue-500/10 text-blue-400' :
                                                     product.tag === 'Seasonal' ? 'bg-green-500/10 text-green-400' :
                                                         'bg-gray-700 text-gray-400'
@@ -403,7 +403,7 @@ export default function AdminProductsPage() {
                                     <img src={img.replace('HIDDEN::', '')} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                                     {/* Main Image Badge */}
                                     {idx === 0 && !img.startsWith('HIDDEN::') && (
-                                        <div className="absolute top-1 left-1 bg-zinc-100 text-zinc-900 text-gray-900 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">MAIN</div>
+                                        <div className="absolute top-1 left-1 bg-zinc-100 text-gray-900 text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">MAIN</div>
                                     )}
                                     {/* Hidden Badge */}
                                     {img.startsWith('HIDDEN::') && (

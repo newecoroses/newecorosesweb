@@ -76,9 +76,9 @@ export default function AdminReviewVideosPage() {
 
             {success && <div className="bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-xl px-4 py-3 mb-4">{success}</div>}
 
-            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-4 mb-6">
+            <div className="bg-zinc-800/50 border border-zinc-700/50 rounded-2xl p-4 mb-6">
                 <p className="text-zinc-300/80 text-xs">
-                    <strong>Video URL formats:</strong> Use local paths like <code className="bg-zinc-100 text-zinc-900/10 px-1 rounded">/review%20videos/review1.mp4</code> for videos in the <code className="bg-zinc-100 text-zinc-900/10 px-1 rounded">public/review videos/</code> folder, or a full HTTPS URL for external videos.
+                    <strong>Video URL formats:</strong> Use local paths like <code className="bg-zinc-800/80 px-1 rounded">/review%20videos/review1.mp4</code> for videos in the <code className="bg-zinc-800/80 px-1 rounded">public/review videos/</code> folder, or a full HTTPS URL for external videos.
                 </p>
             </div>
 

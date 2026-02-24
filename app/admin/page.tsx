@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {QUICK_LINKS.map(({ href, label, desc, icon: Icon }) => (
                         <Link key={href} href={href} className="group">
-                            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-zinc-400/30 hover:bg-zinc-100 text-zinc-900/5 transition-all">
+                            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-zinc-400/30 hover:bg-zinc-800 transition-all">
                                 <div className="flex items-center gap-3 mb-2">
                                     <Icon size={18} className="text-zinc-100" />
                                     <p className="text-white font-medium text-sm">{label}</p>
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Info Box */}
-            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-5">
+            <div className="bg-zinc-800/50 border border-zinc-700/50 rounded-2xl p-5">
                 <div className="flex gap-3">
                     <AlertCircle size={18} className="text-zinc-100 flex-shrink-0 mt-0.5" />
                     <div>

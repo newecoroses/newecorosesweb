@@ -118,11 +118,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 href={href}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 text-sm font-medium transition-all group ${isActive
-                                    ? 'bg-zinc-100 text-zinc-900/10 text-zinc-100 border border-zinc-100/20'
+                                    ? 'bg-zinc-100 text-zinc-900 font-semibold shadow-sm'
                                     : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                     }`}
                             >
-                                <Icon size={16} className={isActive ? 'text-zinc-100' : 'text-gray-500 group-hover:text-gray-300'} />
+                                <Icon size={16} className={isActive ? 'text-zinc-900 stroke-[2.5px]' : 'text-gray-500 group-hover:text-gray-300'} />
                                 {label}
                                 {isActive && <ChevronRight size={12} className="ml-auto" />}
                             </Link>

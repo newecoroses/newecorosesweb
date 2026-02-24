@@ -114,7 +114,7 @@ export default function AdminWhatsAppPage() {
                 )}
             </div>
 
-            <div className="bg-zinc-100 text-zinc-900/10 border border-zinc-100/20 rounded-2xl p-4 mt-4">
+            <div className="bg-zinc-800/50 border border-zinc-700/50 rounded-2xl p-4 mt-4">
                 <div className="flex gap-2">
                     <AlertCircle size={16} className="text-zinc-100 flex-shrink-0 mt-0.5" />
                     <p className="text-zinc-300/80 text-xs">

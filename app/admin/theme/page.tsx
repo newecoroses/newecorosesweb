@@ -167,7 +167,7 @@ export default function ThemeSettingsPage() {
                             key={preset.name}
                             onClick={() => applyPreset(preset)}
                             className={`flex flex-col items-center gap-3 p-4 rounded-xl border transition-all ${colors.primary === preset.primary
-                                ? 'border-zinc-400 bg-zinc-100 text-zinc-900/5'
+                                ? 'border-zinc-400 bg-zinc-800/50'
                                 : 'border-gray-800 bg-gray-950 hover:border-gray-700 hover:bg-gray-800'
                                 }`}
                         >
