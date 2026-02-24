@@ -219,59 +219,59 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 2. Advanced Dropdown Filters - Stacked on Mobile, Side-by-side on Tablet/PC */}
-            <div className="flex flex-col md:flex-row items-center justify-start gap-4 w-full">
+            {/* 2. Advanced Dropdown Filters - Single row on all screens */}
+            <div className="flex flex-row items-center justify-start gap-2 md:gap-4 w-full">
               {/* Occasion (Celebration) */}
-              <div className="relative group w-full md:w-auto">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+              <div className="relative group flex-1 min-w-0 md:flex-none md:w-auto">
+                <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none hidden md:block">
                   <Sparkles size={16} />
                 </div>
                 <select
                   value={activeOccasion}
                   onChange={(e) => setActiveOccasion(e.target.value)}
-                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-3 pr-7 py-2.5 md:pl-11 md:pr-10 md:py-3.5 rounded-lg md:rounded-xl text-[11px] md:text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
                 >
-                  <option value="All">All Occasions</option>
+                  <option value="All">Occasions</option>
                   {celebrations.map(c => (
                     <option key={c.id} value={c.name}>{c.name}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                <ChevronDown className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
               </div>
 
               {/* Relationship Filter */}
-              <div className="relative group w-full md:w-auto">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+              <div className="relative group flex-1 min-w-0 md:flex-none md:w-auto">
+                <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none hidden md:block">
                   <HeartPulse size={16} />
                 </div>
                 <select
                   value={activeRelation}
                   onChange={(e) => setActiveRelation(e.target.value)}
-                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-3 pr-7 py-2.5 md:pl-11 md:pr-10 md:py-3.5 rounded-lg md:rounded-xl text-[11px] md:text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
                 >
-                  <option value="All">All Relationships</option>
+                  <option value="All">Relations</option>
                   {relationships.map(r => (
                     <option key={r.id} value={r.name}>{r.name}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                <ChevronDown className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
               </div>
 
               {/* Sort By */}
-              <div className="relative group w-full md:w-auto">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+              <div className="relative group flex-1 min-w-0 md:flex-none md:w-auto">
+                <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none hidden md:block">
                   <Filter size={16} />
                 </div>
                 <select
                   value={activeSort}
                   onChange={(e) => setActiveSort(e.target.value)}
-                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-11 pr-10 py-3.5 rounded-xl text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
+                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-3 pr-7 py-2.5 md:pl-11 md:pr-10 md:py-3.5 rounded-lg md:rounded-xl text-[11px] md:text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
                 >
-                  <option value="Recommended">Sort: Recommended</option>
-                  <option value="Newest">Sort: Newest Arrivals</option>
-                  <option value="Best Seller">Sort: Best Seller</option>
+                  <option value="Recommended">Sort</option>
+                  <option value="Newest">Newest</option>
+                  <option value="Best Seller">Best Seller</option>
                 </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
+                <ChevronDown className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
               </div>
             </div>
           </div>
