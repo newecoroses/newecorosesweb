@@ -16,36 +16,40 @@ const PROMOS = [
         title: 'Warm Gifts for New Homes',
         subtitle: 'Housewarming Collection',
         cta: 'Order Now',
-        image: '/images/banners/hero/housewarming.webp',
-        accent: '#8a7a5a',
-        overlayFrom: 'from-[#3a3226]/70',
+        image: '/images/banners/promo/housewarming.webp',
+        link: '/shop?celebration=housewarming',
+        textColor: '#3a3226',
+        ctaBg: '#5c6e4f',
     },
     {
         id: 2,
         title: 'Luxury Rose Collection',
         subtitle: 'Handpicked Premium Roses',
         cta: 'Order Now',
-        image: '/images/banners/hero/shop-the-trend.webp',
-        accent: '#5c6e4f',
-        overlayFrom: 'from-[#2a3a20]/70',
+        image: '/images/banners/promo/luxury-roses.webp',
+        link: '/shop?search=rose',
+        textColor: '#3a3226',
+        ctaBg: '#8a3a50',
     },
     {
         id: 3,
         title: 'Anniversary Specials',
         subtitle: 'Celebrate Your Love',
         cta: 'Order Now',
-        image: '/images/banners/hero/anniversary.webp',
-        accent: '#9a6e5a',
-        overlayFrom: 'from-[#3a2a20]/70',
+        image: '/images/banners/promo/anniversary.webp',
+        link: '/shop?celebration=anniversary',
+        textColor: '#3a3226',
+        ctaBg: '#9a6e5a',
     },
     {
         id: 4,
         title: 'Wedding Gifting',
         subtitle: 'Make Every Wedding Special',
         cta: 'Order Now',
-        image: '/images/banners/hero/wedding-gifts.webp',
-        accent: '#5a6a8a',
-        overlayFrom: 'from-[#2a3040]/70',
+        image: '/images/banners/promo/wedding.webp',
+        link: '/shop?celebration=wedding',
+        textColor: '#3a3226',
+        ctaBg: '#5a6a8a',
     },
 ];
 
@@ -74,33 +78,37 @@ export default function PromoSlider() {
                 >
                     {PROMOS.map((promo) => (
                         <SwiperSlide key={promo.id}>
-                            <Link href="/shop" className="block">
+                            <Link href={promo.link} className="block">
                                 <div className="relative rounded-2xl md:rounded-3xl overflow-hidden h-[160px] md:h-[220px] shadow-soft hover:shadow-card transition-shadow duration-500 group cursor-pointer">
-                                    {/* Background image */}
+                                    {/* Full background image */}
                                     <Image
                                         src={promo.image}
                                         alt={promo.title}
                                         fill
-                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                        className="object-cover"
                                         sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 40vw"
                                     />
-                                    {/* Gradient overlay */}
-                                    <div className={`absolute inset-0 bg-gradient-to-r ${promo.overlayFrom} via-black/30 to-transparent`} />
 
-                                    {/* Left content */}
-                                    <div className="absolute inset-0 flex flex-col justify-center px-5 md:px-8 py-5 z-10 max-w-[75%]">
-                                        <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium mb-1.5 md:mb-2 text-white/70">
+                                    {/* Right 40% text overlay */}
+                                    <div className="absolute top-0 right-0 w-[45%] h-full flex flex-col justify-center px-3 md:px-5 py-4 z-10 bg-gradient-to-l from-white/90 via-white/75 to-transparent">
+                                        <p
+                                            className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] font-semibold mb-1 md:mb-2 opacity-60"
+                                            style={{ color: promo.textColor }}
+                                        >
                                             {promo.subtitle}
                                         </p>
-                                        <h3 className="font-serif text-base md:text-2xl text-white mb-3 md:mb-4 leading-snug">
+                                        <h3
+                                            className="font-serif text-[13px] md:text-lg leading-tight mb-2 md:mb-4"
+                                            style={{ color: promo.textColor }}
+                                        >
                                             {promo.title}
                                         </h3>
                                         <span
-                                            className="inline-flex items-center gap-1.5 text-white text-[10px] md:text-xs uppercase tracking-[0.15em] font-semibold px-4 md:px-5 py-2 md:py-2.5 rounded-full w-fit shadow-sm transition-all duration-300 group-hover:gap-2.5"
-                                            style={{ backgroundColor: promo.accent }}
+                                            className="inline-flex items-center gap-1 text-white text-[8px] md:text-[10px] uppercase tracking-[0.12em] font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-full w-fit shadow-sm group-hover:gap-2 transition-all duration-300"
+                                            style={{ backgroundColor: promo.ctaBg }}
                                         >
                                             {promo.cta}
-                                            <ArrowRight size={12} />
+                                            <ArrowRight size={10} />
                                         </span>
                                     </div>
                                 </div>
