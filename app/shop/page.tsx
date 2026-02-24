@@ -50,6 +50,7 @@ function ShopContent() {
         const relation = searchParams.get('relation');
         const celebration = searchParams.get('celebration');
         const tag = searchParams.get('tag');
+        const search = searchParams.get('search');
 
         if (cat) {
             const found = collections.find((c) => c.slug === cat || c.name.toLowerCase() === cat.toLowerCase());
@@ -61,6 +62,7 @@ function ShopContent() {
         }
         if (relation) setSearchQuery(relation);
         if (celebration) setSearchQuery(celebration);
+        if (search) setSearchQuery(search);
     }, [searchParams, collections]);
 
     const filteredProducts = products.filter((product) => {

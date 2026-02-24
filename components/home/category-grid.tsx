@@ -5,24 +5,24 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const ROW_1 = [
-    { name: 'Birthday', slug: 'birthday', image: '/images/categories/birthday.webp' },
-    { name: 'Anniversary', slug: 'anniversary', image: '/images/categories/anniversary.webp' },
-    { name: 'Personalised', slug: 'personalised', image: '/images/categories/personalised.webp' },
-    { name: 'Ramadan', slug: 'ramadan', image: '/images/categories/ramadan.webp' },
-    { name: 'Chocolates', slug: 'chocolates', image: '/images/categories/chocolates.webp' },
-    { name: 'Sunflowers', slug: 'sunflowers', image: '/images/categories/sunflowers.webp' },
-    { name: 'Balloon Decor', slug: 'balloon-decor', image: '/images/categories/balloon-decor.webp' },
-    { name: 'Fashion Gift', slug: 'fashion-gift', image: '/images/categories/fashion-gift.webp' },
+    { name: 'Birthday', slug: 'birthday', image: '/images/categories/birthday.webp', link: '/shop?celebration=birthday' },
+    { name: 'Anniversary', slug: 'anniversary', image: '/images/categories/anniversary.webp', link: '/shop?celebration=anniversary' },
+    { name: 'Personalised', slug: 'personalised', image: '/images/categories/personalised.webp', link: '/shop?cat=personalized' },
+    { name: 'Ramadan', slug: 'ramadan', image: '/images/categories/ramadan.webp', link: '/shop?celebration=ramadan' },
+    { name: 'Chocolates', slug: 'chocolates', image: '/images/categories/chocolates.webp', link: '/shop?cat=chocolate-bouquet' },
+    { name: 'Sunflowers', slug: 'sunflowers', image: '/images/categories/sunflowers.webp', link: '/shop?search=sunflower' },
+    { name: 'Balloon Decor', slug: 'balloon-decor', image: '/images/categories/balloon-decor.webp', link: '/shop?cat=balloon-bouquet' },
+    { name: 'Fashion Gift', slug: 'fashion-gift', image: '/images/categories/fashion-gift.webp', link: '/shop?search=fashion' },
 ];
 
 const ROW_2 = [
-    { name: 'Flowers', slug: 'flowers', image: '/images/categories/flowers.webp' },
-    { name: 'Luxe', slug: 'luxe', image: '/images/categories/luxe.webp' },
-    { name: 'Cake', slug: 'cake', image: '/images/categories/cake.webp' },
-    { name: 'Wedding Gifts', slug: 'wedding-gifts', image: '/images/categories/wedding-gifts.webp' },
-    { name: 'Plants', slug: 'plants', image: '/images/categories/plants.webp' },
-    { name: 'Gift Hampers', slug: 'gift-hampers', image: '/images/categories/gift-hampers.webp' },
-    { name: 'Gift Sets', slug: 'gift-sets', image: '/images/categories/gift-sets.webp' },
+    { name: 'Flowers', slug: 'flowers', image: '/images/categories/flowers.webp', link: '/shop?cat=fresh-flower' },
+    { name: 'Luxe', slug: 'luxe', image: '/images/categories/luxe.webp', link: '/shop?tag=best+seller' },
+    { name: 'Cake', slug: 'cake', image: '/images/categories/cake.webp', link: '/shop?cat=cake' },
+    { name: 'Wedding Gifts', slug: 'wedding-gifts', image: '/images/categories/wedding-gifts.webp', link: '/shop?celebration=wedding' },
+    { name: 'Plants', slug: 'plants', image: '/images/categories/plants.webp', link: '/shop?cat=plants' },
+    { name: 'Gift Hampers', slug: 'gift-hampers', image: '/images/categories/gift-hampers.webp', link: '/shop?cat=hamper' },
+    { name: 'Gift Sets', slug: 'gift-sets', image: '/images/categories/gift-sets.webp', link: '/shop?search=gift+set' },
 ];
 
 function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number }) {
@@ -38,7 +38,7 @@ function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number
                         viewport={{ once: true }}
                     >
                         <Link
-                            href={`/shop?cat=${item.slug}`}
+                            href={item.link}
                             className="group snap-start flex flex-col items-center gap-2 w-[76px] md:w-full"
                         >
                             <div className="w-[68px] h-[68px] md:w-full md:aspect-square rounded-2xl bg-[#faf7f2] border border-[#e8dcc8]/60 flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-card group-hover:border-[#5c6e4f]/30 relative overflow-hidden">
