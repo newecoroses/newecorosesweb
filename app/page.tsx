@@ -165,7 +165,7 @@ export default function Home() {
     return (
       <div className="pt-28 pb-20 min-h-[80vh] bg-background">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8 mt-8">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="aspect-[3/4] bg-gray-100 rounded-2xl animate-pulse" />
             ))}
@@ -277,7 +277,7 @@ export default function Home() {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
             <AnimatePresence mode="wait">
               {filteredProducts.map((product, idx) => (
                 <ProductCard
@@ -331,7 +331,7 @@ export default function Home() {
       <section id="categories" className="py-20 lg:py-28 bg-background">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <SectionHeader label="Curated For You" title="Our Collections" subtitle="Discover thoughtfully arranged categories, each designed to make every occasion unforgettable." />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[220px] md:auto-rows-[240px]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 auto-rows-[220px] md:auto-rows-[240px]">
             {displayCollections.map((cat, idx) => (
               <motion.div
                 key={cat.id || cat.slug}
@@ -391,7 +391,7 @@ export default function Home() {
         <section className="py-20 bg-background border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <SectionHeader label="Just In" title="New Arrivals" subtitle="Discover our latest collection of premium gifts and floral arrangements." />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
               {newArrivals.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}
@@ -405,7 +405,7 @@ export default function Home() {
         <section className="py-20 lg:py-28 bg-white">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <SectionHeader label="Most Loved" title="Best Sellers" subtitle="Our most adored premium gifts — curated for those who appreciate the finest." />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
               {bestSellers.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}

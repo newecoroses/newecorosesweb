@@ -263,7 +263,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 {relatedProducts.length > 0 && (
                     <section className="mt-24 lg:mt-32">
                         <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-10 text-center">You May Also Like</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
                             {relatedProducts.map((p, idx) => (
                                 <ProductCard key={p.id} product={p as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number }} index={idx} />
                             ))}
