@@ -1,27 +1,18 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BANNERS = [
-    {
-        id: 1,
-        label: 'Banner 1 Placeholder',
-        subtitle: 'Premium Floral Arrangements',
-        bg: 'from-[#f5efe6] to-[#e8dcc8]',
-    },
-    {
-        id: 2,
-        label: 'Banner 2 Placeholder',
-        subtitle: 'Same Day Delivery Available',
-        bg: 'from-[#e8ede4] to-[#d4dece]',
-    },
-    {
-        id: 3,
-        label: 'Banner 3 Placeholder',
-        subtitle: 'Handcrafted With Love',
-        bg: 'from-[#f0e6e0] to-[#e2d4cc]',
-    },
+    { id: 1, src: '/images/banners/hero/birthday.webp', alt: 'Birthday Gifts' },
+    { id: 2, src: '/images/banners/hero/anniversary.webp', alt: 'Anniversary Specials' },
+    { id: 3, src: '/images/banners/hero/women.webp', alt: "Women's Collection" },
+    { id: 4, src: '/images/banners/hero/wedding-gifts.webp', alt: 'Wedding Gifts' },
+    { id: 5, src: '/images/banners/hero/housewarming.webp', alt: 'Housewarming Gifts' },
+    { id: 6, src: '/images/banners/hero/ramadan.webp', alt: 'Ramadan Collection' },
+    { id: 7, src: '/images/banners/hero/plants.webp', alt: 'Plants Collection' },
+    { id: 8, src: '/images/banners/hero/shop-the-trend.webp', alt: 'Shop The Trend' },
 ];
 
 export default function HeroSlider() {
@@ -37,8 +28,8 @@ export default function HeroSlider() {
     }, [next]);
 
     return (
-        <section className="w-full px-4 md:px-8 pt-4">
-            <div className="relative w-full aspect-[21/9] md:aspect-[3/1] rounded-3xl overflow-hidden shadow-elevated">
+        <section className="w-full px-3 md:px-8 pt-3 md:pt-4">
+            <div className="relative w-full aspect-[16/7] md:aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={BANNERS[current].id}
@@ -46,46 +37,29 @@ export default function HeroSlider() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
                         transition={{ duration: 0.8, ease: 'easeInOut' }}
-                        className={`absolute inset-0 bg-gradient-to-br ${BANNERS[current].bg} flex items-center justify-center`}
+                        className="absolute inset-0"
                     >
-                        <div className="text-center px-6">
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2, duration: 0.5 }}
-                                className="text-[#8a7a5a] text-xs uppercase tracking-[0.3em] font-medium mb-3"
-                            >
-                                {BANNERS[current].subtitle}
-                            </motion.p>
-                            <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.35, duration: 0.5 }}
-                                className="font-serif text-2xl md:text-5xl text-[#3a3226] mb-2"
-                            >
-                                {BANNERS[current].label}
-                            </motion.h2>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 0.4 }}
-                                transition={{ delay: 0.5, duration: 0.5 }}
-                                className="text-sm text-[#8a7a5a] mt-2"
-                            >
-                                Tap to replace with your banner image
-                            </motion.div>
-                        </div>
+                        <Image
+                            src={BANNERS[current].src}
+                            alt={BANNERS[current].alt}
+                            fill
+                            className="object-cover"
+                            priority={current === 0}
+                            sizes="100vw"
+                            quality={85}
+                        />
                     </motion.div>
                 </AnimatePresence>
 
                 {/* Dot indicators */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2 z-10">
                     {BANNERS.map((_, idx) => (
                         <button
                             key={idx}
                             onClick={() => setCurrent(idx)}
-                            className={`h-2 rounded-full transition-all duration-500 ${current === idx
-                                    ? 'w-8 bg-[#5c6e4f]'
-                                    : 'w-2 bg-[#5c6e4f]/30 hover:bg-[#5c6e4f]/50'
+                            className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${current === idx
+                                    ? 'w-6 md:w-8 bg-white shadow-sm'
+                                    : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
                                 }`}
                         />
                     ))}

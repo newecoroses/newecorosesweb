@@ -3,6 +3,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, FreeMode } from 'swiper/modules';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
@@ -15,38 +16,42 @@ const PROMOS = [
         title: 'Warm Gifts for New Homes',
         subtitle: 'Housewarming Collection',
         cta: 'Order Now',
-        bg: 'from-[#f5efe6] via-[#ede4d6] to-[#e2d6c4]',
+        image: '/images/banners/hero/housewarming.webp',
         accent: '#8a7a5a',
+        overlayFrom: 'from-[#3a3226]/70',
     },
     {
         id: 2,
         title: 'Luxury Rose Collection',
         subtitle: 'Handpicked Premium Roses',
         cta: 'Order Now',
-        bg: 'from-[#e8ede4] via-[#dde6d6] to-[#d0dac6]',
+        image: '/images/banners/hero/shop-the-trend.webp',
         accent: '#5c6e4f',
+        overlayFrom: 'from-[#2a3a20]/70',
     },
     {
         id: 3,
         title: 'Anniversary Specials',
         subtitle: 'Celebrate Your Love',
         cta: 'Order Now',
-        bg: 'from-[#f0e6e0] via-[#e8dcd4] to-[#ddd0c6]',
+        image: '/images/banners/hero/anniversary.webp',
         accent: '#9a6e5a',
+        overlayFrom: 'from-[#3a2a20]/70',
     },
     {
         id: 4,
-        title: 'Birthday Surprise Boxes',
-        subtitle: 'Make Every Birthday Special',
+        title: 'Wedding Gifting',
+        subtitle: 'Make Every Wedding Special',
         cta: 'Order Now',
-        bg: 'from-[#e6eaf0] via-[#dce0e8] to-[#d0d6e0]',
+        image: '/images/banners/hero/wedding-gifts.webp',
         accent: '#5a6a8a',
+        overlayFrom: 'from-[#2a3040]/70',
     },
 ];
 
 export default function PromoSlider() {
     return (
-        <section className="py-6 md:py-10">
+        <section className="py-4 md:py-10">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -55,56 +60,51 @@ export default function PromoSlider() {
             >
                 <Swiper
                     modules={[Autoplay, FreeMode]}
-                    spaceBetween={16}
+                    spaceBetween={12}
                     slidesPerView={1.15}
                     centeredSlides={false}
                     autoplay={{ delay: 5000, disableOnInteraction: false }}
                     freeMode={{ enabled: true, sticky: true }}
                     breakpoints={{
-                        640: { slidesPerView: 1.5, spaceBetween: 20 },
-                        768: { slidesPerView: 2.2, spaceBetween: 24 },
-                        1024: { slidesPerView: 2.5, spaceBetween: 28 },
+                        640: { slidesPerView: 1.5, spaceBetween: 16 },
+                        768: { slidesPerView: 2.2, spaceBetween: 20 },
+                        1024: { slidesPerView: 2.5, spaceBetween: 24 },
                     }}
-                    className="!px-4 md:!px-8"
+                    className="!px-3 md:!px-8"
                 >
                     {PROMOS.map((promo) => (
                         <SwiperSlide key={promo.id}>
-                            <div
-                                className={`relative bg-gradient-to-br ${promo.bg} rounded-3xl overflow-hidden h-[180px] md:h-[220px] flex items-center shadow-soft hover:shadow-card transition-shadow duration-500 group cursor-pointer`}
-                            >
-                                {/* Left content */}
-                                <div className="relative z-10 px-6 md:px-8 py-6 flex flex-col justify-center max-w-[65%]">
-                                    <p
-                                        className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium mb-2 opacity-70"
-                                        style={{ color: promo.accent }}
-                                    >
-                                        {promo.subtitle}
-                                    </p>
-                                    <h3
-                                        className="font-serif text-lg md:text-2xl mb-4 leading-snug"
-                                        style={{ color: promo.accent }}
-                                    >
-                                        {promo.title}
-                                    </h3>
-                                    <Link
-                                        href="/shop"
-                                        className="inline-flex items-center gap-2 text-white text-xs uppercase tracking-[0.15em] font-semibold px-5 py-2.5 rounded-full transition-all duration-300 hover:opacity-90 hover:gap-3 w-fit shadow-sm"
-                                        style={{ backgroundColor: promo.accent }}
-                                    >
-                                        {promo.cta}
-                                        <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                                    </Link>
-                                </div>
+                            <Link href="/shop" className="block">
+                                <div className="relative rounded-2xl md:rounded-3xl overflow-hidden h-[160px] md:h-[220px] shadow-soft hover:shadow-card transition-shadow duration-500 group cursor-pointer">
+                                    {/* Background image */}
+                                    <Image
+                                        src={promo.image}
+                                        alt={promo.title}
+                                        fill
+                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 40vw"
+                                    />
+                                    {/* Gradient overlay */}
+                                    <div className={`absolute inset-0 bg-gradient-to-r ${promo.overlayFrom} via-black/30 to-transparent`} />
 
-                                {/* Right placeholder area */}
-                                <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-2xl border-2 border-dashed flex items-center justify-center opacity-30"
-                                    style={{ borderColor: promo.accent }}
-                                >
-                                    <span className="text-[10px] text-center px-2" style={{ color: promo.accent }}>
-                                        Image Placeholder
-                                    </span>
+                                    {/* Left content */}
+                                    <div className="absolute inset-0 flex flex-col justify-center px-5 md:px-8 py-5 z-10 max-w-[75%]">
+                                        <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium mb-1.5 md:mb-2 text-white/70">
+                                            {promo.subtitle}
+                                        </p>
+                                        <h3 className="font-serif text-base md:text-2xl text-white mb-3 md:mb-4 leading-snug">
+                                            {promo.title}
+                                        </h3>
+                                        <span
+                                            className="inline-flex items-center gap-1.5 text-white text-[10px] md:text-xs uppercase tracking-[0.15em] font-semibold px-4 md:px-5 py-2 md:py-2.5 rounded-full w-fit shadow-sm transition-all duration-300 group-hover:gap-2.5"
+                                            style={{ backgroundColor: promo.accent }}
+                                        >
+                                            {promo.cta}
+                                            <ArrowRight size={12} />
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </SwiperSlide>
                     ))}
                 </Swiper>
