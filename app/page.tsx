@@ -9,6 +9,7 @@ import { ArrowRight, Star, Quote } from 'lucide-react';
 import HeroSlider from '@/components/home/hero-slider';
 import SearchBar from '@/components/home/search-bar';
 import CategoryGrid from '@/components/home/category-grid';
+import FeaturedPicks from '@/components/home/featured-picks';
 import PromoSlider from '@/components/home/promo-slider';
 import ReviewVideos from '@/components/home/review-videos';
 import ProductCard from '@/components/product/product-card';
@@ -185,6 +186,11 @@ export default function Home() {
       {/* ═══ 3. CATEGORY GRID ═══ */}
       <div className="bg-white">
         <CategoryGrid />
+      </div>
+
+      {/* ═══ 3.5 FEATURED PICKS — Fav Flowers + Birthday Gifts ═══ */}
+      <div className="bg-white">
+        <FeaturedPicks />
       </div>
 
       {/* ═══ 4. PROMO SLIDER BANNERS ═══ */}
