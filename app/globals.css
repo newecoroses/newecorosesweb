@@ -4,15 +4,15 @@
 
 @theme {
   --color-background: #ffffff;
-  --color-foreground: #000000;
-  --color-primary: #000000;
-  --color-primary-light: #333333;
-  --color-primary-dark: #000000;
-  --color-secondary: #f8f8f8;
-  --color-accent: #e5e5e5;
-  --color-blush: #f9f9f9;
-  --color-charcoal: #111111;
-  --color-muted: #666666;
+  --color-foreground: #3a3226;
+  --color-primary: #5c6e4f;
+  --color-primary-light: #6d8060;
+  --color-primary-dark: #4a5a3f;
+  --color-secondary: #faf7f2;
+  --color-accent: #c9a247;
+  --color-blush: #faf7f2;
+  --color-charcoal: #2a2420;
+  --color-muted: #8a7a5a;
 
   --font-sans: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
@@ -31,6 +31,16 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== No-scrollbar utility for horizontal scroll ===== */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 ::selection {

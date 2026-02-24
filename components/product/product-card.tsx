@@ -63,31 +63,31 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
 
     const stockLabel =
         product.stock === 0
-            ? { text: 'Sold Out', color: 'bg-charcoal text-white' }
+            ? { text: 'Sold Out', color: 'bg-red-50 text-red-600 border border-red-100' }
             : product.stock <= 5
-                ? { text: `Only ${product.stock} left`, color: 'bg-red-50 text-red-600' }
+                ? { text: `Only ${product.stock} left`, color: 'bg-amber-50 text-amber-700 border border-amber-100' }
                 : { text: null, color: null };
 
     const tagBadge = product.tag && product.tag !== 'Standard' ? {
-        'Best Seller': 'bg-yellow-100 text-yellow-700',
-        'New Arrival': 'bg-blue-100 text-blue-700',
-        'Seasonal': 'bg-green-100 text-green-700',
+        'Best Seller': 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm',
+        'New Arrival': 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm',
+        'Seasonal': 'bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-sm',
     }[product.tag] : null;
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.08 }}
+            transition={{ duration: 0.5, delay: index * 0.06 }}
             viewport={{ once: true, margin: '-30px' }}
-            className="group card-lift flex flex-col h-full"
+            className="group flex flex-col h-full"
         >
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary img-shimmer mb-2 sm:mb-4">
+            <div className="relative aspect-square overflow-hidden rounded-xl md:rounded-2xl bg-[#faf7f2] mb-2.5 sm:mb-4 shadow-sm group-hover:shadow-card transition-shadow duration-500">
                 {/* Tag badge */}
                 {tagBadge && product.tag && (
-                    <span className={`absolute top-2 left-2 z-10 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${tagBadge}`}>
-                        {product.tag}
+                    <span className={`absolute top-2 left-2 z-10 text-[9px] md:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${tagBadge}`}>
+                        {product.tag === 'Best Seller' ? '🔥 Best Seller' : product.tag}
                     </span>
                 )}
                 <Link
@@ -101,13 +101,11 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     onMouseLeave={() => setCurrentImageIdx(0)}
                     onMouseMove={(e) => {
                         if (allImages.length > 1) {
-                            // Calculate 0 to 1 based on X position of mouse over the image
                             const rect = e.currentTarget.getBoundingClientRect();
-                            const x = e.clientX - rect.left; // x position within the element
+                            const x = e.clientX - rect.left;
                             const percentage = x / rect.width;
-                            // Map percentage into an index of the available images
                             const idx = Math.min(Math.floor(percentage * allImages.length), allImages.length - 1);
-                            setCurrentImageIdx(Math.max(0, idx)); // Ensure it's valid, 0 or greater
+                            setCurrentImageIdx(Math.max(0, idx));
                         }
                     }}
                 >
@@ -117,13 +115,13 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                             src={img}
                             alt={`${product.name} - view ${idx + 1}`}
                             fill
-                            className={`object-cover transition-all duration-700 ease-out absolute inset-0 ${currentImageIdx === idx ? 'opacity-100 scale-105' : 'opacity-0 scale-100'}`}
+                            className={`object-cover transition-all duration-700 ease-out absolute inset-0 group-hover:scale-105 ${currentImageIdx === idx ? 'opacity-100' : 'opacity-0'}`}
                             style={product.image_scale && product.image_scale !== 1 ? { transform: `scale(${product.image_scale})` } : undefined}
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         />
                     ))}
 
-                    {/* Image indicator dots (only show if it has multiple images and is hovered) */}
+                    {/* Image indicator dots */}
                     {allImages.length > 1 && (
                         <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             {allImages.map((_, idx) => (
@@ -139,20 +137,20 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
 
             {/* Product Info */}
             <div className="flex flex-col flex-grow px-0.5 sm:px-1">
-                <Link href={`/product/${product.slug}`} className="mb-2">
-                    <h3 className="text-xs sm:text-[1rem] font-serif text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-2 sm:truncate tracking-wide leading-tight">
+                <Link href={`/product/${product.slug}`} className="mb-1.5 sm:mb-2">
+                    <h3 className="text-xs sm:text-sm font-medium text-[#3a3226] group-hover:text-[#5c6e4f] transition-colors duration-300 line-clamp-2 leading-tight tracking-wide">
                         {product.name}
                     </h3>
                     {product.item_count && product.item_count > 0 && (
-                        <p className="text-muted text-xs font-medium mt-1 uppercase tracking-wider">
+                        <p className="text-[#8a7a5a] text-[10px] font-medium mt-1 uppercase tracking-wider">
                             Count: {product.item_count}
                         </p>
                     )}
                 </Link>
 
-                <div className="mb-2 sm:mb-4">
+                <div className="mb-2 sm:mb-3">
                     {stockLabel.text && (
-                        <span className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${stockLabel.color}`}>
+                        <span className={`inline-block text-[9px] md:text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${stockLabel.color}`}>
                             {stockLabel.text}
                         </span>
                     )}
@@ -163,10 +161,10 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         href={whatsappLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-primary text-white py-2 sm:py-3 rounded-lg text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.15em] font-medium hover:opacity-90 transition-colors shadow-sm hover:shadow-md group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300"
+                        className="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-[#5c6e4f] text-white py-2.5 sm:py-3 rounded-lg md:rounded-xl text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.15em] font-semibold hover:bg-[#4a5a3f] transition-all duration-300 shadow-sm hover:shadow-md group-hover:bg-[#25D366] group-hover:shadow-[#25D366]/20"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <WhatsappIcon size={16} className="opacity-90" />
+                        <WhatsappIcon size={15} className="opacity-90" />
                         Enquire Now
                     </a>
                 </div>

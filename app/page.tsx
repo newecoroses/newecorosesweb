@@ -4,8 +4,12 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ArrowRight, Star, Quote, HeartPulse, Sparkles, Filter } from 'lucide-react';
+import { ArrowRight, Star, Quote } from 'lucide-react';
 
+import HeroSlider from '@/components/home/hero-slider';
+import SearchBar from '@/components/home/search-bar';
+import CategoryGrid from '@/components/home/category-grid';
+import PromoSlider from '@/components/home/promo-slider';
 import ReviewVideos from '@/components/home/review-videos';
 import ProductCard from '@/components/product/product-card';
 import SectionHeader from '@/components/ui/section-header';
@@ -52,18 +56,21 @@ const FALLBACK_FEATURED = [
 const FALLBACK_CATEGORIES = COLLECTIONS.map((c, i) => ({
   id: String(i + 1), name: c.name, slug: c.slug,
   image_url: `/images/collections/${c.slug}.webp`, description: '', is_visible: true, sort_order: i + 1, created_at: '',
-  span: i === 0 ? 'md:col-span-2 md:row-span-2' : i === 5 ? 'md:col-span-2' : i === 6 ? 'md:col-span-2' : i === 7 ? 'md:col-span-4 md:row-span-1' : '',
 }));
 
 const COLLECTION_SPANS = ['md:col-span-2 md:row-span-2', '', '', '', '', 'md:col-span-2', 'md:col-span-2', 'md:col-span-4 md:row-span-1'];
 
+// ── Stagger animation container ──
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06 },
+  },
+};
+
 export default function Home() {
   const [products, setProducts] = useState<DBProduct[]>([]);
-  const [activeSort, setActiveSort] = useState('Recommended');
-  const [activeType, setActiveType] = useState('All');
-  const [activeOccasion, setActiveOccasion] = useState('All');
-  const [activeRelation, setActiveRelation] = useState('All');
-
   const [collections, setCollections] = useState<DBCollection[]>([]);
   const [celebrations, setCelebrations] = useState<DBCelebration[]>(FALLBACK_CELEBRATIONS as DBCelebration[]);
   const [relationships, setRelationships] = useState<DBRelationship[]>(FALLBACK_RELATIONSHIPS as DBRelationship[]);
@@ -107,36 +114,9 @@ export default function Home() {
     });
   }, []);
 
-  const filteredProducts = useMemo(() => {
-    let filtered = [...products];
-
-    if (activeType !== 'All') {
-      if (activeType === 'Birthday') {
-        filtered = filtered.filter(p => p.celebrations?.includes('Birthday'));
-      } else if (activeType === 'Anniversary') {
-        filtered = filtered.filter(p => p.celebrations?.includes('Anniversary'));
-      } else {
-        filtered = filtered.filter(p => p.collection_name === activeType);
-      }
-    }
-
-    if (activeOccasion !== 'All') {
-      filtered = filtered.filter(p => p.celebrations?.includes(activeOccasion));
-    }
-
-    if (activeRelation !== 'All') {
-      filtered = filtered.filter(p => p.relationships?.includes(activeRelation));
-    }
-
-    if (activeSort === 'Newest') {
-      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    } else if (activeSort === 'Best Seller') {
-      filtered.sort((a, b) => (a.tag === 'Best Seller' ? -1 : 1));
-    }
-
-    // Return up to 12 items for the homepage (3 rows of 4)
-    return filtered.slice(0, 12);
-  }, [products, activeType, activeOccasion, activeRelation, activeSort]);
+  const displayProducts = useMemo(() => {
+    return products.slice(0, 12);
+  }, [products]);
 
   // Use collections from Supabase; fallback to static
   const displayCollections = collections.length > 0 ? collections : FALLBACK_CATEGORIES as unknown as DBCollection[];
@@ -163,11 +143,26 @@ export default function Home() {
 
   if (!loaded) {
     return (
-      <div className="pt-28 pb-20 min-h-[80vh] bg-background">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8 mt-8">
+      <div className="pt-24 pb-20 min-h-[80vh] bg-white">
+        {/* Skeleton hero */}
+        <div className="px-4 md:px-8 pt-4">
+          <div className="w-full aspect-[21/9] md:aspect-[3/1] rounded-3xl bg-[#f5f0ea] animate-pulse" />
+        </div>
+        {/* Skeleton search */}
+        <div className="max-w-2xl mx-auto px-4 py-5">
+          <div className="h-14 rounded-xl bg-[#faf7f2] animate-pulse" />
+        </div>
+        {/* Skeleton categories */}
+        <div className="flex gap-3 px-4 py-4 overflow-hidden">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="w-[72px] h-[72px] rounded-2xl bg-[#faf7f2] animate-pulse flex-shrink-0" />
+          ))}
+        </div>
+        {/* Skeleton products grid */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="aspect-[3/4] bg-gray-100 rounded-2xl animate-pulse" />
+              <div key={i} className="aspect-[3/4] bg-[#faf7f2] rounded-2xl animate-pulse" />
             ))}
           </div>
         </div>
@@ -177,109 +172,49 @@ export default function Home() {
 
   return (
     <>
-      {/* ═══ FILTERED PRODUCT GRID (TOP SECTION) ═══ */}
-      <section className="pt-32 pb-24 bg-background border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          {/* Horizontal Filter Bar */}
-          <div className="mb-10 space-y-6">
+      {/* ═══ 1. HERO BANNER CAROUSEL ═══ */}
+      <div className="pt-20 md:pt-24 bg-white">
+        <HeroSlider />
+      </div>
 
-            {/* 1. Gift Types (Categories) - Scrollable on Mobile, Wrap on PC */}
-            <div className="w-full relative">
-              <div className="flex overflow-x-auto lg:overflow-visible lg:flex-wrap no-scrollbar gap-2 w-full pb-2 snap-x justify-start items-center">
-                <button
-                  onClick={() => setActiveType('All')}
-                  className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'All' ? 'bg-foreground text-white shadow-md' : 'bg-white text-muted border border-gray-200 hover:border-foreground hover:text-foreground'}`}
-                >
-                  All Gifts
-                </button>
-                {collections.map(c => (
-                  <button
-                    key={c.id}
-                    onClick={() => setActiveType(c.name)}
-                    className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === c.name ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
-                  >
-                    {c.name}
-                  </button>
-                ))}
+      {/* ═══ 2. SEARCH BAR WITH TYPING ANIMATION ═══ */}
+      <div className="bg-white">
+        <SearchBar />
+      </div>
 
-                {/* Fixed special occasion filters masquerading as categories */}
-                <button
-                  onClick={() => setActiveType('Birthday')}
-                  className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'Birthday' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
-                >
-                  Birthday
-                </button>
+      {/* ═══ 3. CATEGORY GRID ═══ */}
+      <div className="bg-white">
+        <CategoryGrid />
+      </div>
 
-                <button
-                  onClick={() => setActiveType('Anniversary')}
-                  className={`whitespace-nowrap flex-shrink-0 snap-start px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${activeType === 'Anniversary' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-white text-muted border border-gray-200 hover:border-primary hover:text-primary'}`}
-                >
-                  Anniversary
-                </button>
-              </div>
-            </div>
+      {/* ═══ 4. PROMO SLIDER BANNERS ═══ */}
+      <div className="bg-white pb-6">
+        <PromoSlider />
+      </div>
 
-            {/* 2. Advanced Dropdown Filters - Single row on all screens */}
-            <div className="flex flex-row items-center justify-start gap-2 md:gap-4 w-full">
-              {/* Occasion (Celebration) */}
-              <div className="relative group flex-1 min-w-0 md:flex-none md:w-auto">
-                <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none hidden md:block">
-                  <Sparkles size={16} />
-                </div>
-                <select
-                  value={activeOccasion}
-                  onChange={(e) => setActiveOccasion(e.target.value)}
-                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-3 pr-7 py-2.5 md:pl-11 md:pr-10 md:py-3.5 rounded-lg md:rounded-xl text-[11px] md:text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                >
-                  <option value="All">Occasions</option>
-                  {celebrations.map(c => (
-                    <option key={c.id} value={c.name}>{c.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
-              </div>
+      {/* ═══ 5. PRODUCT GRID — ALL PRODUCTS ═══ */}
+      <section className="py-12 md:py-20 bg-white border-t border-[#f0ece4]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mb-8 md:mb-12"
+          >
+            <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Curated For You</span>
+            <h2 className="font-serif text-2xl md:text-4xl text-[#3a3226] leading-tight">Our Best Picks</h2>
+          </motion.div>
 
-              {/* Relationship Filter */}
-              <div className="relative group flex-1 min-w-0 md:flex-none md:w-auto">
-                <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none hidden md:block">
-                  <HeartPulse size={16} />
-                </div>
-                <select
-                  value={activeRelation}
-                  onChange={(e) => setActiveRelation(e.target.value)}
-                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-3 pr-7 py-2.5 md:pl-11 md:pr-10 md:py-3.5 rounded-lg md:rounded-xl text-[11px] md:text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                >
-                  <option value="All">Relations</option>
-                  {relationships.map(r => (
-                    <option key={r.id} value={r.name}>{r.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
-              </div>
-
-              {/* Sort By */}
-              <div className="relative group flex-1 min-w-0 md:flex-none md:w-auto">
-                <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none hidden md:block">
-                  <Filter size={16} />
-                </div>
-                <select
-                  value={activeSort}
-                  onChange={(e) => setActiveSort(e.target.value)}
-                  className="w-full md:w-auto appearance-none bg-white border border-gray-200 text-foreground pl-3 pr-7 py-2.5 md:pl-11 md:pr-10 md:py-3.5 rounded-lg md:rounded-xl text-[11px] md:text-sm font-medium hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shadow-sm"
-                >
-                  <option value="Recommended">Sort</option>
-                  <option value="Newest">Newest</option>
-                  <option value="Best Seller">Best Seller</option>
-                </select>
-                <ChevronDown className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
-              </div>
-            </div>
-          </div>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
+          >
             <AnimatePresence mode="wait">
-              {filteredProducts.map((product, idx) => (
+              {displayProducts.map((product, idx) => (
                 <ProductCard
                   key={product.id}
                   product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }}
@@ -287,19 +222,12 @@ export default function Home() {
                 />
               ))}
             </AnimatePresence>
-          </div>
-
-          {filteredProducts.length === 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 text-muted">
-              <p className="mb-4">No products found matching these filters.</p>
-              <button onClick={() => { setActiveSort('Recommended'); setActiveType('All'); setActiveOccasion('All'); setActiveRelation('All'); }} className="text-primary hover:underline font-medium">Clear Filters</button>
-            </motion.div>
-          )}
+          </motion.div>
 
           {/* Explore More Button */}
           {products.length > 0 && (
-            <div className="mt-16 text-center">
-              <Link href="/shop" className="inline-flex items-center gap-2 border border-foreground/20 text-foreground px-10 py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-foreground hover:text-white transition-all duration-400 group shadow-sm hover:shadow-md">
+            <div className="mt-12 md:mt-16 text-center">
+              <Link href="/shop" className="inline-flex items-center gap-2.5 bg-[#5c6e4f] text-white px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#4a5a3f] transition-all duration-400 group shadow-md hover:shadow-lg">
                 Explore All Products
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -310,43 +238,70 @@ export default function Home() {
 
       {/* ═══ SHOP BY RELATIONSHIP ═══ */}
       {showRelationships && (
-        <section className="py-12 bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-8 text-left">For Every Relationship</h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-3 sm:gap-6 justify-between w-full pb-4">
+        <section className="py-12 md:py-16 bg-[#faf7f2] border-y border-[#ede4d6]">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Shop By</span>
+              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">For Every Relationship</h2>
+            </motion.div>
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-6 w-full">
               {relationships.map((item, idx) => (
-                <Link key={idx} href={`/shop?relation=${item.name.toLowerCase()}`} className="flex flex-col items-center gap-3 w-full group cursor-pointer hover:bg-secondary/30 rounded-2xl py-2 transition-colors">
-                  <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
-                    <Image src={item.image_url} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" sizes="(max-width: 768px) 25vw, (max-width: 1200px) 12vw, 150px" />
-                  </div>
-                  <span className="text-xs sm:text-sm font-medium text-foreground text-center line-clamp-1 w-full px-1">{item.name}</span>
-                </Link>
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  viewport={{ once: true }}
+                >
+                  <Link href={`/shop?relation=${item.name.toLowerCase()}`} className="flex flex-col items-center gap-2.5 group">
+                    <div className="w-full aspect-square rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-card transition-all duration-300 group-hover:-translate-y-1">
+                      <Image src={item.image_url} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" sizes="(max-width: 768px) 25vw, 12vw" />
+                    </div>
+                    <span className="text-[10px] md:text-xs font-medium text-[#3a3226] text-center line-clamp-1 group-hover:text-[#5c6e4f] transition-colors">{item.name}</span>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* ═══ LUXURY CATEGORY GRID ═══ */}
-      <section id="categories" className="py-20 lg:py-28 bg-background">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <SectionHeader label="Curated For You" title="Our Collections" subtitle="Discover thoughtfully arranged categories, each designed to make every occasion unforgettable." />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 auto-rows-[220px] md:auto-rows-[240px]">
+      {/* ═══ LUXURY COLLECTION GRID ═══ */}
+      <section id="categories" className="py-14 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mb-8 md:mb-12"
+          >
+            <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Curated For You</span>
+            <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Our Collections</h2>
+            <p className="text-[#8a7a5a] text-sm font-light mt-2 max-w-lg">Discover thoughtfully arranged categories, each designed to make every occasion unforgettable.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[240px]">
             {displayCollections.map((cat, idx) => (
               <motion.div
                 key={cat.id || cat.slug}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                transition={{ duration: 0.5, delay: idx * 0.06 }}
                 viewport={{ once: true }}
                 className={COLLECTION_SPANS[idx] || ''}
               >
-                <Link href={`/shop?cat=${cat.slug}`} className="group relative block h-full overflow-hidden rounded-xl img-shimmer">
-                  <Image src={cat.image_url || `/images/collections/${cat.slug}.webp`} alt={cat.name} fill className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" sizes="(max-width: 768px) 100vw, 50vw" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/50 transition-all duration-500" />
-                  <div className="absolute bottom-0 left-0 p-6">
-                    <h3 className="font-serif text-xl md:text-2xl text-white mb-1">{cat.name}</h3>
-                    <span className="inline-flex items-center gap-1 text-white/70 text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                <Link href={`/shop?cat=${cat.slug}`} className="group relative block h-full overflow-hidden rounded-2xl md:rounded-3xl shadow-sm hover:shadow-card transition-shadow duration-500">
+                  <Image src={cat.image_url || `/images/collections/${cat.slug}.webp`} alt={cat.name} fill className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" sizes="(max-width: 768px) 50vw, 25vw" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent group-hover:from-black/45 transition-all duration-500" />
+                  <div className="absolute bottom-0 left-0 p-4 md:p-6">
+                    <h3 className="font-serif text-base md:text-xl text-white mb-1">{cat.name}</h3>
+                    <span className="inline-flex items-center gap-1 text-white/60 text-[10px] md:text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                       Explore <ArrowRight size={12} />
                     </span>
                   </div>
@@ -362,24 +317,41 @@ export default function Home() {
 
       {/* ═══ CELEBRATIONS CALENDAR ═══ */}
       {showCelebrations && (
-        <section className="py-12 bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <SectionHeader label="Mark Your Calendar" title="Celebrations Calendar" />
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
+        <section className="py-12 md:py-16 bg-white border-t border-[#f0ece4]">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8 md:mb-12"
+            >
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Mark Your Calendar</span>
+              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Celebrations Calendar</h2>
+            </motion.div>
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
               {celebrations.map((event, idx) => (
-                <Link key={idx} href={`/shop?celebration=${encodeURIComponent(event.name.toLowerCase())}`} className="group cursor-pointer">
-                  <div className="relative overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-all">
-                    {event.date_label && (
-                      <div className="bg-[#EAF4F4] text-foreground text-xs font-bold text-center py-3 uppercase tracking-wider">
-                        {event.date_label}
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.06 }}
+                  viewport={{ once: true }}
+                >
+                  <Link href={`/shop?celebration=${encodeURIComponent(event.name.toLowerCase())}`} className="group cursor-pointer block">
+                    <div className="relative overflow-hidden rounded-2xl shadow-sm hover:shadow-card transition-all duration-500 group-hover:-translate-y-1">
+                      {event.date_label && (
+                        <div className="bg-[#faf7f2] text-[#3a3226] text-[10px] md:text-xs font-bold text-center py-2.5 md:py-3 uppercase tracking-wider">
+                          {event.date_label}
+                        </div>
+                      )}
+                      <div className="relative aspect-square">
+                        <Image src={event.image_url} alt={event.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 20vw" />
                       </div>
-                    )}
-                    <div className="relative aspect-square img-shimmer">
-                      <Image src={event.image_url} alt={event.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 20vw" />
                     </div>
-                  </div>
-                  <h3 className="text-center font-bold text-foreground text-sm mt-3 group-hover:text-primary transition-colors">{event.name}</h3>
-                </Link>
+                    <h3 className="text-center font-semibold text-[#3a3226] text-xs md:text-sm mt-3 group-hover:text-[#5c6e4f] transition-colors">{event.name}</h3>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -388,10 +360,20 @@ export default function Home() {
 
       {/* ═══ NEW ARRIVALS ═══ */}
       {showNewArrivals && newArrivals.length > 0 && (
-        <section className="py-20 bg-background border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <SectionHeader label="Just In" title="New Arrivals" subtitle="Discover our latest collection of premium gifts and floral arrangements." />
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
+        <section className="py-14 md:py-20 bg-[#faf7f2] border-y border-[#ede4d6]">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8 md:mb-12"
+            >
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Just In</span>
+              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">New Arrivals</h2>
+              <p className="text-[#8a7a5a] text-sm font-light mt-2">Discover our latest collection of premium gifts and floral arrangements.</p>
+            </motion.div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {newArrivals.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}
@@ -402,16 +384,26 @@ export default function Home() {
 
       {/* ═══ BEST SELLERS ═══ */}
       {showBestSellers && bestSellers.length > 0 && (
-        <section className="py-20 lg:py-28 bg-white">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <SectionHeader label="Most Loved" title="Best Sellers" subtitle="Our most adored premium gifts — curated for those who appreciate the finest." />
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
+        <section className="py-14 md:py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8 md:mb-12"
+            >
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Most Loved</span>
+              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Best Sellers</h2>
+              <p className="text-[#8a7a5a] text-sm font-light mt-2">Our most adored premium gifts — curated for those who appreciate the finest.</p>
+            </motion.div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {bestSellers.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}
             </div>
-            <div className="text-center mt-14">
-              <Link href="/shop" className="group inline-flex items-center gap-2 border border-foreground/20 text-foreground px-8 py-3.5 text-[0.75rem] uppercase tracking-[0.2em] font-medium rounded-full hover:bg-foreground hover:text-white transition-all duration-400">
+            <div className="text-center mt-12 md:mt-14">
+              <Link href="/shop" className="group inline-flex items-center gap-2.5 border-2 border-[#5c6e4f]/30 text-[#3a3226] px-8 py-3.5 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#5c6e4f] hover:text-white hover:border-[#5c6e4f] transition-all duration-400 shadow-sm hover:shadow-md">
                 View All Products <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -421,23 +413,33 @@ export default function Home() {
 
       {/* ═══ FEATURED ROSES GRID ═══ */}
       {showFeaturedRoses && featuredRoses.length > 0 && (
-        <section className="py-20 lg:py-28 bg-secondary">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <SectionHeader label="The Rose Collection" title="Handpicked Perfection" subtitle="Every rose is carefully selected and arranged by our master florists." />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="py-14 md:py-24 bg-[#faf7f2]">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-8 md:mb-12"
+            >
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">The Rose Collection</span>
+              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Handpicked Perfection</h2>
+              <p className="text-[#8a7a5a] text-sm font-light mt-2">Every rose is carefully selected and arranged by our master florists.</p>
+            </motion.div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {featuredRoses.map((rose, idx) => (
                 <motion.div
                   key={rose.id ?? idx}
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  transition={{ duration: 0.5, delay: idx * 0.08 }}
                   viewport={{ once: true }}
-                  className="group relative aspect-[3/4] overflow-hidden rounded-xl img-zoom cursor-pointer"
+                  className="group relative aspect-[3/4] overflow-hidden rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-card transition-shadow duration-500"
                 >
-                  <Image src={rose.image_url} alt={rose.label} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+                  <Image src={rose.image_url} alt={rose.label} fill className="object-cover group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 50vw, 25vw" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute bottom-0 left-0 p-5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400">
-                    <p className="text-white font-serif text-lg">{rose.label}</p>
+                  <div className="absolute bottom-0 left-0 p-4 md:p-5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400">
+                    <p className="text-white font-serif text-base md:text-lg">{rose.label}</p>
                   </div>
                 </motion.div>
               ))}
@@ -447,35 +449,35 @@ export default function Home() {
       )}
 
       {/* ═══ ABOUT BRAND ═══ */}
-      <section id="about" className="py-20 lg:py-28 bg-background">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="relative aspect-[4/5] rounded-2xl overflow-hidden">
+      <section id="about" className="py-14 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card">
               <Image src="/images/our-story.webp" alt="New Eco Roses Storefront" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} viewport={{ once: true }}>
-              <span className="block text-xs uppercase tracking-[0.25em] font-accent font-medium text-primary mb-6">Our Story</span>
-              <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-foreground mb-8 leading-tight">
-                Crafted With Love,<br /><em className="italic text-primary not-italic" style={{ fontStyle: 'italic' }}>Delivered With Care</em>
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-5">Our Story</span>
+              <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl text-[#3a3226] mb-6 leading-tight">
+                Crafted With Love,<br /><em className="italic text-[#5c6e4f]">Delivered With Care</em>
               </h2>
-              <p className="text-muted leading-relaxed mb-6 font-light max-w-lg text-left md:text-justify">
+              <p className="text-[#8a7a5a] leading-relaxed mb-5 font-light max-w-lg">
                 At New Eco Roses, we believe every occasion deserves to be celebrated beautifully. Located in the heart of Kolkata, we have built a reputation as one of the city&apos;s most trusted and loved gifting destinations.
               </p>
-              <p className="text-muted leading-relaxed mb-10 font-light max-w-lg text-left md:text-justify">
-                Every arrangement is created using fresh, handpicked blooms sourced with care and arranged by experienced florists who understand the art of elegance. With our signature premium packaging and warm, personalized service, New Eco Roses continues to be recognized as one of the best gift shops in Kolkata.
+              <p className="text-[#8a7a5a] leading-relaxed mb-10 font-light max-w-lg">
+                Every arrangement is crafted using fresh, handpicked blooms sourced with care and arranged by experienced florists who understand the art of elegance.
               </p>
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
+              <div className="grid grid-cols-3 gap-4 md:gap-6 pt-6 border-t border-[#ede4d6]">
                 <div className="text-center">
-                  <p className="font-serif text-3xl text-primary mb-1">{happyCustomers}</p>
-                  <p className="text-xs text-muted uppercase tracking-widest">Happy Customers</p>
+                  <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{happyCustomers}</p>
+                  <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Happy Customers</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-serif text-3xl text-primary mb-1">{giftsDelivered}</p>
-                  <p className="text-xs text-muted uppercase tracking-widest">Gifts Delivered</p>
+                  <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{giftsDelivered}</p>
+                  <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Gifts Delivered</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-serif text-3xl text-primary mb-1">{starRating}</p>
-                  <p className="text-xs text-muted uppercase tracking-widest">Star Rating</p>
+                  <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{starRating}</p>
+                  <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Star Rating</p>
                 </div>
               </div>
             </motion.div>
@@ -485,39 +487,48 @@ export default function Home() {
 
       {/* ═══ TESTIMONIALS ═══ */}
       {showTestimonials && testimonials.length > 0 && (
-        <section className="py-20 lg:py-28 bg-blush overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-12">
-            <SectionHeader label="What Our Clients Say" title="Love Notes" subtitle="Real stories from people who chose us for their most special moments." />
+        <section className="py-14 md:py-24 bg-[#faf7f2] overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 mb-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">What Our Clients Say</span>
+              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Love Notes</h2>
+              <p className="text-[#8a7a5a] text-sm font-light mt-2">Real stories from people who chose us for their most special moments.</p>
+            </motion.div>
           </div>
           <div className="relative w-full mask-linear-fade">
             {/* Row 1 */}
-            <motion.div className="flex gap-6 w-max mb-6 pl-4" animate={{ x: "-50%" }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}>
+            <motion.div className="flex gap-4 md:gap-6 w-max mb-4 md:mb-6 pl-4" animate={{ x: "-50%" }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}>
               {[...T1, ...T1].map((t, idx) => (
-                <div key={`r1-${idx}`} className="bg-white rounded-2xl p-6 shadow-soft w-[350px] flex-shrink-0 relative border border-gray-50">
-                  <Quote size={20} className="text-primary/20 absolute top-5 right-5" />
-                  <div className="flex gap-0.5 mb-4">
+                <div key={`r1-${idx}`} className="bg-white rounded-2xl p-5 md:p-6 shadow-soft w-[280px] md:w-[350px] flex-shrink-0 relative border border-[#ede4d6]/50">
+                  <Quote size={18} className="text-[#5c6e4f]/20 absolute top-4 right-4" />
+                  <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} size={14} className={i < Math.floor(t.rating) ? "text-primary fill-primary" : i < t.rating ? "text-primary fill-primary/50" : "text-gray-200 fill-gray-200"} />
+                      <Star key={i} size={13} className={i < Math.floor(t.rating) ? "text-[#c9a247] fill-[#c9a247]" : i < t.rating ? "text-[#c9a247] fill-[#c9a247]/50" : "text-gray-200 fill-gray-200"} />
                     ))}
                   </div>
-                  <p className="text-muted text-sm leading-relaxed mb-4 font-light italic line-clamp-3">&ldquo;{t.review_text}&rdquo;</p>
-                  <p className="font-medium text-foreground text-xs uppercase tracking-wider">{t.customer_name}</p>
+                  <p className="text-[#8a7a5a] text-xs md:text-sm leading-relaxed mb-3 font-light italic line-clamp-3">&ldquo;{t.review_text}&rdquo;</p>
+                  <p className="font-semibold text-[#3a3226] text-[10px] md:text-xs uppercase tracking-wider">{t.customer_name}</p>
                 </div>
               ))}
             </motion.div>
             {/* Row 2 */}
             {T2.length > 0 && (
-              <motion.div className="flex gap-6 w-max pl-4" animate={{ x: "0%" }} initial={{ x: "-50%" }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}>
+              <motion.div className="flex gap-4 md:gap-6 w-max pl-4" animate={{ x: "0%" }} initial={{ x: "-50%" }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}>
                 {[...T2, ...T2].map((t, idx) => (
-                  <div key={`r2-${idx}`} className="bg-white rounded-2xl p-6 shadow-soft w-[350px] flex-shrink-0 relative border border-gray-50">
-                    <Quote size={20} className="text-primary/20 absolute top-5 right-5" />
-                    <div className="flex gap-0.5 mb-4">
+                  <div key={`r2-${idx}`} className="bg-white rounded-2xl p-5 md:p-6 shadow-soft w-[280px] md:w-[350px] flex-shrink-0 relative border border-[#ede4d6]/50">
+                    <Quote size={18} className="text-[#5c6e4f]/20 absolute top-4 right-4" />
+                    <div className="flex gap-0.5 mb-3">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} size={14} className={i < Math.floor(t.rating) ? "text-primary fill-primary" : i < t.rating ? "text-primary fill-primary/50" : "text-gray-200 fill-gray-200"} />
+                        <Star key={i} size={13} className={i < Math.floor(t.rating) ? "text-[#c9a247] fill-[#c9a247]" : i < t.rating ? "text-[#c9a247] fill-[#c9a247]/50" : "text-gray-200 fill-gray-200"} />
                       ))}
                     </div>
-                    <p className="text-muted text-sm leading-relaxed mb-4 font-light italic line-clamp-3">&ldquo;{t.review_text}&rdquo;</p>
-                    <p className="font-medium text-foreground text-xs uppercase tracking-wider">{t.customer_name}</p>
+                    <p className="text-[#8a7a5a] text-xs md:text-sm leading-relaxed mb-3 font-light italic line-clamp-3">&ldquo;{t.review_text}&rdquo;</p>
+                    <p className="font-semibold text-[#3a3226] text-[10px] md:text-xs uppercase tracking-wider">{t.customer_name}</p>
                   </div>
                 ))}
               </motion.div>
@@ -527,21 +538,21 @@ export default function Home() {
       )}
 
       {/* ═══ WHY CHOOSE US ═══ */}
-      <section className="py-24 lg:py-32 overflow-hidden relative">
+      <section className="py-16 md:py-28 overflow-hidden relative">
         <Image src="/images/why-new-eco-roses.webp" alt="Why New Eco Roses background" fill className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-white/80" />
-        <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="text-center mb-16">
-            <span className="inline-block text-[10px] uppercase tracking-[0.3em] font-medium mb-4 text-primary">Our Promise</span>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-5 leading-tight">Why New Eco Roses?</h2>
+        <div className="absolute inset-0 bg-white/85" />
+        <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="text-center mb-12 md:mb-16">
+            <span className="inline-block text-[10px] uppercase tracking-[0.3em] font-medium mb-4 text-[#5c6e4f]">Our Promise</span>
+            <h2 className="font-serif text-2xl md:text-4xl text-[#3a3226] mb-5 leading-tight">Why New Eco Roses?</h2>
             <div className="flex items-center justify-center gap-3 mb-5">
-              <div className="h-px w-12 bg-gray-200" />
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <div className="h-px w-12 bg-gray-200" />
+              <div className="h-px w-12 bg-[#ede4d6]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#5c6e4f]" />
+              <div className="h-px w-12 bg-[#ede4d6]" />
             </div>
-            <p className="text-muted text-sm font-light max-w-md mx-auto leading-relaxed tracking-wide">Every detail is crafted to make your gifting experience effortless, elegant, and unforgettable.</p>
+            <p className="text-[#8a7a5a] text-sm font-light max-w-md mx-auto leading-relaxed">Every detail is crafted to make your gifting experience effortless, elegant, and unforgettable.</p>
           </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
               {
                 icon: (<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12H3l9-9 9 9h-2" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" /><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6" /></svg>),
@@ -563,19 +574,17 @@ export default function Home() {
                 key={idx}
                 initial={{ opacity: 0, y: 32 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
+                transition={{ duration: 0.6, delay: idx * 0.12 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -6, boxShadow: '0 20px 50px rgba(0,0,0,0.13), 0 8px 24px rgba(0,0,0,0.07)' }}
-                className="group relative bg-white rounded-[20px] p-8 lg:p-10 flex flex-col items-center text-center"
-                style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)', transition: 'box-shadow 0.35s ease, transform 0.35s ease' }}
+                className="group relative bg-white rounded-2xl md:rounded-3xl p-7 md:p-10 flex flex-col items-center text-center shadow-card hover:shadow-elevated transition-all duration-500 hover:-translate-y-1"
               >
-                <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full transition-all duration-300 group-hover:left-4 group-hover:right-4" style={{ background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)' }} />
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-7 transition-all duration-300 bg-primary/10 text-primary">
-                  <span className="group-hover:scale-110 transition-transform duration-300 inline-flex text-primary">{item.icon}</span>
+                <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full transition-all duration-300 group-hover:left-4 group-hover:right-4 bg-gradient-to-r from-transparent via-[#5c6e4f] to-transparent" />
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-6 bg-[#5c6e4f]/10 text-[#5c6e4f]">
+                  <span className="group-hover:scale-110 transition-transform duration-300 inline-flex">{item.icon}</span>
                 </div>
-                <h3 className="font-serif text-xl lg:text-2xl text-foreground mb-4 leading-snug">{item.title}</h3>
-                <div className="w-8 h-px mb-4 mx-auto bg-primary/50" />
-                <p className="text-muted text-sm font-light leading-[1.85] max-w-[240px]">{item.desc}</p>
+                <h3 className="font-serif text-lg md:text-xl text-[#3a3226] mb-3">{item.title}</h3>
+                <div className="w-8 h-px mb-3 mx-auto bg-[#5c6e4f]/30" />
+                <p className="text-[#8a7a5a] text-xs md:text-sm font-light leading-[1.8] max-w-[240px]">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -583,19 +592,19 @@ export default function Home() {
       </section>
 
       {/* ═══ CTA BANNER ═══ */}
-      <section className="relative py-28 lg:py-36 overflow-hidden">
+      <section className="relative py-20 md:py-32 overflow-hidden">
         <Image src="/images/banners/cta-banner.webp" alt="Premium gifts" fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 text-center px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }}>
-            <h2 className="font-serif text-3xl md:text-5xl text-white mb-4">Ready to Make Someone&apos;s Day?</h2>
-            <p className="text-white/60 mb-8 max-w-lg mx-auto font-light">Browse our collection or message us on WhatsApp for a bespoke gift.</p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/shop" className="inline-flex items-center gap-2 bg-white text-foreground px-8 py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-400">
+            <h2 className="font-serif text-2xl md:text-5xl text-white mb-4">Ready to Make Someone&apos;s Day?</h2>
+            <p className="text-white/60 mb-8 max-w-lg mx-auto font-light text-sm md:text-base">Browse our collection or message us on WhatsApp for a bespoke gift.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
+              <Link href="/shop" className="inline-flex items-center gap-2 bg-white text-[#3a3226] px-7 md:px-8 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#5c6e4f] hover:text-white transition-all duration-400">
                 Browse Collection <ArrowRight size={14} />
               </Link>
               <a href={ctaWaLink} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] text-white px-8 py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#1fb855] transition-all duration-300">
+                className="inline-flex items-center gap-2 bg-[#25D366] text-white px-7 md:px-8 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#1fb855] transition-all duration-300">
                 Message on WhatsApp
               </a>
             </div>
