@@ -5,18 +5,18 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const FAV_FLOWERS = [
-    { name: 'Roses', image: '/images/categories/flowers.webp', link: '/shop?search=rose', bg: '#f5e6e0' },
-    { name: 'Carnations', image: '/images/categories/flowers.webp', link: '/shop?search=carnation', bg: '#f0e0e8' },
-    { name: 'Orchids', image: '/images/categories/luxe.webp', link: '/shop?search=orchid', bg: '#e8eae0' },
-    { name: 'Sunflowers', image: '/images/categories/sunflowers.webp', link: '/shop?search=sunflower', bg: '#f5f0e0' },
-    { name: 'Gerberas', image: '/images/categories/flowers.webp', link: '/shop?search=gerbera', bg: '#f0e8e0' },
-    { name: 'Luxe', image: '/images/categories/luxe.webp', link: '/shop?tag=best+seller', bg: '#e8e4f0' },
+    { name: 'Roses', image: '/images/picks/flowers/roses.webp', link: '/shop?search=rose', bg: '#f5e6e0' },
+    { name: 'Carnations', image: '/images/picks/flowers/carnations.webp', link: '/shop?search=carnation', bg: '#f0e0e8' },
+    { name: 'Orchids', image: '/images/picks/flowers/orchids.webp', link: '/shop?search=orchid', bg: '#e8eae0' },
+    { name: 'Sunflowers', image: '/images/picks/flowers/sunflowers.webp', link: '/shop?search=sunflower', bg: '#f5f0e0' },
+    { name: 'Gerberas', image: '/images/picks/flowers/gerberas.webp', link: '/shop?search=gerbera', bg: '#f0e8e0' },
+    { name: 'Luxe', image: '/images/picks/flowers/luxe.webp', link: '/shop?tag=best+seller', bg: '#e8e4f0' },
 ];
 
 const BIRTHDAY_GIFTS = [
-    { name: 'Flowers', image: '/images/categories/flowers.webp', link: '/shop?cat=fresh-flower', bg: '#f5efe6' },
-    { name: 'Cakes', image: '/images/categories/cake.webp', link: '/shop?cat=cake', bg: '#f5e8e0' },
-    { name: 'Personalised', image: '/images/categories/personalised.webp', link: '/shop?cat=personalized', bg: '#e8ede4' },
+    { name: 'Flowers', image: '/images/picks/birthday/flowers.webp', link: '/shop?cat=fresh-flower', bg: '#f5efe6' },
+    { name: 'Cakes', image: '/images/picks/birthday/cakes.webp', link: '/shop?cat=cake', bg: '#f5e8e0' },
+    { name: 'Personalised', image: '/images/picks/birthday/personalised.webp', link: '/shop?cat=personalized', bg: '#e8ede4' },
 ];
 
 interface PickItem {
