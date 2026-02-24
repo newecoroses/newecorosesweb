@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 const FAV_FLOWERS = [
     { name: 'Roses', image: '/images/picks/flowers/roses.webp', link: '/shop?search=rose', bg: '#f5e6e0' },
     { name: 'Carnations', image: '/images/picks/flowers/carnations.webp', link: '/shop?search=carnation', bg: '#f0e0e8' },
-    { name: 'Orchids', image: '/images/picks/flowers/orchids.webp', link: '/shop?search=orchid', bg: '#e8eae0' },
+    { name: 'Orchids', image: '/images/picks/flowers/orchids.webp', link: '/shop?search=orchid', bg: '#e8eae0', scale: 1.1 },
     { name: 'Sunflowers', image: '/images/picks/flowers/sunflowers.webp', link: '/shop?search=sunflower', bg: '#f5f0e0' },
     { name: 'Gerberas', image: '/images/picks/flowers/gerberas.webp', link: '/shop?search=gerbera', bg: '#f0e8e0' },
     { name: 'Luxe', image: '/images/picks/flowers/luxe.webp', link: '/shop?tag=best+seller', bg: '#e8e4f0' },
@@ -24,6 +24,7 @@ interface PickItem {
     image: string;
     link: string;
     bg: string;
+    scale?: number;
 }
 
 function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string }) {
@@ -53,6 +54,7 @@ function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string 
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                                     sizes="(max-width: 768px) 45vw, 20vw"
+                                    style={item.scale ? { transform: `scale(${item.scale})` } : undefined}
                                 />
                             </div>
                             <p className="text-center font-semibold text-[#3a3226] text-sm md:text-base mt-2.5 group-hover:text-[#5c6e4f] transition-colors">
