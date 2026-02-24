@@ -303,3 +303,18 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
+/* ===== Gold Shimmer for Branding ===== */
+@keyframes gold-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.animate-gold-shimmer {
+  animation: gold-shimmer 3s ease-in-out infinite;
+}

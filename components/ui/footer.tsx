@@ -144,9 +144,9 @@ export default function Footer() {
                             href="https://oryxen.co.in"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-white/40 hover:text-white transition-colors duration-300 font-medium tracking-[0.15em]"
+                            className="inline-block font-semibold tracking-[0.2em] bg-gradient-to-r from-amber-200 via-yellow-50 to-amber-200 bg-[length:200%_100%] bg-clip-text text-transparent animate-gold-shimmer hover:brightness-150 transition-all duration-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.3)]"
                         >
-                            Oryxen
+                            ORYXEN
                         </a>
                     </p>
                 </div>
