@@ -155,6 +155,17 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* System Branding */}
+            <div className="mt-8 text-center space-y-1">
+                <p className="text-gray-400 text-sm tracking-wide">
+                    Secured & Managed by{' '}
+                    <span className="shine-text text-sm">Oryxen Systems</span>
+                </p>
+                <p className="text-gray-500 text-xs tracking-wider">
+                    System Authority: A. Choudhury
+                </p>
+            </div>
         </div>
     );
 }
