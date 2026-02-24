@@ -2,17 +2,18 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BANNERS = [
-    { id: 1, src: '/images/banners/hero/birthday.webp', alt: 'Birthday Gifts' },
-    { id: 2, src: '/images/banners/hero/anniversary.webp', alt: 'Anniversary Specials' },
-    { id: 3, src: '/images/banners/hero/women.webp', alt: "Women's Collection" },
-    { id: 4, src: '/images/banners/hero/wedding-gifts.webp', alt: 'Wedding Gifts' },
-    { id: 5, src: '/images/banners/hero/housewarming.webp', alt: 'Housewarming Gifts' },
-    { id: 6, src: '/images/banners/hero/ramadan.webp', alt: 'Ramadan Collection' },
-    { id: 7, src: '/images/banners/hero/plants.webp', alt: 'Plants Collection' },
-    { id: 8, src: '/images/banners/hero/shop-the-trend.webp', alt: 'Shop The Trend' },
+    { id: 1, src: '/images/banners/hero/birthday.webp', alt: 'Birthday Gifts', link: '/shop?celebration=birthday' },
+    { id: 2, src: '/images/banners/hero/anniversary.webp', alt: 'Anniversary Specials', link: '/shop?celebration=anniversary' },
+    { id: 3, src: '/images/banners/hero/women.webp', alt: "Women's Collection", link: '/shop?relation=her' },
+    { id: 4, src: '/images/banners/hero/wedding-gifts.webp', alt: 'Wedding Gifts', link: '/shop?cat=wedding-gifts' },
+    { id: 5, src: '/images/banners/hero/housewarming.webp', alt: 'Housewarming Gifts', link: '/shop?celebration=housewarming' },
+    { id: 6, src: '/images/banners/hero/ramadan.webp', alt: 'Ramadan Collection', link: '/shop?cat=ramadan' },
+    { id: 7, src: '/images/banners/hero/plants.webp', alt: 'Plants Collection', link: '/shop?cat=plants' },
+    { id: 8, src: '/images/banners/hero/shop-the-trend.webp', alt: 'Shop The Trend', link: '/shop' },
 ];
 
 export default function HeroSlider() {
@@ -29,7 +30,7 @@ export default function HeroSlider() {
 
     return (
         <section className="w-full px-3 md:px-8 pt-3 md:pt-4">
-            <div className="relative w-full aspect-[16/7] md:aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
+            <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={BANNERS[current].id}
@@ -39,15 +40,17 @@ export default function HeroSlider() {
                         transition={{ duration: 0.8, ease: 'easeInOut' }}
                         className="absolute inset-0"
                     >
-                        <Image
-                            src={BANNERS[current].src}
-                            alt={BANNERS[current].alt}
-                            fill
-                            className="object-cover"
-                            priority={current === 0}
-                            sizes="100vw"
-                            quality={85}
-                        />
+                        <Link href={BANNERS[current].link} className="block w-full h-full relative">
+                            <Image
+                                src={BANNERS[current].src}
+                                alt={BANNERS[current].alt}
+                                fill
+                                className="object-cover"
+                                priority={current === 0}
+                                sizes="100vw"
+                                quality={85}
+                            />
+                        </Link>
                     </motion.div>
                 </AnimatePresence>
 
@@ -58,8 +61,8 @@ export default function HeroSlider() {
                             key={idx}
                             onClick={() => setCurrent(idx)}
                             className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${current === idx
-                                    ? 'w-6 md:w-8 bg-white shadow-sm'
-                                    : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
+                                ? 'w-6 md:w-8 bg-white shadow-sm'
+                                : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
                                 }`}
                         />
                     ))}
