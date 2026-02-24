@@ -83,12 +83,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     // Build WhatsApp link using Supabase number
     useEffect(() => {
         if (!product) return;
+        const origin = typeof window !== 'undefined' ? window.location.origin : '';
+        const productUrl = `${origin}/product/${product.slug}`;
         fetchWhatsappSettings().then(s => {
             const phone = s?.phone_number ?? FALLBACK_PHONE;
-            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?`;
+            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
         }).catch(() => {
-            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?`;
+            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${FALLBACK_PHONE}?text=${encodeURIComponent(msg)}`);
         });
     }, [product]);
