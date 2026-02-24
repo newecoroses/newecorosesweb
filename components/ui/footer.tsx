@@ -134,6 +134,23 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+
+            {/* Made by Oryxen */}
+            <div className="border-t border-white/5">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex justify-center items-center">
+                    <p className="text-[11px] text-white/20 tracking-widest uppercase font-light">
+                        Made by{' '}
+                        <a
+                            href="https://oryxen.co.in"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/40 hover:text-white transition-colors duration-300 font-medium tracking-[0.15em]"
+                        >
+                            Oryxen
+                        </a>
+                    </p>
+                </div>
+            </div>
         </footer>
     );
 }

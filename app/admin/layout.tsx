@@ -148,6 +148,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <LogOut size={14} />
                         Sign Out
                     </button>
+
+                    {/* Developer Credit */}
+                    <div className="mt-4 pt-3 border-t border-gray-800/50">
+                        <p className="text-[10px] text-gray-600 text-center leading-relaxed">
+                            Made by{' '}
+                            <span className="text-gray-400 font-medium">Aditya Choudhury</span>
+                            <br />
+                            at{' '}
+                            <a
+                                href="https://oryxen.co.in"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-zinc-400 hover:text-white font-semibold tracking-wide transition-colors duration-300"
+                            >
+                                Oryxen
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </aside>
 
