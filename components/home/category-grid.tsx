@@ -27,13 +27,13 @@ const ROW_2 = [
 
 function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number }) {
     return (
-        <div className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory md:overflow-visible">
+        <div className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-mandatory md:overflow-visible overscroll-x-contain" style={{ touchAction: 'pan-x' }}>
             <div className="flex md:grid md:grid-cols-8 gap-3 md:gap-4 px-3 md:px-0 w-max md:w-full">
                 {items.map((item, idx) => (
                     <motion.div
                         key={item.slug}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: delay + idx * 0.05 }}
                         viewport={{ once: true }}
                     >
