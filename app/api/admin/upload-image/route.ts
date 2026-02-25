@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { createClient } from '@supabase/supabase-js';
 
-const execAsync = promisify(exec);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request: Request) {
     try {
@@ -22,23 +21,25 @@ export async function POST(request: Request) {
         const originalExt = file.name.split('.').pop() || 'jpg';
         const rawFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase();
         const uniqueFileName = productSlug ? `${productSlug}-${Date.now()}.${originalExt}` : `${Date.now()}-${rawFileName}`;
-        const relativePath = `/images/${folder}/${uniqueFileName}`;
+        const relativePath = `${folder}/${uniqueFileName}`;
 
-        // Write the file to the local public folder
-        const absolutePath = join(process.cwd(), 'public', 'images', folder, uniqueFileName);
-        await writeFile(absolutePath, buffer);
+        // Upload to Supabase 'images' bucket
+        const { data, error } = await supabase.storage
+            .from('images')
+            .upload(relativePath, buffer, {
+                contentType: file.type || 'application/octet-stream',
+                upsert: true
+            });
 
-        // Attempt to auto-commit to the git repository (silently catch if errors)
-        try {
-            await execAsync(`git add "public/images/${folder}/${uniqueFileName}"`);
-            await execAsync(`git commit -m "Admin panel auto-upload: ${folder}/${uniqueFileName}"`);
-            await execAsync(`git push`);
-        } catch (gitErr) {
-            console.error('Git auto-commit failed during upload:', gitErr);
+        if (error) {
+            console.error('Supabase Storage Error:', error);
+            throw error;
         }
 
+        const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(relativePath);
+
         // Return path immediately
-        return NextResponse.json({ url: relativePath, success: true });
+        return NextResponse.json({ url: publicUrl, success: true });
     } catch (error: any) {
         console.error('Upload API Error:', error);
         return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
