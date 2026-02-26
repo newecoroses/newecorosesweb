@@ -39,3 +39,7 @@ create policy "Admin all announcements" on announcements for all using (true) wi
 
 drop policy if exists "Admin all review_videos" on review_videos;
 create policy "Admin all review_videos" on review_videos for all using (true) with check (true);
+
+-- Added for Storage image uploads (bypasses RLS for the newly created images bucket)
+drop policy if exists "Public image access" on storage.objects;
+create policy "Public image access" on storage.objects for all using (bucket_id = 'images') with check (bucket_id = 'images');

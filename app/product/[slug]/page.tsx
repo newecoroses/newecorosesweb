@@ -104,7 +104,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     if (loading) {
         return (
-            <div className="pt-28 pb-20 bg-background min-h-screen flex items-center justify-center">
+            <div className="pt-32 pb-20 bg-background min-h-screen flex items-center justify-center">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
         );
@@ -112,7 +112,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     if (!product) {
         return (
-            <div className="pt-28 pb-20 min-h-screen bg-background flex flex-col items-center justify-center text-center px-6">
+            <div className="pt-32 pb-20 min-h-screen bg-background flex flex-col items-center justify-center text-center px-6">
                 <h1 className="font-serif text-3xl text-foreground mb-4">Product Not Found</h1>
                 <p className="text-muted mb-8 font-light">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
                 <Link href="/shop" className="inline-flex items-center gap-2 bg-primary text-white px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold hover:opacity-90 transition-all">
@@ -126,7 +126,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
     return (
-        <div className="pt-28 pb-20 bg-background min-h-screen">
+        <div className="pt-32 pb-20 bg-background min-h-screen">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-2 text-xs text-muted mb-10 font-medium uppercase tracking-wider">

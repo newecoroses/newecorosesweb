@@ -123,7 +123,7 @@ function ShopContent() {
 
     if (loading) {
         return (
-            <div className="pt-28 pb-20 min-h-screen bg-background">
+            <div className="pt-32 pb-20 min-h-screen bg-background">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <SectionHeader label="Browse" title="Our Collection" subtitle="Find the perfect gift — thoughtfully curated for every occasion." />
                     <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-8 mt-10">
@@ -137,7 +137,7 @@ function ShopContent() {
     }
 
     return (
-        <div className="pt-28 pb-20 min-h-screen bg-background">
+        <div className="pt-32 pb-20 min-h-screen bg-background">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <SectionHeader label="Browse" title="Our Collection" subtitle="Find the perfect gift — thoughtfully curated for every occasion." />
 
@@ -242,7 +242,7 @@ function ShopContent() {
 
 export default function Shop() {
     return (
-        <Suspense fallback={<div className="pt-28 pb-20 min-h-screen bg-background flex items-center justify-center"><p className="text-muted">Loading...</p></div>}>
+        <Suspense fallback={<div className="pt-32 pb-20 min-h-screen bg-background flex items-center justify-center"><p className="text-muted">Loading...</p></div>}>
             <ShopContent />
         </Suspense>
     );

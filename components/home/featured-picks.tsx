@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 const FAV_FLOWERS = [
     { name: 'Roses', image: '/images/picks/flowers/roses.webp', link: '/shop?search=rose', bg: '#f5e6e0' },
     { name: 'Carnations', image: '/images/picks/flowers/carnations.webp', link: '/shop?search=carnation', bg: '#f0e0e8' },
+    { name: 'Lily', image: '/images/lily.webp', link: '/shop?search=lily', bg: '#f5e8f0' },
     { name: 'Orchids', image: '/images/picks/flowers/orchids.webp', link: '/shop?search=orchid', bg: '#e8eae0', scale: 1.1 },
     { name: 'Sunflowers', image: '/images/picks/flowers/sunflowers.webp', link: '/shop?search=sunflower', bg: '#f5f0e0' },
     { name: 'Gerberas', image: '/images/picks/flowers/gerberas.webp', link: '/shop?search=gerbera', bg: '#f0e8e0' },
@@ -15,8 +16,8 @@ const FAV_FLOWERS = [
 
 const BIRTHDAY_GIFTS = [
     { name: 'Flowers', image: '/images/picks/birthday/flowers.webp', link: '/shop?cat=fresh-flower', bg: '#f5efe6' },
-    { name: 'Cakes', image: '/images/picks/birthday/cakes.webp', link: '/shop?cat=cake', bg: '#f5e8e0' },
     { name: 'Personalised', image: '/images/picks/birthday/personalised.webp', link: '/shop?cat=personalized', bg: '#e8ede4' },
+    { name: 'Cakes', image: '/images/picks/birthday/cakes.webp', link: '/shop?cat=cake', bg: '#f5e8e0' },
 ];
 
 interface PickItem {

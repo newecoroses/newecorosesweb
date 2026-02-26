@@ -13,11 +13,11 @@ import 'swiper/css/free-mode';
 const PROMOS = [
     {
         id: 1,
-        title: 'Warm Gifts for New Homes',
-        subtitle: 'Housewarming Collection',
+        title: 'Birthday Gifts That Delight',
+        subtitle: 'Birthday Collection',
         cta: 'Order Now',
         image: '/images/banners/promo/housewarming.webp',
-        link: '/shop?celebration=housewarming',
+        link: '/shop?celebration=birthday',
         textColor: '#3a3226',
         ctaBg: '#5c6e4f',
     },

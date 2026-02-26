@@ -144,7 +144,7 @@ export default function Home() {
 
   if (!loaded) {
     return (
-      <div className="pt-24 pb-20 min-h-[80vh] bg-white">
+      <div className="pt-32 pb-20 min-h-[80vh] bg-white">
         {/* Skeleton hero */}
         <div className="px-4 md:px-8 pt-4">
           <div className="w-full aspect-[21/9] md:aspect-[3/1] rounded-3xl bg-[#f5f0ea] animate-pulse" />
@@ -174,7 +174,7 @@ export default function Home() {
   return (
     <>
       {/* ═══ 1. HERO BANNER CAROUSEL ═══ */}
-      <div className="pt-20 md:pt-24 bg-white">
+      <div className="pt-[7.5rem] md:pt-[8.5rem] bg-white">
         <HeroSlider />
       </div>
 

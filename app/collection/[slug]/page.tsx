@@ -44,7 +44,7 @@ export default function CollectionPage({ params }: { params: Promise<{ slug: str
     }, [slug]);
 
     return (
-        <div className="pt-28 pb-20 min-h-screen bg-background">
+        <div className="pt-32 pb-20 min-h-screen bg-background">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-2 text-xs text-muted mb-10 font-medium uppercase tracking-wider">

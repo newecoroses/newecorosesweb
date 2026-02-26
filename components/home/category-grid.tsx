@@ -23,6 +23,7 @@ const ROW_2 = [
     { name: 'Plants', slug: 'plants', image: '/images/categories/plants.webp', link: '/shop?cat=plants' },
     { name: 'Gift Hampers', slug: 'gift-hampers', image: '/images/categories/gift-hampers.webp', link: '/shop?cat=hamper' },
     { name: 'Gift Sets', slug: 'gift-sets', image: '/images/categories/gift-sets.webp', link: '/shop?search=gift+set' },
+    { name: 'Garland', slug: 'garland', image: '/images/garland.webp', link: '/shop?search=garland' },
 ];
 
 function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number }) {

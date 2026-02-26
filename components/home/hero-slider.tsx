@@ -29,7 +29,7 @@ export default function HeroSlider() {
     }, [next]);
 
     return (
-        <section className="w-full px-3 md:px-8 pt-3 md:pt-4">
+        <section className="w-full px-3 md:px-8 pt-5 md:pt-6">
             <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
                 <AnimatePresence mode="wait">
                     <motion.div

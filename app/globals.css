@@ -68,9 +68,9 @@ body {
 
 /* ===== Glassmorphism ===== */
 .glass {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
@@ -353,4 +353,46 @@ body {
   -webkit-text-fill-color: transparent;
   animation: shine-text 8s linear infinite;
   font-weight: 600;
+}
+
+/* ===== Mega Menu Premium Styles ===== */
+.mega-link {
+  position: relative;
+  display: inline-block;
+}
+
+.mega-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, #c9a247, #d4af5a);
+  transition: width 0.3s ease;
+}
+
+.mega-link:hover::after {
+  width: 100%;
+}
+
+.mega-nav-link {
+  position: relative;
+}
+
+.mega-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, #c9a247, transparent);
+  transition: width 0.3s ease;
+}
+
+.mega-nav-link:hover::after,
+.mega-nav-link[aria-expanded="true"]::after {
+  width: 70%;
 }
