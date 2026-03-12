@@ -168,9 +168,26 @@ export default function AdminProductsPage() {
         const collectionNames = selectedCollections.map(c => c.name).join(', ');
         const collectionSlugs = selectedCollections.map(c => c.slug).join(', ');
 
+        // Generate a unique slug for new products by checking for conflicts
+        let baseSlug = form.slug || slugify(form.name);
+        let uniqueSlug = baseSlug;
+        if (!editingProduct) {
+            let counter = 1;
+            while (true) {
+                const { data: existing } = await supabase
+                    .from('products')
+                    .select('id')
+                    .eq('slug', uniqueSlug)
+                    .maybeSingle();
+                if (!existing) break;
+                counter++;
+                uniqueSlug = `${baseSlug}-${counter}`;
+            }
+        }
+
         const payload = {
             name: form.name.trim(),
-            slug: form.slug || slugify(form.name),
+            slug: editingProduct ? (form.slug || slugify(form.name)) : uniqueSlug,
             description: form.description,
             collection_name: collectionNames || null,
             collection_slug: collectionSlugs || null,
