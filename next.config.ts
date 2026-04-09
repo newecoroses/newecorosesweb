@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
     ],
     // Optimize image loading
     formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 31536000, // Cache images for 1 year
+    minimumCacheTTL: 1209600, // Cache images for 2 weeks (new products added weekly)
     qualities: [75, 85],
   },
   // Enable compression

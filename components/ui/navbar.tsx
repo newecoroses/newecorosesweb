@@ -88,8 +88,16 @@ export default function Navbar() {
                             {/* Logo */}
                             <Link href="/" className="group relative flex items-center gap-2">
                                 <Gift size={28} className="text-foreground group-hover:text-primary transition-colors duration-300" />
-                                <span className="font-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-[0.08em] text-foreground">
+                                <span className="relative font-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-[0.08em] text-foreground">
                                     New Eco Roses
+                                    <span
+                                        className="absolute left-0 bottom-0 w-full"
+                                        style={{
+                                            height: '2.5px',
+                                            background: 'linear-gradient(to right, #16a34a 50%, #dc2626 50%)',
+                                            borderRadius: '2px',
+                                        }}
+                                    />
                                 </span>
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block mb-3 hidden sm:inline-block" />
                             </Link>

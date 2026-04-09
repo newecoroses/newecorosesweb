@@ -23,6 +23,10 @@ interface Product {
 
 const FALLBACK_PHONE = '919936911611';
 
+// Tiny 1×1 blurred placeholder so images have a warm background while loading
+const BLUR_PLACEHOLDER =
+    'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAIBAAAQMEAwEAAAAAAAAAAAAAAQIDBAUREiFRYf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwozNNiuqitq0rSiP2ghAA2+NQAAAAASUVORK5CYII=';
+
 // Singleton cache so we only fetch once per page load
 let cachedPhone: string | null = null;
 let fetchPromise: Promise<string> | null = null;
@@ -45,14 +49,23 @@ function getWhatsappPhone(): Promise<string> {
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
     const [whatsappLink, setWhatsappLink] = useState('');
+    const [isHovered, setIsHovered] = useState(false);
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
-    // Extract an array of all images, deduplicated, starting with the main image
+    // Extract images, deduplicated, main image first
     const allImages = [...new Set([product.image_url, ...(product.images || [])])]
         .filter(Boolean)
         .filter(img => !img.startsWith('HIDDEN::'));
+
+    // Only the primary image + the first hover image — don't preload all variants
+    const primaryImage = allImages[0];
+    const hoverImage = allImages[1] ?? null;
+
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const productUrl = `${origin}/product/${product.slug}`;
+
+    // Priority load the first 6 cards (above-the-fold)
+    const isPriority = index < 6;
 
     useEffect(() => {
         getWhatsappPhone().then(phone => {
@@ -76,14 +89,18 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.06 }}
-            viewport={{ once: true, margin: '-30px' }}
+            transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.3) }}
+            viewport={{ once: true, margin: '0px' }}
             className="group flex flex-col h-full"
         >
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden rounded-xl md:rounded-2xl bg-[#faf7f2] mb-2.5 sm:mb-4 shadow-sm group-hover:shadow-card transition-shadow duration-500">
+            <div
+                className="relative aspect-square overflow-hidden rounded-xl md:rounded-2xl bg-[#faf7f2] mb-2.5 sm:mb-4 shadow-sm group-hover:shadow-card transition-shadow duration-500"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => { setIsHovered(false); setCurrentImageIdx(0); }}
+            >
                 {/* Tag badge */}
                 {tagBadge && product.tag && (
                     <span className={`absolute top-2 left-2 z-10 text-[9px] md:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${tagBadge}`}>
@@ -93,38 +110,49 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 <Link
                     href={`/product/${product.slug}`}
                     className="block w-full h-full relative"
-                    onMouseEnter={() => {
-                        if (allImages.length > 1) {
-                            setCurrentImageIdx(1);
-                        }
-                    }}
-                    onMouseLeave={() => setCurrentImageIdx(0)}
                     onMouseMove={(e) => {
                         if (allImages.length > 1) {
                             const rect = e.currentTarget.getBoundingClientRect();
                             const x = e.clientX - rect.left;
                             const percentage = x / rect.width;
-                            const idx = Math.min(Math.floor(percentage * allImages.length), allImages.length - 1);
+                            const idx = Math.min(Math.floor(percentage * Math.min(allImages.length, 4)), allImages.length - 1);
                             setCurrentImageIdx(Math.max(0, idx));
                         }
                     }}
                 >
-                    {allImages.map((img, idx) => (
+                    {/* Primary image — always rendered, loads eagerly for first 6 */}
+                    <Image
+                        src={primaryImage}
+                        alt={product.name}
+                        fill
+                        priority={isPriority}
+                        loading={isPriority ? 'eager' : 'lazy'}
+                        placeholder="blur"
+                        blurDataURL={BLUR_PLACEHOLDER}
+                        className={`object-cover transition-all duration-500 ease-out absolute inset-0 group-hover:scale-105 ${currentImageIdx === 0 ? 'opacity-100' : 'opacity-0'}`}
+                        style={product.image_scale && product.image_scale !== 1 ? { transform: `scale(${product.image_scale})` } : undefined}
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    />
+
+                    {/* Hover image — only rendered after first hover, preventing wasted requests */}
+                    {hoverImage && isHovered && (
                         <Image
-                            key={idx}
-                            src={img}
-                            alt={`${product.name} - view ${idx + 1}`}
+                            src={hoverImage}
+                            alt={`${product.name} - alternate view`}
                             fill
-                            className={`object-cover transition-all duration-700 ease-out absolute inset-0 group-hover:scale-105 ${currentImageIdx === idx ? 'opacity-100' : 'opacity-0'}`}
+                            loading="eager"
+                            placeholder="blur"
+                            blurDataURL={BLUR_PLACEHOLDER}
+                            className={`object-cover transition-all duration-500 ease-out absolute inset-0 group-hover:scale-105 ${currentImageIdx > 0 ? 'opacity-100' : 'opacity-0'}`}
                             style={product.image_scale && product.image_scale !== 1 ? { transform: `scale(${product.image_scale})` } : undefined}
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         />
-                    ))}
+                    )}
 
                     {/* Image indicator dots */}
                     {allImages.length > 1 && (
                         <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {allImages.map((_, idx) => (
+                            {allImages.slice(0, 4).map((_, idx) => (
                                 <div
                                     key={idx}
                                     className={`h-1 rounded-full transition-all duration-300 ${currentImageIdx === idx ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
