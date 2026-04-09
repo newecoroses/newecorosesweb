@@ -291,6 +291,25 @@ body {
   animation-play-state: paused;
 }
 
+/* ===== Marquee Reverse (Photo Reviews — scrolls right) ===== */
+@keyframes marquee-scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.marquee-track-reverse {
+  animation: marquee-scroll-reverse 55s linear infinite;
+  width: max-content;
+}
+
+.marquee-track-reverse:hover {
+  animation-play-state: paused;
+}
+
 /* ===== Mask Utilities ===== */
 .mask-linear-fade {
   mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);

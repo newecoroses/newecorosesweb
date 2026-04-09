@@ -12,6 +12,7 @@ import CategoryGrid from '@/components/home/category-grid';
 import FeaturedPicks from '@/components/home/featured-picks';
 import PromoSlider from '@/components/home/promo-slider';
 import ReviewVideos from '@/components/home/review-videos';
+import PhotoReviews from '@/components/home/photo-reviews';
 import CelebrateLove from '@/components/home/celebrate-love';
 import ProductCard from '@/components/product/product-card';
 import SectionHeader from '@/components/ui/section-header';
@@ -336,6 +337,9 @@ export default function Home() {
 
       {/* ═══ REVIEW VIDEOS ═══ */}
       <ReviewVideos />
+
+      {/* ═══ PHOTO REVIEWS ═══ */}
+      <PhotoReviews />
 
       {/* ═══ CELEBRATIONS CALENDAR ═══ */}
       {showCelebrations && visibleCelebrations.length > 0 && (

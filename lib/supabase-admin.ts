@@ -8,15 +8,32 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+// Lazy singleton — created on first use, not at module load time.
+// This prevents build-time errors when env vars aren't yet available.
+let _client: ReturnType<typeof createClient> | null = null;
 
-if (!supabaseUrl) throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL');
-if (!serviceRoleKey) throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY');
+export function getSupabaseAdmin() {
+    if (_client) return _client;
 
-export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false,
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!url || !key) {
+        throw new Error(
+            'Missing Supabase env vars. Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to your Vercel project settings.'
+        );
+    }
+
+    _client = createClient(url, key, {
+        auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    return _client;
+}
+
+// Convenience alias so existing imports still work
+export const supabaseAdmin = new Proxy({} as ReturnType<typeof createClient>, {
+    get(_target, prop) {
+        return (getSupabaseAdmin() as any)[prop];
     },
 });
