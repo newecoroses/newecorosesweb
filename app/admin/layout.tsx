@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import {
@@ -22,7 +23,8 @@ import {
     Megaphone,
     Video,
     Sparkles,
-    Palette
+    Palette,
+    BarChart2
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -36,6 +38,7 @@ const NAV_ITEMS = [
     { href: '/admin/featured', label: 'Featured Items', icon: Sparkles },
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/admin/review-videos', label: 'Review Videos', icon: Video },
+    { href: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
     { href: '/admin/whatsapp', label: 'WhatsApp', icon: MessageSquare },
     { href: '/admin/banned-words', label: 'Banned Words', icon: Shield },
     { href: '/admin/theme', label: 'Theme Colors', icon: Palette },
@@ -80,7 +83,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     return (
-        <div className="min-h-screen bg-gray-950 flex">
+        <div className="h-screen bg-gray-950 flex overflow-hidden">
             {/* Mobile overlay */}
             {sidebarOpen && (
                 <div
@@ -97,9 +100,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Logo */}
                 <div className="p-6 border-b border-gray-800">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-zinc-200 to-zinc-400 text-zinc-900 flex items-center justify-center text-gray-900 font-bold text-sm">
-                            NER
-                        </div>
+                        <NextImage
+                            src="/favicon_io/android-chrome-192x192.png"
+                            alt="New Eco Roses"
+                            width={36}
+                            height={36}
+                            className="rounded-full ring-1 ring-gray-600"
+                        />
                         <div>
                             <p className="font-semibold text-white text-sm">Admin Panel</p>
                             <p className="text-gray-400 text-xs">New Eco Roses</p>

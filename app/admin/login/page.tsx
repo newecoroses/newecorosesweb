@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Flower } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 import Cookies from 'js-cookie';
 
 export default function AdminLogin() {
@@ -50,9 +51,14 @@ export default function AdminLogin() {
                 <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8">
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-400 text-zinc-900 flex items-center justify-center mb-4 shadow-lg">
-                            <Flower size={28} className="text-white" />
-                        </div>
+                        <Image
+                            src="/favicon_io/android-chrome-512x512.png"
+                            alt="New Eco Roses"
+                            width={72}
+                            height={72}
+                            className="rounded-full mb-4 shadow-lg ring-2 ring-white/10"
+                            priority
+                        />
                         <h1 className="text-white text-2xl font-bold">Admin Login</h1>
                         <p className="text-gray-400 text-sm mt-1">New Eco Roses Control Panel</p>
                     </div>

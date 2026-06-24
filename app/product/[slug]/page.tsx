@@ -10,6 +10,7 @@ import WhatsAppFloat from '@/components/ui/whatsapp-float';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchProductBySlug, fetchProductsByCollection, fetchWhatsappSettings, DBProduct } from '@/lib/supabase';
 import { getProductBySlug, getProductsByCollection } from '@/lib/products';
+import { trackEnquiry } from '@/lib/analytics';
 
 const FALLBACK_PHONE = '919936911611';
 
@@ -252,6 +253,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full bg-primary text-white py-4 px-8 text-center rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-3 uppercase tracking-[0.15em] text-sm font-semibold shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 group"
+                            onClick={() => {
+                                // Fire-and-forget analytics — does not delay link open
+                                if (product) trackEnquiry(product.id, product.name);
+                            }}
                         >
                             <WhatsappIcon size={20} className="group-hover:text-[#25D366] transition-colors" />
                             Enquire via WhatsApp

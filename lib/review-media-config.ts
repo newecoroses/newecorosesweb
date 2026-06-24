@@ -24,7 +24,7 @@
 //  Switching back to "active" from any mode instantly restores
 //  all media on next deploy — no cleanup required anywhere.
 // ------------------------------------------------------------
-export const MEDIA_MODE: 'active' | 'degrading' | 'disabled' = 'degrading';
+export const MEDIA_MODE: 'active' | 'degrading' | 'disabled' = 'active';
 
 // ------------------------------------------------------------
 //  DEGRADATION SCHEDULE

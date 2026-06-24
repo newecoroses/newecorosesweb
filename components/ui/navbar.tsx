@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ShoppingBag, Gift, Share2 } from 'lucide-react';
+import { Menu, X, ShoppingBag, Share2 } from 'lucide-react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnnouncementBar from '@/components/ui/announcement-bar';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
@@ -86,20 +87,18 @@ export default function Navbar() {
                         {/* Top row — Logo + Nav Links + CTA */}
                         <div className="flex justify-between items-center">
                             {/* Logo */}
-                            <Link href="/" className="group relative flex items-center gap-2">
-                                <Gift size={28} className="text-foreground group-hover:text-primary transition-colors duration-300" />
-                                <span className="relative font-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-[0.08em] text-foreground">
+                            <Link href="/" className="group flex items-center" aria-label="New Eco Roses – Home">
+                                <Image
+                                    src="/favicon_io/android-chrome-512x512.png"
+                                    alt="New Eco Roses Logo"
+                                    width={44}
+                                    height={44}
+                                    priority
+                                    className="rounded-full transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
+                                />
+                                <span className="ml-2.5 font-serif text-lg sm:text-xl lg:text-[1.35rem] font-bold tracking-[0.06em] text-foreground group-hover:text-primary transition-colors duration-300">
                                     New Eco Roses
-                                    <span
-                                        className="absolute left-0 bottom-0 w-full"
-                                        style={{
-                                            height: '2.5px',
-                                            background: 'linear-gradient(to right, #16a34a 50%, #dc2626 50%)',
-                                            borderRadius: '2px',
-                                        }}
-                                    />
                                 </span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block mb-3 hidden sm:inline-block" />
                             </Link>
 
                             {/* Desktop Menu */}

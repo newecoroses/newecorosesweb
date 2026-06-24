@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Instagram, Facebook, Phone, MapPin, Clock, Heart } from 'lucide-react';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 
@@ -10,11 +11,17 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
                     {/* Brand */}
                     <div className="lg:col-span-1">
-                        <Link href="/" className="inline-block mb-6">
-                            <span className="font-serif text-2xl font-bold tracking-[0.08em] text-white">
+                        <Link href="/" className="inline-flex items-center gap-3 mb-6 group" aria-label="New Eco Roses — Home">
+                            <Image
+                                src="/favicon_io/android-chrome-512x512.png"
+                                alt="New Eco Roses Logo"
+                                width={52}
+                                height={52}
+                                className="rounded-full ring-1 ring-white/20 group-hover:ring-white/50 transition-all duration-300 drop-shadow-md"
+                            />
+                            <span className="font-serif text-xl font-bold tracking-[0.08em] text-white group-hover:text-white/80 transition-colors duration-300">
                                 NEW ECO ROSES
                             </span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-white inline-block ml-0.5 mb-2" />
                         </Link>
                         <p className="text-white/50 text-sm leading-relaxed mb-6 max-w-xs">
                             Kolkata&apos;s finest luxury floral &amp; gifting boutique. Hand-curated roses and bespoke gifts, delivered with love.

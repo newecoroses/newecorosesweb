@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Playfair_Display, Poppins } from 'next/font/google';
 import './globals.css';
 import LayoutWrapper from '@/components/ui/layout-wrapper';
+import AnalyticsTracker from '@/components/analytics/analytics-tracker';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -78,6 +79,8 @@ export default function RootLayout({
         }} />
       </head>
       <body className="antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
+        {/* Analytics tracker — invisible, client-only, non-blocking */}
+        <AnalyticsTracker />
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchWhatsappSettings } from '@/lib/supabase';
+import { trackEnquiry } from '@/lib/analytics';
 
 interface Product {
     id: string;
@@ -190,7 +191,11 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-primary text-white py-2.5 sm:py-3 rounded-lg md:rounded-xl text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.15em] font-semibold hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            // Fire-and-forget analytics tracking — does not delay link open
+                            trackEnquiry(product.id, product.name);
+                        }}
                     >
                         <WhatsappIcon size={15} className="opacity-90" />
                         Enquire Now
