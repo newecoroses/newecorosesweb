@@ -1,6 +1,7 @@
 -- ============================================================
 -- Analytics Schema — New Eco Roses
 -- Run this entire script in Supabase SQL Editor
+-- June 2026 data populated.
 -- ============================================================
 
 -- ── 1. Raw Events Table ────────────────────────────────────
