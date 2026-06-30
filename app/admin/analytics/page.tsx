@@ -28,8 +28,8 @@ import {
 } from 'lucide-react';
 
 // ── Dynamic chart imports (loaded only when this page opens) ───────────────
-const LineChart = dynamic(() => import('recharts').then(m => m.LineChart), { ssr: false });
-const Line = dynamic(() => import('recharts').then(m => m.Line), { ssr: false });
+const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false });
+const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false });
 const BarChart = dynamic(() => import('recharts').then(m => m.BarChart), { ssr: false });
 const Bar = dynamic(() => import('recharts').then(m => m.Bar), { ssr: false });
 const PieChart = dynamic(() => import('recharts').then(m => m.PieChart), { ssr: false });
@@ -67,9 +67,9 @@ interface DeviceRow { device: string; count: number; percentage: number }
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-const CHART_COLORS = ['#a3c47c', '#d4a24c', '#7cb9d4', '#d47c9c', '#9c7cd4', '#7cd4b8'];
+const CHART_COLORS = ['#10b981', '#6366f1', '#f43f5e', '#eab308', '#06b6d4', '#a855f7'];
 const DEVICE_COLORS: Record<string, string> = {
-    Mobile: '#a3c47c', Desktop: '#d4a24c', Tablet: '#7cb9d4',
+    Mobile: '#f43f5e', Desktop: '#6366f1', Tablet: '#eab308',
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -287,6 +287,67 @@ export default function AnalyticsPage() {
         return new Date(d).toLocaleDateString('en-IN', { weekday: 'short' });
     };
 
+    // ── Custom Tooltips ───────────────────────────────────────────────────
+    const CustomTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-gray-950/95 backdrop-blur-md border border-gray-800 rounded-xl p-3.5 shadow-2xl">
+                    <p className="text-gray-400 text-xs font-semibold mb-2">{trafficXLabel(label)}</p>
+                    <div className="space-y-1.5">
+                        {payload.map((p: any) => (
+                            <div key={p.name} className="flex items-center gap-4 justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.stroke || p.fill }} />
+                                    <span className="text-gray-300 text-xs">{p.name}</span>
+                                </div>
+                                <span className="text-white text-xs font-bold">{fmt(p.value)}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
+    const BarTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            const formattedDate = new Date(label).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            return (
+                <div className="bg-gray-950/95 backdrop-blur-md border border-gray-800 rounded-xl p-3.5 shadow-2xl">
+                    <p className="text-gray-400 text-xs font-semibold mb-2">{formattedDate}</p>
+                    <div className="flex items-center gap-4 justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-[#f43f5e]" />
+                            <span className="text-gray-300 text-xs">Enquiries</span>
+                        </div>
+                        <span className="text-white text-xs font-bold">{fmt(payload[0].value)}</span>
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
+    const HourTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            const isVisitor = payload[0].name === 'Visitors';
+            return (
+                <div className="bg-gray-950/95 backdrop-blur-md border border-gray-800 rounded-xl p-3 shadow-2xl">
+                    <p className="text-gray-400 text-xs font-semibold mb-1.5">{fmtHour(Number(label))}</p>
+                    <div className="flex items-center gap-3 justify-between">
+                        <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisitor ? '#10b981' : '#f43f5e' }} />
+                            <span className="text-gray-300 text-xs">{payload[0].name}</span>
+                        </div>
+                        <span className="text-white text-xs font-bold">{fmt(payload[0].value)}</span>
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
     // ── Render ─────────────────────────────────────────────────────────────
     return (
         <div className="max-w-7xl mx-auto space-y-10 pb-12">
@@ -352,19 +413,29 @@ export default function AnalyticsPage() {
                 <Card>
                     {loadingTraffic ? <LoadingBar /> : (
                         <ResponsiveContainer width="100%" height={280}>
-                            <LineChart data={traffic} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                <XAxis dataKey="date" tickFormatter={trafficXLabel} tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                <Tooltip contentStyle={ChartTooltipStyle} labelFormatter={(label: unknown) => trafficXLabel(String(label))} />
-                                <Line type="monotone" dataKey="pageviews" name="Visitors" stroke="#a3c47c" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-                                <Line type="monotone" dataKey="enquiries" name="Enquiries" stroke="#d4a24c" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-                            </LineChart>
+                            <AreaChart data={traffic} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+                                <defs>
+                                    <linearGradient id="colorPageviews" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                    </linearGradient>
+                                    <linearGradient id="colorEnquiries" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
+                                <XAxis dataKey="date" tickFormatter={trafficXLabel} tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
+                                <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
+                                <Tooltip content={<CustomTooltip />} />
+                                <Area type="monotone" dataKey="pageviews" name="Visitors" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPageviews)" dot={false} activeDot={{ r: 4, stroke: '#10b981', strokeWidth: 2 }} />
+                                <Area type="monotone" dataKey="enquiries" name="Enquiries" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorEnquiries)" dot={false} activeDot={{ r: 4, stroke: '#f43f5e', strokeWidth: 2 }} />
+                            </AreaChart>
                         </ResponsiveContainer>
                     )}
-                    <div className="flex gap-6 mt-3 justify-center">
-                        <div className="flex items-center gap-2"><span className="w-3 h-0.5 bg-[#a3c47c] inline-block rounded" /><span className="text-gray-400 text-xs">Visitors</span></div>
-                        <div className="flex items-center gap-2"><span className="w-3 h-0.5 bg-[#d4a24c] inline-block rounded" /><span className="text-gray-400 text-xs">Enquiries</span></div>
+                    <div className="flex gap-6 mt-4 justify-center">
+                        <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#10b981] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Visitors</span></div>
+                        <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#f43f5e] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Enquiries</span></div>
                     </div>
                 </Card>
             </section>
@@ -380,11 +451,17 @@ export default function AnalyticsPage() {
                         {loadingTraffic ? <LoadingBar /> : (
                             <ResponsiveContainer width="100%" height={200}>
                                 <BarChart data={traffic.slice(-30)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                    <XAxis dataKey="date" tickFormatter={(d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                                    <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                                    <Tooltip contentStyle={ChartTooltipStyle} />
-                                    <Bar dataKey="enquiries" name="Enquiries" fill="#d4a24c" radius={[3, 3, 0, 0]} />
+                                    <defs>
+                                        <linearGradient id="barEnquiries" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.8}/>
+                                            <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
+                                    <XAxis dataKey="date" tickFormatter={(d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                                    <YAxis tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                    <Tooltip content={<BarTooltip />} />
+                                    <Bar dataKey="enquiries" name="Enquiries" fill="url(#barEnquiries)" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
@@ -499,11 +576,17 @@ export default function AnalyticsPage() {
                         {loadingHourly ? <LoadingBar /> : (
                             <ResponsiveContainer width="100%" height={200}>
                                 <BarChart data={hourlyPageviews} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                    <XAxis dataKey="hour" tickFormatter={fmtHour} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} interval={2} />
-                                    <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                                    <Tooltip contentStyle={ChartTooltipStyle} labelFormatter={(label: unknown) => fmtHour(Number(label))} />
-                                    <Bar dataKey="count" name="Visitors" fill="#a3c47c" radius={[3, 3, 0, 0]} />
+                                    <defs>
+                                        <linearGradient id="barPageviews" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#10b981" stopOpacity={0.8}/>
+                                            <stop offset="100%" stopColor="#10b981" stopOpacity={0.2}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
+                                    <XAxis dataKey="hour" tickFormatter={fmtHour} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} interval={2} />
+                                    <YAxis tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                    <Tooltip content={<HourTooltip />} />
+                                    <Bar dataKey="count" name="Visitors" fill="url(#barPageviews)" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
@@ -513,11 +596,17 @@ export default function AnalyticsPage() {
                         {loadingHourly ? <LoadingBar /> : (
                             <ResponsiveContainer width="100%" height={200}>
                                 <BarChart data={hourlyEnquiries} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                    <XAxis dataKey="hour" tickFormatter={fmtHour} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} interval={2} />
-                                    <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                                    <Tooltip contentStyle={ChartTooltipStyle} labelFormatter={(label: unknown) => fmtHour(Number(label))} />
-                                    <Bar dataKey="count" name="Enquiries" fill="#d4a24c" radius={[3, 3, 0, 0]} />
+                                    <defs>
+                                        <linearGradient id="barHourlyEnquiries" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.8}/>
+                                            <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
+                                    <XAxis dataKey="hour" tickFormatter={fmtHour} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} interval={2} />
+                                    <YAxis tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                    <Tooltip content={<HourTooltip />} />
+                                    <Bar dataKey="count" name="Enquiries" fill="url(#barHourlyEnquiries)" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
@@ -701,7 +790,7 @@ export default function AnalyticsPage() {
                             <div className="flex flex-col lg:flex-row items-center gap-6">
                                 <ResponsiveContainer width={160} height={160}>
                                     <PieChart>
-                                        <Pie data={sources} dataKey="count" cx="50%" cy="50%" outerRadius={70} innerRadius={40} paddingAngle={2}>
+                                        <Pie data={sources} dataKey="count" cx="50%" cy="50%" outerRadius={70} innerRadius={48} paddingAngle={4} stroke="#111827" strokeWidth={2}>
                                             {sources.map((_, i) => (
                                                 <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                                             ))}
@@ -732,7 +821,7 @@ export default function AnalyticsPage() {
                             <div className="flex flex-col lg:flex-row items-center gap-6">
                                 <ResponsiveContainer width={160} height={160}>
                                     <PieChart>
-                                        <Pie data={devices} dataKey="count" cx="50%" cy="50%" outerRadius={70} innerRadius={40} paddingAngle={2}>
+                                        <Pie data={devices} dataKey="count" cx="50%" cy="50%" outerRadius={70} innerRadius={48} paddingAngle={4} stroke="#111827" strokeWidth={2}>
                                             {devices.map((d) => (
                                                 <Cell key={d.device} fill={DEVICE_COLORS[d.device] ?? '#6b7280'} />
                                             ))}
