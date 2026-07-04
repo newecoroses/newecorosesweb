@@ -19,27 +19,41 @@ export async function GET(request: Request) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const db = getSupabaseAdmin() as any;
 
-        let query = db
-            .from('analytics_events')
-            .select('device_type')
-            .eq('event_type', 'pageview')
-            .limit(10000);
+        let allData: any[] = [];
+        let hasMore = true;
+        let offset = 0;
+        const batchSize = 1000;
 
-        if (monthFilter) {
-            const start = `${monthFilter}-01T00:00:00Z`;
-            const [y, m] = monthFilter.split('-');
-            const end = new Date(parseInt(y), parseInt(m), 1).toISOString();
-            query = query.gte('created_at', start).lt('created_at', end);
-        } else {
-            const fromDate = new Date();
-            fromDate.setDate(fromDate.getDate() - (days - 1));
-            fromDate.setHours(0, 0, 0, 0);
-            query = query.gte('created_at', fromDate.toISOString());
+        while (hasMore) {
+            let query = db
+                .from('analytics_events')
+                .select('device_type')
+                .eq('event_type', 'pageview')
+                .range(offset, offset + batchSize - 1);
+
+            if (monthFilter) {
+                const start = `${monthFilter}-01T00:00:00Z`;
+                const [y, m] = monthFilter.split('-');
+                const end = new Date(parseInt(y), parseInt(m), 1).toISOString();
+                query = query.gte('created_at', start).lt('created_at', end);
+            } else {
+                const fromDate = new Date();
+                fromDate.setDate(fromDate.getDate() - (days - 1));
+                fromDate.setHours(0, 0, 0, 0);
+                query = query.gte('created_at', fromDate.toISOString());
+            }
+
+            const { data, error } = await query;
+            if (error) throw error;
+
+            allData = allData.concat(data || []);
+
+            if ((data || []).length < batchSize) {
+                hasMore = false;
+            } else {
+                offset += batchSize;
+            }
         }
-
-        const { data, error } = await query;
-
-        if (error) throw error;
 
         const counts: Record<string, number> = {
             mobile: 0,
@@ -47,7 +61,7 @@ export async function GET(request: Request) {
             desktop: 0,
         };
 
-        for (const row of (data ?? []) as any[]) {
+        for (const row of allData) {
             const device = (row.device_type as string) ?? 'desktop';
             counts[device] = (counts[device] ?? 0) + 1;
         }

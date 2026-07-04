@@ -686,15 +686,14 @@ export default function AnalyticsPage() {
                                             <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => {
-                                            setSelectedMonthFilter(selectedExplorerMonth);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
+                                    <a
+                                        href={`/admin/analytics/${selectedExplorerMonth}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="w-full bg-zinc-100 hover:bg-white text-zinc-900 text-xs font-semibold py-2.5 rounded-xl transition-all duration-300 text-center block shadow-sm hover:shadow"
                                     >
                                         View Full Analytics
-                                    </button>
+                                    </a>
                                 </div>
 
                                 {/* Stats Grid */}
