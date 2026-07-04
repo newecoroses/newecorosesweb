@@ -170,6 +170,11 @@ export default function AnalyticsPage() {
     const [sources, setSources] = useState<SourceRow[]>([]);
     const [devices, setDevices] = useState<DeviceRow[]>([]);
 
+    // Monthly Explorer state
+    const [monthlyHistory, setMonthlyHistory] = useState<TrafficRow[]>([]);
+    const [selectedExplorerMonth, setSelectedExplorerMonth] = useState<string>('');
+    const [loadingMonthlyHistory, setLoadingMonthlyHistory] = useState(true);
+
     // Loading state
     const [loadingOverview, setLoadingOverview] = useState(true);
     const [loadingTraffic, setLoadingTraffic] = useState(true);
@@ -246,6 +251,21 @@ export default function AnalyticsPage() {
         } finally { setLoadingMisc(false); }
     }, []);
 
+    const fetchMonthlyHistory = useCallback(async () => {
+        setLoadingMonthlyHistory(true);
+        try {
+            const res = await fetch('/api/admin/analytics/traffic?range=12m');
+            if (res.ok) {
+                const data = await res.json();
+                setMonthlyHistory(data || []);
+                if (data && data.length > 0) {
+                    setSelectedExplorerMonth(data[data.length - 1].date);
+                }
+            }
+        } catch { /* ignore */ }
+        finally { setLoadingMonthlyHistory(false); }
+    }, []);
+
     // ── Initial load ───────────────────────────────────────────────────────
     useEffect(() => {
         fetchOverview();
@@ -254,6 +274,7 @@ export default function AnalyticsPage() {
         fetchHourly();
         fetchMisc();
         fetchLogs(1, '', '');
+        fetchMonthlyHistory();
 
         // Realtime polling: immediately + every 30s
         fetchRealtime();
@@ -532,6 +553,85 @@ export default function AnalyticsPage() {
                         </div>
                     </Card>
                 </div>
+            </section>
+
+            {/* ─────────────────────────────────────────────────────────────
+                SECTION: MONTHLY PERFORMANCE EXPLORER
+            ───────────────────────────────────────────────────────────── */}
+            <section>
+                <SectionHeader title="Monthly Performance Explorer" subtitle="Analyze traffic, click counts, and conversion rates for any specific month" />
+                <Card>
+                    {loadingMonthlyHistory ? (
+                        <LoadingBar />
+                    ) : monthlyHistory.length === 0 ? (
+                        <p className="text-gray-500 text-sm text-center py-6">No monthly historical data found.</p>
+                    ) : (() => {
+                        const activeRow = monthlyHistory.find(r => r.date === selectedExplorerMonth) || monthlyHistory[monthlyHistory.length - 1];
+                        const visitors = activeRow ? activeRow.pageviews : 0;
+                        const enquiries = activeRow ? activeRow.enquiries : 0;
+                        const convRate = visitors > 0 ? ((enquiries / visitors) * 100).toFixed(1) : '0.0';
+
+                        // Calculate average daily visitors
+                        const [year, month] = (activeRow?.date || '').split('-');
+                        const daysInMonth = activeRow ? new Date(parseInt(year), parseInt(month), 0).getDate() : 30;
+                        const avgDaily = activeRow ? (visitors / daysInMonth).toFixed(1) : '0.0';
+
+                        return (
+                            <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between">
+                                {/* Select Month Dropdown */}
+                                <div className="flex-shrink-0 w-full md:w-64 space-y-2">
+                                    <label htmlFor="explorer-month" className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Choose Month</label>
+                                    <div className="relative">
+                                        <select
+                                            id="explorer-month"
+                                            value={selectedExplorerMonth}
+                                            onChange={e => setSelectedExplorerMonth(e.target.value)}
+                                            className="w-full bg-gray-800 border border-gray-700 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-600 focus:border-zinc-600 appearance-none cursor-pointer font-medium"
+                                        >
+                                            {monthlyHistory.slice().reverse().map(row => {
+                                                const [y, m] = row.date.split('-');
+                                                const formattedName = new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+                                                return (
+                                                    <option key={row.date} value={row.date}>
+                                                        {formattedName}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                        <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                    </div>
+                                </div>
+
+                                {/* Stats Grid */}
+                                <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                                    {/* Stat 1: Visitors */}
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                        <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Monthly Visitors</p>
+                                        <p className="text-2xl font-bold text-white">{fmt(visitors)}</p>
+                                    </div>
+
+                                    {/* Stat 2: Enquiry Clicks */}
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                        <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Enquiry Clicks</p>
+                                        <p className="text-2xl font-bold text-white">{fmt(enquiries)}</p>
+                                    </div>
+
+                                    {/* Stat 3: Conversion Rate */}
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                        <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Conversion Rate</p>
+                                        <p className="text-2xl font-bold text-white">{convRate}%</p>
+                                    </div>
+
+                                    {/* Stat 4: Daily Average */}
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                        <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Daily Average</p>
+                                        <p className="text-2xl font-bold text-white">{avgDaily}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
+                </Card>
             </section>
 
             {/* ─────────────────────────────────────────────────────────────
