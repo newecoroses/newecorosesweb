@@ -21,16 +21,19 @@ export async function GET(request: Request) {
         const now = new Date();
 
         if (monthFilter) {
+            const [year, month] = monthFilter.split('-');
+            const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+            const startDay = `${monthFilter}-01`;
+            const endDay = `${monthFilter}-${String(daysInMonth).padStart(2, '0')}`;
+
             const { data, error } = await supabase
                 .from('analytics_daily')
                 .select('day, pageviews, enquiries')
-                .like('day', `${monthFilter}-%`)
+                .gte('day', startDay)
+                .lte('day', endDay)
                 .order('day', { ascending: true });
 
             if (error) throw error;
-
-            const [year, month] = monthFilter.split('-');
-            const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
             
             const filled: { date: string; pageviews: number; enquiries: number }[] = [];
             const dataMap = new Map(((data ?? []) as any[]).map((r: any) => [r.day as string, r]));

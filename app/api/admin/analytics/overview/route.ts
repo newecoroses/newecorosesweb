@@ -22,10 +22,16 @@ export async function GET(request: Request) {
         const todayStr = now.toISOString().split('T')[0];
 
         if (monthFilter) {
+            const [y, m] = monthFilter.split('-');
+            const daysInMonth = new Date(parseInt(y), parseInt(m), 0).getDate();
+            const startDay = `${monthFilter}-01`;
+            const endDay = `${monthFilter}-${String(daysInMonth).padStart(2, '0')}`;
+
             const { data: dailyRows, error } = await db
                 .from('analytics_daily')
                 .select('day, pageviews, enquiries')
-                .like('day', `${monthFilter}-%`);
+                .gte('day', startDay)
+                .lte('day', endDay);
 
             if (error) throw error;
 
