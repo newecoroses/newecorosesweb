@@ -410,34 +410,79 @@ export default function AnalyticsPage() {
                         ))}
                     </div>
                 </div>
-                <Card>
-                    {loadingTraffic ? <LoadingBar /> : (
-                        <ResponsiveContainer width="100%" height={280}>
-                            <AreaChart data={traffic} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                                <defs>
-                                    <linearGradient id="colorPageviews" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                    </linearGradient>
-                                    <linearGradient id="colorEnquiries" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
-                                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
-                                <XAxis dataKey="date" tickFormatter={trafficXLabel} tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Area type="monotone" dataKey="pageviews" name="Visitors" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPageviews)" dot={false} activeDot={{ r: 4, stroke: '#10b981', strokeWidth: 2 }} />
-                                <Area type="monotone" dataKey="enquiries" name="Enquiries" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorEnquiries)" dot={false} activeDot={{ r: 4, stroke: '#f43f5e', strokeWidth: 2 }} />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                <div className={`grid grid-cols-1 ${trafficRange === '12m' ? 'lg:grid-cols-3' : ''} gap-4`}>
+                    <Card className={trafficRange === '12m' ? 'lg:col-span-2' : ''}>
+                        {loadingTraffic ? <LoadingBar /> : (
+                            <ResponsiveContainer width="100%" height={280}>
+                                <AreaChart data={traffic} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+                                    <defs>
+                                        <linearGradient id="colorPageviews" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                        </linearGradient>
+                                        <linearGradient id="colorEnquiries" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                                            <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
+                                    <XAxis dataKey="date" tickFormatter={trafficXLabel} tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Area type="monotone" dataKey="pageviews" name="Visitors" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPageviews)" dot={false} activeDot={{ r: 4, stroke: '#10b981', strokeWidth: 2 }} />
+                                    <Area type="monotone" dataKey="enquiries" name="Enquiries" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorEnquiries)" dot={false} activeDot={{ r: 4, stroke: '#f43f5e', strokeWidth: 2 }} />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        )}
+                        <div className="flex gap-6 mt-4 justify-center">
+                            <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#10b981] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Visitors</span></div>
+                            <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#f43f5e] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Enquiries</span></div>
+                        </div>
+                    </Card>
+
+                    {trafficRange === '12m' && (
+                        <Card className="flex flex-col h-full justify-between">
+                            <div>
+                                <p className="text-white text-sm font-semibold mb-3">Monthly Breakdown</p>
+                                <div className="overflow-y-auto max-h-[260px] pr-1">
+                                    <table className="w-full text-xs text-left">
+                                        <thead>
+                                            <tr className="border-b border-gray-800 text-gray-500">
+                                                <th className="py-2 font-medium">Month</th>
+                                                <th className="py-2 text-right font-medium">Visitors</th>
+                                                <th className="py-2 text-right font-medium">Clicks</th>
+                                                <th className="py-2 text-right font-medium">Conv. Rate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {traffic.slice().reverse().map(row => {
+                                                const [year, month] = row.date.split('-');
+                                                const monthName = new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+                                                const convRate = row.pageviews > 0 ? ((row.enquiries / row.pageviews) * 100).toFixed(1) : '0.0';
+                                                return (
+                                                    <tr key={row.date} className="border-b border-gray-800/40 last:border-0 hover:bg-gray-800/20">
+                                                        <td className="py-2.5 text-gray-300 font-medium">{monthName}</td>
+                                                        <td className="py-2.5 text-right text-gray-400">{fmt(row.pageviews)}</td>
+                                                        <td className="py-2.5 text-right text-gray-400">{fmt(row.enquiries)}</td>
+                                                        <td className="py-2.5 text-right">
+                                                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                                                Number(convRate) >= 10 ? 'bg-green-500/10 text-green-400' :
+                                                                Number(convRate) >= 3 ? 'bg-yellow-500/10 text-yellow-400' :
+                                                                'bg-gray-800 text-gray-500'
+                                                            }`}>
+                                                                {convRate}%
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </Card>
                     )}
-                    <div className="flex gap-6 mt-4 justify-center">
-                        <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#10b981] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Visitors</span></div>
-                        <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#f43f5e] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Enquiries</span></div>
-                    </div>
-                </Card>
+                </div>
             </section>
 
             {/* ─────────────────────────────────────────────────────────────
