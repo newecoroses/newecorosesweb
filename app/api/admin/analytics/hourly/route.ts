@@ -18,19 +18,29 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const eventType = searchParams.get('type') === 'enquiry' ? 'enquiry' : 'pageview';
         const days = Math.min(parseInt(searchParams.get('days') ?? '7', 10), 30);
+        const monthFilter = searchParams.get('month');
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const db = getSupabaseAdmin() as any;
 
-        const fromDate = new Date();
-        fromDate.setDate(fromDate.getDate() - (days - 1));
-        fromDate.setHours(0, 0, 0, 0);
-
-        const { data, error } = await db
+        let query = db
             .from('analytics_events')
             .select('hour')
-            .eq('event_type', eventType)
-            .gte('created_at', fromDate.toISOString());
+            .eq('event_type', eventType);
+
+        if (monthFilter) {
+            const start = `${monthFilter}-01T00:00:00Z`;
+            const [y, m] = monthFilter.split('-');
+            const end = new Date(parseInt(y), parseInt(m), 1).toISOString();
+            query = query.gte('created_at', start).lt('created_at', end);
+        } else {
+            const fromDate = new Date();
+            fromDate.setDate(fromDate.getDate() - (days - 1));
+            fromDate.setHours(0, 0, 0, 0);
+            query = query.gte('created_at', fromDate.toISOString());
+        }
+
+        const { data, error } = await query;
 
         if (error) throw error;
 

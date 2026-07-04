@@ -11,12 +11,45 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const monthFilter = searchParams.get('month');
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const db = getSupabaseAdmin() as any;
         const now = new Date();
         const todayStr = now.toISOString().split('T')[0];
+
+        if (monthFilter) {
+            const { data: dailyRows, error } = await db
+                .from('analytics_daily')
+                .select('day, pageviews, enquiries')
+                .like('day', `${monthFilter}-%`);
+
+            if (error) throw error;
+
+            let visitorsMonth = 0, enquiriesMonth = 0;
+            for (const row of (dailyRows ?? []) as any[]) {
+                visitorsMonth += row.pageviews;
+                enquiriesMonth += row.enquiries;
+            }
+
+            return NextResponse.json({
+                visitors: {
+                    today: 0,
+                    week: 0,
+                    month: visitorsMonth,
+                    total: visitorsMonth,
+                },
+                enquiries: {
+                    today: 0,
+                    week: 0,
+                    month: enquiriesMonth,
+                    total: enquiriesMonth,
+                },
+            });
+        }
 
         // Start of this week (Monday)
         const dayOfWeek = now.getDay(); // 0 = Sun

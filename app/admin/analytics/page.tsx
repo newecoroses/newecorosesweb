@@ -118,10 +118,11 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
 }
 
 function StatCard({
-    label, value, sub, icon: Icon, gradient, loading,
+    label, value, sub, icon: Icon, gradient, loading, isCustomValue = false,
 }: {
     label: string; value: number | undefined; sub?: string;
     icon: React.ElementType; gradient: string; loading: boolean;
+    isCustomValue?: boolean;
 }) {
     return (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
@@ -131,10 +132,10 @@ function StatCard({
             <p className="text-3xl font-bold text-white mb-1">
                 {loading ? (
                     <span className="w-14 h-7 bg-gray-800 rounded animate-pulse inline-block" />
-                ) : fmt(value)}
+                ) : isCustomValue ? sub : fmt(value)}
             </p>
             <p className="text-gray-400 text-xs">{label}</p>
-            {sub && <p className="text-gray-600 text-[10px] mt-0.5">{sub}</p>}
+            {!isCustomValue && sub && <p className="text-gray-600 text-[10px] mt-0.5">{sub}</p>}
         </div>
     );
 }
@@ -175,6 +176,9 @@ export default function AnalyticsPage() {
     const [selectedExplorerMonth, setSelectedExplorerMonth] = useState<string>('');
     const [loadingMonthlyHistory, setLoadingMonthlyHistory] = useState(true);
 
+    // Page-level Month Filter state
+    const [selectedMonthFilter, setSelectedMonthFilter] = useState<string | null>(null);
+
     // Loading state
     const [loadingOverview, setLoadingOverview] = useState(true);
     const [loadingTraffic, setLoadingTraffic] = useState(true);
@@ -188,38 +192,47 @@ export default function AnalyticsPage() {
     const fetchOverview = useCallback(async () => {
         setLoadingOverview(true);
         try {
-            const res = await fetch('/api/admin/analytics/overview');
+            const url = selectedMonthFilter ? `/api/admin/analytics/overview?month=${selectedMonthFilter}` : '/api/admin/analytics/overview';
+            const res = await fetch(url);
             if (res.ok) setOverview(await res.json());
         } finally { setLoadingOverview(false); }
-    }, []);
+    }, [selectedMonthFilter]);
 
     const fetchTraffic = useCallback(async (range: string) => {
         setLoadingTraffic(true);
         try {
-            const res = await fetch(`/api/admin/analytics/traffic?range=${range}`);
+            const url = selectedMonthFilter
+                ? `/api/admin/analytics/traffic?month=${selectedMonthFilter}`
+                : `/api/admin/analytics/traffic?range=${range}`;
+            const res = await fetch(url);
             if (res.ok) setTraffic(await res.json());
         } finally { setLoadingTraffic(false); }
-    }, []);
+    }, [selectedMonthFilter]);
 
     const fetchProducts = useCallback(async (sort: string) => {
         setLoadingProducts(true);
         try {
-            const res = await fetch(`/api/admin/analytics/products?sort=${sort}`);
+            const url = selectedMonthFilter
+                ? `/api/admin/analytics/products?sort=${sort}&month=${selectedMonthFilter}`
+                : `/api/admin/analytics/products?sort=${sort}`;
+            const res = await fetch(url);
             if (res.ok) setProducts(await res.json());
         } finally { setLoadingProducts(false); }
-    }, []);
+    }, [selectedMonthFilter]);
 
     const fetchHourly = useCallback(async () => {
         setLoadingHourly(true);
         try {
+            const pvUrl = selectedMonthFilter ? `/api/admin/analytics/hourly?type=pageview&month=${selectedMonthFilter}` : '/api/admin/analytics/hourly?type=pageview';
+            const enqUrl = selectedMonthFilter ? `/api/admin/analytics/hourly?type=enquiry&month=${selectedMonthFilter}` : '/api/admin/analytics/hourly?type=enquiry';
             const [pvRes, enqRes] = await Promise.all([
-                fetch('/api/admin/analytics/hourly?type=pageview'),
-                fetch('/api/admin/analytics/hourly?type=enquiry'),
+                fetch(pvUrl),
+                fetch(enqUrl),
             ]);
             if (pvRes.ok) setHourlyPageviews(await pvRes.json());
             if (enqRes.ok) setHourlyEnquiries(await enqRes.json());
         } finally { setLoadingHourly(false); }
-    }, []);
+    }, [selectedMonthFilter]);
 
     const fetchRealtime = useCallback(async () => {
         try {
@@ -234,22 +247,32 @@ export default function AnalyticsPage() {
             const params = new URLSearchParams({ page: String(page), limit: '25' });
             if (search) params.set('search', search);
             if (device) params.set('device', device);
+            if (selectedMonthFilter) {
+                const start = `${selectedMonthFilter}-01`;
+                const [y, m] = selectedMonthFilter.split('-');
+                const endDay = new Date(parseInt(y), parseInt(m), 0).getDate();
+                const end = `${selectedMonthFilter}-${endDay}`;
+                params.set('from', start);
+                params.set('to', end);
+            }
             const res = await fetch(`/api/admin/analytics/logs?${params}`);
             if (res.ok) setLogs(await res.json());
         } finally { setLoadingLogs(false); }
-    }, []);
+    }, [selectedMonthFilter]);
 
     const fetchMisc = useCallback(async () => {
         setLoadingMisc(true);
         try {
+            const srcUrl = selectedMonthFilter ? `/api/admin/analytics/sources?month=${selectedMonthFilter}` : '/api/admin/analytics/sources';
+            const devUrl = selectedMonthFilter ? `/api/admin/analytics/devices?month=${selectedMonthFilter}` : '/api/admin/analytics/devices';
             const [srcRes, devRes] = await Promise.all([
-                fetch('/api/admin/analytics/sources'),
-                fetch('/api/admin/analytics/devices'),
+                fetch(srcUrl),
+                fetch(devUrl),
             ]);
             if (srcRes.ok) setSources(await srcRes.json());
             if (devRes.ok) setDevices(await devRes.json());
         } finally { setLoadingMisc(false); }
-    }, []);
+    }, [selectedMonthFilter]);
 
     const fetchMonthlyHistory = useCallback(async () => {
         setLoadingMonthlyHistory(true);
@@ -287,6 +310,12 @@ export default function AnalyticsPage() {
     useEffect(() => { fetchTraffic(trafficRange); }, [trafficRange, fetchTraffic]);
     useEffect(() => { fetchProducts(productSort); }, [productSort, fetchProducts]);
     useEffect(() => { fetchLogs(logsPage, logsSearch, logsDevice); }, [logsPage, logsSearch, logsDevice, fetchLogs]);
+
+    useEffect(() => {
+        fetchOverview();
+        fetchHourly();
+        fetchMisc();
+    }, [selectedMonthFilter, fetchOverview, fetchHourly, fetchMisc]);
 
     // ── CSV Export ─────────────────────────────────────────────────────────
     const exportCSV = () => {
@@ -378,32 +407,87 @@ export default function AnalyticsPage() {
                     <h1 className="text-2xl font-bold text-white">Analytics</h1>
                     <p className="text-gray-400 text-sm mt-1">Real-time insights for New Eco Roses</p>
                 </div>
-                <button
-                    onClick={() => { fetchOverview(); fetchRealtime(); }}
-                    className="flex items-center gap-2 text-gray-400 hover:text-white text-xs px-3 py-2 rounded-lg hover:bg-gray-800 transition-all"
-                >
-                    <RefreshCw size={13} />
-                    Refresh
-                </button>
+                <div className="flex items-center gap-3">
+                    {selectedMonthFilter && (
+                        <button
+                            onClick={() => setSelectedMonthFilter(null)}
+                            className="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-all"
+                        >
+                            Reset Month Filter
+                        </button>
+                    )}
+                    <button
+                        onClick={() => { fetchOverview(); fetchRealtime(); }}
+                        className="flex items-center gap-2 text-gray-400 hover:text-white text-xs px-3 py-2 rounded-lg hover:bg-gray-800 transition-all"
+                    >
+                        <RefreshCw size={13} />
+                        Refresh
+                    </button>
+                </div>
             </div>
+
+            {selectedMonthFilter && (
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+                    <div className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-white text-sm font-semibold">
+                            Viewing detailed breakdown for: {(() => {
+                                const [y, m] = selectedMonthFilter.split('-');
+                                return new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+                            })()}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setSelectedMonthFilter(null)}
+                        className="text-zinc-400 hover:text-white text-xs font-medium underline transition-colors"
+                    >
+                        Clear filter & show all-time
+                    </button>
+                </div>
+            )}
 
             {/* ─────────────────────────────────────────────────────────────
                 SECTION 1: OVERVIEW CARDS
             ───────────────────────────────────────────────────────────── */}
             <section>
                 <SectionHeader title="Overview" subtitle="Visitors and enquiry counts across all time periods" />
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <StatCard label="Visitors Today" value={overview?.visitors.today} icon={Users} gradient="from-blue-500 to-blue-600" loading={loadingOverview} />
-                    <StatCard label="Visitors This Week" value={overview?.visitors.week} icon={Users} gradient="from-indigo-500 to-indigo-600" loading={loadingOverview} />
-                    <StatCard label="Visitors This Month" value={overview?.visitors.month} icon={Users} gradient="from-violet-500 to-violet-600" loading={loadingOverview} />
-                    <StatCard label="Total Visitors" value={overview?.visitors.total} icon={TrendingUp} gradient="from-purple-500 to-purple-600" loading={loadingOverview} />
-                </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <StatCard label="Enquiries Today" value={overview?.enquiries.today} icon={MousePointerClick} gradient="from-emerald-500 to-emerald-600" loading={loadingOverview} />
-                    <StatCard label="Enquiries This Week" value={overview?.enquiries.week} icon={MousePointerClick} gradient="from-green-500 to-green-600" loading={loadingOverview} />
-                    <StatCard label="Enquiries This Month" value={overview?.enquiries.month} icon={MousePointerClick} gradient="from-teal-500 to-teal-600" loading={loadingOverview} />
-                    <StatCard label="Total Enquiries" value={overview?.enquiries.total} icon={Activity} gradient="from-cyan-500 to-cyan-600" loading={loadingOverview} />
-                </div>
+                {selectedMonthFilter ? (
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {(() => {
+                            const visitors = overview?.visitors.total || 0;
+                            const enquiries = overview?.enquiries.total || 0;
+                            const convRate = visitors > 0 ? ((enquiries / visitors) * 100).toFixed(1) : '0.0';
+                            
+                            const [year, month] = selectedMonthFilter.split('-');
+                            const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+                            const avgDaily = (visitors / daysInMonth).toFixed(1);
+
+                            return (
+                                <>
+                                    <StatCard label="Monthly Visitors" value={visitors} icon={Users} gradient="from-blue-500 to-blue-600" loading={loadingOverview} />
+                                    <StatCard label="Monthly Enquiries" value={enquiries} icon={MousePointerClick} gradient="from-emerald-500 to-emerald-600" loading={loadingOverview} />
+                                    <StatCard label="Conversion Rate" value={0} sub={`${convRate}%`} icon={TrendingUp} gradient="from-violet-500 to-violet-600" loading={loadingOverview} isCustomValue />
+                                    <StatCard label="Daily Average" value={0} sub={avgDaily} icon={Activity} gradient="from-cyan-500 to-cyan-600" loading={loadingOverview} isCustomValue />
+                                </>
+                            );
+                        })()}
+                    </div>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <StatCard label="Visitors Today" value={overview?.visitors.today} icon={Users} gradient="from-blue-500 to-blue-600" loading={loadingOverview} />
+                            <StatCard label="Visitors This Week" value={overview?.visitors.week} icon={Users} gradient="from-indigo-500 to-indigo-600" loading={loadingOverview} />
+                            <StatCard label="Visitors This Month" value={overview?.visitors.month} icon={Users} gradient="from-violet-500 to-violet-600" loading={loadingOverview} />
+                            <StatCard label="Total Visitors" value={overview?.visitors.total} icon={TrendingUp} gradient="from-purple-500 to-purple-600" loading={loadingOverview} />
+                        </div>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            <StatCard label="Enquiries Today" value={overview?.enquiries.today} icon={MousePointerClick} gradient="from-emerald-500 to-emerald-600" loading={loadingOverview} />
+                            <StatCard label="Enquiries This Week" value={overview?.enquiries.week} icon={MousePointerClick} gradient="from-green-500 to-green-600" loading={loadingOverview} />
+                            <StatCard label="Enquiries This Month" value={overview?.enquiries.month} icon={MousePointerClick} gradient="from-teal-500 to-teal-600" loading={loadingOverview} />
+                            <StatCard label="Total Enquiries" value={overview?.enquiries.total} icon={Activity} gradient="from-cyan-500 to-cyan-600" loading={loadingOverview} />
+                        </div>
+                    </>
+                )}
             </section>
 
             {/* ─────────────────────────────────────────────────────────────
@@ -579,51 +663,62 @@ export default function AnalyticsPage() {
                         return (
                             <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between">
                                 {/* Select Month Dropdown */}
-                                <div className="flex-shrink-0 w-full md:w-64 space-y-2">
-                                    <label htmlFor="explorer-month" className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Choose Month</label>
-                                    <div className="relative">
-                                        <select
-                                            id="explorer-month"
-                                            value={selectedExplorerMonth}
-                                            onChange={e => setSelectedExplorerMonth(e.target.value)}
-                                            className="w-full bg-gray-800 border border-gray-700 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-600 focus:border-zinc-600 appearance-none cursor-pointer font-medium"
-                                        >
-                                            {monthlyHistory.slice().reverse().map(row => {
-                                                const [y, m] = row.date.split('-');
-                                                const formattedName = new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
-                                                return (
-                                                    <option key={row.date} value={row.date}>
-                                                        {formattedName}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
-                                        <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                <div className="flex-shrink-0 w-full md:w-64 space-y-3">
+                                    <div>
+                                        <label htmlFor="explorer-month" className="text-gray-400 text-xs font-semibold uppercase tracking-wider block mb-1">Choose Month</label>
+                                        <div className="relative">
+                                            <select
+                                                id="explorer-month"
+                                                value={selectedExplorerMonth}
+                                                onChange={e => setSelectedExplorerMonth(e.target.value)}
+                                                className="w-full bg-gray-800 border border-gray-700 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-600 focus:border-zinc-600 appearance-none cursor-pointer font-medium"
+                                            >
+                                                {monthlyHistory.slice().reverse().map(row => {
+                                                    const [y, m] = row.date.split('-');
+                                                    const formattedName = new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+                                                    return (
+                                                        <option key={row.date} value={row.date}>
+                                                            {formattedName}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                            <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                        </div>
                                     </div>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedMonthFilter(selectedExplorerMonth);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="w-full bg-zinc-100 hover:bg-white text-zinc-900 text-xs font-semibold py-2.5 rounded-xl transition-all duration-300 text-center block shadow-sm hover:shadow"
+                                    >
+                                        View Full Analytics
+                                    </button>
                                 </div>
 
                                 {/* Stats Grid */}
                                 <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                                     {/* Stat 1: Visitors */}
-                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center font-sans">
                                         <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Monthly Visitors</p>
                                         <p className="text-2xl font-bold text-white">{fmt(visitors)}</p>
                                     </div>
 
                                     {/* Stat 2: Enquiry Clicks */}
-                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center font-sans">
                                         <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Enquiry Clicks</p>
                                         <p className="text-2xl font-bold text-white">{fmt(enquiries)}</p>
                                     </div>
 
                                     {/* Stat 3: Conversion Rate */}
-                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center font-sans">
                                         <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Conversion Rate</p>
                                         <p className="text-2xl font-bold text-white">{convRate}%</p>
                                     </div>
 
                                     {/* Stat 4: Daily Average */}
-                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center">
+                                    <div className="bg-gray-800/40 border border-gray-800/80 rounded-xl p-4 flex flex-col justify-center font-sans">
                                         <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Daily Average</p>
                                         <p className="text-2xl font-bold text-white">{avgDaily}</p>
                                     </div>

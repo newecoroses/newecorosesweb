@@ -14,10 +14,41 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const range = searchParams.get('range') ?? '7d';
+        const monthFilter = searchParams.get('month');
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const supabase = getSupabaseAdmin() as any;
         const now = new Date();
+
+        if (monthFilter) {
+            const { data, error } = await supabase
+                .from('analytics_daily')
+                .select('day, pageviews, enquiries')
+                .like('day', `${monthFilter}-%`)
+                .order('day', { ascending: true });
+
+            if (error) throw error;
+
+            const [year, month] = monthFilter.split('-');
+            const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+            
+            const filled: { date: string; pageviews: number; enquiries: number }[] = [];
+            const dataMap = new Map(((data ?? []) as any[]).map((r: any) => [r.day as string, r]));
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayStr = `${monthFilter}-${String(day).padStart(2, '0')}`;
+                const row = dataMap.get(dayStr);
+                filled.push({
+                    date: dayStr,
+                    pageviews: row?.pageviews ?? 0,
+                    enquiries: row?.enquiries ?? 0,
+                });
+            }
+
+            return NextResponse.json(filled, {
+                headers: { 'Cache-Control': 's-maxage=60' },
+            });
+        }
 
         let fromDate: string;
         let groupByMonth = false;
