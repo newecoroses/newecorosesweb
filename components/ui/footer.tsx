@@ -102,25 +102,31 @@ export default function Footer() {
 
                     {/* Visit Us / Map */}
                     <div>
-                        <h4 className="font-serif text-base text-white mb-6 tracking-wide">Visit Our Store</h4>
-                        <p className="text-sm text-white/40 mb-4">
-                            140/1/306, Netaji Subhash Chandra Bose Rd,<br />
-                            near RUPAYAN JEWELLERY, Regent Colony,<br />
-                            Regent Park, Kolkata, West Bengal 700040
-                        </p>
-                        <p className="text-sm text-white/40 mb-1">📞 +91 99369 11611</p>
-                        <p className="text-sm text-white/40 mb-4">✉️ newecoroses@gmail.com</p>
-                        <div className="w-full h-36 rounded-lg overflow-hidden border border-white/10 opacity-80 hover:opacity-100 transition-opacity">
-                            <iframe
-                                src="https://maps.google.com/maps?q=22.4855973,88.3518101&z=15&output=embed"
-                                width="100%"
-                                height="100%"
-                                style={{ border: 0, filter: 'grayscale(100%) invert(92%) contrast(83%)' }}
-                                allowFullScreen
-                                loading="lazy"
-                                title="Store Location"
-                            />
+                        <h4 className="font-serif text-base text-white mb-6 tracking-wide">Visit Our Outlets</h4>
+                        <div className="space-y-3 mb-4">
+                            <div>
+                                <p className="text-[11px] font-semibold text-white/70 uppercase tracking-wider">Outlet 1 — Regent Park</p>
+                                <p className="text-xs text-white/40 leading-relaxed">
+                                    140/1/306, Netaji Subhash Chandra Bose Rd, Regent Park, Kolkata 700040
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-[11px] font-semibold text-white/70 uppercase tracking-wider">Outlet 2 — New Alipore</p>
+                                <p className="text-xs text-white/40 leading-relaxed">
+                                    92/C/1, BL-J, Sahapur, New Alipore, Kolkata 700053
+                                </p>
+                                <a
+                                    href="https://maps.app.goo.gl/iGyTCXfQG8oEZmv57"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-white/60 hover:text-white underline inline-flex items-center gap-1 mt-0.5"
+                                >
+                                    📍 View Map ↗
+                                </a>
+                            </div>
                         </div>
+                        <p className="text-xs text-white/40 mb-1">📞 +91 99369 11611 / +91 91995 01655</p>
+                        <p className="text-xs text-white/40 mb-4">✉️ newecoroses@gmail.com</p>
                     </div>
                 </div>
             </div>
