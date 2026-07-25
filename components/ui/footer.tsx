@@ -109,6 +109,14 @@ export default function Footer() {
                                 <p className="text-xs text-white/40 leading-relaxed">
                                     140/1/306, Netaji Subhash Chandra Bose Rd, Regent Park, Kolkata 700040
                                 </p>
+                                <a
+                                    href="https://maps.google.com/?q=NEW+ECO+ROSES,+140/1/306,+Netaji+Subhash+Chandra+Bose+Rd,+Regent+Park,+Kolkata+700040"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-white/60 hover:text-white underline inline-flex items-center gap-1 mt-0.5"
+                                >
+                                    📍 View Map ↗
+                                </a>
                             </div>
                             <div>
                                 <p className="text-[11px] font-semibold text-white/70 uppercase tracking-wider">Outlet 2 — New Alipore</p>

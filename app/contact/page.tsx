@@ -14,12 +14,20 @@ const FALLBACK_MSG = "Hi, I'd like to enquire about a gift.";
 
 const STORES = [
     {
+        id: 'all',
+        name: 'All Outlets (Both Locations)',
+        shortName: 'Both Outlets Map',
+        address: 'View both New Eco Roses outlets in Kolkata on Google Maps',
+        mapEmbedUrl: 'https://maps.google.com/maps?q=new+eco+roses+kolkata&z=12&output=embed',
+        mapDirectUrl: 'https://www.google.com/maps/search/new+eco+roses+kolkata',
+    },
+    {
         id: 'outlet1',
-        name: 'Outlet 1 — Regent Park (Main Store)',
+        name: 'Outlet 1 — Regent Park',
         shortName: 'Outlet 1 (Regent Park)',
         address: '140/1/306, Netaji Subhash Chandra Bose Rd, near RUPAYAN JEWELLERY, Regent Colony, Regent Park, Kolkata, West Bengal 700040',
         mapEmbedUrl: 'https://maps.google.com/maps?q=22.4855973,88.3518101&z=15&output=embed',
-        mapDirectUrl: 'https://maps.google.com/?q=140/1/306,+Netaji+Subhash+Chandra+Bose+Rd,+Kolkata+700040',
+        mapDirectUrl: 'https://maps.google.com/?q=NEW+ECO+ROSES,+140/1/306,+Netaji+Subhash+Chandra+Bose+Rd,+Regent+Park,+Kolkata+700040',
     },
     {
         id: 'outlet2',
@@ -86,10 +94,19 @@ export default function Contact() {
                             </div>
                             <div className="flex-1">
                                 <span className="text-[11px] font-semibold text-primary uppercase tracking-wider block mb-0.5">Outlet 1 — Regent Park</span>
-                                <h3 className="font-serif text-lg text-foreground mb-1">Main Store</h3>
-                                <p className="text-muted text-sm font-light leading-relaxed">
+                                <h3 className="font-serif text-lg text-foreground mb-1">Regent Park Store</h3>
+                                <p className="text-muted text-sm font-light leading-relaxed mb-2">
                                     140/1/306, Netaji Subhash Chandra Bose Rd, near RUPAYAN JEWELLERY, Regent Colony, Regent Park, Kolkata, West Bengal 700040
                                 </p>
+                                <a
+                                    href="https://maps.google.com/?q=NEW+ECO+ROSES,+140/1/306,+Netaji+Subhash+Chandra+Bose+Rd,+Regent+Park,+Kolkata+700040"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                                >
+                                    <ExternalLink size={13} />
+                                    Open in Google Maps
+                                </a>
                             </div>
                         </motion.div>
 
@@ -106,7 +123,7 @@ export default function Contact() {
                             </div>
                             <div className="flex-1">
                                 <span className="text-[11px] font-semibold text-primary uppercase tracking-wider block mb-0.5">Outlet 2 — New Alipore</span>
-                                <h3 className="font-serif text-lg text-foreground mb-1">New Outlet</h3>
+                                <h3 className="font-serif text-lg text-foreground mb-1">New Alipore Store</h3>
                                 <p className="text-muted text-sm font-light leading-relaxed mb-2">
                                     92/C/1, BL-J, Sahapur, New Alipore, Kolkata, West Bengal 700053
                                 </p>
