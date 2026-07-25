@@ -18,7 +18,7 @@ const STORES = [
         name: 'All Outlets (Both Locations)',
         shortName: 'Both Outlets Map',
         address: 'Searching "new eco roses" on Google Maps shows both Kolkata outlets',
-        mapEmbedUrl: 'https://maps.google.com/maps?q=new+eco+roses&output=embed',
+        mapEmbedUrl: 'https://maps.google.com/maps?q=new+eco+roses&ll=22.5020,88.3400&z=12&output=embed',
         mapDirectUrl: 'https://www.google.com/maps/search/new+eco+roses',
     },
     {
