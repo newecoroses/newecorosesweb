@@ -22,6 +22,7 @@ import {
     ChevronRight,
     Megaphone,
     Video,
+    Film,
     Sparkles,
     Palette,
     BarChart2
@@ -38,6 +39,7 @@ const NAV_ITEMS = [
     { href: '/admin/featured', label: 'Featured Items', icon: Sparkles },
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/admin/review-videos', label: 'Review Videos', icon: Video },
+    { href: '/admin/export-marquee', label: 'Export TV Marquee', icon: Film },
     { href: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
     { href: '/admin/whatsapp', label: 'WhatsApp', icon: MessageSquare },
     { href: '/admin/banned-words', label: 'Banned Words', icon: Shield },
