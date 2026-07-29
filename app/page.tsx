@@ -565,6 +565,16 @@ export default function Home() {
 
       {/* ═══ WHY CHOOSE US ═══ */}
       <section className="py-20 md:py-32 overflow-hidden relative bg-[#FAF7F2]">
+        {/* Custom Luxury Background Image */}
+        <Image
+          src="/why%20new%20eco%20roses%20banner.webp"
+          alt="Why New Eco Roses background"
+          fill
+          className="object-cover opacity-20"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF7F2]/85 via-[#FAF7F2]/65 to-[#FAF7F2]/90 backdrop-blur-[2px]" />
+
         {/* Organic Soft Radial Glow & Texture */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#556B4E]/8 via-transparent to-transparent pointer-events-none" />
         <div className="absolute inset-0 opacity-[0.025] bg-[radial-gradient(#2E2A26_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
