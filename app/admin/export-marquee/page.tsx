@@ -3,9 +3,9 @@
 /**
  * /admin/export-marquee
  *
- * High-Resolution Review Marquee Video Generator & TV Presentation Tool.
- * Records directly from an offscreen <canvas> using captureStream() —
- * no browser screen-share dialog. Downloads 1080p webm automatically.
+ * Records a 1080p video directly from an offscreen <canvas> — no screen-share
+ * dialog. Videos are kept off-screen (not display:none) so the browser
+ * continues decoding frames, giving smooth playback in the canvas.
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -35,83 +35,101 @@ const PHOTO_REVIEWS = [
     '/images/photo-reviews/photo-review-9.jpeg',
 ];
 
-// Canvas dimensions — 1920×1080 Full HD
 const CW = 1920;
 const CH = 1080;
+const FPS = 60;
+const VIDEO_SPEED = 1.6;   // px per frame forward
+const PHOTO_SPEED = 1.2;   // px per frame reverse
 
-// Marquee speeds (pixels per frame at 60fps)
-const SPEED_FWD = 1.4;
-const SPEED_REV = 1.1;
+// ── Premium colour palette ────────────────────────────────────────────────
+const BG_DARK   = '#090b08';
+const GOLD_1    = '#c9a84c';
+const GOLD_2    = '#e8c96b';
+const GOLD_3    = '#f5e0a0';
+const ROSE_MID  = '#7b2434';
+const WHITE_90  = 'rgba(255,255,255,0.90)';
+const WHITE_50  = 'rgba(255,255,255,0.50)';
+const WHITE_15  = 'rgba(255,255,255,0.15)';
+const WHITE_06  = 'rgba(255,255,255,0.06)';
 
 export default function ExportMarqueePage() {
-    const [videos, setVideos] = useState<string[]>(FALLBACK_VIDEOS);
-    const [durationSeconds, setDurationSeconds] = useState<number>(30);
-    const [recording, setRecording] = useState<boolean>(false);
-    const [countdown, setCountdown] = useState<number>(0);
-    const [recordingProgress, setRecordingProgress] = useState<number>(0);
-    const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-    const [statusText, setStatusText] = useState<string>('Ready to record');
-    const [assetsReady, setAssetsReady] = useState<boolean>(false);
+    const [videos, setVideos]             = useState<string[]>(FALLBACK_VIDEOS);
+    const [durationSeconds, setDuration]  = useState<number>(30);
+    const [recording, setRecording]       = useState<boolean>(false);
+    const [countdown, setCountdown]       = useState<number>(0);
+    const [progress, setProgress]         = useState<number>(0);
+    const [downloadUrl, setDownloadUrl]   = useState<string | null>(null);
+    const [statusText, setStatusText]     = useState<string>('Ready to record');
+    const [assetsReady, setAssetsReady]   = useState<boolean>(false);
 
-    // Canvas & animation refs
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const rafRef = useRef<number>(0);
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const recordedChunksRef = useRef<Blob[]>([]);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const canvasRef      = useRef<HTMLCanvasElement>(null);
+    const rafRef         = useRef<number>(0);
+    const mrRef          = useRef<MediaRecorder | null>(null);
+    const chunksRef      = useRef<Blob[]>([]);
+    const timerRef       = useRef<NodeJS.Timeout | null>(null);
+    const videoElemsRef  = useRef<HTMLVideoElement[]>([]);
+    const photoElemsRef  = useRef<HTMLImageElement[]>([]);
+    const xFwdRef        = useRef<number>(0);
+    const xRevRef        = useRef<number>(0);
 
-    // Pre-loaded asset refs
-    const videoElemsRef = useRef<HTMLVideoElement[]>([]);
-    const photoElemsRef = useRef<HTMLImageElement[]>([]);
-
-    // Marquee scroll offsets
-    const xFwdRef = useRef<number>(0);
-    const xRevRef = useRef<number>(0);
-
+    // Pre-load assets on mount
     useEffect(() => {
         fetchReviewVideos()
-            .then(data => { if (data.length > 0) setVideos(data.map(v => v.video_url)); })
-            .catch(() => { });
+            .then(d => { if (d.length > 0) setVideos(d.map(v => v.video_url)); })
+            .catch(() => {});
     }, []);
 
-    // Pre-load all videos & images into DOM elements
     useEffect(() => {
-        // Load video elements (hidden, muted, looping)
-        const vids = [...videos, ...videos].map(src => {
+        const doubleVids = [...videos, ...videos];
+
+        // ─ Video elements: positioned off-screen (NOT display:none)
+        // so the browser keeps decoding every frame.
+        const vids: HTMLVideoElement[] = doubleVids.map(src => {
             const v = document.createElement('video');
             v.src = src;
-            v.muted = true;
-            v.loop = true;
-            v.playsInline = true;
-            v.crossOrigin = 'anonymous';
-            v.style.display = 'none';
+            v.muted        = true;
+            v.loop         = true;
+            v.playsInline  = true;
+            v.preload      = 'auto';
+            // Off-screen but visible to the decode pipeline
+            Object.assign(v.style, {
+                position:      'fixed',
+                left:          '-9999px',
+                top:           '0',
+                width:         '160px',
+                height:        '284px',
+                pointerEvents: 'none',
+                opacity:       '0',
+                zIndex:        '-1',
+            });
             document.body.appendChild(v);
-            v.play().catch(() => { });
+            v.play().catch(() => {});
             return v;
         });
         videoElemsRef.current = vids;
 
-        // Load photo images
-        const imgs = [...PHOTO_REVIEWS, ...PHOTO_REVIEWS].map(src => {
+        // ─ Photo images
+        const doublePhotos = [...PHOTO_REVIEWS, ...PHOTO_REVIEWS];
+        const imgs: HTMLImageElement[] = doublePhotos.map(src => {
             const img = new Image();
             img.src = src;
-            img.crossOrigin = 'anonymous';
             return img;
         });
         photoElemsRef.current = imgs;
 
-        // Wait for all images to load
-        Promise.all(imgs.map(img => new Promise(res => {
-            if (img.complete) res(null);
-            else { img.onload = res; img.onerror = res; }
-        }))).then(() => setAssetsReady(true));
+        Promise.all(imgs.map(img =>
+            new Promise(res => {
+                if (img.complete) res(null);
+                else { img.onload = res; img.onerror = res; }
+            })
+        )).then(() => setAssetsReady(true));
 
         return () => {
             vids.forEach(v => { v.pause(); document.body.removeChild(v); });
         };
     }, [videos]);
 
-    // ── Canvas Draw Loop ──────────────────────────────────────────────────
+    // ── Draw one frame onto the 1920×1080 canvas ─────────────────────────
     const drawFrame = useCallback(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -121,235 +139,286 @@ export default function ExportMarqueePage() {
         const vids = videoElemsRef.current;
         const imgs = photoElemsRef.current;
 
-        // Background
-        ctx.fillStyle = '#faf7f2';
+        // ── BACKGROUND ──────────────────────────────────────────────────
+        ctx.fillStyle = BG_DARK;
         ctx.fillRect(0, 0, CW, CH);
 
-        // ── Header text ──
+        // Subtle radial glow behind title
+        const glow = ctx.createRadialGradient(CW / 2, 200, 0, CW / 2, 200, 700);
+        glow.addColorStop(0, 'rgba(201,168,76,0.10)');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, CW, 480);
+
+        // Top gold line
+        const topLine = ctx.createLinearGradient(0, 0, CW, 0);
+        topLine.addColorStop(0,   'transparent');
+        topLine.addColorStop(0.2, GOLD_1);
+        topLine.addColorStop(0.5, GOLD_3);
+        topLine.addColorStop(0.8, GOLD_1);
+        topLine.addColorStop(1,   'transparent');
+        ctx.fillStyle = topLine;
+        ctx.fillRect(0, 0, CW, 2);
+
+        // Bottom gold line
+        ctx.fillStyle = topLine;
+        ctx.fillRect(0, CH - 2, CW, 2);
+
+        // ── HEADER ──────────────────────────────────────────────────────
+        // Eyebrow
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#92400e'; // amber-800
-        ctx.font = 'bold 28px "Georgia", serif';
-        ctx.letterSpacing = '6px';
-        ctx.fillText('REAL LOVE, REAL REACTIONS', CW / 2, 90);
+        ctx.fillStyle = GOLD_1;
+        ctx.font      = `600 26px "Georgia", serif`;
+        ctx.globalAlpha = 0.75;
+        ctx.fillText('★  REAL EXPERIENCES  •  REAL LOVE  ★', CW / 2, 80);
+        ctx.globalAlpha = 1;
 
-        ctx.fillStyle = '#111827';
-        ctx.font = 'bold 64px "Georgia", serif';
-        ctx.letterSpacing = '0px';
-        ctx.fillText('Customer Reviews — New Eco Roses', CW / 2, 168);
+        // Brand name — large elegant serif
+        ctx.font      = `bold 96px "Georgia", serif`;
+        ctx.fillStyle = WHITE_90;
+        ctx.fillText('New Eco Roses', CW / 2, 185);
 
-        ctx.fillStyle = '#6b7280';
-        ctx.font = '28px sans-serif';
-        ctx.fillText('Watch what our customers have to say about their New Eco Roses experience', CW / 2, 218);
+        // Gold underline beneath brand name
+        const underlineW = 560;
+        const underlineX = (CW - underlineW) / 2;
+        const uGrad = ctx.createLinearGradient(underlineX, 0, underlineX + underlineW, 0);
+        uGrad.addColorStop(0,   'transparent');
+        uGrad.addColorStop(0.5, GOLD_2);
+        uGrad.addColorStop(1,   'transparent');
+        ctx.fillStyle = uGrad;
+        ctx.fillRect(underlineX, 200, underlineW, 2);
 
-        // ── Video marquee row ──
-        const VID_W = 200;
-        const VID_H = Math.round(VID_W * (16 / 9)); // 9:16 portrait = 356
-        const VID_GAP = 20;
-        const VID_Y = 250;
-        const VID_ROW_H = VID_H;
+        // Subtitle
+        ctx.font      = `300 32px "Georgia", serif`;
+        ctx.fillStyle = WHITE_50;
+        ctx.fillText('Customer Reviews & Stories', CW / 2, 252);
 
-        const totalVidW = vids.length * (VID_W + VID_GAP);
-        xFwdRef.current = (xFwdRef.current + SPEED_FWD) % totalVidW;
+        // ── VIDEO MARQUEE ────────────────────────────────────────────────
+        const VW = 216;                           // video card width
+        const VH = Math.round(VW * (16 / 9));    // ≈ 384 — portrait 9:16
+        const VGAP = 18;
+        const VY = 286;
 
-        // Clip to video row
+        const totalVW = vids.length * (VW + VGAP);
+        xFwdRef.current = (xFwdRef.current + VIDEO_SPEED) % totalVW;
+
+        // Section label
+        ctx.textAlign = 'left';
+        ctx.fillStyle = GOLD_1;
+        ctx.globalAlpha = 0.6;
+        ctx.font = `500 18px sans-serif`;
+        ctx.fillText('VIDEO REVIEWS', 60, VY - 12);
+        ctx.globalAlpha = 1;
+
         ctx.save();
         ctx.beginPath();
-        ctx.rect(0, VID_Y, CW, VID_ROW_H);
+        ctx.rect(0, VY, CW, VH);
         ctx.clip();
 
         for (let i = 0; i < vids.length + 2; i++) {
-            const vidIdx = i % vids.length;
-            const x = (i * (VID_W + VID_GAP)) - xFwdRef.current;
-            if (x + VID_W < -50 || x > CW + 50) continue;
+            const idx = i % vids.length;
+            const x   = i * (VW + VGAP) - xFwdRef.current;
+            if (x + VW < -60 || x > CW + 60) continue;
 
-            // Rounded rect clip per video
+            // Card background
             ctx.save();
-            roundRect(ctx, x, VID_Y, VID_W, VID_ROW_H, 14);
+            roundRect(ctx, x, VY, VW, VH, 16);
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fill();
             ctx.clip();
-            try { ctx.drawImage(vids[vidIdx], x, VID_Y, VID_W, VID_ROW_H); } catch { }
+
+            // Draw video frame (only if decoded)
+            const vid = vids[idx];
+            if (vid && vid.readyState >= 2) {
+                try { ctx.drawImage(vid, x, VY, VW, VH); } catch {}
+            }
+
+            ctx.restore();
+
+            // Gold border glow
+            ctx.save();
+            roundRect(ctx, x, VY, VW, VH, 16);
+            ctx.strokeStyle = 'rgba(201,168,76,0.35)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Left & right fade masks
+        drawFadeMask(ctx, 0, VY, 120, VH, 'right');
+        drawFadeMask(ctx, CW - 120, VY, 120, VH, 'left');
+        ctx.restore();
+
+        // ── DIVIDER + SECTION LABEL ──────────────────────────────────────
+        const DIV_Y = VY + VH + 18;
+        const divGrad = ctx.createLinearGradient(60, 0, CW - 60, 0);
+        divGrad.addColorStop(0,   'transparent');
+        divGrad.addColorStop(0.1, WHITE_15);
+        divGrad.addColorStop(0.5, WHITE_15);
+        divGrad.addColorStop(1,   'transparent');
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(60, DIV_Y, CW - 120, 1);
+
+        // ── PHOTO MARQUEE ────────────────────────────────────────────────
+        const PW = 190;
+        const PH = Math.round(PW * (4 / 3));     // ≈ 253
+        const PGAP = 18;
+        const PY = DIV_Y + 12;
+
+        const totalPW = imgs.length * (PW + PGAP);
+        xRevRef.current = (xRevRef.current + PHOTO_SPEED) % totalPW;
+        const revX = totalPW - xRevRef.current;
+
+        // Section label (right-aligned)
+        ctx.textAlign = 'right';
+        ctx.fillStyle = GOLD_1;
+        ctx.globalAlpha = 0.6;
+        ctx.font = `500 18px sans-serif`;
+        ctx.fillText('PHOTO REVIEWS', CW - 60, PY - 12);
+        ctx.globalAlpha = 1;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, PY, CW, PH);
+        ctx.clip();
+
+        for (let i = 0; i < imgs.length + 2; i++) {
+            const idx = i % imgs.length;
+            const x   = i * (PW + PGAP) - (revX % totalPW);
+            if (x + PW < -60 || x > CW + 60) continue;
+
+            ctx.save();
+            roundRect(ctx, x, PY, PW, PH, 14);
+            ctx.fillStyle = '#111';
+            ctx.fill();
+            ctx.clip();
+
+            try { ctx.drawImage(imgs[idx], x, PY, PW, PH); } catch {}
+
+            // Gradient overlay at bottom of photo
+            const photoGrad = ctx.createLinearGradient(0, PY + PH - 60, 0, PY + PH);
+            photoGrad.addColorStop(0, 'transparent');
+            photoGrad.addColorStop(1, 'rgba(0,0,0,0.65)');
+            ctx.fillStyle = photoGrad;
+            ctx.fillRect(x, PY, PW, PH);
+
+            ctx.restore();
+
+            // Verified badge
+            ctx.save();
+            ctx.fillStyle = 'rgba(0,0,0,0.70)';
+            roundRect(ctx, x + 8, PY + PH - 28, 80, 22, 6);
+            ctx.fill();
+            ctx.fillStyle = GOLD_2;
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('★ Verified', x + 14, PY + PH - 12);
             ctx.restore();
 
             // Border
             ctx.save();
-            roundRect(ctx, x, VID_Y, VID_W, VID_ROW_H, 14);
-            ctx.strokeStyle = 'rgba(245,158,11,0.25)';
-            ctx.lineWidth = 2;
+            roundRect(ctx, x, PY, PW, PH, 14);
+            ctx.strokeStyle = 'rgba(201,168,76,0.22)';
+            ctx.lineWidth = 1.5;
             ctx.stroke();
             ctx.restore();
         }
 
-        // Left/right fade gradients for video row
-        const gL = ctx.createLinearGradient(0, 0, 100, 0);
-        gL.addColorStop(0, '#faf7f2');
-        gL.addColorStop(1, 'transparent');
-        ctx.fillStyle = gL;
-        ctx.fillRect(0, VID_Y, 100, VID_ROW_H);
-
-        const gR = ctx.createLinearGradient(CW - 100, 0, CW, 0);
-        gR.addColorStop(0, 'transparent');
-        gR.addColorStop(1, '#faf7f2');
-        ctx.fillStyle = gR;
-        ctx.fillRect(CW - 100, VID_Y, 100, VID_ROW_H);
-
+        drawFadeMask(ctx, 0, PY, 120, PH, 'right');
+        drawFadeMask(ctx, CW - 120, PY, 120, PH, 'left');
         ctx.restore();
 
-        // ── Photo marquee row (reverse direction) ──
-        const PHOTO_W = 180;
-        const PHOTO_H = Math.round(PHOTO_W * (4 / 3));
-        const PHOTO_GAP = 20;
-        const PHOTO_Y = VID_Y + VID_ROW_H + 30;
+        // ── FOOTER BAR ──────────────────────────────────────────────────
+        const FY = PY + PH + 16;
 
-        const totalPhotoW = imgs.length * (PHOTO_W + PHOTO_GAP);
-        xRevRef.current = (xRevRef.current + SPEED_REV) % totalPhotoW;
-        // Reverse direction: subtract instead of add
-        const revOffset = totalPhotoW - xRevRef.current;
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, PHOTO_Y, CW, PHOTO_H);
-        ctx.clip();
-
-        for (let i = 0; i < imgs.length + 2; i++) {
-            const imgIdx = i % imgs.length;
-            const x = (i * (PHOTO_W + PHOTO_GAP)) - revOffset % totalPhotoW;
-            if (x + PHOTO_W < -50 || x > CW + 50) continue;
-
-            ctx.save();
-            roundRect(ctx, x, PHOTO_Y, PHOTO_W, PHOTO_H, 12);
-            ctx.clip();
-            try { ctx.drawImage(imgs[imgIdx], x, PHOTO_Y, PHOTO_W, PHOTO_H); } catch { }
-            ctx.restore();
-
-            // Verified badge
-            ctx.fillStyle = 'rgba(0,0,0,0.55)';
-            ctx.fillRect(x + 8, PHOTO_Y + PHOTO_H - 26, 72, 20);
-            ctx.fillStyle = '#fcd34d';
-            ctx.font = 'bold 12px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText('⭐ Verified', x + 12, PHOTO_Y + PHOTO_H - 11);
-
-            ctx.save();
-            roundRect(ctx, x, PHOTO_Y, PHOTO_W, PHOTO_H, 12);
-            ctx.strokeStyle = 'rgba(245,158,11,0.25)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        // Photo row fade gradients
-        const pL = ctx.createLinearGradient(0, 0, 100, 0);
-        pL.addColorStop(0, '#faf7f2');
-        pL.addColorStop(1, 'transparent');
-        ctx.fillStyle = pL;
-        ctx.fillRect(0, PHOTO_Y, 100, PHOTO_H);
-
-        const pR = ctx.createLinearGradient(CW - 100, 0, CW, 0);
-        pR.addColorStop(0, 'transparent');
-        pR.addColorStop(1, '#faf7f2');
-        ctx.fillStyle = pR;
-        ctx.fillRect(CW - 100, PHOTO_Y, 100, PHOTO_H);
-
-        ctx.restore();
-
-        // ── Footer ──
-        const FOOTER_Y = CH - 50;
-        ctx.fillStyle = 'rgba(217,119,6,0.15)';
-        ctx.fillRect(0, FOOTER_Y - 10, CW, 1);
+        // Footer divider
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(60, FY, CW - 120, 1);
 
         ctx.textAlign = 'left';
-        ctx.fillStyle = '#6b7280';
-        ctx.font = '22px sans-serif';
-        ctx.fillText('🌹 New Eco Roses Kolkata', 80, FOOTER_Y + 14);
+        ctx.fillStyle = GOLD_1;
+        ctx.globalAlpha = 0.55;
+        ctx.font = '22px "Georgia", serif';
+        ctx.fillText('🌹  New Eco Roses  •  Kolkata', 60, FY + 34);
 
         ctx.textAlign = 'center';
-        ctx.fillText('Regent Park & New Alipore Outlets', CW / 2, FOOTER_Y + 14);
+        ctx.fillText('Regent Park  &  New Alipore Outlets', CW / 2, FY + 34);
 
         ctx.textAlign = 'right';
-        ctx.fillText('www.newecoroses.com', CW - 80, FOOTER_Y + 14);
+        ctx.fillText('www.newecoroses.com', CW - 60, FY + 34);
+        ctx.globalAlpha = 1;
+
+        // Bottom gold line (animated pulse via alpha)
+        const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 800);
+        const botLine = ctx.createLinearGradient(0, 0, CW, 0);
+        botLine.addColorStop(0,   'transparent');
+        botLine.addColorStop(0.3, `rgba(201,168,76,${0.3 + pulse * 0.3})`);
+        botLine.addColorStop(0.7, `rgba(245,224,160,${0.4 + pulse * 0.4})`);
+        botLine.addColorStop(1,   'transparent');
+        ctx.fillStyle = botLine;
+        ctx.fillRect(0, CH - 3, CW, 3);
 
         rafRef.current = requestAnimationFrame(drawFrame);
     }, []);
 
-    // Start the canvas loop when assets are ready
     useEffect(() => {
         if (!assetsReady) return;
         rafRef.current = requestAnimationFrame(drawFrame);
         return () => cancelAnimationFrame(rafRef.current);
     }, [assetsReady, drawFrame]);
 
-    // ── Start Recording (no dialog!) ──────────────────────────────────────
+    // ── Record from canvas stream — zero dialog ───────────────────────────
     const startRecording = async () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-
         setRecording(true);
         setDownloadUrl(null);
-        setRecordingProgress(0);
-        setStatusText('Starting canvas recorder...');
+        setProgress(0);
+        setStatusText('Starting...');
+        chunksRef.current = [];
 
-        recordedChunksRef.current = [];
+        const stream   = canvas.captureStream(FPS);
+        const mimeOpts = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+        const mime     = mimeOpts.find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
 
-        // Capture directly from canvas — zero browser dialog
-        const stream = canvas.captureStream(60);
+        const mr = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 14_000_000 });
+        mrRef.current = mr;
 
-        const mimeOptions = [
-            'video/webm;codecs=vp9',
-            'video/webm;codecs=vp8',
-            'video/webm',
-        ];
-        const mimeType = mimeOptions.find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
+        mr.ondataavailable = e => { if (e.data?.size > 0) chunksRef.current.push(e.data); };
 
-        const mediaRecorder = new MediaRecorder(stream, {
-            mimeType,
-            videoBitsPerSecond: 12_000_000,
-        });
-
-        mediaRecorderRef.current = mediaRecorder;
-
-        mediaRecorder.ondataavailable = e => {
-            if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunksRef.current, { type: mimeType });
-            const url = URL.createObjectURL(blob);
+        mr.onstop = () => {
+            const blob = new Blob(chunksRef.current, { type: mime });
+            const url  = URL.createObjectURL(blob);
             setDownloadUrl(url);
             setRecording(false);
-            setStatusText('Done! Video downloaded to your PC.');
-
+            setStatusText('Done! File auto-downloaded.');
             const a = document.createElement('a');
             a.href = url;
             a.download = `new-eco-roses-marquee-${durationSeconds}s.webm`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
         };
 
-        mediaRecorder.start(500);
-        setStatusText(`Recording 1080p canvas... (${durationSeconds}s)`);
-
-        let elapsed = 0;
+        mr.start(500);
+        setStatusText(`Recording 1080p · ${durationSeconds}s`);
         setCountdown(durationSeconds);
 
+        let elapsed = 0;
         timerRef.current = setInterval(() => {
-            elapsed += 1;
-            const remaining = durationSeconds - elapsed;
-            setCountdown(Math.max(0, remaining));
-            setRecordingProgress(Math.min(100, Math.round((elapsed / durationSeconds) * 100)));
-            setStatusText(`Recording 1080p canvas... (${Math.max(0, remaining)}s remaining)`);
-
+            elapsed++;
+            const left = durationSeconds - elapsed;
+            setCountdown(Math.max(0, left));
+            setProgress(Math.min(100, Math.round((elapsed / durationSeconds) * 100)));
+            setStatusText(`Recording 1080p canvas · ${Math.max(0, left)}s remaining`);
             if (elapsed >= durationSeconds) {
-                if (timerRef.current) clearInterval(timerRef.current);
-                if (mediaRecorderRef.current?.state !== 'inactive') {
-                    mediaRecorderRef.current?.stop();
-                }
+                clearInterval(timerRef.current!);
+                if (mrRef.current?.state !== 'inactive') mrRef.current?.stop();
             }
         }, 1000);
     };
 
     const stopRecording = () => {
         if (timerRef.current) clearInterval(timerRef.current);
-        if (mediaRecorderRef.current?.state !== 'inactive') mediaRecorderRef.current?.stop();
+        if (mrRef.current?.state !== 'inactive') mrRef.current?.stop();
         setRecording(false);
     };
 
@@ -363,7 +432,7 @@ export default function ExportMarqueePage() {
                         Export Marquee Video Loop for TV
                     </h1>
                     <p className="text-gray-400 text-sm mt-1">
-                        Records directly from the canvas — no screen-share popup. Downloads a crisp 1080p WebM for USB TV playback.
+                        Records directly from the canvas at 1080p — no screen-share dialog. Copy the downloaded .webm to a USB drive for TV playback.
                     </p>
                 </div>
                 <Link
@@ -380,89 +449,62 @@ export default function ExportMarqueePage() {
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <h2 className="text-white font-semibold text-base">Recorder Settings</h2>
-                        <p className="text-gray-400 text-xs">
-                            {assetsReady
-                                ? 'Assets loaded. Choose duration and click Start Recording.'
-                                : 'Loading video & image assets...'}
+                        <h2 className="text-white font-semibold text-base">Recorder</h2>
+                        <p className={`text-xs ${assetsReady ? 'text-emerald-400' : 'text-amber-400 animate-pulse'}`}>
+                            {assetsReady ? '● Assets loaded — ready to record' : '● Loading video & image assets...'}
                         </p>
                     </div>
 
-                    {/* Duration */}
                     <div className="flex items-center gap-3">
                         <span className="text-gray-400 text-xs font-medium">Duration:</span>
                         {[15, 30, 60].map(s => (
-                            <button
-                                key={s}
-                                disabled={recording}
-                                onClick={() => setDurationSeconds(s)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                                    durationSeconds === s
-                                        ? 'bg-amber-500 text-black'
-                                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                } disabled:opacity-50`}
-                            >
+                            <button key={s} disabled={recording} onClick={() => setDuration(s)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 ${durationSeconds === s ? 'bg-amber-500 text-black' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}>
                                 {s}s
                             </button>
                         ))}
                     </div>
 
-                    {/* Action */}
                     <div>
                         {!recording ? (
-                            <button
-                                onClick={startRecording}
-                                disabled={!assetsReady}
-                                className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
+                            <button onClick={startRecording} disabled={!assetsReady}
+                                className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed">
                                 <Play size={16} fill="black" />
                                 Start Recording
                             </button>
                         ) : (
-                            <button
-                                onClick={stopRecording}
-                                className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all animate-pulse"
-                            >
+                            <button onClick={stopRecording}
+                                className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all animate-pulse">
                                 <Square size={16} fill="white" />
-                                Stop ({countdown}s left)
+                                Stop ({countdown}s)
                             </button>
                         )}
                     </div>
                 </div>
 
-                {/* Progress */}
                 {recording && (
                     <div className="space-y-1.5 pt-2">
                         <div className="flex justify-between text-xs text-amber-400 font-medium">
-                            <span>{statusText}</span>
-                            <span>{recordingProgress}%</span>
+                            <span>{statusText}</span><span>{progress}%</span>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
-                            <div
-                                className="bg-gradient-to-r from-amber-500 to-amber-300 h-full transition-all duration-300"
-                                style={{ width: `${recordingProgress}%` }}
-                            />
+                            <div className="bg-gradient-to-r from-amber-500 to-amber-300 h-full transition-all duration-300" style={{ width: `${progress}%` }} />
                         </div>
                     </div>
                 )}
 
-                {/* Download Success */}
                 {downloadUrl && (
                     <div className="bg-emerald-950/60 border border-emerald-800/80 rounded-xl p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <CheckCircle2 className="text-emerald-400" size={20} />
                             <div>
-                                <p className="text-emerald-200 text-xs font-semibold">Recorded & downloaded!</p>
-                                <p className="text-emerald-400/80 text-[11px]">Copy the .webm file from Downloads to your USB Pendrive.</p>
+                                <p className="text-emerald-200 text-xs font-semibold">Recorded & auto-downloaded!</p>
+                                <p className="text-emerald-400/80 text-[11px]">Copy the .webm from your Downloads folder to the USB Pendrive for TV playback.</p>
                             </div>
                         </div>
-                        <a
-                            href={downloadUrl}
-                            download={`new-eco-roses-marquee-${durationSeconds}s.webm`}
-                            className="inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold px-4 py-2 rounded-lg transition-all"
-                        >
-                            <Download size={14} />
-                            Re-download
+                        <a href={downloadUrl} download={`new-eco-roses-marquee-${durationSeconds}s.webm`}
+                            className="inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold px-4 py-2 rounded-lg transition-all">
+                            <Download size={14} />Re-download
                         </a>
                     </div>
                 )}
@@ -470,14 +512,14 @@ export default function ExportMarqueePage() {
 
             {/* Canvas Preview */}
             <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs text-gray-400 font-medium px-1">
-                    <span>Live Canvas Preview (1920 × 1080)</span>
-                    <span className="text-amber-400/90 font-mono">1080p Full HD · 60 FPS · Direct Canvas Capture</span>
+                <div className="flex items-center justify-between text-xs text-gray-400 px-1">
+                    <span className="font-medium">Live Canvas Preview — 1920 × 1080</span>
+                    <span className="text-amber-400/80 font-mono">Direct Canvas Capture · {FPS} FPS · 14 Mbps</span>
                 </div>
 
                 {!assetsReady && (
-                    <div className="w-full aspect-[16/9] bg-gray-900 rounded-2xl border border-gray-800 flex items-center justify-center">
-                        <p className="text-gray-500 text-sm animate-pulse">Loading assets...</p>
+                    <div className="w-full aspect-[16/9] bg-[#090b08] rounded-2xl border border-gray-800 flex items-center justify-center">
+                        <p className="text-amber-400/60 text-sm animate-pulse font-light tracking-widest uppercase">Loading assets...</p>
                     </div>
                 )}
 
@@ -485,15 +527,14 @@ export default function ExportMarqueePage() {
                     ref={canvasRef}
                     width={CW}
                     height={CH}
-                    className={`w-full aspect-[16/9] rounded-2xl border border-gray-800 shadow-2xl object-contain ${assetsReady ? 'block' : 'hidden'}`}
-                    style={{ background: '#faf7f2' }}
+                    className={`w-full rounded-2xl border border-gray-800 shadow-2xl ${assetsReady ? 'block' : 'hidden'}`}
                 />
             </div>
         </div>
     );
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+// ── Canvas helpers ────────────────────────────────────────────────────────
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -506,4 +547,19 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
     ctx.lineTo(x, y + r);
     ctx.quadraticCurveTo(x, y, x + r, y);
     ctx.closePath();
+}
+
+function drawFadeMask(
+    ctx: CanvasRenderingContext2D,
+    x: number, y: number, w: number, h: number,
+    dir: 'left' | 'right'
+) {
+    const g = ctx.createLinearGradient(
+        dir === 'right' ? x : x + w, 0,
+        dir === 'right' ? x + w : x, 0
+    );
+    g.addColorStop(0, '#090b08');
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.fillRect(x, y, w, h);
 }
