@@ -112,9 +112,10 @@ export default function Footer() {
                                     href="https://maps.app.goo.gl/RbKpGWan1p9qDxhr6"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-white/60 hover:text-white underline inline-flex items-center gap-1 mt-0.5"
+                                    className="text-xs text-white/70 hover:text-white underline inline-flex items-center gap-1.5 mt-1 group"
                                 >
-                                    📍 View Map ↗
+                                    <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-4 h-4 object-contain group-hover:scale-110 transition-transform" />
+                                    <span>View Map ↗</span>
                                 </a>
                             </div>
                             <div>
@@ -126,9 +127,10 @@ export default function Footer() {
                                     href="https://maps.app.goo.gl/iGyTCXfQG8oEZmv57"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-white/60 hover:text-white underline inline-flex items-center gap-1 mt-0.5"
+                                    className="text-xs text-white/70 hover:text-white underline inline-flex items-center gap-1.5 mt-1 group"
                                 >
-                                    📍 View Map ↗
+                                    <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-4 h-4 object-contain group-hover:scale-110 transition-transform" />
+                                    <span>View Map ↗</span>
                                 </a>
                             </div>
                         </div>
