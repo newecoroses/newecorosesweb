@@ -1,8 +1,14 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Clock, MapPin, Heart } from 'lucide-react';
+import { Phone, Clock, MapPin, Heart, X, ExternalLink, Code2, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Footer() {
+    const [isDevModalOpen, setIsDevModalOpen] = useState(false);
+
     return (
         <footer className="bg-primary text-white relative overflow-hidden">
             {/* Top Shimmer Accent */}
@@ -211,7 +217,7 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Made by Oryxen & Developer Signature Bar */}
+            {/* Made by Oryxen & Compact Developer Trigger Bar */}
             <div className="border-t border-white/10 bg-black/20 py-3.5">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3 text-center sm:text-left">
                     <p className="text-[11px] text-white/70 tracking-widest uppercase font-light">
@@ -226,20 +232,96 @@ export default function Footer() {
                         </a>
                     </p>
 
-                    <p className="text-xs text-white/90 font-light tracking-wide flex items-center gap-1">
-                        <span>⚡ Web Architecture &amp; Experience Engineered by</span>
-                        <a
-                            href="https://www.linkedin.com/in/adityabuilds/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-white hover:text-amber-200 underline underline-offset-4 decoration-white/40 hover:decoration-amber-200 transition-all inline-flex items-center gap-0.5"
-                        >
-                            <span>Aditya Choudhury</span>
-                            <span className="text-[10px] opacity-80">↗</span>
-                        </a>
-                    </p>
+                    {/* Developer Details Trigger Button */}
+                    <button
+                        type="button"
+                        onClick={() => setIsDevModalOpen(true)}
+                        className="text-[11px] text-white/90 hover:text-white font-medium tracking-wide flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full border border-white/15 transition-all duration-300 group cursor-pointer shadow-xs"
+                    >
+                        <Sparkles size={12} className="text-amber-300" />
+                        <span>Developer: <strong className="font-semibold text-white underline underline-offset-2 decoration-white/40 group-hover:decoration-white">Aditya Choudhury</strong></span>
+                        <span className="text-[10px] opacity-70 group-hover:translate-x-0.5 transition-transform">↗</span>
+                    </button>
                 </div>
             </div>
+
+            {/* Developer Details Modal */}
+            <AnimatePresence>
+                {isDevModalOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                        {/* Backdrop click handler */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsDevModalOpen(false)}
+                            className="absolute inset-0"
+                        />
+
+                        {/* Modal Box */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ type: "spring", duration: 0.5 }}
+                            className="relative z-10 w-full max-w-md bg-[#1c1f19] text-white border border-white/15 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 overflow-hidden"
+                        >
+                            {/* Accent Background Glow */}
+                            <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+
+                            {/* Header */}
+                            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+                                        <Code2 size={16} />
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] uppercase tracking-[0.2em] text-amber-300 font-semibold block">Developer Profile</span>
+                                        <h3 className="text-xl font-serif font-bold text-white">Aditya Choudhury</h3>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setIsDevModalOpen(false)}
+                                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                                    aria-label="Close modal"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+
+                            {/* Role Badge */}
+                            <div className="inline-block bg-white/10 border border-white/15 px-3 py-1 rounded-full text-xs font-medium text-amber-200">
+                                Freelance Web Developer &amp; Full-Stack Architect
+                            </div>
+
+                            {/* Bio */}
+                            <p className="text-xs md:text-sm text-gray-300 leading-relaxed font-light">
+                                Specialized in engineering high-performance web applications, luxury e-commerce platforms, and custom digital experiences. Built with modern web standards, optimized architecture, and fine attention to design detail.
+                            </p>
+
+                            {/* Call to Action Buttons */}
+                            <div className="space-y-2.5 pt-2">
+                                <a
+                                    href="https://www.linkedin.com/in/adityabuilds/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 text-black font-semibold text-xs md:text-sm px-5 py-3 rounded-2xl shadow-md hover:brightness-110 transition-all group"
+                                >
+                                    <span>Connect on LinkedIn</span>
+                                    <ExternalLink size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                </a>
+
+                                <button
+                                    onClick={() => setIsDevModalOpen(false)}
+                                    className="w-full text-center text-xs text-white/60 hover:text-white py-2 transition-colors"
+                                >
+                                    Close Window
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </footer>
     );
 }
