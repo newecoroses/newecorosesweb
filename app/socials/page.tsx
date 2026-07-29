@@ -111,8 +111,8 @@ export default function SocialsPage() {
                             transition={{ duration: 0.45, delay: 0.1 + i * 0.1 }}
                             className={`group relative flex items-center gap-4 md:gap-6 bg-white border border-gray-100 rounded-2xl p-4 md:p-7 shadow-sm transition-all duration-300 ${social.hoverGlow} hover:-translate-y-0.5`}
                         >
-                            {/* Icon bubble */}
-                            <div className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br ${social.gradient} text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300`}>
+                            {/* Icon container (transparent background) */}
+                            <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                                 {social.icon}
                             </div>
 
