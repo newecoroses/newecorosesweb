@@ -683,7 +683,15 @@ export default function Home() {
                 { value: '10,000+', label: 'Happy Customers' },
                 { value: 'Same-Day', label: 'Guaranteed Delivery' },
                 { value: 'Signature', label: 'Luxury Packaging' },
-                { value: '4.9 ★', label: 'Customer Rating' },
+                {
+                  value: (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span>4.9</span>
+                      <Star className="w-6 h-6 md:w-7 md:h-7 text-amber-400 fill-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.95)] animate-pulse inline-block" />
+                    </span>
+                  ),
+                  label: 'Customer Rating',
+                },
               ].map((stat, idx) => (
                 <motion.div
                   key={idx}
@@ -693,9 +701,9 @@ export default function Home() {
                   viewport={{ once: true }}
                   className="space-y-1 p-4 rounded-2xl hover:bg-white/50 transition-colors"
                 >
-                  <p className="font-serif text-2xl md:text-3xl lg:text-4xl text-[#2E2A26] font-bold tracking-tight">
+                  <div className="font-serif text-2xl md:text-3xl lg:text-4xl text-[#2E2A26] font-bold tracking-tight flex items-center justify-center">
                     {stat.value}
-                  </p>
+                  </div>
                   <p className="text-[11px] md:text-xs text-[#6D6A66] uppercase tracking-[0.15em] font-medium">
                     {stat.label}
                   </p>
