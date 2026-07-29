@@ -26,33 +26,32 @@ export default function Footer() {
                         <p className="text-white/50 text-sm leading-relaxed mb-6 max-w-xs">
                             Kolkata&apos;s finest luxury floral &amp; gifting boutique. Hand-curated roses and bespoke gifts, delivered with love.
                         </p>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <a
-                                href="https://instagram.com"
+                                href="https://www.instagram.com/newecoroses___kolkata/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-300"
+                                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white transition-all duration-300 bg-white/5"
                                 aria-label="Instagram"
                             >
-                                <Instagram size={18} />
-                            </a>
-                            <a
-                                href="https://facebook.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-300"
-                                aria-label="Facebook"
-                            >
-                                <Facebook size={18} />
+                                <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-5 h-5 filter invert" />
                             </a>
                             <a
                                 href="https://wa.me/919936911611"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-300"
+                                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white transition-all duration-300 bg-white/5"
                                 aria-label="WhatsApp"
                             >
-                                <WhatsappIcon size={18} />
+                                <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-5 h-5 filter invert" />
+                            </a>
+                            <a
+                                href="/socials"
+                                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white transition-all duration-300 bg-white/5"
+                                aria-label="Google Reviews & Maps"
+                                title="Google Reviews & Store Locations"
+                            >
+                                <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-5 h-5" />
                             </a>
                         </div>
                     </div>
