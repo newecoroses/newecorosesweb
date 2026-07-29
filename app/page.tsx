@@ -687,7 +687,9 @@ export default function Home() {
                   value: (
                     <span className="inline-flex items-center gap-1.5">
                       <span>4.9</span>
-                      <Star className="w-6 h-6 md:w-7 md:h-7 text-amber-400 fill-amber-400 animate-star-shine inline-block" />
+                      <span className="inline-block bg-gradient-to-r from-amber-200 via-yellow-50 to-amber-200 bg-[length:200%_100%] bg-clip-text text-transparent animate-gold-shimmer drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] text-2xl md:text-3xl leading-none select-none">
+                        ★
+                      </span>
                     </span>
                   ),
                   label: 'Customer Rating',
