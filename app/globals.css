@@ -348,6 +348,22 @@ body {
   animation: gold-shimmer 3s ease-in-out infinite;
 }
 
+/* ===== Radiant Golden Star Shine Effect ===== */
+@keyframes star-shine {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8)) brightness(1);
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(251, 191, 36, 1)) drop-shadow(0 0 26px rgba(245, 158, 11, 0.9)) brightness(1.35);
+    transform: scale(1.15) rotate(5deg);
+  }
+}
+
+.animate-star-shine {
+  animation: star-shine 2.2s ease-in-out infinite;
+}
+
 /* ===== Shining Text Effect for Admin Panel ===== */
 @keyframes shine-text {
   0% {
