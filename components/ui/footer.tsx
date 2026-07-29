@@ -109,7 +109,7 @@ export default function Footer() {
                                     140/1/306, Netaji Subhash Chandra Bose Rd, Regent Park, Kolkata 700040
                                 </p>
                                 <a
-                                    href="https://maps.google.com/?q=NEW+ECO+ROSES,+140/1/306,+Netaji+Subhash+Chandra+Bose+Rd,+Regent+Park,+Kolkata+700040"
+                                    href="https://maps.app.goo.gl/RbKpGWan1p9qDxhr6"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-xs text-white/60 hover:text-white underline inline-flex items-center gap-1 mt-0.5"

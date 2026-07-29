@@ -27,7 +27,7 @@ const STORES = [
         shortName: 'Outlet 1 (Regent Park)',
         address: '140/1/306, Netaji Subhash Chandra Bose Rd, near RUPAYAN JEWELLERY, Regent Colony, Regent Park, Kolkata, West Bengal 700040',
         mapEmbedUrl: 'https://maps.google.com/maps?q=NEW+ECO+ROSES+Regent+Park+Kolkata&z=15&output=embed',
-        mapDirectUrl: 'https://maps.google.com/?q=NEW+ECO+ROSES,+140/1/306,+Netaji+Subhash+Chandra+Bose+Rd,+Regent+Park,+Kolkata+700040',
+        mapDirectUrl: 'https://maps.app.goo.gl/RbKpGWan1p9qDxhr6',
     },
     {
         id: 'outlet2',
