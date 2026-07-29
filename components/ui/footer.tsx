@@ -4,7 +4,7 @@ import { Phone, Clock, MapPin, Heart } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer className="bg-[#48563d] text-white relative overflow-hidden">
+        <footer className="bg-[#181a16] text-white relative overflow-hidden">
             {/* Top Shimmer Line */}
             <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
