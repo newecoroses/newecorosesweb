@@ -81,10 +81,23 @@ export default function PrivacyPolicy() {
                 </div>
 
                 {/* Subtle Developer Legal Note */}
-                <div className="mt-12 pt-6 border-t border-gray-100 text-center">
-                    <p className="text-[11px] text-gray-400 font-mono leading-relaxed">
-                        Digital Platform &amp; Web Application Designed &amp; Developed by <strong>Aditya Choudhury</strong> (Freelance Web Developer). All legal and technical platform architecture rights reserved for New Eco Roses.
-                    </p>
+                <div className="mt-12 pt-6 border-t border-gray-100 flex justify-center">
+                    <div className="inline-flex items-center gap-2 bg-[#faf7f2] border border-amber-900/10 rounded-full px-5 py-2 shadow-sm">
+                        <span className="text-amber-600 text-xs">⚡</span>
+                        <p className="text-xs text-gray-600 font-medium">
+                            Web Architecture &amp; Experience Engineered by{' '}
+                            <a
+                                href="https://www.linkedin.com/in/adityabuilds/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-semibold text-gray-900 hover:text-amber-700 underline underline-offset-2 decoration-amber-500/40 transition-colors inline-flex items-center gap-0.5"
+                            >
+                                <span>Aditya Choudhury</span>
+                                <span className="text-[10px] opacity-70">↗</span>
+                            </a>
+                            {' '}• Freelance Full-Stack Developer
+                        </p>
+                    </div>
                 </div>
             </div>
         </main>

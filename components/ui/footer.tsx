@@ -164,10 +164,10 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Made by Oryxen */}
-            <div className="border-t border-white/5">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex justify-center items-center">
-                    <p className="text-[11px] text-white/20 tracking-widest uppercase font-light">
+            {/* Made by Oryxen & Developer Credit */}
+            <div className="border-t border-white/5 py-4">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3 text-center sm:text-left">
+                    <p className="text-[11px] text-white/30 tracking-widest uppercase font-light">
                         Made by{' '}
                         <a
                             href="https://oryxen.co.in"
@@ -178,10 +178,20 @@ export default function Footer() {
                             ORYXEN
                         </a>
                     </p>
+
+                    <p className="text-[11px] text-white/40 font-light tracking-wide flex items-center gap-1.5">
+                        <span className="text-amber-400/90 font-medium">⚡ Web Architecture &amp; Experience Engineered by</span>
+                        <a
+                            href="https://www.linkedin.com/in/adityabuilds/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-white hover:text-amber-300 underline underline-offset-4 decoration-amber-400/50 hover:decoration-amber-300 transition-all inline-flex items-center gap-1 group"
+                        >
+                            <span>Aditya Choudhury</span>
+                            <span className="text-[10px] opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+                        </a>
+                    </p>
                 </div>
-                <p className="text-[10px] text-white/15 text-center font-mono py-1.5 border-t border-white/[0.03]">
-                    Web Application &amp; Platform Architecture by Aditya Choudhury (Freelance Developer)
-                </p>
             </div>
         </footer>
     );
