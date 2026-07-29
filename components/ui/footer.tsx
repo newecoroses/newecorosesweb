@@ -179,6 +179,9 @@ export default function Footer() {
                         </a>
                     </p>
                 </div>
+                <p className="text-[10px] text-white/15 text-center font-mono py-1.5 border-t border-white/[0.03]">
+                    Web Application &amp; Platform Architecture by Aditya Choudhury (Freelance Developer)
+                </p>
             </div>
         </footer>
     );
