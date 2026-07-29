@@ -218,7 +218,7 @@ export default function Footer() {
             </div>
 
             {/* Made by Oryxen & Compact Developer Trigger Bar */}
-            <div className="border-t border-white/10 bg-black/20 py-3.5">
+            <div className="border-t border-white/10 bg-black/20 py-3">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3 text-center sm:text-left">
                     <p className="text-[11px] text-white/70 tracking-widest uppercase font-light">
                         Made by{' '}
@@ -232,15 +232,38 @@ export default function Footer() {
                         </a>
                     </p>
 
-                    {/* Developer Details Trigger Button */}
+                    {/* Premium Developer Trigger Button */}
                     <button
                         type="button"
                         onClick={() => setIsDevModalOpen(true)}
-                        className="text-[11px] text-white/90 hover:text-white font-medium tracking-wide flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full border border-white/15 transition-all duration-300 group cursor-pointer shadow-xs"
+                        className="group relative inline-flex items-center cursor-pointer"
+                        aria-label="View developer profile"
                     >
-                        <Sparkles size={12} className="text-amber-300" />
-                        <span>Developer: <strong className="font-semibold text-white underline underline-offset-2 decoration-white/40 group-hover:decoration-white">Aditya Choudhury</strong></span>
-                        <span className="text-[10px] opacity-70 group-hover:translate-x-0.5 transition-transform">↗</span>
+                        {/* Soft ambient glow */}
+                        <span className="absolute inset-0 rounded-full bg-amber-400/15 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                        {/* Pill shell */}
+                        <span className="relative inline-flex items-center gap-3 border border-white/[0.09] group-hover:border-amber-400/30 rounded-full pl-1 pr-4 py-1 transition-all duration-500 bg-white/[0.02] group-hover:bg-white/[0.05]">
+
+                            {/* Icon circle */}
+                            <span className="w-7 h-7 rounded-full bg-amber-400/10 border border-amber-400/20 group-hover:border-amber-400/50 group-hover:bg-amber-400/15 flex items-center justify-center flex-shrink-0 transition-all duration-500">
+                                <svg className="w-3 h-3 text-amber-300/80 group-hover:text-amber-200 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="16 18 22 12 16 6" />
+                                    <polyline points="8 6 2 12 8 18" />
+                                </svg>
+                            </span>
+
+                            {/* Label stack */}
+                            <span className="flex flex-col items-start leading-none">
+                                <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 font-medium transition-colors">Crafted by</span>
+                                <span className="text-[12px] font-semibold bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 bg-[length:200%_100%] bg-clip-text text-transparent animate-gold-shimmer tracking-wide mt-0.5">Aditya Choudhury</span>
+                            </span>
+
+                            {/* Arrow */}
+                            <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-amber-300/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+                            </svg>
+                        </span>
                     </button>
                 </div>
             </div>
@@ -248,80 +271,105 @@ export default function Footer() {
             {/* Developer Details Modal */}
             <AnimatePresence>
                 {isDevModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-                        {/* Backdrop click handler */}
+                    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6">
+                        {/* Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsDevModalOpen(false)}
-                            className="absolute inset-0"
+                            className="absolute inset-0 bg-black/70 backdrop-blur-xl"
                         />
 
-                        {/* Modal Box */}
+                        {/* Modal Card */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            transition={{ type: "spring", duration: 0.5 }}
-                            className="relative z-10 w-full max-w-md bg-[#1c1f19] text-white border border-white/15 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 overflow-hidden"
+                            initial={{ opacity: 0, y: 40, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 30, scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            className="relative z-10 w-full sm:max-w-sm overflow-hidden rounded-t-[2.5rem] sm:rounded-3xl"
                         >
-                            {/* Accent Background Glow */}
-                            <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+                            {/* Glass layer */}
+                            <div className="relative bg-[#12140f]/95 border border-white/[0.08] shadow-[0_-20px_80px_-20px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.04)]">
 
-                            {/* Header */}
-                            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
-                                        <Code2 size={16} />
-                                    </div>
-                                    <div>
-                                        <span className="text-[10px] uppercase tracking-[0.2em] text-amber-300 font-semibold block">Developer Profile</span>
-                                        <h3 className="text-xl font-serif font-bold text-white">Aditya Choudhury</h3>
-                                    </div>
+                                {/* Ambient light blobs */}
+                                <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-32 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+                                <div className="absolute bottom-0 -right-10 w-32 h-32 bg-emerald-600/8 rounded-full blur-2xl pointer-events-none" />
+
+                                {/* Top drag handle (mobile) */}
+                                <div className="flex justify-center pt-3 pb-0 sm:hidden">
+                                    <div className="w-8 h-1 bg-white/20 rounded-full" />
                                 </div>
-                                <button
-                                    onClick={() => setIsDevModalOpen(false)}
-                                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-                                    aria-label="Close modal"
-                                >
-                                    <X size={16} />
-                                </button>
-                            </div>
 
-                            {/* Role Badge */}
-                            <div className="inline-block bg-white/10 border border-white/15 px-3 py-1 rounded-full text-xs font-medium text-amber-200">
-                                Freelance Web Developer &amp; Full-Stack Architect
-                            </div>
+                                <div className="px-6 pt-4 pb-6 sm:px-8 sm:pt-6 sm:pb-8 space-y-5">
 
-                            {/* Bio */}
-                            <p className="text-xs md:text-sm text-gray-300 leading-relaxed font-light">
-                                Specialized in engineering high-performance web applications, luxury e-commerce platforms, and custom digital experiences. Built with modern web standards, optimized architecture, and fine attention to design detail.
-                            </p>
+                                    {/* Header row */}
+                                    <div className="flex items-start justify-between">
+                                        <div className="space-y-0.5">
+                                            <div className="flex items-center gap-1.5 mb-2">
+                                                {/* Premium code SVG */}
+                                                <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.25em] font-semibold text-amber-400/80 bg-amber-400/8 border border-amber-400/15 px-2 py-0.5 rounded-full">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
+                                                        <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+                                                    </svg>
+                                                    Web Developer
+                                                </span>
+                                            </div>
+                                            <h3 className="font-serif text-2xl font-bold text-white tracking-tight">Aditya Choudhury</h3>
+                                            <p className="text-[11px] text-white/40 font-light tracking-wide">Freelance / Full-Stack Architect</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setIsDevModalOpen(false)}
+                                            className="mt-1 w-7 h-7 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/80 transition-all"
+                                            aria-label="Close"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
 
-                            {/* Call to Action Buttons */}
-                            <div className="space-y-2.5 pt-2">
-                                <a
-                                    href="https://www.linkedin.com/in/adityabuilds/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 text-black font-semibold text-xs md:text-sm px-5 py-3 rounded-2xl shadow-md hover:brightness-110 transition-all group"
-                                >
-                                    <span>Connect on LinkedIn</span>
-                                    <ExternalLink size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                                </a>
+                                    {/* Thin divider with shimmer */}
+                                    <div className="h-px bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
 
-                                <button
-                                    onClick={() => setIsDevModalOpen(false)}
-                                    className="w-full text-center text-xs text-white/60 hover:text-white py-2 transition-colors"
-                                >
-                                    Close Window
-                                </button>
+                                    {/* Skills chips */}
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {['Next.js', 'React', 'Tailwind CSS', 'Supabase', 'UI/UX'].map(s => (
+                                            <span key={s} className="text-[10px] text-white/50 bg-white/[0.05] border border-white/[0.07] px-2.5 py-1 rounded-full font-medium">
+                                                {s}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    {/* Bio */}
+                                    <p className="text-[13px] text-white/55 font-light leading-relaxed">
+                                        Engineered this platform, from database architecture to micro-animations, with a sharp focus on performance, aesthetics, and premium experience.
+                                    </p>
+
+                                    {/* CTA */}
+                                    <a
+                                        href="https://www.linkedin.com/in/adityabuilds/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group/cta relative w-full flex items-center justify-center gap-2.5 overflow-hidden rounded-2xl px-5 py-3.5 transition-all duration-300"
+                                    >
+                                        {/* Button background */}
+                                        <span className="absolute inset-0 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-[length:200%_100%] animate-gold-shimmer" />
+                                        <span className="absolute inset-0 opacity-0 group-hover/cta:opacity-100 bg-white/10 transition-opacity" />
+                                        {/* LinkedIn SVG */}
+                                        <svg className="relative w-4 h-4 text-black/80 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                        </svg>
+                                        <span className="relative text-sm font-bold text-black/80 tracking-wide">Connect on LinkedIn</span>
+                                        <svg className="relative w-3.5 h-3.5 text-black/70 group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
                 )}
             </AnimatePresence>
+
         </footer>
     );
 }
