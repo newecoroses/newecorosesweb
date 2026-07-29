@@ -133,7 +133,16 @@ export default function Footer() {
                             </div>
                         </div>
                         <p className="text-xs text-white/40 mb-1">📞 +91 99369 11611 / +91 91995 01655</p>
-                        <p className="text-xs text-white/40 mb-4">✉️ newecoroses@gmail.com</p>
+                        <a
+                            href="https://mail.google.com/mail/?view=cm&fs=1&to=newecoroses@gmail.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-white/60 hover:text-white transition-colors inline-flex items-center gap-1 mb-4 group"
+                            title="Open Gmail to send email"
+                        >
+                            <span>✉️</span>
+                            <span className="underline underline-offset-2 decoration-white/30 group-hover:decoration-white">newecoroses@gmail.com</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -141,8 +150,8 @@ export default function Footer() {
             {/* Bottom Bar */}
             <div className="border-t border-white/10">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-xs text-white/30">
-                        &copy; 2026 New Eco Roses. All rights reserved — Crafted with love in Kolkata.
+                    <p className="text-xs text-white/40">
+                        &copy; 2026 New Eco Roses. All rights reserved — Crafted with <span className="inline-block text-rose-500 animate-pulse mx-0.5">❤️</span> in Kolkata.
                     </p>
                     <div className="flex items-center gap-6">
                         <Link href="/privacy" className="text-xs text-white/30 hover:text-white transition-colors">
