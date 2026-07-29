@@ -13,7 +13,7 @@ const SOCIALS = [
         gradient: 'from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]',
         hoverGlow: 'hover:shadow-[0_8px_40px_rgba(238,42,123,0.35)]',
         icon: (
-            <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-6 h-6 md:w-8 md:h-8" />
+            <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
         ),
         cta: 'Follow on Instagram',
         badge: 'Social Media',
@@ -27,7 +27,7 @@ const SOCIALS = [
         gradient: 'from-[#25D366] to-[#128C7E]',
         hoverGlow: 'hover:shadow-[0_8px_40px_rgba(37,211,102,0.35)]',
         icon: (
-            <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-6 h-6 md:w-8 md:h-8" />
+            <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
         ),
         cta: 'Message on WhatsApp',
         badge: 'Order & Enquiry',
@@ -41,7 +41,7 @@ const SOCIALS = [
         gradient: 'from-[#5c6e4f] to-[#3a5a3a]',
         hoverGlow: 'hover:shadow-[0_8px_40px_rgba(92,110,79,0.35)]',
         icon: (
-            <img src="/social%20svgs/website-ui-web-svgrepo-com.svg" alt="Website" className="w-6 h-6 md:w-8 md:h-8" />
+            <img src="/social%20svgs/website-ui-web-svgrepo-com.svg" alt="Website" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
         ),
         cta: 'Visit Website',
         badge: 'Shop Online',
@@ -55,7 +55,7 @@ const SOCIALS = [
         gradient: 'from-[#4285F4] via-[#EA4335] to-[#FBBC05]',
         hoverGlow: 'hover:shadow-[0_8px_40px_rgba(66,133,244,0.35)]',
         icon: (
-            <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-6 h-6 md:w-8 md:h-8" />
+            <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
         ),
         cta: 'Rate Outlet 1',
         badge: 'Regent Park',
@@ -69,7 +69,7 @@ const SOCIALS = [
         gradient: 'from-[#34A853] via-[#4285F4] to-[#EA4335]',
         hoverGlow: 'hover:shadow-[0_8px_40px_rgba(52,168,83,0.35)]',
         icon: (
-            <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-6 h-6 md:w-8 md:h-8" />
+            <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
         ),
         cta: 'Rate Outlet 2',
         badge: 'New Alipore',
