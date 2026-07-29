@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Star, Quote } from 'lucide-react';
+import { ArrowRight, Star, Quote, Truck, Gift, MessageCircle } from 'lucide-react';
 
 import HeroSlider from '@/components/home/hero-slider';
 import SearchBar from '@/components/home/search-bar';
@@ -564,63 +564,134 @@ export default function Home() {
       )}
 
       {/* ═══ WHY CHOOSE US ═══ */}
-      <section className="py-16 md:py-28 overflow-hidden relative">
-        <Image src="/images/why-new-eco-roses.webp" alt="Why New Eco Roses background" fill className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-[#faf7f2]/90 backdrop-blur-sm" />
+      <section className="py-20 md:py-32 overflow-hidden relative bg-[#FAF7F2]">
+        {/* Organic Soft Radial Glow & Texture */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#556B4E]/8 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 opacity-[0.025] bg-[radial-gradient(#2E2A26_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+        
+        {/* Subtle Decorative Background Elements */}
+        <div className="absolute top-1/2 -left-20 w-80 h-80 bg-[#556B4E]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 -right-20 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
         <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="text-center mb-12 md:mb-16">
-            <span className="inline-block text-[11px] uppercase tracking-[0.3em] font-semibold mb-3 text-[#5c6e4f] px-3.5 py-1 rounded-full bg-[#5c6e4f]/10 border border-[#5c6e4f]/20">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="text-center mb-16 md:mb-20"
+          >
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] font-semibold mb-4 text-[#556B4E] px-4 py-1.5 rounded-full bg-[#556B4E]/10 border border-[#556B4E]/20 shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#556B4E] animate-pulse" />
               Our Promise
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl text-[#2a241b] mb-4 font-bold tracking-tight">Why New Eco Roses?</h2>
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-[#2E2A26] mb-4 font-bold tracking-tight">
+              Why New Eco Roses?
+            </h2>
+            
+            {/* Elegant Botanical Divider */}
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="h-px w-12 bg-amber-900/20" />
-              <div className="w-2 h-2 rounded-full bg-[#5c6e4f]" />
-              <div className="h-px w-12 bg-amber-900/20" />
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-[#556B4E]/30 to-transparent" />
+              <svg className="w-4 h-4 text-[#556B4E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 14c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" />
+              </svg>
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-[#556B4E]/30 to-transparent" />
             </div>
-            <p className="text-gray-600 text-sm md:text-base font-normal max-w-lg mx-auto leading-relaxed">
+
+            <p className="text-[#6D6A66] text-sm md:text-base font-light max-w-xl mx-auto leading-relaxed">
               Every detail is crafted to make your gifting experience effortless, elegant, and unforgettable.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          {/* Three Floating Luxury Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
             {[
               {
-                icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12H3l9-9 9 9h-2" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" /><path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6" /></svg>),
+                icon: <Truck className="w-7 h-7 text-white stroke-[1.75]" />,
                 title: 'Same-Day Delivery',
                 desc: `Order by ${deliveryCutoff} for guaranteed same-day delivery within our ${deliveryRadius} km service radius.`,
+                isFeatured: false,
               },
               {
-                icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V22H4V12" /><path d="M22 7H2v5h20V7z" /><path d="M12 22V7" /><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" /><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" /></svg>),
+                icon: <Gift className="w-7 h-7 text-white stroke-[1.75]" />,
                 title: 'Premium Packaging',
                 desc: 'Every gift is wrapped in our signature luxury packaging — ribbons, tissue, and a personal handwritten note included.',
+                isFeatured: true,
               },
               {
-                icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>),
+                icon: <MessageCircle className="w-7 h-7 text-white stroke-[1.75]" />,
                 title: 'Instant WhatsApp Support',
                 desc: 'Direct line to our team. Get recommendations, customise orders, and track your delivery in real time.',
+                isFeatured: false,
               },
             ].map((item, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 32 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: idx * 0.12 }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
                 viewport={{ once: true }}
-                className="group relative bg-white/95 rounded-3xl p-8 md:p-10 flex flex-col items-center text-center shadow-[0_10px_30px_rgba(58,50,38,0.08)] hover:shadow-[0_20px_50px_rgba(92,110,79,0.2)] border border-gray-100/80 hover:border-[#5c6e4f]/40 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                className={`group relative bg-white/95 backdrop-blur-md rounded-3xl p-8 md:p-10 flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-2.5 hover:scale-[1.02] overflow-hidden ${
+                  item.isFeatured
+                    ? 'shadow-[0_20px_45px_-5px_rgba(85,107,78,0.12)] hover:shadow-[0_30px_60px_-10px_rgba(85,107,78,0.22)] border border-[#556B4E]/30 md:-translate-y-3'
+                    : 'shadow-[0_15px_35px_-5px_rgba(46,42,38,0.06)] hover:shadow-[0_25px_50px_-12px_rgba(85,107,78,0.18)] border border-[#2E2A26]/5 hover:border-[#556B4E]/40'
+                }`}
               >
-                <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-amber-300 via-[#5c6e4f] to-amber-300 opacity-60 group-hover:opacity-100 transition-opacity" />
-                
-                {/* Icon Badge */}
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br from-[#3a5a3a] to-[#5c6e4f] text-white shadow-lg shadow-[#5c6e4f]/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 border border-amber-300/30">
-                  <span className="inline-flex">{item.icon}</span>
+                {/* Top Subtle Shimmer Line */}
+                <div
+                  className={`absolute top-0 inset-x-0 h-[2px] transition-opacity duration-500 ${
+                    item.isFeatured
+                      ? 'bg-gradient-to-r from-[#C9A86A]/80 via-[#556B4E] to-[#C9A86A]/80 opacity-100'
+                      : 'bg-gradient-to-r from-transparent via-[#556B4E]/40 to-transparent opacity-40 group-hover:opacity-100'
+                  }`}
+                />
+
+                {/* Olive Green Icon Container with Soft Glow */}
+                <div className="relative mb-7">
+                  <div className="absolute -inset-1.5 bg-[#556B4E]/20 rounded-2xl blur-md -z-10 group-hover:bg-[#556B4E]/35 transition-colors" />
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#556B4E] flex items-center justify-center shadow-lg shadow-[#556B4E]/25 ring-4 ring-[#556B4E]/10 group-hover:scale-105 group-hover:rotate-3 transition-all duration-500 border border-white/20">
+                    {item.icon}
+                  </div>
                 </div>
 
-                <h3 className="font-serif text-xl md:text-2xl text-[#2a241b] font-bold mb-3 group-hover:text-[#5c6e4f] transition-colors">{item.title}</h3>
-                <div className="w-12 h-0.5 mb-4 mx-auto bg-gradient-to-r from-transparent via-[#5c6e4f]/40 to-transparent group-hover:via-[#5c6e4f] transition-colors" />
-                <p className="text-gray-600 text-xs md:text-sm font-normal leading-relaxed max-w-[260px]">{item.desc}</p>
+                <h3 className="font-serif text-xl md:text-2xl text-[#2E2A26] font-bold mb-3 group-hover:text-[#556B4E] transition-colors">
+                  {item.title}
+                </h3>
+                <div className="w-10 h-0.5 mb-4 mx-auto bg-gradient-to-r from-transparent via-[#556B4E]/30 to-transparent group-hover:via-[#556B4E] transition-colors" />
+                <p className="text-[#6D6A66] text-xs md:text-sm font-light leading-relaxed max-w-[270px]">
+                  {item.desc}
+                </p>
               </motion.div>
             ))}
+          </div>
+
+          {/* Premium Trust Metrics Bar */}
+          <div className="mt-16 md:mt-24 pt-12 border-t border-[#556B4E]/15">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
+              {[
+                { value: '10,000+', label: 'Happy Customers' },
+                { value: 'Same-Day', label: 'Guaranteed Delivery' },
+                { value: 'Signature', label: 'Luxury Packaging' },
+                { value: '4.9 ★', label: 'Customer Rating' },
+              ].map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  className="space-y-1 p-4 rounded-2xl hover:bg-white/50 transition-colors"
+                >
+                  <p className="font-serif text-2xl md:text-3xl lg:text-4xl text-[#2E2A26] font-bold tracking-tight">
+                    {stat.value}
+                  </p>
+                  <p className="text-[11px] md:text-xs text-[#6D6A66] uppercase tracking-[0.15em] font-medium">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
