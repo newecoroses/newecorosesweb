@@ -232,22 +232,22 @@ export default function Footer() {
                         </a>
                     </p>
 
-                    {/* Premium Developer Trigger Button */}
+                    {/* Premium Compact Developer Trigger Button (~30% smaller) */}
                     <button
                         type="button"
                         onClick={() => setIsDevModalOpen(true)}
-                        className="group relative inline-flex items-center cursor-pointer"
+                        className="group relative inline-flex items-center cursor-pointer scale-90 sm:scale-85 origin-center sm:origin-right"
                         aria-label="View developer profile"
                     >
                         {/* Soft ambient glow */}
-                        <span className="absolute inset-0 rounded-full bg-amber-400/15 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                        <span className="absolute inset-0 rounded-full bg-amber-400/15 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         {/* Pill shell */}
-                        <span className="relative inline-flex items-center gap-3 border border-white/[0.09] group-hover:border-amber-400/30 rounded-full pl-1 pr-4 py-1 transition-all duration-500 bg-white/[0.02] group-hover:bg-white/[0.05]">
+                        <span className="relative inline-flex items-center gap-1.5 border border-white/[0.08] group-hover:border-amber-400/30 rounded-full pl-0.5 pr-2.5 py-0.5 transition-all duration-300 bg-white/[0.02] group-hover:bg-white/[0.05]">
 
                             {/* Icon circle */}
-                            <span className="w-7 h-7 rounded-full bg-amber-400/10 border border-amber-400/20 group-hover:border-amber-400/50 group-hover:bg-amber-400/15 flex items-center justify-center flex-shrink-0 transition-all duration-500">
-                                <svg className="w-3 h-3 text-amber-300/80 group-hover:text-amber-200 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <span className="w-4.5 h-4.5 rounded-full bg-amber-400/10 border border-amber-400/20 group-hover:border-amber-400/50 group-hover:bg-amber-400/15 flex items-center justify-center flex-shrink-0 transition-all duration-300">
+                                <svg className="w-2.5 h-2.5 text-amber-300/80 group-hover:text-amber-200 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="16 18 22 12 16 6" />
                                     <polyline points="8 6 2 12 8 18" />
                                 </svg>
@@ -255,12 +255,12 @@ export default function Footer() {
 
                             {/* Label stack */}
                             <span className="flex flex-col items-start leading-none">
-                                <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 font-medium transition-colors">Crafted by</span>
-                                <span className="text-[12px] font-semibold bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 bg-[length:200%_100%] bg-clip-text text-transparent animate-gold-shimmer tracking-wide mt-0.5">Aditya Choudhury</span>
+                                <span className="text-[7.5px] uppercase tracking-[0.18em] text-white/30 group-hover:text-white/50 font-medium transition-colors">Crafted by</span>
+                                <span className="text-[9.5px] font-semibold bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 bg-[length:200%_100%] bg-clip-text text-transparent animate-gold-shimmer tracking-wide mt-0.5">Aditya Choudhury</span>
                             </span>
 
                             {/* Arrow */}
-                            <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-amber-300/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <svg className="w-2 h-2 text-white/20 group-hover:text-amber-300/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
                             </svg>
                         </span>
