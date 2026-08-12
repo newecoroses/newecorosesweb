@@ -194,59 +194,15 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             {product.name}
                         </h1>
 
-                        <p className="text-muted leading-relaxed font-light mb-6 text-sm sm:text-base max-w-lg">
+                        <p className="text-muted leading-relaxed font-light mb-5 text-sm sm:text-base max-w-lg">
                             {product.description}
                         </p>
 
-                        {/* Perfect For */}
-                        {product.relationships?.length > 0 && (
-                            <div className="mb-5">
-                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-2">Perfect For</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {product.relationships.map((rel) => (
-                                        <Link key={rel} href={`/shop?relation=${encodeURIComponent(rel.toLowerCase())}`}
-                                            className="inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-gray-200 hover:border-primary">
-                                            {rel}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Celebrate On */}
-                        {product.celebrations?.length > 0 && (
-                            <div className="mb-6">
-                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-2">Celebrate On</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {product.celebrations.map((cel) => (
-                                        <Link key={cel} href={`/shop?celebration=${encodeURIComponent(cel.toLowerCase())}`}
-                                            className="inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-blush text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary">
-                                            🎉 {cel}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Features */}
-                        <div className="space-y-3 py-5 my-6 border-y border-gray-200/80 text-xs sm:text-sm text-muted">
-                            {[
-                                { icon: <Truck size={18} />, text: 'Same-day delivery available' },
-                                { icon: <Package size={18} />, text: 'Signature luxury packaging included' },
-                                { icon: <Shield size={18} />, text: 'Freshness guaranteed or full refund' },
-                            ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-3">
-                                    <span className="text-primary flex-shrink-0">{item.icon}</span>
-                                    <span>{item.text}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* CTA Buttons */}
-                        <div className="flex gap-3 mt-2">
+                        {/* CTA Buttons — Positioned high for instant visibility */}
+                        <div className="flex gap-3 mb-6">
                             {/* Add to Cart / Stepper */}
                             {cartQuantity > 0 ? (
-                                <div className="flex-1 py-2 px-4 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between">
+                                <div className="flex-1 py-2 px-4 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-sm">
                                     <button
                                         type="button"
                                         onClick={() => product && updateQuantity(product.id, cartQuantity - 1)}
@@ -288,7 +244,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             });
                                         }
                                     }}
-                                    className="flex-1 py-3.5 sm:py-4 px-6 text-center rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5"
+                                    className="flex-1 py-3.5 sm:py-4 px-6 text-center rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5 shadow-sm"
                                 >
                                     <ShoppingCart size={18} /> Add to Cart
                                 </button>
@@ -308,6 +264,50 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 Enquire Now
                             </a>
                         </div>
+
+                        {/* Features */}
+                        <div className="space-y-2.5 py-4 mb-5 border-y border-gray-200/80 text-xs sm:text-sm text-muted">
+                            {[
+                                { icon: <Truck size={17} />, text: 'Same-day delivery available' },
+                                { icon: <Package size={17} />, text: 'Signature luxury packaging included' },
+                                { icon: <Shield size={17} />, text: 'Freshness guaranteed or full refund' },
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-center gap-3">
+                                    <span className="text-primary flex-shrink-0">{item.icon}</span>
+                                    <span>{item.text}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Perfect For */}
+                        {product.relationships?.length > 0 && (
+                            <div className="mb-4">
+                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-2">Perfect For</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {product.relationships.map((rel) => (
+                                        <Link key={rel} href={`/shop?relation=${encodeURIComponent(rel.toLowerCase())}`}
+                                            className="inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-gray-200 hover:border-primary">
+                                            {rel}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Celebrate On */}
+                        {product.celebrations?.length > 0 && (
+                            <div className="mb-4">
+                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-2">Celebrate On</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {product.celebrations.map((cel) => (
+                                        <Link key={cel} href={`/shop?celebration=${encodeURIComponent(cel.toLowerCase())}`}
+                                            className="inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-blush text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary">
+                                            🎉 {cel}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </motion.div>
                 </div>
 
