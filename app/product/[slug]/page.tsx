@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Truck, Package, Shield, ChevronRight, ShoppingCart, Check } from 'lucide-react';
+import { ArrowLeft, Truck, Package, Shield, ChevronRight, ShoppingCart, Check, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ProductCard from '@/components/product/product-card';
 import WhatsAppFloat from '@/components/ui/whatsapp-float';
@@ -22,8 +22,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [relatedProducts, setRelatedProducts] = useState<DBProduct[]>([]);
     const [whatsappLink, setWhatsappLink] = useState('');
     const [loading, setLoading] = useState(true);
-    const [addedToCart, setAddedToCart] = useState(false);
-    const { addItem } = useCart();
+    const { addItem, updateQuantity, getItemQuantity } = useCart();
+    const cartQuantity = product ? getItemQuantity(product.id) : 0;
 
     useEffect(() => {
         // Load product from Supabase, fallback to static
@@ -252,33 +252,55 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                         {/* CTA Buttons */}
                         <div className="flex gap-3">
-                            {/* Add to Cart */}
-                            <button
-                                onClick={() => {
-                                    if (product) {
-                                        addItem({
+                            {/* Add to Cart / Stepper */}
+                            {cartQuantity > 0 ? (
+                                <div className="flex-1 py-2 px-3 rounded-lg border-2 border-primary bg-primary/5 flex items-center justify-between">
+                                    <button
+                                        type="button"
+                                        onClick={() => product && updateQuantity(product.id, cartQuantity - 1)}
+                                        className="w-10 h-10 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                        title="Decrease quantity"
+                                    >
+                                        <Minus size={16} />
+                                    </button>
+                                    <span className="text-sm font-bold text-primary flex items-center gap-1.5">
+                                        <Check size={16} className="text-emerald-600" />
+                                        {cartQuantity} in Cart
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => product && addItem({
                                             id: product.id,
                                             name: product.name,
                                             slug: product.slug,
                                             image_url: product.image_url,
                                             price: null,
-                                        });
-                                        setAddedToCart(true);
-                                        setTimeout(() => setAddedToCart(false), 2000);
-                                    }
-                                }}
-                                className={`flex-1 py-4 px-6 text-center rounded-lg transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.12em] text-sm font-semibold border-2 ${
-                                    addedToCart
-                                        ? 'bg-emerald-50 border-emerald-500 text-emerald-600'
-                                        : 'bg-white border-primary text-primary hover:bg-primary/5'
-                                }`}
-                            >
-                                {addedToCart ? (
-                                    <><Check size={18} /> Added!</>
-                                ) : (
-                                    <><ShoppingCart size={18} /> Add to Cart</>
-                                )}
-                            </button>
+                                        })}
+                                        className="w-10 h-10 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
+                                        title="Increase quantity"
+                                    >
+                                        <Plus size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (product) {
+                                            addItem({
+                                                id: product.id,
+                                                name: product.name,
+                                                slug: product.slug,
+                                                image_url: product.image_url,
+                                                price: null,
+                                            });
+                                        }
+                                    }}
+                                    className="flex-1 py-4 px-6 text-center rounded-lg transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.12em] text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5"
+                                >
+                                    <ShoppingCart size={18} /> Add to Cart
+                                </button>
+                            )}
 
                             {/* WhatsApp CTA */}
                             <a

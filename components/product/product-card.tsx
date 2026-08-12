@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check, Minus, Plus } from 'lucide-react';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchWhatsappSettings } from '@/lib/supabase';
 import { trackEnquiry } from '@/lib/analytics';
@@ -54,8 +54,8 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const [whatsappLink, setWhatsappLink] = useState('');
     const [isHovered, setIsHovered] = useState(false);
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
-    const [addedToCart, setAddedToCart] = useState(false);
-    const { addItem } = useCart();
+    const { addItem, updateQuantity, getItemQuantity } = useCart();
+    const cartQuantity = getItemQuantity(product.id);
 
     // Extract images, deduplicated, main image first
     const allImages = [...new Set([product.image_url, ...(product.images || [])])]
@@ -190,42 +190,65 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 </div>
 
                 <div className="mt-auto flex gap-1.5 sm:gap-2">
-                    {/* Add to Cart button */}
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            addItem({
-                                id: product.id,
-                                name: product.name,
-                                slug: product.slug,
-                                image_url: product.image_url,
-                                price: product.price ?? null,
-                            });
-                            setAddedToCart(true);
-                            setTimeout(() => setAddedToCart(false), 1800);
-                        }}
-                        className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 rounded-lg md:rounded-xl text-[9px] sm:text-xs uppercase tracking-wider font-semibold transition-all duration-300 border ${
-                            addedToCart
-                                ? 'bg-emerald-50 border-emerald-500 text-emerald-600'
-                                : 'bg-white border-primary/40 text-primary hover:bg-primary/10 hover:border-primary'
-                        }`}
-                        title="Add to Cart"
-                    >
-                        {addedToCart ? (
-                            <>
-                                <Check size={13} />
-                                <span>Added</span>
-                            </>
-                        ) : (
-                            <>
-                                <ShoppingCart size={13} />
-                                <span className="hidden min-[380px]:inline">Add to Cart</span>
-                                <span className="inline min-[380px]:hidden">Add</span>
-                            </>
-                        )}
-                    </button>
+                    {/* Add to Cart / Quantity Stepper Button */}
+                    {cartQuantity > 0 ? (
+                        <div className="flex-1 flex items-center justify-between border-2 border-primary bg-primary/5 rounded-lg md:rounded-xl px-1 py-0.5 text-primary">
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    updateQuantity(product.id, cartQuantity - 1);
+                                }}
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                title="Decrease quantity"
+                            >
+                                <Minus size={11} />
+                            </button>
+                            <span className="text-[10px] sm:text-xs font-bold px-1 text-primary">
+                                {cartQuantity} in Cart
+                            </span>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    addItem({
+                                        id: product.id,
+                                        name: product.name,
+                                        slug: product.slug,
+                                        image_url: product.image_url,
+                                        price: product.price ?? null,
+                                    });
+                                }}
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
+                                title="Increase quantity"
+                            >
+                                <Plus size={11} />
+                            </button>
+                        </div>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addItem({
+                                    id: product.id,
+                                    name: product.name,
+                                    slug: product.slug,
+                                    image_url: product.image_url,
+                                    price: product.price ?? null,
+                                });
+                            }}
+                            className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 rounded-lg md:rounded-xl text-[9px] sm:text-xs uppercase tracking-wider font-semibold transition-all duration-300 border bg-white border-primary/40 text-primary hover:bg-primary/10 hover:border-primary"
+                            title="Add to Cart"
+                        >
+                            <ShoppingCart size={13} />
+                            <span className="hidden min-[380px]:inline">Add to Cart</span>
+                            <span className="inline min-[380px]:hidden">Add</span>
+                        </button>
+                    )}
 
                     {/* Enquire Now button */}
                     <a

@@ -17,6 +17,7 @@ interface CartContextType {
     addItem: (item: Omit<CartItem, 'quantity'>) => void;
     removeItem: (id: string) => void;
     updateQuantity: (id: string, quantity: number) => void;
+    getItemQuantity: (id: string) => number;
     clearCart: () => void;
     itemCount: number;
     isDrawerOpen: boolean;
@@ -81,6 +82,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems(prev => prev.map(i => i.id === id ? { ...i, quantity } : i));
     }, []);
 
+    const getItemQuantity = useCallback((id: string) => {
+        const item = items.find(i => i.id === id);
+        return item ? item.quantity : 0;
+    }, [items]);
+
     const clearCart = useCallback(() => setItems([]), []);
 
     const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -91,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     return (
         <CartContext.Provider value={{
-            items, addItem, removeItem, updateQuantity, clearCart,
+            items, addItem, removeItem, updateQuantity, getItemQuantity, clearCart,
             itemCount, isDrawerOpen, openDrawer, closeDrawer, toggleDrawer,
         }}>
             {children}
