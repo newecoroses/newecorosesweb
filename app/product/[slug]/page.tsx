@@ -130,10 +130,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
     return (
-        <div className="pt-28 sm:pt-32 lg:pt-36 pb-16 bg-background min-h-screen">
+        <div className="pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-16 bg-background min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}
-                <nav className="flex items-center gap-2 text-xs text-muted mb-2.5 font-medium uppercase tracking-wider overflow-x-auto whitespace-nowrap">
+                <nav className="flex items-center gap-2 text-[11px] sm:text-xs text-muted mb-2.5 font-medium uppercase tracking-wider overflow-x-auto whitespace-nowrap">
                     <Link href="/" className="hover:text-primary transition-colors">Home</Link>
                     <ChevronRight size={12} className="flex-shrink-0" />
                     <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
@@ -150,13 +150,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
                         {/* Tag Badge */}
                         <div className="mb-2">
-                            <span className={`inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${tagColors[product.tag] ?? tagColors['Standard']}`}>
+                            <span className={`inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${tagColors[product.tag] ?? tagColors['Standard']}`}>
                                 {product.tag}
                             </span>
                         </div>
 
-                        {/* Main Image Container — seamless without box frame */}
-                        <div className="relative aspect-[4/5] max-h-[360px] sm:max-h-[400px] lg:max-h-[420px] xl:max-h-[450px] w-full mx-auto flex items-center justify-center mb-3">
+                        {/* Main Image Container — fitted seamlessly across mobile, tablet, and desktop */}
+                        <div className="relative aspect-[4/5] max-h-[300px] min-[400px]:max-h-[340px] sm:max-h-[380px] md:max-h-[400px] lg:max-h-[420px] xl:max-h-[450px] w-full mx-auto flex items-center justify-center mb-3">
                             <Image
                                 src={images[selectedImage] || '/images/placeholder.webp'}
                                 alt={product.name}

@@ -187,7 +187,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 <div className="mt-auto flex gap-1.5 sm:gap-2">
                     {/* Add to Cart / Quantity Stepper Button */}
                     {cartQuantity > 0 ? (
-                        <div className="flex-1 flex items-center justify-between border-2 border-primary bg-primary/5 rounded-lg md:rounded-xl px-1 py-0.5 text-primary">
+                        <div className="flex-1 flex items-center justify-between border-2 border-primary bg-primary/5 rounded-lg md:rounded-xl px-0.5 sm:px-1 py-0.5 text-primary min-w-0">
                             <button
                                 type="button"
                                 onClick={(e) => {
@@ -195,13 +195,14 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                     e.stopPropagation();
                                     updateQuantity(product.id, cartQuantity - 1);
                                 }}
-                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors flex-shrink-0"
                                 title="Decrease quantity"
                             >
                                 <Minus size={11} />
                             </button>
-                            <span className="text-[10px] sm:text-xs font-bold px-1 text-primary">
-                                {cartQuantity} in Cart
+                            <span className="text-[9px] min-[360px]:text-[10px] sm:text-xs font-bold px-0.5 text-primary truncate text-center flex-1">
+                                <span className="hidden min-[360px]:inline">{cartQuantity} in Cart</span>
+                                <span className="inline min-[360px]:hidden">{cartQuantity} Cart</span>
                             </span>
                             <button
                                 type="button"
@@ -216,7 +217,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                         price: product.price ?? null,
                                     });
                                 }}
-                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors flex-shrink-0"
                                 title="Increase quantity"
                             >
                                 <Plus size={11} />
