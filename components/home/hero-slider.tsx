@@ -6,14 +6,16 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BANNERS = [
-    { id: 1, src: '/images/banners/hero/birthday.webp', alt: 'Birthday Gifts', link: '/shop?celebration=birthday' },
-    { id: 2, src: '/images/banners/hero/anniversary.webp', alt: 'Anniversary Specials', link: '/shop?celebration=anniversary' },
-    { id: 3, src: '/images/banners/hero/women.webp', alt: "Women's Collection", link: '/shop?relation=her' },
-    { id: 4, src: '/images/banners/hero/wedding-gifts.webp', alt: 'Wedding Gifts', link: '/shop?cat=wedding-gifts' },
-    { id: 5, src: '/images/banners/hero/housewarming.webp', alt: 'Housewarming Gifts', link: '/shop?celebration=housewarming' },
-    { id: 6, src: '/images/banners/hero/ramadan.webp', alt: 'Ramadan Collection', link: '/shop?cat=ramadan' },
-    { id: 7, src: '/images/banners/hero/plants.webp', alt: 'Plants Collection', link: '/shop?cat=plants' },
-    { id: 8, src: '/images/banners/hero/shop-the-trend.webp', alt: 'Shop The Trend', link: '/shop' },
+    { id: 1, src: '/images/banners/hero/rakhi banner.webp', alt: 'Rakhi Collection', link: '/shop?search=rakhi' },
+    { id: 2, src: '/images/banners/hero/independence day banner.webp', alt: 'Independence Day Specials', link: '/shop' },
+    { id: 3, src: '/images/banners/hero/birthday.webp', alt: 'Birthday Gifts', link: '/shop?celebration=birthday' },
+    { id: 4, src: '/images/banners/hero/anniversary.webp', alt: 'Anniversary Specials', link: '/shop?celebration=anniversary' },
+    { id: 5, src: '/images/banners/hero/women.webp', alt: "Women's Collection", link: '/shop?relation=her' },
+    { id: 6, src: '/images/banners/hero/wedding-gifts.webp', alt: 'Wedding Gifts', link: '/shop?cat=wedding-gifts' },
+    { id: 7, src: '/images/banners/hero/housewarming.webp', alt: 'Housewarming Gifts', link: '/shop?celebration=housewarming' },
+    { id: 8, src: '/images/banners/hero/ramadan.webp', alt: 'Ramadan Collection', link: '/shop?cat=ramadan' },
+    { id: 9, src: '/images/banners/hero/plants.webp', alt: 'Plants Collection', link: '/shop?cat=plants' },
+    { id: 10, src: '/images/banners/hero/shop-the-trend.webp', alt: 'Shop The Trend', link: '/shop' },
 ];
 
 export default function HeroSlider() {
