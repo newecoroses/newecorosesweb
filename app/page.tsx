@@ -127,7 +127,7 @@ export default function Home() {
   // Site settings helpers
   const showNewArrivals = settings['show_new_arrivals'] !== 'false';
   const showBestSellers = settings['show_best_sellers'] !== 'false';
-  const showCelebrations = settings['show_celebrations'] !== 'false';
+  const showCelebrations = false; // Hidden for now per user request
   const showRelationships = settings['show_relationships'] !== 'false';
   const showTestimonials = settings['show_testimonials'] !== 'false';
   const showFeaturedRoses = settings['show_featured_roses'] !== 'false';
