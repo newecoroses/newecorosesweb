@@ -130,33 +130,33 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
     return (
-        <div className="pt-32 pb-20 bg-background min-h-screen">
-            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="pt-24 sm:pt-28 lg:pt-24 pb-12 bg-background min-h-screen">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}
-                <nav className="flex items-center gap-2 text-xs text-muted mb-10 font-medium uppercase tracking-wider">
+                <nav className="flex items-center gap-2 text-xs text-muted mb-3 lg:mb-4 font-medium uppercase tracking-wider overflow-x-auto whitespace-nowrap">
                     <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                    <ChevronRight size={12} />
+                    <ChevronRight size={12} className="flex-shrink-0" />
                     <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-                    <ChevronRight size={12} />
+                    <ChevronRight size={12} className="flex-shrink-0" />
                     <Link href={`/collection/${product.collection_slug}`} className="hover:text-primary transition-colors">
                         {product.collection_name}
                     </Link>
-                    <ChevronRight size={12} />
-                    <span className="text-foreground">{product.name}</span>
+                    <ChevronRight size={12} className="flex-shrink-0" />
+                    <span className="text-foreground truncate">{product.name}</span>
                 </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
                     {/* ── Image Gallery ── */}
-                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
                         {/* Tag Badge */}
-                        <div className="mb-4">
-                            <span className={`inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border ${tagColors[product.tag] ?? tagColors['Standard']}`}>
+                        <div className="mb-2">
+                            <span className={`inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${tagColors[product.tag] ?? tagColors['Standard']}`}>
                                 {product.tag}
                             </span>
                         </div>
 
                         {/* Main Image */}
-                        <div className="relative aspect-[4/5] bg-secondary img-shimmer rounded-2xl overflow-hidden mb-4">
+                        <div className="relative aspect-square max-h-[380px] lg:max-h-[440px] xl:max-h-[480px] bg-secondary img-shimmer rounded-2xl overflow-hidden mb-3 mx-auto w-full">
                             <Image
                                 src={images[selectedImage] || '/images/placeholder.webp'}
                                 alt={product.name}
@@ -169,14 +169,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                         {/* Thumbnails */}
                         {images.length > 1 && (
-                            <div className="grid grid-cols-4 gap-3">
+                            <div className="grid grid-cols-4 gap-2 max-w-[440px]">
                                 {images.map((img, i) => (
                                     <button
                                         key={i}
                                         onClick={() => setSelectedImage(i)}
                                         className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${selectedImage === i ? 'border-primary shadow-soft' : 'border-transparent hover:border-primary/30'}`}
                                     >
-                                        <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="120px" />
+                                        <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="100px" />
                                     </button>
                                 ))}
                             </div>
@@ -184,36 +184,28 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     </motion.div>
 
                     {/* ── Product Details ── */}
-                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }} className="flex flex-col justify-center">
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col justify-start">
                         {/* Collection Link */}
-                        <Link href={`/collection/${product.collection_slug}`} className="text-xs uppercase tracking-[0.2em] text-primary font-medium mb-3 hover:underline inline-block">
+                        <Link href={`/collection/${product.collection_slug}`} className="text-[11px] uppercase tracking-[0.18em] text-primary font-medium mb-1 hover:underline inline-block">
                             {product.collection_name}
                         </Link>
 
-                        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-6 leading-tight">
+                        <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl text-foreground mb-2 leading-tight">
                             {product.name}
                         </h1>
 
-                        <p className="text-muted leading-relaxed font-light mb-8 text-[0.95rem] max-w-md">
+                        <p className="text-muted leading-relaxed font-light mb-3 text-xs sm:text-sm max-w-lg">
                             {product.description}
                         </p>
 
-                        {/* Item Count Display */}
-                        {product.item_count && (product.item_count > 0) ? (
-                            <div className="mb-6 flex items-center gap-3 bg-secondary/30 w-fit px-4 py-2 border border-gray-100 rounded-lg">
-                                <span className="text-primary font-bold text-lg">{product.item_count}</span>
-                                <span className="text-muted text-xs uppercase tracking-wider font-semibold">Items in arrangement</span>
-                            </div>
-                        ) : null}
-
                         {/* Perfect For */}
                         {product.relationships?.length > 0 && (
-                            <div className="mb-6">
-                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-3">Perfect For</p>
-                                <div className="flex flex-wrap gap-2">
+                            <div className="mb-3">
+                                <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-foreground mb-1.5">Perfect For</p>
+                                <div className="flex flex-wrap gap-1.5">
                                     {product.relationships.map((rel) => (
                                         <Link key={rel} href={`/shop?relation=${encodeURIComponent(rel.toLowerCase())}`}
-                                            className="inline-block text-xs font-medium px-4 py-2 rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-gray-200 hover:border-primary">
+                                            className="inline-block text-[11px] font-medium px-3 py-1 rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-gray-200 hover:border-primary">
                                             {rel}
                                         </Link>
                                     ))}
@@ -223,12 +215,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                         {/* Celebrate On */}
                         {product.celebrations?.length > 0 && (
-                            <div className="mb-8">
-                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-3">Celebrate On</p>
-                                <div className="flex flex-wrap gap-2">
+                            <div className="mb-3">
+                                <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-foreground mb-1.5">Celebrate On</p>
+                                <div className="flex flex-wrap gap-1.5">
                                     {product.celebrations.map((cel) => (
                                         <Link key={cel} href={`/shop?celebration=${encodeURIComponent(cel.toLowerCase())}`}
-                                            className="inline-block text-xs font-medium px-4 py-2 rounded-full bg-blush text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary">
+                                            className="inline-block text-[11px] font-medium px-3 py-1 rounded-full bg-blush text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary">
                                             🎉 {cel}
                                         </Link>
                                     ))}
@@ -237,34 +229,34 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         )}
 
                         {/* Features */}
-                        <div className="space-y-4 mb-10 py-6 border-y border-gray-200">
+                        <div className="space-y-1.5 py-2.5 my-2.5 border-y border-gray-200 text-xs text-muted">
                             {[
-                                { icon: <Truck size={18} />, text: 'Same-day delivery available' },
-                                { icon: <Package size={18} />, text: 'Signature luxury packaging included' },
-                                { icon: <Shield size={18} />, text: 'Freshness guaranteed or full refund' },
+                                { icon: <Truck size={16} />, text: 'Same-day delivery available' },
+                                { icon: <Package size={16} />, text: 'Signature luxury packaging included' },
+                                { icon: <Shield size={16} />, text: 'Freshness guaranteed or full refund' },
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-4 text-sm text-muted">
-                                    <span className="text-primary">{item.icon}</span>
-                                    {item.text}
+                                <div key={i} className="flex items-center gap-3">
+                                    <span className="text-primary flex-shrink-0">{item.icon}</span>
+                                    <span>{item.text}</span>
                                 </div>
                             ))}
                         </div>
 
                         {/* CTA Buttons */}
-                        <div className="flex gap-3">
+                        <div className="flex gap-2.5 mt-1">
                             {/* Add to Cart / Stepper */}
                             {cartQuantity > 0 ? (
                                 <div className="flex-1 py-2 px-3 rounded-lg border-2 border-primary bg-primary/5 flex items-center justify-between">
                                     <button
                                         type="button"
                                         onClick={() => product && updateQuantity(product.id, cartQuantity - 1)}
-                                        className="w-10 h-10 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                        className="w-9 h-9 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
                                         title="Decrease quantity"
                                     >
-                                        <Minus size={16} />
+                                        <Minus size={15} />
                                     </button>
-                                    <span className="text-sm font-bold text-primary flex items-center gap-1.5">
-                                        <Check size={16} className="text-emerald-600" />
+                                    <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5">
+                                        <Check size={15} className="text-emerald-600" />
                                         {cartQuantity} in Cart
                                     </span>
                                     <button
@@ -276,10 +268,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             image_url: product.image_url,
                                             price: null,
                                         })}
-                                        className="w-10 h-10 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
+                                        className="w-9 h-9 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
                                         title="Increase quantity"
                                     >
-                                        <Plus size={16} />
+                                        <Plus size={15} />
                                     </button>
                                 </div>
                             ) : (
@@ -296,9 +288,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             });
                                         }
                                     }}
-                                    className="flex-1 py-4 px-6 text-center rounded-lg transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.12em] text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5"
+                                    className="flex-1 py-3 px-5 text-center rounded-lg transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.12em] text-xs sm:text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5"
                                 >
-                                    <ShoppingCart size={18} /> Add to Cart
+                                    <ShoppingCart size={17} /> Add to Cart
                                 </button>
                             )}
 
@@ -307,12 +299,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 href={whatsappLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 bg-primary text-white py-4 px-6 text-center rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.12em] text-sm font-semibold shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 group"
+                                className="flex-1 bg-primary text-white py-3 px-5 text-center rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.12em] text-xs sm:text-sm font-semibold shadow-md shadow-primary/5 hover:shadow-lg hover:shadow-primary/10 group"
                                 onClick={() => {
                                     if (product) trackEnquiry(product.id, product.name);
                                 }}
                             >
-                                <WhatsappIcon size={18} className="group-hover:text-[#25D366] transition-colors" />
+                                <WhatsappIcon size={17} className="group-hover:text-[#25D366] transition-colors" />
                                 Enquire Now
                             </a>
                         </div>

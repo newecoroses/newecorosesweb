@@ -174,11 +174,6 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     <h3 className="text-xs sm:text-sm font-medium text-[#3a3226] group-hover:text-[#5c6e4f] transition-colors duration-300 line-clamp-2 leading-tight tracking-wide">
                         {product.name}
                     </h3>
-                    {product.item_count && product.item_count > 0 && (
-                        <p className="text-[#8a7a5a] text-[10px] font-medium mt-1 uppercase tracking-wider">
-                            Count: {product.item_count}
-                        </p>
-                    )}
                 </Link>
 
                 <div className="mb-2 sm:mb-3">
