@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ShoppingCart, Check } from 'lucide-react';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchWhatsappSettings } from '@/lib/supabase';
 import { trackEnquiry } from '@/lib/analytics';
+import { useCart } from '@/lib/cart-context';
 
 interface Product {
     id: string;
@@ -52,6 +54,8 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const [whatsappLink, setWhatsappLink] = useState('');
     const [isHovered, setIsHovered] = useState(false);
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
+    const [addedToCart, setAddedToCart] = useState(false);
+    const { addItem } = useCart();
 
     // Extract images, deduplicated, main image first
     const allImages = [...new Set([product.image_url, ...(product.images || [])])]
@@ -185,20 +189,58 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     )}
                 </div>
 
-                <div className="mt-auto">
+                <div className="mt-auto flex gap-1.5 sm:gap-2">
+                    {/* Add to Cart button */}
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            addItem({
+                                id: product.id,
+                                name: product.name,
+                                slug: product.slug,
+                                image_url: product.image_url,
+                                price: product.price ?? null,
+                            });
+                            setAddedToCart(true);
+                            setTimeout(() => setAddedToCart(false), 1800);
+                        }}
+                        className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 rounded-lg md:rounded-xl text-[9px] sm:text-xs uppercase tracking-wider font-semibold transition-all duration-300 border ${
+                            addedToCart
+                                ? 'bg-emerald-50 border-emerald-500 text-emerald-600'
+                                : 'bg-white border-primary/40 text-primary hover:bg-primary/10 hover:border-primary'
+                        }`}
+                        title="Add to Cart"
+                    >
+                        {addedToCart ? (
+                            <>
+                                <Check size={13} />
+                                <span>Added</span>
+                            </>
+                        ) : (
+                            <>
+                                <ShoppingCart size={13} />
+                                <span className="hidden min-[380px]:inline">Add to Cart</span>
+                                <span className="inline min-[380px]:hidden">Add</span>
+                            </>
+                        )}
+                    </button>
+
+                    {/* Enquire Now button */}
                     <a
                         href={whatsappLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-primary text-white py-2.5 sm:py-3 rounded-lg md:rounded-xl text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.15em] font-semibold hover:opacity-90 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+                        className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 bg-primary text-white py-2 sm:py-2.5 rounded-lg md:rounded-xl text-[9px] sm:text-xs uppercase tracking-wider font-semibold hover:opacity-90 hover:scale-[1.01] transition-all duration-300"
                         onClick={(e) => {
                             e.stopPropagation();
-                            // Fire-and-forget analytics tracking — does not delay link open
                             trackEnquiry(product.id, product.name);
                         }}
+                        title="Enquire via WhatsApp"
                     >
-                        <WhatsappIcon size={15} className="opacity-90" />
-                        Enquire Now
+                        <WhatsappIcon size={13} className="opacity-90 flex-shrink-0" />
+                        <span>Enquire</span>
                     </a>
                 </div>
             </div>
