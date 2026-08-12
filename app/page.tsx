@@ -317,7 +317,24 @@ export default function Home() {
                 className={COLLECTION_SPANS[idx] || ''}
               >
                 <Link href={`/shop?cat=${cat.slug}`} className="group relative block h-full overflow-hidden rounded-2xl md:rounded-3xl shadow-sm hover:shadow-card transition-shadow duration-500">
-                  <Image src={cat.image_url || `/images/collections/${cat.slug}.webp`} alt={cat.name} fill className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" sizes="(max-width: 768px) 50vw, 25vw" />
+                  <Image
+                    src={
+                      {
+                        'fresh-flower': '/images/collections/flower.webp',
+                        'chocolate-bouquet': '/images/collections/chocolates.webp',
+                        'teddy-and-bouquet': '/images/collections/teddy.webp',
+                        'personalized': '/images/collections/personalized.webp',
+                        'hamper': '/images/collections/hamper.webp',
+                        'plants': '/images/collections/plants.webp',
+                        'cake': '/images/collections/cake.webp',
+                        'balloon-bouquet': '/images/collections/baloons.webp',
+                      }[cat.slug] || cat.image_url || `/images/collections/${cat.slug}.webp`
+                    }
+                    alt={cat.name}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent group-hover:from-black/45 transition-all duration-500" />
                   <div className="absolute bottom-0 left-0 p-4 md:p-6">
                     <h3 className="font-serif text-base md:text-xl text-white mb-1">{cat.name}</h3>
