@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Truck, Package, Shield, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Truck, Package, Shield, ChevronRight, ShoppingCart, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ProductCard from '@/components/product/product-card';
 import WhatsAppFloat from '@/components/ui/whatsapp-float';
@@ -11,6 +11,7 @@ import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchProductBySlug, fetchProductsByCollection, fetchWhatsappSettings, DBProduct } from '@/lib/supabase';
 import { getProductBySlug, getProductsByCollection } from '@/lib/products';
 import { trackEnquiry } from '@/lib/analytics';
+import { useCart } from '@/lib/cart-context';
 
 const FALLBACK_PHONE = '919936911611';
 
@@ -21,6 +22,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [relatedProducts, setRelatedProducts] = useState<DBProduct[]>([]);
     const [whatsappLink, setWhatsappLink] = useState('');
     const [loading, setLoading] = useState(true);
+    const [addedToCart, setAddedToCart] = useState(false);
+    const { addItem } = useCart();
 
     useEffect(() => {
         // Load product from Supabase, fallback to static
@@ -236,7 +239,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         {/* Features */}
                         <div className="space-y-4 mb-10 py-6 border-y border-gray-200">
                             {[
-                                { icon: <Truck size={18} />, text: 'Same-day delivery available (order by 5 PM)' },
+                                { icon: <Truck size={18} />, text: 'Same-day delivery available' },
                                 { icon: <Package size={18} />, text: 'Signature luxury packaging included' },
                                 { icon: <Shield size={18} />, text: 'Freshness guaranteed or full refund' },
                             ].map((item, i) => (
@@ -247,20 +250,50 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             ))}
                         </div>
 
-                        {/* WhatsApp CTA */}
-                        <a
-                            href={whatsappLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full bg-primary text-white py-4 px-8 text-center rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-3 uppercase tracking-[0.15em] text-sm font-semibold shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 group"
-                            onClick={() => {
-                                // Fire-and-forget analytics — does not delay link open
-                                if (product) trackEnquiry(product.id, product.name);
-                            }}
-                        >
-                            <WhatsappIcon size={20} className="group-hover:text-[#25D366] transition-colors" />
-                            Enquire via WhatsApp
-                        </a>
+                        {/* CTA Buttons */}
+                        <div className="flex gap-3">
+                            {/* Add to Cart */}
+                            <button
+                                onClick={() => {
+                                    if (product) {
+                                        addItem({
+                                            id: product.id,
+                                            name: product.name,
+                                            slug: product.slug,
+                                            image_url: product.image_url,
+                                            price: null,
+                                        });
+                                        setAddedToCart(true);
+                                        setTimeout(() => setAddedToCart(false), 2000);
+                                    }
+                                }}
+                                className={`flex-1 py-4 px-6 text-center rounded-lg transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.12em] text-sm font-semibold border-2 ${
+                                    addedToCart
+                                        ? 'bg-emerald-50 border-emerald-500 text-emerald-600'
+                                        : 'bg-white border-primary text-primary hover:bg-primary/5'
+                                }`}
+                            >
+                                {addedToCart ? (
+                                    <><Check size={18} /> Added!</>
+                                ) : (
+                                    <><ShoppingCart size={18} /> Add to Cart</>
+                                )}
+                            </button>
+
+                            {/* WhatsApp CTA */}
+                            <a
+                                href={whatsappLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 bg-primary text-white py-4 px-6 text-center rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.12em] text-sm font-semibold shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 group"
+                                onClick={() => {
+                                    if (product) trackEnquiry(product.id, product.name);
+                                }}
+                            >
+                                <WhatsappIcon size={18} className="group-hover:text-[#25D366] transition-colors" />
+                                Enquire Now
+                            </a>
+                        </div>
                     </motion.div>
                 </div>
 

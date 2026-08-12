@@ -4,6 +4,8 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
 import ThemeProvider from '@/components/ui/theme-provider';
+import CartDrawer from '@/components/ui/cart-drawer';
+import { CartProvider } from '@/lib/cart-context';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -14,13 +16,15 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     }
 
     return (
-        <>
+        <CartProvider>
             <ThemeProvider />
             <Navbar />
             <main className="flex-grow">
                 {children}
             </main>
             <Footer />
-        </>
+            <CartDrawer />
+        </CartProvider>
     );
 }
+

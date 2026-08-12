@@ -269,7 +269,7 @@ export default function Contact() {
                 >
                     <p className="font-serif text-xl text-foreground mb-2">🌹 Same-Day Delivery Available across Kolkata</p>
                     <p className="text-muted text-sm font-light max-w-md mx-auto">
-                        Order before {deliveryCutoff} for guaranteed same-day delivery from our Regent Park or New Alipore outlets.
+                        Same-day delivery available from our Regent Park or New Alipore outlets.
                     </p>
                 </motion.div>
             </div>

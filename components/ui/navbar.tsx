@@ -3,13 +3,14 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ShoppingBag, Share2 } from 'lucide-react';
+import { Menu, X, ShoppingBag, ShoppingCart, Share2 } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnnouncementBar from '@/components/ui/announcement-bar';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import MegaMenu from '@/components/ui/mega-menu';
 import { fetchWhatsappSettings } from '@/lib/supabase';
+import { useCart } from '@/lib/cart-context';
 
 const NAV_LINKS = [
     { href: '/', label: 'Home' },
@@ -30,6 +31,7 @@ export default function Navbar() {
     const pathname = usePathname();
     const isScrolled = hasScrolled;
     const navRef = useRef<HTMLElement>(null);
+    const { itemCount, openDrawer } = useCart();
 
     useEffect(() => {
         const handleScroll = () => setHasScrolled(window.scrollY > 30);
@@ -120,6 +122,19 @@ export default function Navbar() {
                                     <Share2 size={13} />
                                     Socials
                                 </Link>
+                                {/* Cart Icon */}
+                                <button
+                                    onClick={openDrawer}
+                                    className="relative p-2 rounded-full hover:bg-gray-100 transition-colors text-muted hover:text-foreground"
+                                    aria-label="Open cart"
+                                >
+                                    <ShoppingCart size={20} />
+                                    {itemCount > 0 && (
+                                        <span className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">
+                                            {itemCount > 9 ? '9+' : itemCount}
+                                        </span>
+                                    )}
+                                </button>
                                 {/* Order Now CTA */}
                                 <a
                                     href={orderLink}
@@ -132,14 +147,28 @@ export default function Navbar() {
                                 </a>
                             </div>
 
-                            {/* Mobile Menu Button */}
-                            <button
-                                onClick={() => setIsOpen(!isOpen)}
-                                className="lg:hidden p-1 relative z-[70] text-foreground"
-                                aria-label="Toggle menu"
-                            >
-                                {isOpen ? <X size={26} className="text-foreground" /> : <Menu size={26} />}
-                            </button>
+                            {/* Mobile: Cart + Menu */}
+                            <div className="flex items-center gap-2 lg:hidden">
+                                <button
+                                    onClick={openDrawer}
+                                    className="relative p-1.5 text-foreground"
+                                    aria-label="Open cart"
+                                >
+                                    <ShoppingCart size={22} />
+                                    {itemCount > 0 && (
+                                        <span className="absolute -top-0.5 -right-0.5 w-[16px] h-[16px] bg-primary text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                                            {itemCount > 9 ? '9+' : itemCount}
+                                        </span>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    className="p-1 relative z-[70] text-foreground"
+                                    aria-label="Toggle menu"
+                                >
+                                    {isOpen ? <X size={26} className="text-foreground" /> : <Menu size={26} />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Desktop Mega Menu Category Bar */}
