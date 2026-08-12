@@ -320,15 +320,15 @@ export default function Home() {
                   <Image
                     src={
                       {
-                        'fresh-flower': '/images/collections/flower.webp',
-                        'chocolate-bouquet': '/images/collections/chocolates.webp',
-                        'teddy-and-bouquet': '/images/collections/teddy.webp',
-                        'personalized': '/images/collections/personalized.webp',
-                        'hamper': '/images/collections/hamper.webp',
-                        'plants': '/images/collections/plants.webp',
-                        'cake': '/images/collections/cake.webp',
-                        'balloon-bouquet': '/images/collections/baloons.webp',
-                      }[cat.slug] || cat.image_url || `/images/collections/${cat.slug}.webp`
+                        'fresh-flower': '/images/collections/flower.png',
+                        'chocolate-bouquet': '/images/collections/chocolate.png',
+                        'teddy-and-bouquet': '/images/collections/teddy.png',
+                        'personalized': '/images/collections/personalized.png',
+                        'hamper': '/images/collections/hamper.png',
+                        'plants': '/images/collections/plants.png',
+                        'cake': '/images/collections/cake.png',
+                        'balloon-bouquet': '/images/collections/baloon.png',
+                      }[cat.slug] || cat.image_url || `/images/collections/${cat.slug}.png`
                     }
                     alt={cat.name}
                     fill
