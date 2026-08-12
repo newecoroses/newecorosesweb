@@ -44,7 +44,7 @@ create policy "Admin all review_videos" on review_videos for all using (auth.rol
 
 insert into announcements (text, is_visible, sort_order) values
   ('FLAT 15% OFF ON PREMIUM GIFT HAMPERS', true, 1),
-  ('SAME DAY DELIVERY WITHIN 10KM', true, 2),
+  ('SAME DAY DELIVERY AVAILABLE', true, 2),
   ('FRESH HANDCRAFTED BOUQUETS DAILY', true, 3),
   ('CUSTOM MESSAGE CARDS AVAILABLE', true, 4),
   ('LUXURY PACKAGING AT NO EXTRA COST', true, 5),

@@ -118,7 +118,7 @@ function ShopContent() {
 
             <div className="pt-6 border-t border-gray-200">
                 <h3 className="font-serif text-lg text-foreground mb-3">Delivery</h3>
-                <p className="text-sm text-muted font-light leading-relaxed">Same-day delivery for orders placed before 5 PM within our 10 km radius.</p>
+                <p className="text-sm text-muted font-light leading-relaxed">Same-day delivery available for orders placed before 5 PM across Kolkata.</p>
             </div>
         </div>
     );

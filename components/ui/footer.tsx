@@ -107,13 +107,13 @@ export default function Footer() {
                             <li className="flex items-start gap-2.5">
                                 <Clock size={16} className="text-white mt-0.5 flex-shrink-0" />
                                 <span className="text-xs md:text-sm text-white/85 font-light leading-relaxed">
-                                    Mon – Sat: 9 AM – 9 PM<br />Sun: 10 AM – 6 PM
+                                    Mon – Sun: 8 AM – 10 PM
                                 </span>
                             </li>
                             <li className="flex items-start gap-2.5">
                                 <MapPin size={16} className="text-white mt-0.5 flex-shrink-0" />
                                 <span className="text-xs md:text-sm text-white/85 font-light leading-relaxed">
-                                    Same-day delivery within 10 km radius
+                                    Same-day delivery
                                 </span>
                             </li>
                             <li className="flex items-start gap-2.5">

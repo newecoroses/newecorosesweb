@@ -136,7 +136,7 @@ export default function AdminAnnouncementsPage() {
                     <div>
                         <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">Announcement Text *</label>
                         <input value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
-                            placeholder="SAME DAY DELIVERY WITHIN 10KM"
+                            placeholder="SAME DAY DELIVERY AVAILABLE"
                             className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600" />
                         <p className="text-gray-600 text-xs mt-1">Will be shown in ALL CAPS automatically</p>
                     </div>

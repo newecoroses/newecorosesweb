@@ -7,7 +7,7 @@ import { fetchAnnouncements } from '@/lib/supabase';
 // Fallback if Supabase is not set up yet
 const FALLBACK_ANNOUNCEMENTS = [
     "FLAT 15% OFF ON PREMIUM GIFT HAMPERS",
-    "SAME DAY DELIVERY WITHIN 10KM",
+    "SAME DAY DELIVERY AVAILABLE",
     "FRESH HANDCRAFTED BOUQUETS DAILY",
     "CUSTOM MESSAGE CARDS AVAILABLE",
     "LUXURY PACKAGING AT NO EXTRA COST",

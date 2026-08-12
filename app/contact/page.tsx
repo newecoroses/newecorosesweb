@@ -186,8 +186,7 @@ export default function Contact() {
                                 </div>
                                 <div>
                                     <h4 className="font-serif text-base text-foreground mb-0.5">Hours</h4>
-                                    <p className="text-muted text-xs font-light">Mon–Sat: 9AM–9PM</p>
-                                    <p className="text-muted text-xs font-light">Sun: 10AM–6PM</p>
+                                    <p className="text-muted text-xs font-light">Mon–Sun: 8AM–10PM</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -270,7 +269,7 @@ export default function Contact() {
                 >
                     <p className="font-serif text-xl text-foreground mb-2">🌹 Same-Day Delivery Available across Kolkata</p>
                     <p className="text-muted text-sm font-light max-w-md mx-auto">
-                        Order before {deliveryCutoff} for guaranteed same-day delivery from our Regent Park or New Alipore outlets within our {deliveryRadius} km service radius.
+                        Order before {deliveryCutoff} for guaranteed same-day delivery from our Regent Park or New Alipore outlets.
                     </p>
                 </motion.div>
             </div>

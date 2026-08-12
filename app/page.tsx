@@ -620,7 +620,7 @@ export default function Home() {
               {
                 icon: <Truck className="w-7 h-7 text-white stroke-[1.75]" />,
                 title: 'Same-Day Delivery',
-                desc: `Order by ${deliveryCutoff} for guaranteed same-day delivery within our ${deliveryRadius} km service radius.`,
+                desc: `Order by ${deliveryCutoff} for guaranteed same-day delivery across Kolkata.`,
                 isFeatured: false,
               },
               {

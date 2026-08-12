@@ -236,7 +236,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         {/* Features */}
                         <div className="space-y-4 mb-10 py-6 border-y border-gray-200">
                             {[
-                                { icon: <Truck size={18} />, text: 'Same-day delivery within 10 km (order by 5 PM)' },
+                                { icon: <Truck size={18} />, text: 'Same-day delivery available (order by 5 PM)' },
                                 { icon: <Package size={18} />, text: 'Signature luxury packaging included' },
                                 { icon: <Shield size={18} />, text: 'Freshness guaranteed or full refund' },
                             ].map((item, i) => (

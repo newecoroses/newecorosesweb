@@ -43,7 +43,7 @@ export default function TermsOfService() {
                     <section>
                         <h2 className="font-serif text-xl md:text-2xl text-foreground font-semibold mb-3">3. Delivery Policy &amp; Same-Day Cutoff</h2>
                         <ul className="list-disc pl-6 space-y-2">
-                            <li><strong>Service Radius:</strong> We provide local doorstep delivery within a 10 km radius of our Kolkata outlets.</li>
+                            <li><strong>Service Coverage:</strong> We provide local doorstep delivery across Kolkata from our outlets.</li>
                             <li><strong>Same-Day Cutoff:</strong> Orders placed before <strong>5:00 PM IST</strong> qualify for guaranteed same-day delivery. Orders placed after cutoff will be fulfilled on the next business day.</li>
                             <li><strong>Recipient Availability:</strong> If the recipient is unavailable at the provided delivery address, our driver will attempt contact via phone or leave the arrangement with a building gatekeeper/receptionist upon instruction.</li>
                         </ul>
