@@ -3,14 +3,49 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Clock, MapPin, Heart, X, ExternalLink, Code2, Sparkles } from 'lucide-react';
+import { Phone, Clock, MapPin, Heart, X, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Footer() {
     const [isDevModalOpen, setIsDevModalOpen] = useState(false);
 
+    const scrollToTop = () => {
+        if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     return (
         <footer className="bg-primary text-white relative overflow-hidden">
+            {/* ═══ GIANT LUXURY BRAND STATEMENT BANNER ═══ */}
+            <div className="w-full bg-[#161d14] py-10 sm:py-14 md:py-20 border-b border-white/15 relative overflow-hidden select-none group">
+                {/* Ambient Radial Lighting */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-400/10 via-white/5 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+                <div className="w-full overflow-hidden px-3 text-center relative z-10 flex items-center justify-center">
+                    <h2
+                        className="font-serif text-[2.2rem] min-[400px]:text-[2.8rem] sm:text-[5.5rem] md:text-[7.5rem] lg:text-[10rem] xl:text-[11.5rem] font-black uppercase tracking-[0.10em] sm:tracking-[0.16em] md:tracking-[0.20em] leading-none transition-all duration-700 cursor-default select-none inline-block w-full text-center hover:drop-shadow-[0_0_40px_rgba(251,191,36,0.35)]"
+                        style={{
+                            WebkitTextStroke: '1.5px rgba(255, 255, 255, 0.45)',
+                            color: 'transparent',
+                        }}
+                    >
+                        NEW ECO ROSES
+                    </h2>
+                </div>
+
+                {/* Scroll To Top Button */}
+                <button
+                    type="button"
+                    onClick={scrollToTop}
+                    className="absolute bottom-4 sm:bottom-6 right-4 sm:right-8 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white text-black hover:bg-amber-200 transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 cursor-pointer group/top"
+                    title="Back to Top"
+                    aria-label="Scroll back to top"
+                >
+                    <ChevronUp size={20} className="group-hover/top:-translate-y-0.5 transition-transform" />
+                </button>
+            </div>
+
             {/* Top Shimmer Accent */}
             <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
