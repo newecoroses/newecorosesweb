@@ -130,10 +130,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
     return (
-        <div className="pt-32 sm:pt-36 lg:pt-44 pb-20 bg-background min-h-screen">
-            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="pt-28 sm:pt-32 lg:pt-36 pb-16 bg-background min-h-screen">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}
-                <nav className="flex items-center gap-2 text-xs text-muted mb-6 font-medium uppercase tracking-wider overflow-x-auto whitespace-nowrap">
+                <nav className="flex items-center gap-2 text-xs text-muted mb-2.5 font-medium uppercase tracking-wider overflow-x-auto whitespace-nowrap">
                     <Link href="/" className="hover:text-primary transition-colors">Home</Link>
                     <ChevronRight size={12} className="flex-shrink-0" />
                     <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
@@ -145,23 +145,23 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     <span className="text-foreground truncate font-semibold">{product.name}</span>
                 </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
                     {/* ── Image Gallery ── */}
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
                         {/* Tag Badge */}
-                        <div className="mb-3">
-                            <span className={`inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border ${tagColors[product.tag] ?? tagColors['Standard']}`}>
+                        <div className="mb-2">
+                            <span className={`inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${tagColors[product.tag] ?? tagColors['Standard']}`}>
                                 {product.tag}
                             </span>
                         </div>
 
-                        {/* Main Image */}
-                        <div className="relative aspect-[4/5] max-h-[500px] lg:max-h-[560px] bg-[#faf7f2] img-shimmer rounded-2xl md:rounded-3xl overflow-hidden mb-4 border border-gray-100 shadow-sm w-full">
+                        {/* Main Image Container — fitted to 100% screen height */}
+                        <div className="relative aspect-[4/5] max-h-[350px] sm:max-h-[390px] lg:max-h-[410px] xl:max-h-[440px] bg-[#faf7f2] img-shimmer rounded-2xl md:rounded-3xl overflow-hidden mb-3 border border-gray-100 shadow-sm w-full mx-auto flex items-center justify-center p-1">
                             <Image
                                 src={images[selectedImage] || '/images/placeholder.webp'}
                                 alt={product.name}
                                 fill
-                                className="object-cover transition-all duration-500"
+                                className="object-contain p-1.5 transition-all duration-500"
                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                 priority
                             />
@@ -169,14 +169,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                         {/* Thumbnails */}
                         {images.length > 1 && (
-                            <div className="grid grid-cols-4 gap-3">
+                            <div className="grid grid-cols-4 gap-2.5 max-w-[420px]">
                                 {images.map((img, i) => (
                                     <button
                                         key={i}
                                         onClick={() => setSelectedImage(i)}
                                         className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedImage === i ? 'border-primary shadow-soft' : 'border-transparent hover:border-primary/30'}`}
                                     >
-                                        <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="120px" />
+                                        <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="100px" />
                                     </button>
                                 ))}
                             </div>
@@ -186,33 +186,33 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     {/* ── Product Details ── */}
                     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col justify-start">
                         {/* Collection Link */}
-                        <Link href={`/collection/${product.collection_slug}`} className="text-xs uppercase tracking-[0.22em] text-primary font-semibold mb-2 hover:underline inline-block">
+                        <Link href={`/collection/${product.collection_slug}`} className="text-xs uppercase tracking-[0.22em] text-primary font-semibold mb-1 hover:underline inline-block">
                             {product.collection_name}
                         </Link>
 
-                        <h1 className="font-serif text-3xl sm:text-4xl lg:text-4xl xl:text-5xl text-foreground font-semibold mb-3 leading-tight">
+                        <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl text-foreground font-semibold mb-2 leading-tight">
                             {product.name}
                         </h1>
 
-                        <p className="text-muted leading-relaxed font-light mb-5 text-sm sm:text-base max-w-lg">
+                        <p className="text-muted leading-relaxed font-light mb-4 text-xs sm:text-sm max-w-lg">
                             {product.description}
                         </p>
 
                         {/* CTA Buttons — Positioned high for instant visibility */}
-                        <div className="flex gap-3 mb-6">
+                        <div className="flex gap-3 mb-4">
                             {/* Add to Cart / Stepper */}
                             {cartQuantity > 0 ? (
                                 <div className="flex-1 py-2 px-4 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-sm">
                                     <button
                                         type="button"
                                         onClick={() => product && updateQuantity(product.id, cartQuantity - 1)}
-                                        className="w-10 h-10 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                        className="w-9 h-9 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
                                         title="Decrease quantity"
                                     >
-                                        <Minus size={16} />
+                                        <Minus size={15} />
                                     </button>
-                                    <span className="text-sm sm:text-base font-bold text-primary flex items-center gap-1.5">
-                                        <Check size={16} className="text-emerald-600" />
+                                    <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5">
+                                        <Check size={15} className="text-emerald-600" />
                                         {cartQuantity} in Cart
                                     </span>
                                     <button
@@ -224,10 +224,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             image_url: product.image_url,
                                             price: null,
                                         })}
-                                        className="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
+                                        className="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
                                         title="Increase quantity"
                                     >
-                                        <Plus size={16} />
+                                        <Plus size={15} />
                                     </button>
                                 </div>
                             ) : (
@@ -244,9 +244,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             });
                                         }
                                     }}
-                                    className="flex-1 py-3.5 sm:py-4 px-6 text-center rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5 shadow-sm"
+                                    className="flex-1 py-3 sm:py-3.5 px-5 text-center rounded-xl transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5 shadow-sm"
                                 >
-                                    <ShoppingCart size={18} /> Add to Cart
+                                    <ShoppingCart size={17} /> Add to Cart
                                 </button>
                             )}
 
@@ -255,12 +255,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 href={whatsappLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 bg-primary text-white py-3.5 sm:py-4 px-6 text-center rounded-xl hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2.5 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 group"
+                                className="flex-1 bg-primary text-white py-3 sm:py-3.5 px-5 text-center rounded-xl hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 group"
                                 onClick={() => {
                                     if (product) trackEnquiry(product.id, product.name);
                                 }}
                             >
-                                <WhatsappIcon size={18} className="group-hover:text-[#25D366] transition-colors" />
+                                <WhatsappIcon size={17} className="group-hover:text-[#25D366] transition-colors" />
                                 Enquire Now
                             </a>
                         </div>
