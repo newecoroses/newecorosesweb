@@ -390,9 +390,9 @@ export default function MegaMenu({
 
     return (
         <div ref={menuRef} className="relative">
-            {/* Category Navigation Bar */}
+            {/* Category Navigation Bar — Seamless without box container or overlay lines */}
             <div
-                className="flex items-center gap-0.5 bg-white/95 backdrop-blur-sm rounded-xl px-1 py-1 border border-[#f0ece4]/60"
+                className="flex items-center justify-between gap-1 py-0.5"
                 role="menubar"
                 aria-label="Product categories"
             >
@@ -405,9 +405,9 @@ export default function MegaMenu({
                     >
                         <Link
                             href={`/shop?cat=${col.slug}`}
-                            className={`mega-nav-link inline-flex items-center gap-1 text-[0.7rem] uppercase tracking-[0.12em] font-medium px-3 py-2 rounded-lg transition-all duration-300 whitespace-nowrap ${activeCollection === col.slug
-                                ? 'text-[#3a3226] bg-[#faf7f2]'
-                                : 'text-[#8a7a5a] hover:text-[#3a3226]'
+                            className={`mega-nav-link inline-flex items-center gap-1 text-[0.72rem] uppercase tracking-[0.14em] font-medium px-2.5 py-1.5 transition-colors duration-300 whitespace-nowrap ${activeCollection === col.slug
+                                ? 'text-primary font-semibold'
+                                : 'text-muted hover:text-foreground'
                                 }`}
                             role="menuitem"
                             aria-haspopup="true"
@@ -418,7 +418,7 @@ export default function MegaMenu({
                             {col.name}
                             <ChevronDown
                                 size={11}
-                                className={`transition-transform duration-250 ${activeCollection === col.slug ? 'rotate-180 text-[#5c6e4f]' : 'text-[#b0a48a]'}`}
+                                className={`transition-transform duration-250 ${activeCollection === col.slug ? 'rotate-180 text-primary' : 'text-muted/60'}`}
                             />
                         </Link>
                     </div>

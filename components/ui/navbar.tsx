@@ -172,7 +172,7 @@ export default function Navbar() {
                         </div>
 
                         {/* Desktop Mega Menu Category Bar */}
-                        <div className="hidden lg:block mt-2 pt-2 border-t border-[#ede4d6]/40 pb-1">
+                        <div className="hidden lg:block mt-1.5 pt-1.5 pb-0.5">
                             <MegaMenu />
                         </div>
                     </div>
