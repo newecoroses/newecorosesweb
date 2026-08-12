@@ -155,13 +155,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </span>
                         </div>
 
-                        {/* Main Image Container — fitted to 100% screen height */}
-                        <div className="relative aspect-[4/5] max-h-[350px] sm:max-h-[390px] lg:max-h-[410px] xl:max-h-[440px] bg-[#faf7f2] img-shimmer rounded-2xl md:rounded-3xl overflow-hidden mb-3 border border-gray-100 shadow-sm w-full mx-auto flex items-center justify-center p-1">
+                        {/* Main Image Container — seamless without box frame */}
+                        <div className="relative aspect-[4/5] max-h-[360px] sm:max-h-[400px] lg:max-h-[420px] xl:max-h-[450px] w-full mx-auto flex items-center justify-center mb-3">
                             <Image
                                 src={images[selectedImage] || '/images/placeholder.webp'}
                                 alt={product.name}
                                 fill
-                                className="object-contain p-1.5 transition-all duration-500"
+                                className="object-contain transition-all duration-500 hover:scale-[1.02]"
                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                 priority
                             />
@@ -174,7 +174,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                     <button
                                         key={i}
                                         onClick={() => setSelectedImage(i)}
-                                        className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedImage === i ? 'border-primary shadow-soft' : 'border-transparent hover:border-primary/30'}`}
+                                        className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${selectedImage === i ? 'ring-2 ring-primary shadow-soft' : 'opacity-70 hover:opacity-100'}`}
                                     >
                                         <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="100px" />
                                     </button>
