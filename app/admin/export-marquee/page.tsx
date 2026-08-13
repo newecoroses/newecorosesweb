@@ -48,10 +48,11 @@ const V_W  = 192;
 const V_H  = Math.round(V_W * 16 / 9);   // 341 px
 const V_G  = 20;
 
-// Photo cards — 3:4
-const P_W  = 172;
-const P_H  = Math.round(P_W * 4 / 3);    // 229 px
-const P_G  = 18;
+// Photo cards — 3:4 (Centered vertically on 1080p canvas)
+const P_W  = 460;
+const P_H  = Math.round(P_W * 4 / 3);    // 613 px
+const P_G  = 32;
+const PY   = Math.round((CH - P_H) / 2); // 234 px
 
 // Marquee speeds (px / frame at 60 fps) — slow enough to read
 const V_SPD = 0.5;
@@ -195,169 +196,24 @@ export default function ExportMarqueePage() {
         const totalPW = imgs.length * (P_W + P_G);
 
         xVid.current = (xVid.current + V_SPD) % totalVW;
-        xPh.current  = (xPh.current  + P_SPD) % totalPW;
-
         /* ── Background ─────────────────────────────────────────────── */
-        ctx.fillStyle = '#060709';
+        ctx.fillStyle = '#08090b';
         ctx.fillRect(0, 0, CW, CH);
 
-        // Top royal gold ambient spotlight glow
-        const glowG = ctx.createRadialGradient(CW / 2, -100, 0, CW / 2, -100, 1100);
-        glowG.addColorStop(0, 'rgba(212, 171, 80, 0.18)');
-        glowG.addColorStop(0.5, 'rgba(184, 146, 46, 0.06)');
-        glowG.addColorStop(1, 'transparent');
-        ctx.fillStyle = glowG;
-        ctx.fillRect(0, 0, CW, CH);
-
-        // Bottom ambient floor glow
-        const bGlow = ctx.createRadialGradient(CW / 2, CH + 100, 0, CW / 2, CH + 100, 900);
-        bGlow.addColorStop(0, 'rgba(184, 146, 46, 0.10)');
-        bGlow.addColorStop(1, 'transparent');
-        ctx.fillStyle = bGlow;
-        ctx.fillRect(0, 0, CW, CH);
-
-        /* ── Top ornamental line ────────────────────────────────────── */
-        drawGoldLine(ctx, 0, 0, CW);
-
-        /* ── Corner ornaments ───────────────────────────────────────── */
-        drawCornerOrnament(ctx, 40,      28,      false, false);
-        drawCornerOrnament(ctx, CW - 40, 28,      true,  false);
-        drawCornerOrnament(ctx, 40,      CH - 28, false, true);
-        drawCornerOrnament(ctx, CW - 40, CH - 28, true,  true);
-
-        /* ── Header Branding ────────────────────────────────────────── */
-        const HEADER_Y = 48;
-
-        // Eyebrow — small caps with gold diamond accents
-        ctx.textAlign     = 'center';
-        ctx.font          = '600 16px "Inter", sans-serif';
-        ctx.letterSpacing = '7px';
-        ctx.fillStyle     = GOLD_M;
-        ctx.globalAlpha   = 0.90;
-        ctx.fillText('✦   EST. 2026   ·   LUXURY FLORAL & GIFTING BOUTIQUE   ✦', CW / 2, HEADER_Y + 20);
-        ctx.globalAlpha   = 1;
-        ctx.letterSpacing = '0px';
-
-        // Brand name — large, ultra-luxurious serif
-        ctx.font      = 'bold 96px "Georgia", serif';
-        const textG = ctx.createLinearGradient(CW / 2 - 300, 0, CW / 2 + 300, 0);
-        textG.addColorStop(0, '#FFFFFF');
-        textG.addColorStop(0.5, '#FFF6BF');
-        textG.addColorStop(1, '#FFFFFF');
-        ctx.fillStyle = textG;
-        ctx.fillText('NEW ECO ROSES', CW / 2, HEADER_Y + 115);
-
-        // Gold rule & diamond emblem beneath brand name
-        const ruleW = 650; const ruleX = (CW - ruleW) / 2;
-        const rG = ctx.createLinearGradient(ruleX, 0, ruleX + ruleW, 0);
-        rG.addColorStop(0, 'transparent');
-        rG.addColorStop(0.3, GOLD_D);
-        rG.addColorStop(0.5, GOLD_H);
-        rG.addColorStop(0.7, GOLD_D);
-        rG.addColorStop(1, 'transparent');
-        ctx.fillStyle = rG;
-        ctx.fillRect(ruleX, HEADER_Y + 132, ruleW, 2);
-
-        // Center Diamond Crest
-        ctx.save();
-        ctx.fillStyle = GOLD_H;
-        ctx.font = '14px sans-serif';
-        ctx.fillText('◆', CW / 2, HEADER_Y + 136);
-        ctx.restore();
-
-        // Sub-line
-        ctx.font          = '400 24px "Georgia", serif';
-        ctx.letterSpacing = '5px';
-        ctx.fillStyle     = GOLD_L;
-        ctx.globalAlpha   = 0.85;
-        ctx.fillText('REAL LOVE, REAL REACTIONS   ·   CUSTOMER REVIEWS', CW / 2, HEADER_Y + 172);
-        ctx.globalAlpha   = 1;
-        ctx.letterSpacing = '0px';
-
-        /* ── Section label: VIDEO REVIEWS ───────────────────────────── */
-        const VY = HEADER_Y + 200;
-        drawSectionLabel(ctx, 72, VY - 16, '❖   CUSTOMER VIDEO REVIEWS');
-
-        /* ── Video marquee strip ─────────────────────────────────────── */
-        drawSeamlessStrip(ctx, vids, VY, V_W, V_H, V_G, totalVW, xVid.current,
-            (c, item, x, y, w, h) => {
-                const vid = item as HTMLVideoElement;
-                c.save();
-                roundRect(c, x, y, w, h, 16); c.fillStyle = '#0f1012'; c.fill(); c.clip();
-                if (vid.readyState >= 2) {
-                    try { c.drawImage(vid, x, y, w, h); } catch {}
-                }
-                c.restore();
-
-                // Video badge (Verified Video)
-                c.save();
-                c.fillStyle = 'rgba(8,9,11,0.82)';
-                roundRect(c, x + 8, y + h - 32, 105, 24, 6); c.fill();
-                c.fillStyle = GOLD_H; c.font = 'bold 11px sans-serif';
-                c.textAlign = 'left'; c.fillText('★ VERIFIED', x + 14, y + h - 16);
-                c.restore();
-
-                // Dual-layer luxury gold border
-                c.save();
-                roundRect(c, x, y, w, h, 16);
-                const eg = c.createLinearGradient(x, y, x + w, y + h);
-                eg.addColorStop(0, 'rgba(247,232,184,0.70)');
-                eg.addColorStop(0.5, 'rgba(212,171,80,0.40)');
-                eg.addColorStop(1, 'rgba(184,146,46,0.20)');
-                c.strokeStyle = eg; c.lineWidth = 2; c.stroke();
-                c.restore();
-            }
-        );
-
-        /* ── Divider ─────────────────────────────────────────────────── */
-        const DIV_Y = VY + V_H + 18;
-        drawMidDivider(ctx, DIV_Y);
-
-        /* ── Section label: PHOTO REVIEWS ───────────────────────────── */
-        const PY = DIV_Y + 14;
-        drawSectionLabel(ctx, CW - 72, PY - 16, 'PHOTO GALLERY   ❖', true);
-
-        /* ── Photo marquee strip (reversed) ─────────────────────────── */
+        /* ── Pure Photo Marquee Strip (Centered Vertically) ──────────── */
         const revOffset = (totalPW - xPh.current) % totalPW;
         drawSeamlessStrip(ctx, imgs, PY, P_W, P_H, P_G, totalPW, revOffset,
             (c, item, x, y, w, h) => {
                 const img = item as HTMLImageElement;
                 c.save();
-                roundRect(c, x, y, w, h, 14); c.fillStyle = '#111'; c.fill(); c.clip();
+                roundRect(c, x, y, w, h, 20);
+                c.fillStyle = '#111113';
+                c.fill();
+                c.clip();
                 try { c.drawImage(img, x, y, w, h); } catch {}
-                // Bottom gradient overlay
-                const og = c.createLinearGradient(0, y + h - 60, 0, y + h);
-                og.addColorStop(0, 'transparent'); og.addColorStop(1, 'rgba(8,9,11,0.88)');
-                c.fillStyle = og; c.fillRect(x, y, w, h);
-                c.restore();
-                // Verified photo badge
-                c.save();
-                c.fillStyle = 'rgba(8,9,11,0.80)';
-                roundRect(c, x + 8, y + h - 30, 95, 22, 5); c.fill();
-                c.fillStyle = GOLD_L; c.font = 'bold 10px sans-serif';
-                c.textAlign = 'left'; c.fillText('★ VERIFIED', x + 14, y + h - 15);
-                c.restore();
-                // Border
-                c.save();
-                roundRect(c, x, y, w, h, 14);
-                c.strokeStyle = 'rgba(212,171,80,0.35)'; c.lineWidth = 1.5; c.stroke();
                 c.restore();
             }
         );
-
-        /* ── Footer bar ──────────────────────────────────────────────── */
-        const FY = PY + P_H + 14;
-        drawMidDivider(ctx, FY);
-        ctx.globalAlpha = 0.85;
-        ctx.font        = '500 18px "Georgia", serif';
-        ctx.fillStyle   = GOLD_L;
-        ctx.textAlign   = 'left';  ctx.fillText('🌹  NEW ECO ROSES  ·  KOLKATA', 80, FY + 30);
-        ctx.textAlign   = 'center'; ctx.fillText('REGENT PARK   ✦   NEW ALIPORE OUTLETS', CW / 2, FY + 30);
-        ctx.textAlign   = 'right';  ctx.fillText('WWW.NEWECOROSES.COM', CW - 80, FY + 30);
-        ctx.globalAlpha = 1;
-
-        /* ── Bottom ornamental line ─────────────────────────────────── */
-        drawGoldLine(ctx, 0, CH - 2, CW);
 
         rafRef.current = requestAnimationFrame(drawFrame);
     }, []);
