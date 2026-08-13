@@ -54,9 +54,9 @@ const P_H  = Math.round(P_W * 4 / 3);    // 613 px
 const P_G  = 32;
 const PY   = Math.round((CH - P_H) / 2); // 234 px
 
-// Marquee speeds (px / frame at 60 fps) — slow enough to read
-const V_SPD = 0.5;
-const P_SPD = 0.38;
+// Marquee speeds (px / frame at 60 fps)
+const V_SPD = 0.8;
+const P_SPD = 0.75;
 
 /* ── Palette ─────────────────────────────────────────────────────────────── */
 const BG     = '#08090b';
@@ -201,8 +201,8 @@ export default function ExportMarqueePage() {
         ctx.fillStyle = '#08090b';
         ctx.fillRect(0, 0, CW, CH);
 
-        /* ── Pure Photo Marquee Strip (Centered Vertically) ──────────── */
-        const revOffset = (totalPW - xPh.current) % totalPW;
+        /* ── Pure Photo Marquee Strip (Centered Vertically — Leftwards Scroll) ──── */
+        const revOffset = xPh.current;
         drawSeamlessStrip(ctx, imgs, PY, P_W, P_H, P_G, totalPW, revOffset,
             (c, item, x, y, w, h) => {
                 const img = item as HTMLImageElement;
@@ -335,7 +335,7 @@ export default function ExportMarqueePage() {
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-gray-500 text-xs">Duration:</span>
-                            {[15, 30, 60].map(s => (
+                            {[15, 30, 60, 90].map(s => (
                                 <button key={s} disabled={recording} onClick={() => setDuration(s)}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 ${duration === s ? 'bg-amber-500 text-black' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}>
                                     {s}s

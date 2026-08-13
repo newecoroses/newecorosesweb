@@ -291,7 +291,7 @@ body {
 }
 
 .marquee-track {
-  animation: marquee-scroll 60s linear infinite;
+  animation: marquee-scroll 42s linear infinite;
   width: max-content;
 }
 

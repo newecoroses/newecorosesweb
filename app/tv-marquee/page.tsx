@@ -53,7 +53,7 @@ export default function TvMarqueePage() {
                 <div className="absolute left-0 top-0 bottom-0 w-32 sm:w-56 bg-gradient-to-r from-[#08090b] to-transparent z-10 pointer-events-none" />
                 <div className="absolute right-0 top-0 bottom-0 w-32 sm:w-56 bg-gradient-to-l from-[#08090b] to-transparent z-10 pointer-events-none" />
 
-                <div className="marquee-track-reverse flex gap-8">
+                <div className="marquee-track flex gap-8">
                     {doublePhotos.map((src, idx) => (
                         <div key={idx} className="flex-shrink-0 w-[300px] sm:w-[420px] md:w-[460px] aspect-[3/4] rounded-3xl overflow-hidden bg-[#111113] shadow-2xl relative">
                             <img
