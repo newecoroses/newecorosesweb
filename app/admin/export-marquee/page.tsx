@@ -198,24 +198,23 @@ export default function ExportMarqueePage() {
         xPh.current  = (xPh.current  + P_SPD) % totalPW;
 
         /* ── Background ─────────────────────────────────────────────── */
-        ctx.fillStyle = BG;
+        ctx.fillStyle = '#060709';
         ctx.fillRect(0, 0, CW, CH);
 
-        // Subtle noise grain (very light, gives depth)
-        ctx.save();
-        ctx.globalAlpha = 0.025;
-        for (let i = 0; i < 800; i++) {
-            ctx.fillStyle = `rgba(255,255,255,${Math.random()})`;
-            ctx.fillRect(Math.random() * CW, Math.random() * CH, 1, 1);
-        }
-        ctx.globalAlpha = 1;
-        ctx.restore();
-
-        // Top warm glow
-        const glowG = ctx.createRadialGradient(CW/2, -50, 0, CW/2, -50, 900);
-        glowG.addColorStop(0, 'rgba(180,130,35,0.14)');
+        // Top royal gold ambient spotlight glow
+        const glowG = ctx.createRadialGradient(CW / 2, -100, 0, CW / 2, -100, 1100);
+        glowG.addColorStop(0, 'rgba(212, 171, 80, 0.18)');
+        glowG.addColorStop(0.5, 'rgba(184, 146, 46, 0.06)');
         glowG.addColorStop(1, 'transparent');
-        ctx.fillStyle = glowG; ctx.fillRect(0, 0, CW, CH/2);
+        ctx.fillStyle = glowG;
+        ctx.fillRect(0, 0, CW, CH);
+
+        // Bottom ambient floor glow
+        const bGlow = ctx.createRadialGradient(CW / 2, CH + 100, 0, CW / 2, CH + 100, 900);
+        bGlow.addColorStop(0, 'rgba(184, 146, 46, 0.10)');
+        bGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = bGlow;
+        ctx.fillRect(0, 0, CW, CH);
 
         /* ── Top ornamental line ────────────────────────────────────── */
         drawGoldLine(ctx, 0, 0, CW);
@@ -226,56 +225,85 @@ export default function ExportMarqueePage() {
         drawCornerOrnament(ctx, 40,      CH - 28, false, true);
         drawCornerOrnament(ctx, CW - 40, CH - 28, true,  true);
 
-        /* ── Header ─────────────────────────────────────────────────── */
-        const HEADER_Y = 52;
+        /* ── Header Branding ────────────────────────────────────────── */
+        const HEADER_Y = 48;
 
-        // Eyebrow — small caps with diamond separators
-        ctx.textAlign  = 'center';
-        ctx.font       = '400 21px "Georgia", serif';
-        ctx.letterSpacing = '6px';
-        ctx.fillStyle  = GOLD_M;
-        ctx.globalAlpha = 0.65;
-        ctx.fillText('REAL  EXPERIENCES  ·  REAL  LOVE', CW / 2, HEADER_Y + 22);
-        ctx.globalAlpha = 1;
+        // Eyebrow — small caps with gold diamond accents
+        ctx.textAlign     = 'center';
+        ctx.font          = '600 16px "Inter", sans-serif';
+        ctx.letterSpacing = '7px';
+        ctx.fillStyle     = GOLD_M;
+        ctx.globalAlpha   = 0.90;
+        ctx.fillText('✦   EST. 2026   ·   LUXURY FLORAL & GIFTING BOUTIQUE   ✦', CW / 2, HEADER_Y + 20);
+        ctx.globalAlpha   = 1;
         ctx.letterSpacing = '0px';
 
-        // Brand name — large, clean
-        ctx.font      = 'bold 90px "Georgia", serif';
-        ctx.fillStyle = W95;
-        ctx.fillText('New Eco Roses', CW / 2, HEADER_Y + 118);
+        // Brand name — large, ultra-luxurious serif
+        ctx.font      = 'bold 96px "Georgia", serif';
+        const textG = ctx.createLinearGradient(CW / 2 - 300, 0, CW / 2 + 300, 0);
+        textG.addColorStop(0, '#FFFFFF');
+        textG.addColorStop(0.5, '#FFF6BF');
+        textG.addColorStop(1, '#FFFFFF');
+        ctx.fillStyle = textG;
+        ctx.fillText('NEW ECO ROSES', CW / 2, HEADER_Y + 115);
 
-        // Gold rule beneath name
-        const ruleW = 600; const ruleX = (CW - ruleW) / 2;
+        // Gold rule & diamond emblem beneath brand name
+        const ruleW = 650; const ruleX = (CW - ruleW) / 2;
         const rG = ctx.createLinearGradient(ruleX, 0, ruleX + ruleW, 0);
-        rG.addColorStop(0, 'transparent'); rG.addColorStop(0.5, GOLD_L); rG.addColorStop(1, 'transparent');
-        ctx.fillStyle = rG; ctx.fillRect(ruleX, HEADER_Y + 130, ruleW, 1.5);
+        rG.addColorStop(0, 'transparent');
+        rG.addColorStop(0.3, GOLD_D);
+        rG.addColorStop(0.5, GOLD_H);
+        rG.addColorStop(0.7, GOLD_D);
+        rG.addColorStop(1, 'transparent');
+        ctx.fillStyle = rG;
+        ctx.fillRect(ruleX, HEADER_Y + 132, ruleW, 2);
+
+        // Center Diamond Crest
+        ctx.save();
+        ctx.fillStyle = GOLD_H;
+        ctx.font = '14px sans-serif';
+        ctx.fillText('◆', CW / 2, HEADER_Y + 136);
+        ctx.restore();
 
         // Sub-line
-        ctx.font = '300 28px "Georgia", serif';
-        ctx.letterSpacing = '3px';
-        ctx.fillStyle = W55;
-        ctx.fillText('Customer Reviews  &  Stories', CW / 2, HEADER_Y + 170);
+        ctx.font          = '400 24px "Georgia", serif';
+        ctx.letterSpacing = '5px';
+        ctx.fillStyle     = GOLD_L;
+        ctx.globalAlpha   = 0.85;
+        ctx.fillText('REAL LOVE, REAL REACTIONS   ·   CUSTOMER REVIEWS', CW / 2, HEADER_Y + 172);
+        ctx.globalAlpha   = 1;
         ctx.letterSpacing = '0px';
 
         /* ── Section label: VIDEO REVIEWS ───────────────────────────── */
         const VY = HEADER_Y + 200;
-        drawSectionLabel(ctx, 72, VY - 16, 'VIDEO REVIEWS');
+        drawSectionLabel(ctx, 72, VY - 16, '❖   CUSTOMER VIDEO REVIEWS');
 
         /* ── Video marquee strip ─────────────────────────────────────── */
         drawSeamlessStrip(ctx, vids, VY, V_W, V_H, V_G, totalVW, xVid.current,
             (c, item, x, y, w, h) => {
                 const vid = item as HTMLVideoElement;
                 c.save();
-                roundRect(c, x, y, w, h, 14); c.fillStyle = '#0f1012'; c.fill(); c.clip();
+                roundRect(c, x, y, w, h, 16); c.fillStyle = '#0f1012'; c.fill(); c.clip();
                 if (vid.readyState >= 2) {
                     try { c.drawImage(vid, x, y, w, h); } catch {}
                 }
                 c.restore();
-                // Subtle inner glow border
+
+                // Video badge (Verified Video)
                 c.save();
-                roundRect(c, x, y, w, h, 14);
+                c.fillStyle = 'rgba(8,9,11,0.82)';
+                roundRect(c, x + 8, y + h - 32, 105, 24, 6); c.fill();
+                c.fillStyle = GOLD_H; c.font = 'bold 11px sans-serif';
+                c.textAlign = 'left'; c.fillText('★ VERIFIED', x + 14, y + h - 16);
+                c.restore();
+
+                // Dual-layer luxury gold border
+                c.save();
+                roundRect(c, x, y, w, h, 16);
                 const eg = c.createLinearGradient(x, y, x + w, y + h);
-                eg.addColorStop(0, 'rgba(212,171,80,0.40)'); eg.addColorStop(1, 'rgba(212,171,80,0.12)');
+                eg.addColorStop(0, 'rgba(247,232,184,0.70)');
+                eg.addColorStop(0.5, 'rgba(212,171,80,0.40)');
+                eg.addColorStop(1, 'rgba(184,146,46,0.20)');
                 c.strokeStyle = eg; c.lineWidth = 2; c.stroke();
                 c.restore();
             }
@@ -287,7 +315,7 @@ export default function ExportMarqueePage() {
 
         /* ── Section label: PHOTO REVIEWS ───────────────────────────── */
         const PY = DIV_Y + 14;
-        drawSectionLabel(ctx, CW - 72, PY - 16, 'PHOTO REVIEWS', true);
+        drawSectionLabel(ctx, CW - 72, PY - 16, 'PHOTO GALLERY   ❖', true);
 
         /* ── Photo marquee strip (reversed) ─────────────────────────── */
         const revOffset = (totalPW - xPh.current) % totalPW;
@@ -295,24 +323,24 @@ export default function ExportMarqueePage() {
             (c, item, x, y, w, h) => {
                 const img = item as HTMLImageElement;
                 c.save();
-                roundRect(c, x, y, w, h, 12); c.fillStyle = '#111'; c.fill(); c.clip();
+                roundRect(c, x, y, w, h, 14); c.fillStyle = '#111'; c.fill(); c.clip();
                 try { c.drawImage(img, x, y, w, h); } catch {}
-                // Bottom overlay
+                // Bottom gradient overlay
                 const og = c.createLinearGradient(0, y + h - 60, 0, y + h);
-                og.addColorStop(0, 'transparent'); og.addColorStop(1, 'rgba(0,0,0,0.72)');
+                og.addColorStop(0, 'transparent'); og.addColorStop(1, 'rgba(8,9,11,0.88)');
                 c.fillStyle = og; c.fillRect(x, y, w, h);
                 c.restore();
-                // Verified badge
+                // Verified photo badge
                 c.save();
-                c.fillStyle = 'rgba(0,0,0,0.70)';
-                roundRect(c, x + 8, y + h - 30, 80, 22, 5); c.fill();
-                c.fillStyle = GOLD_L; c.font = 'bold 11px sans-serif';
-                c.textAlign = 'left'; c.fillText('VERIFIED', x + 14, y + h - 14);
+                c.fillStyle = 'rgba(8,9,11,0.80)';
+                roundRect(c, x + 8, y + h - 30, 95, 22, 5); c.fill();
+                c.fillStyle = GOLD_L; c.font = 'bold 10px sans-serif';
+                c.textAlign = 'left'; c.fillText('★ VERIFIED', x + 14, y + h - 15);
                 c.restore();
                 // Border
                 c.save();
-                roundRect(c, x, y, w, h, 12);
-                c.strokeStyle = 'rgba(212,171,80,0.22)'; c.lineWidth = 1.5; c.stroke();
+                roundRect(c, x, y, w, h, 14);
+                c.strokeStyle = 'rgba(212,171,80,0.35)'; c.lineWidth = 1.5; c.stroke();
                 c.restore();
             }
         );
@@ -320,12 +348,12 @@ export default function ExportMarqueePage() {
         /* ── Footer bar ──────────────────────────────────────────────── */
         const FY = PY + P_H + 14;
         drawMidDivider(ctx, FY);
-        ctx.globalAlpha = 0.50;
-        ctx.font        = '300 20px "Georgia", serif';
+        ctx.globalAlpha = 0.85;
+        ctx.font        = '500 18px "Georgia", serif';
         ctx.fillStyle   = GOLD_L;
-        ctx.textAlign   = 'left';  ctx.fillText('New Eco Roses  ·  Kolkata', 80, FY + 30);
-        ctx.textAlign   = 'center'; ctx.fillText('Regent Park   &   New Alipore Outlets', CW / 2, FY + 30);
-        ctx.textAlign   = 'right';  ctx.fillText('www.newecoroses.com', CW - 80, FY + 30);
+        ctx.textAlign   = 'left';  ctx.fillText('🌹  NEW ECO ROSES  ·  KOLKATA', 80, FY + 30);
+        ctx.textAlign   = 'center'; ctx.fillText('REGENT PARK   ✦   NEW ALIPORE OUTLETS', CW / 2, FY + 30);
+        ctx.textAlign   = 'right';  ctx.fillText('WWW.NEWECOROSES.COM', CW - 80, FY + 30);
         ctx.globalAlpha = 1;
 
         /* ── Bottom ornamental line ─────────────────────────────────── */

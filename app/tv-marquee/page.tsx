@@ -47,28 +47,52 @@ export default function TvMarqueePage() {
     const doublePhotos = [...PHOTO_REVIEWS, ...PHOTO_REVIEWS];
 
     return (
-        <div className="w-screen h-screen bg-[#faf7f2] flex flex-col justify-between p-8 sm:p-12 overflow-hidden select-none">
+        <div className="w-screen h-screen bg-[#060709] text-white flex flex-col justify-between p-6 sm:p-10 overflow-hidden select-none relative">
+            {/* Top Royal Gold Ambient Spotlight Glow */}
+            <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/15 via-amber-900/5 to-transparent" />
+
+            {/* Corner Gold Filigree Accents */}
+            <div className="absolute top-4 left-4 w-10 h-10 border-t-2 border-l-2 border-amber-500/40 pointer-events-none flex items-start justify-start p-1">
+                <span className="text-[8px] text-amber-400">◆</span>
+            </div>
+            <div className="absolute top-4 right-4 w-10 h-10 border-t-2 border-r-2 border-amber-500/40 pointer-events-none flex items-start justify-end p-1">
+                <span className="text-[8px] text-amber-400">◆</span>
+            </div>
+            <div className="absolute bottom-4 left-4 w-10 h-10 border-b-2 border-l-2 border-amber-500/40 pointer-events-none flex items-end justify-start p-1">
+                <span className="text-[8px] text-amber-400">◆</span>
+            </div>
+            <div className="absolute bottom-4 right-4 w-10 h-10 border-b-2 border-r-2 border-amber-500/40 pointer-events-none flex items-end justify-end p-1">
+                <span className="text-[8px] text-amber-400">◆</span>
+            </div>
+
             {/* Header Branding */}
-            <div className="text-center">
-                <span className="text-sm sm:text-base uppercase tracking-[0.3em] font-semibold text-amber-700 block mb-1">
-                    Real Love, Real Reactions
+            <div className="text-center relative z-10 pt-2">
+                <span className="text-xs sm:text-sm uppercase tracking-[0.35em] font-medium text-amber-300/90 block mb-1.5">
+                    ✦   EST. 2026   ·   LUXURY FLORAL & GIFTING BOUTIQUE   ✦
                 </span>
-                <h1 className="font-serif text-4xl sm:text-6xl text-gray-900 font-bold tracking-tight">
-                    Customer Reviews — New Eco Roses
+                <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent drop-shadow-md">
+                    NEW ECO ROSES
                 </h1>
-                <p className="text-gray-600 text-sm sm:text-base mt-1 font-light">
-                    Watch what our customers have to say about their New Eco Roses experience
+                
+                {/* Gold Rule & Center Diamond Crest */}
+                <div className="relative my-2 flex items-center justify-center">
+                    <div className="w-64 sm:w-96 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+                    <span className="absolute text-[11px] text-amber-300 bg-[#060709] px-2">◆</span>
+                </div>
+
+                <p className="text-amber-200/80 text-xs sm:text-sm uppercase tracking-[0.25em] font-serif font-light">
+                    REAL LOVE, REAL REACTIONS   ·   CUSTOMER REVIEWS & STORIES
                 </p>
             </div>
 
             {/* Top Row: Video Marquee */}
-            <div className="relative overflow-hidden py-4">
-                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#faf7f2] to-transparent z-10 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#faf7f2] to-transparent z-10 pointer-events-none" />
+            <div className="relative overflow-hidden py-3">
+                <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-40 bg-gradient-to-r from-[#060709] to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-40 bg-gradient-to-l from-[#060709] to-transparent z-10 pointer-events-none" />
 
                 <div className="marquee-track flex gap-6">
                     {doubleVideos.map((src, idx) => (
-                        <div key={idx} className="flex-shrink-0 w-[200px] sm:w-[240px] aspect-[9/16] rounded-2xl overflow-hidden bg-black shadow-xl border border-amber-500/20">
+                        <div key={idx} className="flex-shrink-0 w-[190px] sm:w-[230px] aspect-[9/16] rounded-2xl overflow-hidden bg-black shadow-2xl border-2 border-amber-400/40 relative group">
                             <video
                                 src={src}
                                 autoPlay
@@ -77,27 +101,32 @@ export default function TvMarqueePage() {
                                 playsInline
                                 className="w-full h-full object-cover"
                             />
+                            <div className="absolute bottom-2.5 left-2.5 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-amber-400/30">
+                                <span className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">
+                                    ★ VERIFIED VIDEO
+                                </span>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Bottom Row: Photo Marquee */}
-            <div className="relative overflow-hidden py-4">
-                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#faf7f2] to-transparent z-10 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#faf7f2] to-transparent z-10 pointer-events-none" />
+            <div className="relative overflow-hidden py-3">
+                <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-40 bg-gradient-to-r from-[#060709] to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-40 bg-gradient-to-l from-[#060709] to-transparent z-10 pointer-events-none" />
 
                 <div className="marquee-track-reverse flex gap-6">
                     {doublePhotos.map((src, idx) => (
-                        <div key={idx} className="flex-shrink-0 w-[180px] sm:w-[210px] aspect-[3/4] rounded-2xl overflow-hidden bg-white shadow-xl border border-amber-500/20 relative">
+                        <div key={idx} className="flex-shrink-0 w-[170px] sm:w-[200px] aspect-[3/4] rounded-2xl overflow-hidden bg-black shadow-xl border border-amber-400/30 relative">
                             <img
                                 src={src}
                                 alt={`Review photo ${idx + 1}`}
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md">
-                                <span className="text-xs text-amber-300 font-semibold uppercase tracking-wider">
-                                    ⭐ Verified Review
+                            <div className="absolute bottom-2.5 left-2.5 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-amber-400/30">
+                                <span className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">
+                                    ★ VERIFIED PHOTO
                                 </span>
                             </div>
                         </div>
@@ -106,10 +135,10 @@ export default function TvMarqueePage() {
             </div>
 
             {/* Footer Branding */}
-            <div className="text-center pt-4 border-t border-amber-900/10 flex items-center justify-between text-xs sm:text-sm text-gray-500 font-medium">
-                <span>🌹 New Eco Roses Kolkata</span>
-                <span>Outlet 1: Regent Park • Outlet 2: New Alipore</span>
-                <span>www.newecoroses.com</span>
+            <div className="relative z-10 pt-3 border-t border-amber-500/20 flex items-center justify-between text-xs sm:text-sm text-amber-200/80 font-serif tracking-widest uppercase">
+                <span>🌹 NEW ECO ROSES · KOLKATA</span>
+                <span>REGENT PARK   ✦   NEW ALIPORE OUTLETS</span>
+                <span>WWW.NEWECOROSES.COM</span>
             </div>
         </div>
     );
