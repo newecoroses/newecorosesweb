@@ -179,14 +179,12 @@ export default function ExportMarqueePage() {
     }, [videoUrls]);
 
     /* ── Canvas draw loop ─────────────────────────────────────────────── */
-    const drawFrame = useCallback(() => {
+    const lastTimeRef = useRef<number>(0);
+
+    const drawFrame = useCallback((timestamp: number) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d', {
-            alpha: false,
-            desynchronized: true,
-            willReadFrequently: false,
-        });
+        const ctx = canvas.getContext('2d', { alpha: false });
         if (!ctx) return;
 
         const vids = vidEls.current;
@@ -196,27 +194,29 @@ export default function ExportMarqueePage() {
             return;
         }
 
-        const totalVW = vids.length * (V_W + V_G);
-        const totalPW = imgs.length * (P_W + P_G);
+        // Exact timestamp delta calculation for 100% silky-smooth time-based movement
+        if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+        const dt = Math.min((timestamp - lastTimeRef.current) / 1000, 0.05);
+        lastTimeRef.current = timestamp;
 
-        xVid.current = (xVid.current + V_SPD) % totalVW;
-        xPh.current  = (xPh.current  + P_SPD) % totalPW;
+        const totalPW = imgs.length * (P_W + P_G);
+        // Smooth constant speed: 75 pixels per second
+        xPh.current = (xPh.current + 75 * dt) % totalPW;
+
         /* ── Background ─────────────────────────────────────────────── */
         ctx.fillStyle = '#08090b';
         ctx.fillRect(0, 0, CW, CH);
 
-        /* ── Pure Photo Marquee Strip (Centered Vertically — Leftwards Scroll) ──── */
-        const revOffset = Math.round(xPh.current * 10) / 10;
-        drawSeamlessStrip(ctx, imgs, PY, P_W, P_H, P_G, totalPW, revOffset,
+        /* ── Pure Photo Marquee Strip (Centered Vertically — Silky Smooth) ──── */
+        drawSeamlessStrip(ctx, imgs, PY, P_W, P_H, P_G, totalPW, xPh.current,
             (c, item, x, y, w, h) => {
                 const img = item as HTMLImageElement;
-                const rx = Math.round(x);
                 c.save();
-                roundRect(c, rx, y, w, h, 20);
+                roundRect(c, x, y, w, h, 20);
                 c.fillStyle = '#111113';
                 c.fill();
                 c.clip();
-                try { c.drawImage(img, rx, y, w, h); } catch {}
+                try { c.drawImage(img, x, y, w, h); } catch {}
                 c.restore();
             }
         );
@@ -445,7 +445,7 @@ function drawSeamlessStrip(
     const stride     = iW + gap;
     const normOffset = ((offset % totalW) + totalW) % totalW;
     const firstIdx   = Math.floor(normOffset / stride);
-    const startX     = Math.round(-(normOffset % stride));
+    const startX     = -(normOffset % stride);
     const count      = Math.ceil((CW - startX) / stride) + 2;
 
     ctx.save();
