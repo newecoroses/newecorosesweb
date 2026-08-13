@@ -44,7 +44,7 @@ export default function TvMarqueePage() {
     }, []);
 
     const doubleVideos = [...videos, ...videos];
-    const doublePhotos = [...PHOTO_REVIEWS, ...PHOTO_REVIEWS];
+    const doublePhotos = [...PHOTO_REVIEWS, ...PHOTO_REVIEWS, ...PHOTO_REVIEWS, ...PHOTO_REVIEWS];
 
     return (
         <div className="w-screen h-screen bg-[#08090b] flex items-center justify-center overflow-hidden select-none relative">

@@ -196,6 +196,7 @@ export default function ExportMarqueePage() {
         const totalPW = imgs.length * (P_W + P_G);
 
         xVid.current = (xVid.current + V_SPD) % totalVW;
+        xPh.current  = (xPh.current  + P_SPD) % totalPW;
         /* ── Background ─────────────────────────────────────────────── */
         ctx.fillStyle = '#08090b';
         ctx.fillRect(0, 0, CW, CH);
