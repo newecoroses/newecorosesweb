@@ -55,7 +55,7 @@ const PROMOS = [
 
 export default function PromoSlider() {
     return (
-        <section className="py-4 md:py-10">
+        <section className="py-4 md:py-10 w-full max-w-full overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

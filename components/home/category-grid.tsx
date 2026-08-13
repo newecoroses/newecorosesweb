@@ -64,7 +64,7 @@ function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number
 
 export default function CategoryGrid() {
     return (
-        <section className="py-5 md:py-10">
+        <section className="py-5 md:py-10 w-full max-w-full overflow-hidden">
             <div className="max-w-6xl mx-auto md:px-8 space-y-4 md:space-y-5">
                 <CategoryRow items={ROW_1} delay={0} />
                 <CategoryRow items={ROW_2} delay={0.15} />

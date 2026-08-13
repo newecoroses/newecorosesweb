@@ -74,7 +74,7 @@ export default function FeaturedPicks() {
     return (
         <>
             {/* ── Pick Their Fav Flowers ── */}
-            <section className="py-5 md:py-10 bg-white">
+            <section className="py-5 md:py-10 bg-white w-full max-w-full overflow-hidden">
                 <div className="max-w-7xl mx-auto md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
@@ -90,7 +90,7 @@ export default function FeaturedPicks() {
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
-            <section className="py-5 md:py-10 bg-white">
+            <section className="py-5 md:py-10 bg-white w-full max-w-full overflow-hidden">
                 <div className="max-w-7xl mx-auto md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}

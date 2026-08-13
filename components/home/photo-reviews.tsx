@@ -103,7 +103,7 @@ export default function PhotoReviews() {
     return (
         <section className="pb-20 lg:pb-28 bg-blush overflow-hidden">
             {/* Marquee track — reverse direction vs. videos */}
-            <div className="relative">
+            <div className="relative w-full max-w-full overflow-hidden">
                 {/* Edge fades */}
                 <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-blush to-transparent z-10 pointer-events-none" />
                 <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-blush to-transparent z-10 pointer-events-none" />
