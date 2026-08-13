@@ -239,17 +239,26 @@ export default function ExportMarqueePage() {
         setRecording(true); setDownloadUrl(null); setProgress(0);
         chunksRef.current = [];
         const stream  = canvas.captureStream(FPS);
-        const mimes   = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
-        const mime    = mimes.find(m => MediaRecorder.isTypeSupported(m)) ?? 'video/webm';
-        const mr = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 20_000_000 });
+        const mimes = [
+            'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+            'video/mp4;codecs=avc1',
+            'video/mp4;codecs=h264',
+            'video/mp4',
+            'video/webm;codecs=vp9',
+            'video/webm;codecs=vp8',
+            'video/webm',
+        ];
+        const mime = mimes.find(m => MediaRecorder.isTypeSupported(m)) ?? 'video/mp4';
+        const mr   = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 20_000_000 });
         mrRef.current = mr;
         mr.ondataavailable = e => { if (e.data?.size > 0) chunksRef.current.push(e.data); };
         mr.onstop = () => {
-            const blob = new Blob(chunksRef.current, { type: mime });
+            const outputMime = mime.includes('mp4') ? mime : 'video/mp4';
+            const blob = new Blob(chunksRef.current, { type: outputMime });
             const url  = URL.createObjectURL(blob);
-            setDownloadUrl(url); setRecording(false); setStatusText('Done! Auto-downloaded.');
+            setDownloadUrl(url); setRecording(false); setStatusText('Done! Auto-downloaded MP4.');
             const a = document.createElement('a');
-            a.href = url; a.download = `new-eco-roses-marquee-${duration}s.webm`;
+            a.href = url; a.download = `new-eco-roses-marquee-${duration}s.mp4`;
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         };
         mr.start(500);
@@ -374,10 +383,10 @@ export default function ExportMarqueePage() {
                             <CheckCircle2 className="text-emerald-400" size={20} />
                             <div>
                                 <p className="text-emerald-200 text-xs font-semibold">Recorded & auto-downloaded!</p>
-                                <p className="text-emerald-400/70 text-[11px]">Copy the .webm from Downloads to your USB Pendrive for TV.</p>
+                                <p className="text-emerald-400/70 text-[11px]">Copy the .mp4 video from Downloads to your USB Pendrive for TV.</p>
                             </div>
                         </div>
-                        <a href={downloadUrl} download={`new-eco-roses-marquee-${duration}s.webm`}
+                        <a href={downloadUrl} download={`new-eco-roses-marquee-${duration}s.mp4`}
                             className="inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold px-4 py-2 rounded-lg transition-all">
                             <Download size={14} /> Re-download
                         </a>
