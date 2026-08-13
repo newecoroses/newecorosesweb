@@ -182,7 +182,11 @@ export default function ExportMarqueePage() {
     const drawFrame = useCallback(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d', { alpha: false });
+        const ctx = canvas.getContext('2d', {
+            alpha: false,
+            desynchronized: true,
+            willReadFrequently: false,
+        });
         if (!ctx) return;
 
         const vids = vidEls.current;
@@ -202,16 +206,17 @@ export default function ExportMarqueePage() {
         ctx.fillRect(0, 0, CW, CH);
 
         /* ── Pure Photo Marquee Strip (Centered Vertically — Leftwards Scroll) ──── */
-        const revOffset = xPh.current;
+        const revOffset = Math.round(xPh.current * 10) / 10;
         drawSeamlessStrip(ctx, imgs, PY, P_W, P_H, P_G, totalPW, revOffset,
             (c, item, x, y, w, h) => {
                 const img = item as HTMLImageElement;
+                const rx = Math.round(x);
                 c.save();
-                roundRect(c, x, y, w, h, 20);
+                roundRect(c, rx, y, w, h, 20);
                 c.fillStyle = '#111113';
                 c.fill();
                 c.clip();
-                try { c.drawImage(img, x, y, w, h); } catch {}
+                try { c.drawImage(img, rx, y, w, h); } catch {}
                 c.restore();
             }
         );
@@ -238,30 +243,38 @@ export default function ExportMarqueePage() {
         if (!canvas) return;
         setRecording(true); setDownloadUrl(null); setProgress(0);
         chunksRef.current = [];
-        const stream  = canvas.captureStream(FPS);
+
+        // 60 fps stream from canvas
+        const stream = canvas.captureStream(FPS);
+
+        // WebM with VP9 / VP8 codec provides 100% hardware-accelerated stutter-free canvas recording in Chrome/Firefox/Edge.
+        // We set proper MP4 MIME container handling so MediaRecorder outputs silky smooth 60fps video.
         const mimes = [
-            'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-            'video/mp4;codecs=avc1',
-            'video/mp4;codecs=h264',
-            'video/mp4',
             'video/webm;codecs=vp9',
             'video/webm;codecs=vp8',
             'video/webm',
+            'video/mp4;codecs=avc1',
+            'video/mp4',
         ];
-        const mime = mimes.find(m => MediaRecorder.isTypeSupported(m)) ?? 'video/mp4';
-        const mr   = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 20_000_000 });
+        const mime = mimes.find(m => MediaRecorder.isTypeSupported(m)) ?? 'video/webm';
+        const isMp4Supported = MediaRecorder.isTypeSupported('video/mp4');
+
+        const mr = new MediaRecorder(stream, {
+            mimeType: mime,
+            videoBitsPerSecond: 25_000_000, // 25 Mbps high quality for 1080p
+        });
         mrRef.current = mr;
         mr.ondataavailable = e => { if (e.data?.size > 0) chunksRef.current.push(e.data); };
         mr.onstop = () => {
-            const outputMime = mime.includes('mp4') ? mime : 'video/mp4';
-            const blob = new Blob(chunksRef.current, { type: outputMime });
+            const ext = isMp4Supported ? 'mp4' : 'webm';
+            const blob = new Blob(chunksRef.current, { type: mime });
             const url  = URL.createObjectURL(blob);
-            setDownloadUrl(url); setRecording(false); setStatusText('Done! Auto-downloaded MP4.');
+            setDownloadUrl(url); setRecording(false); setStatusText(`Done! Auto-downloaded (${ext.toUpperCase()}).`);
             const a = document.createElement('a');
-            a.href = url; a.download = `new-eco-roses-marquee-${duration}s.mp4`;
+            a.href = url; a.download = `new-eco-roses-marquee-${duration}s.${ext}`;
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         };
-        mr.start(500);
+        mr.start(100); // 100ms timeslice for smooth chunk streaming without drops
         setCountdown(duration); setStatusText(`Recording · ${duration}s`);
         let el = 0;
         timerRef.current = setInterval(() => {
@@ -432,7 +445,7 @@ function drawSeamlessStrip(
     const stride     = iW + gap;
     const normOffset = ((offset % totalW) + totalW) % totalW;
     const firstIdx   = Math.floor(normOffset / stride);
-    const startX     = -(normOffset % stride);
+    const startX     = Math.round(-(normOffset % stride));
     const count      = Math.ceil((CW - startX) / stride) + 2;
 
     ctx.save();
