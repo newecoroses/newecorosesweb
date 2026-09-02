@@ -374,11 +374,10 @@ export default function AdiFinderModal({ isOpen, onClose }: AdiFinderModalProps)
                                         onClose();
                                         router.push('/shop');
                                     }}
-                                    className="w-full bg-[#5c6e4f] hover:bg-[#4a5c3e] text-white font-bold text-sm sm:text-base py-3.5 px-6 rounded-[14px] flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
+                                    className="w-full bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] font-bold text-sm sm:text-base py-3.5 px-6 rounded-[14px] flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
                                 >
                                     <ExactFinderIcon className="w-6 h-6 flex-shrink-0" />
-                                    <span>Explore gifts with Adi</span>
-                                    <Sparkles className="w-4 h-4 text-amber-300 animate-pulse flex-shrink-0" />
+                                    <span className="font-sans font-bold tracking-tight">Explore gifts with Adi</span>
                                 </button>
                             </div>
                         </div>
