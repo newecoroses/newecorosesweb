@@ -23,12 +23,6 @@
 /* ===== Base ===== */
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-width: 100vw;
-  width: 100%;
-  /* Fix iOS momentum scrolling */
-  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -38,16 +32,6 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-width: 100vw;
-  width: 100%;
-  /* Critical: do NOT use position:relative on body — breaks iOS touch scroll */
-  /* Critical: allow vertical touch scroll everywhere */
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
-  /* Prevent scroll chaining from modals/drawers into body on iOS/Android */
-  overscroll-behavior: none;
 }
 
 /* ===== No-scrollbar utility for horizontal scroll ===== */

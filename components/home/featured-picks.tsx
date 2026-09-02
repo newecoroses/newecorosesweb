@@ -32,8 +32,7 @@ interface PickItem {
 function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string }) {
     return (
         <div
-            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-mandatory md:overflow-visible"
-            style={{ touchAction: 'pan-x' }}
+            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-mandatory md:overflow-visible overscroll-x-contain"
         >
             <div className="flex md:flex-wrap gap-3 md:gap-4 px-4 md:px-0 w-max md:w-full">
                 {items.map((item, idx) => (

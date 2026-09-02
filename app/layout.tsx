@@ -85,7 +85,7 @@ export default function RootLayout({
           `
         }} />
       </head>
-      <body className="antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden w-full max-w-full relative">
+      <body className="antialiased min-h-screen flex flex-col bg-background text-foreground w-full">
         {/* Analytics tracker — invisible, client-only, non-blocking */}
         <AnalyticsTracker />
         <LayoutWrapper>

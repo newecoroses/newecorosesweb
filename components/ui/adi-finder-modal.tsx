@@ -324,7 +324,7 @@ export default function AdiFinderModal({ isOpen, onClose }: AdiFinderModalProps)
                         {/* Scrollable Prompts List with Vector Illustration Badges */}
                         <div
                             className="p-4 sm:p-5 flex-1 overflow-y-auto space-y-2.5 no-scrollbar bg-white/60"
-                            style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
+                            style={{ overscrollBehavior: 'contain' }}
                         >
                             {QUICK_PROMPTS.map((prompt, idx) => (
                                 <button

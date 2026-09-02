@@ -155,7 +155,7 @@ export default function DeliveryLocationModal({ isOpen, onClose, onLocationSet }
     return (
         <AnimatePresence>
             {/* Backdrop */}
-            <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center" style={{ touchAction: 'none' }}>
+            <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center">
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
                 {/* Modal — bottom sheet on mobile, centered on sm+ */}
