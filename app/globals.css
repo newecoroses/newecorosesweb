@@ -24,8 +24,11 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  overflow-y: auto;
   max-width: 100vw;
   width: 100%;
+  /* Fix iOS momentum scrolling */
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -35,10 +38,16 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100vw;
   width: 100%;
-  position: relative;
+  /* Critical: do NOT use position:relative on body — breaks iOS touch scroll */
+  /* Critical: allow vertical touch scroll everywhere */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  /* Prevent scroll chaining from modals/drawers into body on iOS/Android */
+  overscroll-behavior: none;
 }
 
 /* ===== No-scrollbar utility for horizontal scroll ===== */
@@ -511,4 +520,40 @@ body {
   animation: petalFloat2 1.5s ease-out 0.08s forwards;
   color: #d40000;
   font-size: 24px;
+}
+
+/* ===== Moving Rainbow Border Light for Finder Button ===== */
+@keyframes border-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-moving-border {
+  background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6, #10b981, #f59e0b);
+  background-size: 300% 300%;
+  animation: border-rotate 3.5s linear infinite;
+}
+
+/* ===== Subtle Wobble Animation for Gift Box Icon ===== */
+@keyframes gift-wobble {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  25% {
+    transform: rotate(-5deg) translateY(-1px);
+  }
+  75% {
+    transform: rotate(5deg) translateY(-0.5px);
+  }
+}
+
+.animate-gift-wobble {
+  animation: gift-wobble 3s ease-in-out infinite;
 }
