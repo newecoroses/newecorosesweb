@@ -13,43 +13,35 @@ import 'swiper/css/free-mode';
 const PROMOS = [
     {
         id: 1,
-        title: 'Birthday Gifts That Delight',
-        subtitle: 'Birthday Collection',
-        cta: 'Order Now',
-        image: '/images/banners/promo/housewarming.webp',
-        link: '/shop?celebration=birthday',
-        textColor: '#3a3226',
-        ctaBg: '#5c6e4f',
-    },
-    {
-        id: 2,
         title: 'Luxury Rose Collection',
-        subtitle: 'Handpicked Premium Roses',
         cta: 'Order Now',
-        image: '/images/banners/promo/luxury-roses.webp',
+        image: '/images/banners/promo/luxary rose collection.webp',
         link: '/shop?search=rose',
-        textColor: '#3a3226',
         ctaBg: '#8a3a50',
     },
     {
-        id: 3,
+        id: 2,
         title: 'Anniversary Specials',
-        subtitle: 'Celebrate Your Love',
         cta: 'Order Now',
-        image: '/images/banners/promo/anniversary.webp',
+        image: '/images/banners/promo/annieversary specials.webp',
         link: '/shop?celebration=anniversary',
-        textColor: '#3a3226',
         ctaBg: '#9a6e5a',
     },
     {
-        id: 4,
+        id: 3,
         title: 'Wedding Gifting',
-        subtitle: 'Make Every Wedding Special',
         cta: 'Order Now',
-        image: '/images/banners/promo/wedding.webp',
+        image: '/images/banners/promo/wedding gifting.webp',
         link: '/shop?celebration=wedding',
-        textColor: '#3a3226',
         ctaBg: '#5a6a8a',
+    },
+    {
+        id: 4,
+        title: 'Birthday Gifts That Delight',
+        cta: 'Order Now',
+        image: '/images/banners/promo/birthday gifts that delights.webp',
+        link: '/shop?celebration=birthday',
+        ctaBg: '#5c6e4f',
     },
 ];
 
@@ -89,26 +81,14 @@ export default function PromoSlider() {
                                         sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 40vw"
                                     />
 
-                                    {/* Right 40% text overlay */}
-                                    <div className="absolute top-0 right-0 w-[45%] h-full flex flex-col justify-center px-3 md:px-5 py-4 z-10 bg-gradient-to-l from-white/90 via-white/75 to-transparent">
-                                        <p
-                                            className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] font-semibold mb-1 md:mb-2 opacity-60"
-                                            style={{ color: promo.textColor }}
-                                        >
-                                            {promo.subtitle}
-                                        </p>
-                                        <h3
-                                            className="font-serif text-[13px] md:text-lg leading-tight mb-2 md:mb-4"
-                                            style={{ color: promo.textColor }}
-                                        >
-                                            {promo.title}
-                                        </h3>
+                                    {/* Order Now button overlay in bottom right */}
+                                    <div className="absolute bottom-3 md:bottom-5 right-3 md:right-6 z-10">
                                         <span
-                                            className="inline-flex items-center gap-1 text-white text-[8px] md:text-[10px] uppercase tracking-[0.12em] font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-full w-fit shadow-sm group-hover:gap-2 transition-all duration-300"
+                                            className="inline-flex items-center gap-1.5 text-white text-[9px] md:text-xs uppercase tracking-[0.14em] font-bold px-3.5 md:px-5 py-1.5 md:py-2 rounded-full shadow-md group-hover:gap-2.5 transition-all duration-300"
                                             style={{ backgroundColor: promo.ctaBg }}
                                         >
                                             {promo.cta}
-                                            <ArrowRight size={10} />
+                                            <ArrowRight size={12} />
                                         </span>
                                     </div>
                                 </div>

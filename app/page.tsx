@@ -241,11 +241,16 @@ export default function Home() {
 
           {/* Explore More Button */}
           {products.length > 0 && (
-            <div className="mt-12 md:mt-16 text-center">
-              <Link href="/shop" className="inline-flex items-center gap-2.5 bg-[#5c6e4f] text-white px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#4a5a3f] transition-all duration-400 group shadow-md hover:shadow-lg">
-                Explore All Products
-                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
+            <div className="mt-12 md:mt-16 flex justify-center">
+              <div className="p-[2px] rounded-full animate-moving-border shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] inline-block">
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center gap-2.5 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 group cursor-pointer"
+                >
+                  Explore All Products
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-[#bfaf1a]" />
+                </Link>
+              </div>
             </div>
           )}
         </div>

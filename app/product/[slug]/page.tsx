@@ -199,14 +199,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         </p>
 
                         {/* CTA Buttons — Positioned high for instant visibility */}
-                        <div className="flex gap-3 mb-4">
+                        <div className="flex flex-col sm:flex-row gap-3 mb-4">
                             {/* Add to Cart / Stepper */}
                             {cartQuantity > 0 ? (
-                                <div className="flex-1 py-2 px-4 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-sm">
+                                <div className="flex-1 py-2 px-4 rounded-xl border border-primary/40 bg-primary/5 flex items-center justify-between shadow-xs">
                                     <button
                                         type="button"
                                         onClick={() => product && updateQuantity(product.id, cartQuantity - 1)}
-                                        className="w-9 h-9 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                                        className="w-9 h-9 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
                                         title="Decrease quantity"
                                     >
                                         <Minus size={15} />
@@ -224,7 +224,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             image_url: product.image_url,
                                             price: null,
                                         })}
-                                        className="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors"
+                                        className="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
                                         title="Increase quantity"
                                     >
                                         <Plus size={15} />
@@ -244,24 +244,25 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             });
                                         }
                                     }}
-                                    className="flex-1 py-3 sm:py-3.5 px-5 text-center rounded-xl transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold border-2 bg-white border-primary text-primary hover:bg-primary/5 shadow-sm"
+                                    className="flex-1 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] hover:border-[#bfaf1a] py-3.5 px-4 text-center rounded-2xl shadow-xs hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-bold cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                                 >
-                                    <ShoppingCart size={17} /> Add to Cart
+                                    <ShoppingCart size={16} className="text-[#bfaf1a]" />
+                                    <span>Add to Cart</span>
                                 </button>
                             )}
 
-                            {/* WhatsApp CTA */}
+                            {/* WhatsApp / Enquire Now CTA */}
                             <a
                                 href={whatsappLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 bg-primary text-white py-3 sm:py-3.5 px-5 text-center rounded-xl hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-semibold shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 group"
+                                className="flex-1 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] hover:border-[#25D366] py-3.5 px-4 text-center rounded-2xl shadow-xs hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-bold cursor-pointer hover:scale-[1.01] active:scale-[0.99] group"
                                 onClick={() => {
                                     if (product) trackEnquiry(product.id, product.name);
                                 }}
                             >
-                                <WhatsappIcon size={17} className="group-hover:text-[#25D366] transition-colors" />
-                                Enquire Now
+                                <WhatsappIcon size={16} className="text-[#25D366] group-hover:scale-110 transition-transform" />
+                                <span>Enquire Now</span>
                             </a>
                         </div>
 
