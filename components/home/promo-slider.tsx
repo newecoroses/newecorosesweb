@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, FreeMode } from 'swiper/modules';
 import { motion } from 'framer-motion';
@@ -46,8 +47,28 @@ const PROMOS = [
 ];
 
 export default function PromoSlider() {
+    const [isVisible, setIsVisible] = useState(false);
+    const sectionRef = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                }
+            },
+            { threshold: 0.2 }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <section className="py-4 md:py-10 w-full max-w-full overflow-hidden">
+        <section ref={sectionRef} className="py-4 md:py-10 w-full max-w-full overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -59,7 +80,7 @@ export default function PromoSlider() {
                     spaceBetween={12}
                     slidesPerView={1.15}
                     centeredSlides={false}
-                    autoplay={{ delay: 5000, disableOnInteraction: false }}
+                    autoplay={isVisible ? { delay: 4500, disableOnInteraction: false } : false}
                     freeMode={{ enabled: true, sticky: true }}
                     breakpoints={{
                         640: { slidesPerView: 1.5, spaceBetween: 16 },
