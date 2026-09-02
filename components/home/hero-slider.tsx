@@ -1,54 +1,163 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const BANNERS = [
-    { id: 1, src: '/images/banners/hero/rakhi banner.webp', alt: 'Rakhi Collection', link: '/shop?search=rakhi' },
-    { id: 2, src: '/images/banners/hero/independence day banner.webp', alt: 'Independence Day Specials', link: '/shop' },
-    { id: 3, src: '/images/banners/hero/birthday.webp', alt: 'Birthday Gifts', link: '/shop?celebration=birthday' },
-    { id: 4, src: '/images/banners/hero/anniversary.webp', alt: 'Anniversary Specials', link: '/shop?celebration=anniversary' },
-    { id: 5, src: '/images/banners/hero/women.webp', alt: "Women's Collection", link: '/shop?relation=her' },
-    { id: 6, src: '/images/banners/hero/wedding-gifts.webp', alt: 'Wedding Gifts', link: '/shop?cat=wedding-gifts' },
-    { id: 7, src: '/images/banners/hero/housewarming.webp', alt: 'Housewarming Gifts', link: '/shop?celebration=housewarming' },
-    { id: 8, src: '/images/banners/hero/ramadan.webp', alt: 'Ramadan Collection', link: '/shop?cat=ramadan' },
-    { id: 9, src: '/images/banners/hero/plants.webp', alt: 'Plants Collection', link: '/shop?cat=plants' },
-    { id: 10, src: '/images/banners/hero/shop-the-trend.webp', alt: 'Shop The Trend', link: '/shop' },
+interface BannerItem {
+    id: string;
+    src: string;
+    alt: string;
+    link: string;
+    evergreen?: boolean;
+    startDate?: string;
+    endDate?: string;
+}
+
+const ALL_BANNERS: BannerItem[] = [
+    // ── Scheduled Seasonal Event Banners (Dynamic Date Window) ──
+    {
+        id: 'janmashtami',
+        src: '/images/banners/hero/janmastami.webp',
+        alt: 'Janmashtami Specials',
+        link: '/shop?search=janmashtami',
+        startDate: '2026-08-25', // 10 days before Sept 4
+        endDate: '2026-09-06',   // 2 days after Sept 4
+    },
+    {
+        id: 'teachers-day',
+        src: '/images/banners/hero/teachers day.webp',
+        alt: "Teachers' Day Specials",
+        link: '/shop?search=teachers+day',
+        startDate: '2026-08-26', // 10 days before Sept 5
+        endDate: '2026-09-07',   // 2 days after Sept 5
+    },
+    {
+        id: 'ganesh-chaturthi',
+        src: '/images/banners/hero/ganesh chaturthi.webp',
+        alt: 'Ganesh Chaturthi Specials',
+        link: '/shop?search=ganesh+chaturthi',
+        startDate: '2026-09-04', // 10 days before Sept 14
+        endDate: '2026-09-16',   // 2 days after Sept 14
+    },
+    {
+        id: 'vishwakarma-puja',
+        src: '/images/banners/hero/viswakarma puja.webp',
+        alt: 'Vishwakarma Puja Specials',
+        link: '/shop?search=vishwakarma',
+        startDate: '2026-09-07', // 10 days before Sept 17
+        endDate: '2026-09-19',   // 2 days after Sept 17
+    },
+    {
+        id: 'durga-puja',
+        src: '/images/banners/hero/durga puja.webp',
+        alt: 'Durga Puja Specials',
+        link: '/shop?search=durga+puja',
+        startDate: '2026-09-27', // 20 days before Oct 17
+        endDate: '2026-10-22',   // 2 days after Oct 20
+    },
+    {
+        id: 'dussehra',
+        src: '/images/banners/hero/dussehra.webp',
+        alt: 'Dussehra Specials',
+        link: '/shop?search=dussehra',
+        startDate: '2026-10-10', // 10 days before Oct 20
+        endDate: '2026-10-22',   // 2 days after Oct 20
+    },
+
+    // ── Evergreen Year-Round Banners ──
+    {
+        id: 'birthday',
+        src: '/images/banners/hero/birthday.webp',
+        alt: 'Birthday Gifts',
+        link: '/shop?celebration=birthday',
+        evergreen: true,
+    },
+    {
+        id: 'anniversary',
+        src: '/images/banners/hero/anniversary.webp',
+        alt: 'Anniversary Specials',
+        link: '/shop?celebration=anniversary',
+        evergreen: true,
+    },
+    {
+        id: 'wedding-gifts',
+        src: '/images/banners/hero/wedding-gifts.webp',
+        alt: 'Wedding Gifts',
+        link: '/shop?cat=wedding-gifts',
+        evergreen: true,
+    },
+    {
+        id: 'housewarming',
+        src: '/images/banners/hero/housewarming.webp',
+        alt: 'Housewarming Gifts',
+        link: '/shop?celebration=housewarming',
+        evergreen: true,
+    },
+    {
+        id: 'plants',
+        src: '/images/banners/hero/plants.webp',
+        alt: 'Plants Collection',
+        link: '/shop?cat=plants',
+        evergreen: true,
+    },
 ];
 
 export default function HeroSlider() {
     const [current, setCurrent] = useState(0);
 
-    const next = useCallback(() => {
-        setCurrent((prev) => (prev + 1) % BANNERS.length);
+    // Compute active banners dynamically based on current date
+    const activeBanners = useMemo(() => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+
+        const filtered = ALL_BANNERS.filter((banner) => {
+            if (banner.evergreen) return true;
+            if (banner.startDate && banner.endDate) {
+                return todayStr >= banner.startDate && todayStr <= banner.endDate;
+            }
+            return true;
+        });
+
+        return filtered.length > 0 ? filtered : ALL_BANNERS.filter((b) => b.evergreen);
     }, []);
+
+    const next = useCallback(() => {
+        setCurrent((prev) => (prev + 1) % activeBanners.length);
+    }, [activeBanners.length]);
 
     useEffect(() => {
         const timer = setInterval(next, 4000);
         return () => clearInterval(timer);
     }, [next]);
 
+    // Safety fallback if activeBanners changes length
+    const activeCurrent = current % activeBanners.length;
+    const currentBanner = activeBanners[activeCurrent] || activeBanners[0];
+
     return (
         <section className="w-full max-w-full overflow-hidden px-3 md:px-8 pt-5 md:pt-6">
             <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={BANNERS[current].id}
+                        key={currentBanner.id}
                         initial={{ opacity: 0, scale: 1.05 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
                         transition={{ duration: 0.8, ease: 'easeInOut' }}
                         className="absolute inset-0"
                     >
-                        <Link href={BANNERS[current].link} className="block w-full h-full relative">
+                        <Link href={currentBanner.link} className="block w-full h-full relative">
                             <Image
-                                src={BANNERS[current].src}
-                                alt={BANNERS[current].alt}
+                                src={currentBanner.src}
+                                alt={currentBanner.alt}
                                 fill
                                 className="object-cover"
-                                priority={current === 0}
+                                priority={activeCurrent === 0}
                                 sizes="100vw"
                                 quality={85}
                             />
@@ -58,11 +167,11 @@ export default function HeroSlider() {
 
                 {/* Dot indicators */}
                 <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2 z-10">
-                    {BANNERS.map((_, idx) => (
+                    {activeBanners.map((_, idx) => (
                         <button
                             key={idx}
                             onClick={() => setCurrent(idx)}
-                            className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${current === idx
+                            className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${activeCurrent === idx
                                 ? 'w-6 md:w-8 bg-white shadow-sm'
                                 : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
                                 }`}
