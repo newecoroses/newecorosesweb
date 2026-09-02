@@ -19,7 +19,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <CartProvider>
             <ThemeProvider />
             <Navbar />
-            <main className="flex-grow">
+            <main className="flex-grow w-full max-w-full overflow-x-clip">
                 {children}
             </main>
             <Footer />
