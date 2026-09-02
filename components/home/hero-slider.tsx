@@ -141,39 +141,40 @@ export default function HeroSlider() {
 
     return (
         <section className="w-full max-w-full overflow-hidden px-3 md:px-8 pt-5 md:pt-6">
-            <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={currentBanner.id}
-                        initial={{ opacity: 0, scale: 1.05 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        transition={{ duration: 0.8, ease: 'easeInOut' }}
-                        className="absolute inset-0"
-                    >
-                        <Link href={currentBanner.link} className="block w-full h-full relative">
-                            <Image
-                                src={currentBanner.src}
-                                alt={currentBanner.alt}
-                                fill
-                                className="object-cover"
-                                priority={activeCurrent === 0}
-                                sizes="100vw"
-                                quality={85}
-                            />
-                        </Link>
-                    </motion.div>
-                </AnimatePresence>
+            <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated bg-[#2a2420]">
+                {/* Crossfade Slides — All active banners rendered with instant smooth crossfade (Zero white flash) */}
+                {activeBanners.map((banner, idx) => {
+                    const isActive = idx === activeCurrent;
+                    return (
+                        <div
+                            key={banner.id}
+                            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                        >
+                            <Link href={banner.link} className="block w-full h-full relative">
+                                <Image
+                                    src={banner.src}
+                                    alt={banner.alt}
+                                    fill
+                                    className="object-cover"
+                                    priority={idx === 0 || idx === 1}
+                                    sizes="(max-width: 768px) 100vw, 90vw"
+                                    quality={90}
+                                />
+                            </Link>
+                        </div>
+                    );
+                })}
 
                 {/* Dot indicators */}
-                <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2 z-10">
+                <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2 z-20">
                     {activeBanners.map((_, idx) => (
                         <button
                             key={idx}
                             onClick={() => setCurrent(idx)}
-                            className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${activeCurrent === idx
+                            aria-label={`Go to slide ${idx + 1}`}
+                            className={`h-1.5 md:h-2 rounded-full transition-all duration-300 cursor-pointer ${activeCurrent === idx
                                 ? 'w-6 md:w-8 bg-white shadow-sm'
-                                : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/60'
+                                : 'w-1.5 md:w-2 bg-white/40 hover:bg-white/75'
                                 }`}
                         />
                     ))}
