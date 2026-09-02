@@ -244,9 +244,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             });
                                         }
                                     }}
-                                    className="flex-1 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] hover:border-[#bfaf1a] py-3.5 px-4 text-center rounded-2xl shadow-xs hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-bold cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                                    className="flex-1 bg-primary hover:bg-primary-dark text-white py-3.5 px-4 text-center rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-bold cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                                 >
-                                    <ShoppingCart size={16} className="text-[#bfaf1a]" />
+                                    <ShoppingCart size={16} className="text-white" />
                                     <span>Add to Cart</span>
                                 </button>
                             )}
