@@ -125,10 +125,13 @@ function ShopContent() {
 
     if (loading) {
         return (
-            <div className="pt-32 pb-20 min-h-screen bg-background">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <SectionHeader label="Browse" title="Our Collection" subtitle="Find the perfect gift — thoughtfully curated for every occasion." />
-                    <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-8 mt-10">
+            <div className="pt-36 sm:pt-40 lg:pt-44 pb-16 min-h-screen bg-background">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-6">
+                        <h1 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">Our Collection</h1>
+                        <p className="text-xs sm:text-sm text-muted mt-1 font-light">Thoughtfully curated luxury gifts & flowers</p>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 mt-6">
                         {Array.from({ length: 9 }).map((_, i) => (
                             <div key={i} className="aspect-square bg-gray-100 rounded-2xl animate-pulse" />
                         ))}
@@ -139,29 +142,37 @@ function ShopContent() {
     }
 
     return (
-        <div className="pt-32 pb-20 min-h-screen bg-background">
-            <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                <SectionHeader label="Browse" title="Our Collection" subtitle="Find the perfect gift — thoughtfully curated for every occasion." />
+        <div className="pt-36 sm:pt-40 lg:pt-44 pb-16 min-h-screen bg-background">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Minimal Header */}
+                <div className="text-center mb-5 sm:mb-6">
+                    <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                        Our Collection
+                    </h1>
+                    <p className="text-xs sm:text-sm text-muted mt-0.5 font-light">
+                        Thoughtfully curated luxury gifts &amp; flowers
+                    </p>
+                </div>
 
-                {/* Search + Mobile Filter Toggle */}
-                <div className="flex items-center gap-4 mb-10">
-                    <div className="relative flex-grow max-w-md">
+                {/* Compact Search + Mobile Filter Toggle */}
+                <div className="flex items-center gap-3 mb-6 max-w-lg mx-auto sm:mx-0">
+                    <div className="relative flex-grow">
                         <input
                             type="text"
                             placeholder="Search gifts, roses, bouquets, occasions..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 text-sm bg-white transition-all"
+                            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 text-xs sm:text-sm bg-white transition-all shadow-xs"
                         />
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={16} />
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" size={15} />
                         {searchQuery && (
-                            <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
-                                <X size={14} />
+                            <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
+                                <X size={13} />
                             </button>
                         )}
                     </div>
-                    <button onClick={() => setShowMobileFilter(true)} className="lg:hidden flex items-center gap-2 px-4 py-3 border border-gray-200 rounded-full text-sm text-muted hover:border-primary transition-colors">
-                        <SlidersHorizontal size={16} /> Filter
+                    <button onClick={() => setShowMobileFilter(true)} className="lg:hidden flex items-center gap-1.5 px-3.5 py-2.5 border border-gray-200 rounded-full text-xs font-medium text-muted hover:border-primary transition-colors bg-white shadow-xs flex-shrink-0">
+                        <SlidersHorizontal size={14} /> Filter
                     </button>
                 </div>
 
