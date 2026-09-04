@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Star, Quote, Truck, Gift, MessageCircle } from 'lucide-react';
+import { ArrowRight, Star, Quote, Truck, Gift, MessageCircle, ChevronRight } from 'lucide-react';
 
 import HeroSlider from '@/components/home/hero-slider';
 import SearchBar from '@/components/home/search-bar';
@@ -258,42 +258,70 @@ export default function Home() {
 
       {/* ═══ SHOP BY RELATIONSHIP ═══ */}
       {showRelationships && (
-        <section className="py-12 md:py-16 bg-[#faf7f2] border-y border-[#ede4d6]">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <section className="relative py-16 sm:py-20 md:py-24 bg-[#cde5fc] overflow-hidden my-6">
+          {/* Top Scalloped Dual Layer Wave Border */}
+          <div className="scallop-wave-top pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="mb-8"
+              className="text-center mb-10 sm:mb-12 md:mb-14"
             >
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Shop By</span>
-              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">For Every Relationship</h2>
+              <span className="block text-[11px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#1e40af] mb-2">Shop By</span>
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1e293b] font-bold tracking-tight">For Every Relationship</h2>
             </motion.div>
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-6 w-full">
-              {relationships.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  viewport={{ once: true }}
-                >
-                  <Link href={`/shop?relation=${item.name.toLowerCase()}`} className="flex flex-col items-center gap-2.5 group">
-                    <div className="w-full aspect-square rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-card transition-all duration-300 group-hover:-translate-y-1">
-                      <Image src={item.image_url} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" sizes="(max-width: 768px) 25vw, 12vw" />
-                      {/* Floating petal particles — only visible over the icon on hover */}
-                      <span className="rel-petal" style={{ left: '30%', ['--tx' as string]: '-8px', ['--rot' as string]: '-25deg' }}>♥</span>
-                      <span className="rel-petal" style={{ left: '55%', ['--tx' as string]: '10px', ['--rot' as string]: '20deg' }}>♥</span>
-                      <span className="rel-petal" style={{ left: '20%', ['--tx' as string]: '-12px', ['--rot' as string]: '15deg' }}>♥</span>
-                      <span className="rel-petal" style={{ left: '65%', ['--tx' as string]: '6px', ['--rot' as string]: '-30deg' }}>♥</span>
-                    </div>
-                    <span className="text-[10px] md:text-xs font-medium text-[#3a3226] text-center line-clamp-1 group-hover:text-[#5c6e4f] transition-colors">{item.name}</span>
-                  </Link>
-                </motion.div>
-              ))}
+
+            {/* Responsive Card Grid: 4 cols on tablet, 8 on desktop, smooth side-scrollable on small mobile with large rich cards */}
+            <div className="overflow-x-auto no-scrollbar pb-4 md:pb-0 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0">
+              <div className="flex sm:grid sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-5 md:gap-4 lg:gap-4.5 min-w-max sm:min-w-0 justify-start sm:justify-center">
+                {relationships.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.03 }}
+                    viewport={{ once: true }}
+                    className="w-[140px] sm:w-auto flex-shrink-0 flex flex-col items-center"
+                  >
+                    <Link href={`/shop?relation=${item.name.toLowerCase()}`} className="flex flex-col items-center gap-2.5 sm:gap-3 w-full group">
+                      <span className="text-sm sm:text-base font-bold text-[#1e293b] text-center line-clamp-1 group-hover:text-[#1e40af] transition-colors">
+                        {item.name}
+                      </span>
+
+                      {/* White Card Container — Larger, prominent with soft elevation matching reference */}
+                      <div className="w-full aspect-square rounded-2xl sm:rounded-[24px] overflow-hidden relative bg-white shadow-[0_8px_24px_rgba(30,58,138,0.12)] group-hover:shadow-[0_14px_32px_rgba(30,58,138,0.22)] transition-all duration-300 group-hover:-translate-y-1.5 p-2 sm:p-2.5 flex items-center justify-center border border-white/90">
+                        <div className="relative w-full h-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#f8fafc]">
+                          <Image
+                            src={item.image_url}
+                            alt={item.name}
+                            fill
+                            className="object-cover group-hover:scale-108 transition-transform duration-500"
+                            sizes="(max-width: 640px) 140px, (max-width: 1024px) 25vw, 15vw"
+                          />
+                        </div>
+                        {/* Floating petal particles on hover */}
+                        <span className="rel-petal" style={{ left: '30%', ['--tx' as string]: '-8px', ['--rot' as string]: '-25deg' }}>♥</span>
+                        <span className="rel-petal" style={{ left: '55%', ['--tx' as string]: '10px', ['--rot' as string]: '20deg' }}>♥</span>
+                        <span className="rel-petal" style={{ left: '20%', ['--tx' as string]: '-12px', ['--rot' as string]: '15deg' }}>♥</span>
+                        <span className="rel-petal" style={{ left: '65%', ['--tx' as string]: '6px', ['--rot' as string]: '-30deg' }}>♥</span>
+                      </div>
+
+                      {/* Reference-style Clean White Pill Button */}
+                      <span className="inline-flex items-center gap-1.5 bg-white hover:bg-white/95 text-[#1e293b] group-hover:text-[#1e40af] text-[10px] sm:text-[11px] font-semibold px-3.5 sm:px-4 py-1.5 rounded-full shadow-xs border border-white/80 transition-all group-hover:shadow-sm">
+                        Order Now <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform text-[#1e40af]" />
+                      </span>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
+
+          {/* Bottom Scalloped Dual Layer Wave Border */}
+          <div className="scallop-wave-bottom pointer-events-none" />
         </section>
       )}
 
