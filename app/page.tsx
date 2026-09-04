@@ -153,7 +153,7 @@ export default function Home() {
 
   if (!loaded) {
     return (
-      <div className="pt-32 pb-20 min-h-[80vh] bg-white">
+      <div className="pt-[90px] pb-20 min-h-[80vh] bg-white">
         {/* Skeleton hero */}
         <div className="px-4 md:px-8 pt-4">
           <div className="w-full aspect-[21/9] md:aspect-[3/1] rounded-3xl bg-[#f5f0ea] animate-pulse" />
@@ -183,7 +183,7 @@ export default function Home() {
   return (
     <>
       {/* ═══ 1. HERO BANNER CAROUSEL ═══ */}
-      <div className="pt-[7.5rem] md:pt-[8.5rem] bg-white">
+      <div className="pt-[90px] md:pt-[100px] bg-white">
         <HeroSlider />
       </div>
 
@@ -208,17 +208,17 @@ export default function Home() {
       </div>
 
       {/* ═══ 5. PRODUCT GRID — ALL PRODUCTS ═══ */}
-      <section className="py-12 md:py-20 bg-white border-t border-[#f0ece4]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+      <section className="py-8 md:py-14 bg-white border-t border-[#f0ece4]">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="mb-8 md:mb-12"
+            className="mb-5 md:mb-8"
           >
-            <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Curated For You</span>
-            <h2 className="font-serif text-2xl md:text-4xl text-[#3a3226] leading-tight">Our Best Picks</h2>
+            <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Curated For You</span>
+            <h2 className="font-serif text-lg md:text-3xl text-[#3a3226] leading-tight">Our Best Picks</h2>
           </motion.div>
 
           <motion.div
@@ -226,7 +226,7 @@ export default function Home() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5"
           >
             <AnimatePresence mode="wait">
               {displayProducts.map((product, idx) => (
@@ -241,11 +241,11 @@ export default function Home() {
 
           {/* Explore More Button */}
           {products.length > 0 && (
-            <div className="mt-12 md:mt-16 flex justify-center">
+            <div className="mt-8 md:mt-12 flex justify-center">
               <div className="p-[2px] rounded-full animate-moving-border shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] inline-block">
                 <Link
                   href="/shop"
-                  className="inline-flex items-center gap-2.5 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 group cursor-pointer"
+                  className="inline-flex items-center gap-2.5 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] px-8 md:px-10 py-3 md:py-4 text-xs uppercase tracking-[0.2em] font-bold rounded-full transition-all duration-300 group cursor-pointer"
                 >
                   Explore All Products
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-[#bfaf1a]" />
@@ -258,20 +258,20 @@ export default function Home() {
 
       {/* ═══ SHOP BY RELATIONSHIP ═══ */}
       {showRelationships && (
-        <section className="relative py-16 sm:py-20 md:py-24 bg-[#cde5fc] overflow-hidden my-6">
+        <section className="relative py-10 sm:py-14 md:py-16 bg-[#cde5fc] overflow-hidden my-4">
           {/* Top Scalloped Dual Layer Wave Border */}
           <div className="scallop-wave-top pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 md:px-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="text-center mb-10 sm:mb-12 md:mb-14"
+              className="text-center mb-6 sm:mb-10"
             >
-              <span className="block text-[11px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#1e40af] mb-2">Shop By</span>
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1e293b] font-bold tracking-tight">For Every Relationship</h2>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-semibold text-[#1e40af] mb-1.5">Shop By</span>
+              <h2 className="font-serif text-lg sm:text-2xl md:text-3xl text-[#1e293b] font-bold tracking-tight">For Every Relationship</h2>
             </motion.div>
 
             {/* Responsive Card Grid: 4 cols on tablet, 8 on desktop, smooth side-scrollable on small mobile with large rich cards */}
@@ -326,18 +326,18 @@ export default function Home() {
       )}
 
       {/* ═══ LUXURY COLLECTION GRID ═══ */}
-      <section id="categories" className="py-14 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+      <section id="categories" className="py-8 md:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="mb-8 md:mb-12"
+            className="mb-5 md:mb-8"
           >
-            <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Curated For You</span>
-            <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Our Collections</h2>
-            <p className="text-[#8a7a5a] text-sm font-light mt-2 max-w-lg">Discover thoughtfully arranged categories, each designed to make every occasion unforgettable.</p>
+            <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Curated For You</span>
+            <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Our Collections</h2>
+            <p className="text-[#8a7a5a] text-xs font-light mt-1.5 max-w-lg">Discover thoughtfully arranged categories, each designed to make every occasion unforgettable.</p>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[240px]">
             {displayCollections.map((cat, idx) => (
@@ -436,20 +436,20 @@ export default function Home() {
 
       {/* ═══ NEW ARRIVALS ═══ */}
       {showNewArrivals && newArrivals.length > 0 && (
-        <section className="py-14 md:py-20 bg-[#faf7f2] border-y border-[#ede4d6]">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <section className="py-8 md:py-14 bg-[#faf7f2] border-y border-[#ede4d6]">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="mb-8 md:mb-12"
+              className="mb-5 md:mb-8"
             >
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Just In</span>
-              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">New Arrivals</h2>
-              <p className="text-[#8a7a5a] text-sm font-light mt-2">Discover our latest collection of premium gifts and floral arrangements.</p>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Just In</span>
+              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">New Arrivals</h2>
+              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Discover our latest collection of premium gifts and floral arrangements.</p>
             </motion.div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
               {newArrivals.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}
@@ -460,20 +460,20 @@ export default function Home() {
 
       {/* ═══ BEST SELLERS ═══ */}
       {showBestSellers && bestSellers.length > 0 && (
-        <section className="py-14 md:py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <section className="py-8 md:py-14 bg-white">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="mb-8 md:mb-12"
+              className="mb-5 md:mb-8"
             >
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Most Loved</span>
-              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Best Sellers</h2>
-              <p className="text-[#8a7a5a] text-sm font-light mt-2">Our most adored premium gifts — curated for those who appreciate the finest.</p>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Most Loved</span>
+              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Best Sellers</h2>
+              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Our most adored premium gifts — curated for those who appreciate the finest.</p>
             </motion.div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
               {bestSellers.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}
@@ -489,18 +489,18 @@ export default function Home() {
 
       {/* ═══ FEATURED ROSES GRID ═══ */}
       {showFeaturedRoses && featuredRoses.length > 0 && (
-        <section className="py-14 md:py-24 bg-[#faf7f2]">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <section className="py-8 md:py-16 bg-[#faf7f2]">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="mb-8 md:mb-12"
+              className="mb-5 md:mb-8"
             >
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">The Rose Collection</span>
-              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Handpicked Perfection</h2>
-              <p className="text-[#8a7a5a] text-sm font-light mt-2">Every rose is carefully selected and arranged by our master florists.</p>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">The Rose Collection</span>
+              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Handpicked Perfection</h2>
+              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Every rose is carefully selected and arranged by our master florists.</p>
             </motion.div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {featuredRoses.map((rose, idx) => (
@@ -525,15 +525,15 @@ export default function Home() {
       )}
 
       {/* ═══ ABOUT BRAND ═══ */}
-      <section id="about" className="py-14 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+      <section id="about" className="py-8 md:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card">
               <Image src="/images/our-story.webp" alt="New Eco Roses Storefront" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} viewport={{ once: true }}>
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-5">Our Story</span>
-              <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl text-[#3a3226] mb-6 leading-tight">
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-3">Our Story</span>
+              <h2 className="font-serif text-xl md:text-4xl lg:text-5xl text-[#3a3226] mb-4 leading-tight">
                 Crafted With Love,<br /><em className="italic text-[#5c6e4f]">Delivered With Care</em>
               </h2>
               <p className="text-[#8a7a5a] leading-relaxed mb-5 font-light max-w-lg">
@@ -563,17 +563,17 @@ export default function Home() {
 
       {/* ═══ TESTIMONIALS ═══ */}
       {showTestimonials && testimonials.length > 0 && (
-        <section className="py-14 md:py-24 bg-[#faf7f2] overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 mb-10">
+        <section className="py-8 md:py-16 bg-[#faf7f2] overflow-hidden">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 mb-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">What Our Clients Say</span>
-              <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Love Notes</h2>
-              <p className="text-[#8a7a5a] text-sm font-light mt-2">Real stories from people who chose us for their most special moments.</p>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">What Our Clients Say</span>
+              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Love Notes</h2>
+              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Real stories from people who chose us for their most special moments.</p>
             </motion.div>
           </div>
           <div className="relative w-full mask-linear-fade">

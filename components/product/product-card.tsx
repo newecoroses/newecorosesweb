@@ -182,7 +182,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 <div className="mt-auto flex gap-1.5 sm:gap-2">
                     {/* Add to Cart / Quantity Stepper Button */}
                     {cartQuantity > 0 ? (
-                        <div className="flex-1 flex items-center justify-between border-2 border-primary bg-primary/5 rounded-lg md:rounded-xl px-0.5 sm:px-1 py-0.5 text-primary min-w-0">
+                        <div className="flex-1 flex items-center justify-between border-2 border-primary bg-primary/5 rounded-lg md:rounded-xl px-1 sm:px-1.5 py-1 text-primary min-w-0">
                             <button
                                 type="button"
                                 onClick={(e) => {
@@ -193,11 +193,10 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                 className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors flex-shrink-0"
                                 title="Decrease quantity"
                             >
-                                <Minus size={11} />
+                                <Minus size={10} />
                             </button>
-                            <span className="text-[9px] min-[360px]:text-[10px] sm:text-xs font-bold px-0.5 text-primary truncate text-center flex-1">
-                                <span className="hidden min-[360px]:inline">{cartQuantity} in Cart</span>
-                                <span className="inline min-[360px]:hidden">{cartQuantity} Cart</span>
+                            <span className="text-[9px] sm:text-[10px] font-bold px-0.5 text-primary truncate text-center flex-1">
+                                {cartQuantity}
                             </span>
                             <button
                                 type="button"
@@ -215,7 +214,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                 className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors flex-shrink-0"
                                 title="Increase quantity"
                             >
-                                <Plus size={11} />
+                                <Plus size={10} />
                             </button>
                         </div>
                     ) : (
@@ -232,12 +231,11 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                     price: product.price ?? null,
                                 });
                             }}
-                            className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 rounded-lg md:rounded-xl text-[9px] sm:text-xs uppercase tracking-wider font-semibold transition-all duration-300 border bg-white border-primary/40 text-primary hover:bg-primary/10 hover:border-primary"
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 sm:py-2 rounded-lg md:rounded-xl text-[9px] sm:text-[10px] uppercase tracking-wide font-semibold transition-all duration-300 border bg-white border-primary/40 text-primary hover:bg-primary/10 hover:border-primary whitespace-nowrap overflow-hidden"
                             title="Add to Cart"
                         >
-                            <ShoppingCart size={13} />
-                            <span className="hidden min-[380px]:inline">Add to Cart</span>
-                            <span className="inline min-[380px]:hidden">Add</span>
+                            <ShoppingCart size={11} className="flex-shrink-0" />
+                            <span className="truncate">Cart</span>
                         </button>
                     )}
 
@@ -246,15 +244,15 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         href={whatsappLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 bg-primary text-white py-2 sm:py-2.5 rounded-lg md:rounded-xl text-[9px] sm:text-xs uppercase tracking-wider font-semibold hover:opacity-90 hover:scale-[1.01] transition-all duration-300"
+                        className="flex-1 flex items-center justify-center gap-1 bg-primary text-white py-1.5 sm:py-2 rounded-lg md:rounded-xl text-[9px] sm:text-[10px] uppercase tracking-wide font-semibold hover:opacity-90 hover:scale-[1.01] transition-all duration-300 whitespace-nowrap overflow-hidden"
                         onClick={(e) => {
                             e.stopPropagation();
                             trackEnquiry(product.id, product.name);
                         }}
                         title="Enquire via WhatsApp"
                     >
-                        <WhatsappIcon size={13} className="opacity-90 flex-shrink-0" />
-                        <span>Enquire</span>
+                        <WhatsappIcon size={11} className="opacity-90 flex-shrink-0" />
+                        <span className="truncate">Enquire</span>
                     </a>
                 </div>
             </div>

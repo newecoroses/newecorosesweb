@@ -73,14 +73,14 @@ export default function FeaturedPicks() {
     return (
         <>
             {/* ── Pick Their Fav Flowers ── */}
-            <section className="py-5 md:py-10 bg-white w-full max-w-full overflow-hidden">
+            <section className="py-4 md:py-8 bg-white w-full max-w-full overflow-hidden">
                 <div className="max-w-7xl mx-auto md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="font-serif text-xl md:text-2xl text-[#3a3226] font-bold px-4 md:px-0 mb-4 md:mb-6"
+                        className="font-serif text-base md:text-2xl text-[#3a3226] font-bold px-3 md:px-0 mb-3 md:mb-5"
                     >
                         Pick Their Fav Flowers
                     </motion.h2>
@@ -89,14 +89,14 @@ export default function FeaturedPicks() {
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
-            <section className="py-5 md:py-10 bg-white w-full max-w-full overflow-hidden">
+            <section className="py-4 md:py-8 bg-white w-full max-w-full overflow-hidden">
                 <div className="max-w-7xl mx-auto md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="font-serif text-xl md:text-2xl text-[#3a3226] font-bold px-4 md:px-0 mb-4 md:mb-6"
+                        className="font-serif text-base md:text-2xl text-[#3a3226] font-bold px-3 md:px-0 mb-3 md:mb-5"
                     >
                         Birthday Gifts That Wow
                     </motion.h2>
