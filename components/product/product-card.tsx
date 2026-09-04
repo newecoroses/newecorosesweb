@@ -87,9 +87,9 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 : { text: null, color: null };
 
     const tagBadge = product.tag && product.tag !== 'Standard' ? {
-        'Best Seller': 'bg-[#1c1815]/85 text-[#f5d796] border border-[#f5d796]/30 shadow-md backdrop-blur-md',
-        'New Arrival': 'bg-[#0f1f18]/85 text-[#86efac] border border-[#86efac]/30 shadow-md backdrop-blur-md',
-        'Seasonal': 'bg-[#1e1528]/85 text-[#d8b4fe] border border-[#d8b4fe]/30 shadow-md backdrop-blur-md',
+        'Best Seller': 'bg-white/90 text-[#8c6b2d] border-[#e8d5b5]/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
+        'New Arrival': 'bg-white/90 text-[#2d6a4f] border-[#b7e4c7]/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
+        'Seasonal': 'bg-white/90 text-[#6d4c7d] border-[#d8c5e2]/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
     }[product.tag] : null;
 
     return (
@@ -106,13 +106,13 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => { setIsHovered(false); setCurrentImageIdx(0); }}
             >
-                {/* Premium Luxury Tag Badge */}
+                {/* Minimal Aesthetic Tag Badge */}
                 {tagBadge && product.tag && (
-                    <div className="absolute top-2.5 left-2.5 z-10">
-                        <span className={`inline-flex items-center gap-1 text-[8.5px] md:text-[9.5px] font-semibold tracking-[0.16em] uppercase px-2.5 py-1 rounded-full ${tagBadge}`}>
-                            {product.tag === 'Best Seller' && <span className="w-1.5 h-1.5 rounded-full bg-[#f5d796] animate-pulse" />}
-                            {product.tag === 'New Arrival' && <span className="w-1.5 h-1.5 rounded-full bg-[#86efac]" />}
-                            {product.tag === 'Seasonal' && <span className="w-1.5 h-1.5 rounded-full bg-[#d8b4fe]" />}
+                    <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10">
+                        <span className={`inline-flex items-center gap-1.5 text-[8px] sm:text-[9px] font-medium tracking-[0.14em] uppercase px-2.5 py-0.5 sm:py-1 rounded-full border backdrop-blur-sm ${tagBadge}`}>
+                            {product.tag === 'Best Seller' && <span className="w-1 h-1 rounded-full bg-[#8c6b2d]" />}
+                            {product.tag === 'New Arrival' && <span className="w-1 h-1 rounded-full bg-[#2d6a4f]" />}
+                            {product.tag === 'Seasonal' && <span className="w-1 h-1 rounded-full bg-[#6d4c7d]" />}
                             <span>{product.tag}</span>
                         </span>
                     </div>

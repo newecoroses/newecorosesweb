@@ -148,21 +148,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
                     {/* ── Image Gallery ── */}
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-                        {/* Luxury Tag Badge */}
+                        {/* Minimal Aesthetic Tag Badge */}
                         {product.tag && product.tag !== 'Standard' && (
-                            <div className="mb-3">
-                                <span className={`inline-flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-semibold uppercase tracking-[0.16em] px-3 py-1.5 rounded-full shadow-xs ${
+                            <div className="mb-2.5">
+                                <span className={`inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.14em] px-3 py-1 rounded-full border backdrop-blur-sm ${
                                     product.tag === 'Best Seller'
-                                        ? 'bg-[#1c1815] text-[#f5d796] border border-[#f5d796]/30'
+                                        ? 'bg-[#faf7f2] text-[#8c6b2d] border-[#e8d5b5]'
                                         : product.tag === 'New Arrival'
-                                        ? 'bg-[#0f1f18] text-[#86efac] border border-[#86efac]/30'
+                                        ? 'bg-[#f4faf6] text-[#2d6a4f] border-[#b7e4c7]'
                                         : product.tag === 'Seasonal'
-                                        ? 'bg-[#1e1528] text-[#d8b4fe] border border-[#d8b4fe]/30'
-                                        : 'bg-[#faf7f2] text-[#5a5046] border border-[#e8dcc8]'
+                                        ? 'bg-[#faf5fc] text-[#6d4c7d] border-[#d8c5e2]'
+                                        : 'bg-[#faf7f2] text-[#665e55] border-[#e8dcc8]'
                                 }`}>
-                                    {product.tag === 'Best Seller' && <span className="w-1.5 h-1.5 rounded-full bg-[#f5d796] animate-pulse" />}
-                                    {product.tag === 'New Arrival' && <span className="w-1.5 h-1.5 rounded-full bg-[#86efac]" />}
-                                    {product.tag === 'Seasonal' && <span className="w-1.5 h-1.5 rounded-full bg-[#d8b4fe]" />}
+                                    {product.tag === 'Best Seller' && <span className="w-1 h-1 rounded-full bg-[#8c6b2d]" />}
+                                    {product.tag === 'New Arrival' && <span className="w-1 h-1 rounded-full bg-[#2d6a4f]" />}
+                                    {product.tag === 'Seasonal' && <span className="w-1 h-1 rounded-full bg-[#6d4c7d]" />}
                                     <span>{product.tag}</span>
                                 </span>
                             </div>
