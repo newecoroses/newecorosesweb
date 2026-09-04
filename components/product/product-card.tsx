@@ -87,9 +87,9 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 : { text: null, color: null };
 
     const tagBadge = product.tag && product.tag !== 'Standard' ? {
-        'Best Seller': 'bg-white/90 text-[#8c6b2d] border-[#e8d5b5]/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
-        'New Arrival': 'bg-white/90 text-[#2d6a4f] border-[#b7e4c7]/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
-        'Seasonal': 'bg-white/90 text-[#6d4c7d] border-[#d8c5e2]/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
+        'Best Seller': 'bg-[#b91c1c] text-white',
+        'New Arrival': 'bg-[#2563eb] text-white',
+        'Seasonal': 'bg-[#059669] text-white',
     }[product.tag] : null;
 
     return (
@@ -102,21 +102,10 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
         >
             {/* Image Container */}
             <div
-                className="relative aspect-square overflow-hidden rounded-xl md:rounded-2xl bg-[#faf7f2] mb-2.5 sm:mb-4 shadow-sm group-hover:shadow-card transition-shadow duration-500"
+                className="relative aspect-square overflow-hidden rounded-xl md:rounded-2xl bg-[#faf7f2] mb-2 sm:mb-3 shadow-sm group-hover:shadow-card transition-shadow duration-500"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => { setIsHovered(false); setCurrentImageIdx(0); }}
             >
-                {/* Minimal Aesthetic Tag Badge */}
-                {tagBadge && product.tag && (
-                    <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10">
-                        <span className={`inline-flex items-center gap-1.5 text-[8px] sm:text-[9px] font-medium tracking-[0.14em] uppercase px-2.5 py-0.5 sm:py-1 rounded-full border backdrop-blur-sm ${tagBadge}`}>
-                            {product.tag === 'Best Seller' && <span className="w-1 h-1 rounded-full bg-[#8c6b2d]" />}
-                            {product.tag === 'New Arrival' && <span className="w-1 h-1 rounded-full bg-[#2d6a4f]" />}
-                            {product.tag === 'Seasonal' && <span className="w-1 h-1 rounded-full bg-[#6d4c7d]" />}
-                            <span>{product.tag}</span>
-                        </span>
-                    </div>
-                )}
                 <Link
                     href={`/product/${product.slug}`}
                     className="block w-full h-full relative"
@@ -175,19 +164,20 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
 
             {/* Product Info */}
             <div className="flex flex-col flex-grow px-0.5 sm:px-1">
-                <Link href={`/product/${product.slug}`} className="mb-1.5 sm:mb-2">
-                    <h3 className="text-xs sm:text-sm font-medium text-[#3a3226] group-hover:text-[#5c6e4f] transition-colors duration-300 line-clamp-2 leading-tight tracking-wide">
+                <Link href={`/product/${product.slug}`} className="mb-1">
+                    <h3 className="text-xs sm:text-sm font-medium text-[#2a2420] group-hover:text-[#5c6e4f] transition-colors duration-300 line-clamp-2 leading-tight tracking-wide">
                         {product.name}
                     </h3>
                 </Link>
 
-                <div className="mb-2 sm:mb-3">
-                    {stockLabel.text && (
-                        <span className={`inline-block text-[9px] md:text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${stockLabel.color}`}>
-                            {stockLabel.text}
+                {/* Tag Badge under product name (FNP Style) */}
+                {tagBadge && product.tag && (
+                    <div className="mb-2">
+                        <span className={`inline-block text-[8px] sm:text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-[3px] shadow-2xs ${tagBadge}`}>
+                            {product.tag}
                         </span>
-                    )}
-                </div>
+                    </div>
+                )}
 
                 <div className="mt-auto flex gap-1.5 sm:gap-2">
                     {/* Add to Cart / Quantity Stepper Button */}

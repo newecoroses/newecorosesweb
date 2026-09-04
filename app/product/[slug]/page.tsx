@@ -148,25 +148,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
                     {/* ── Image Gallery ── */}
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-                        {/* Minimal Aesthetic Tag Badge */}
-                        {product.tag && product.tag !== 'Standard' && (
-                            <div className="mb-2.5">
-                                <span className={`inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.14em] px-3 py-1 rounded-full border backdrop-blur-sm ${
-                                    product.tag === 'Best Seller'
-                                        ? 'bg-[#faf7f2] text-[#8c6b2d] border-[#e8d5b5]'
-                                        : product.tag === 'New Arrival'
-                                        ? 'bg-[#f4faf6] text-[#2d6a4f] border-[#b7e4c7]'
-                                        : product.tag === 'Seasonal'
-                                        ? 'bg-[#faf5fc] text-[#6d4c7d] border-[#d8c5e2]'
-                                        : 'bg-[#faf7f2] text-[#665e55] border-[#e8dcc8]'
-                                }`}>
-                                    {product.tag === 'Best Seller' && <span className="w-1 h-1 rounded-full bg-[#8c6b2d]" />}
-                                    {product.tag === 'New Arrival' && <span className="w-1 h-1 rounded-full bg-[#2d6a4f]" />}
-                                    {product.tag === 'Seasonal' && <span className="w-1 h-1 rounded-full bg-[#6d4c7d]" />}
-                                    <span>{product.tag}</span>
-                                </span>
-                            </div>
-                        )}
 
                         {/* Main Image Container — fitted seamlessly across mobile, tablet, and desktop */}
                         <div className="relative aspect-[4/5] max-h-[300px] min-[400px]:max-h-[340px] sm:max-h-[380px] md:max-h-[400px] lg:max-h-[420px] xl:max-h-[450px] w-full mx-auto flex items-center justify-center mb-3">
@@ -203,9 +184,26 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             {product.collection_name}
                         </Link>
 
-                        <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl text-foreground font-semibold mb-2 leading-tight">
+                        <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl text-foreground font-semibold mb-1 leading-tight">
                             {product.name}
                         </h1>
+
+                        {/* Tag Badge under product title (FNP Style) */}
+                        {product.tag && product.tag !== 'Standard' && (
+                            <div className="mb-3">
+                                <span className={`inline-block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-[3px] shadow-2xs ${
+                                    product.tag === 'Best Seller'
+                                        ? 'bg-[#b91c1c] text-white'
+                                        : product.tag === 'New Arrival'
+                                        ? 'bg-[#2563eb] text-white'
+                                        : product.tag === 'Seasonal'
+                                        ? 'bg-[#059669] text-white'
+                                        : 'bg-[#5a6e4f] text-white'
+                                }`}>
+                                    {product.tag}
+                                </span>
+                            </div>
+                        )}
 
                         <p className="text-muted leading-relaxed font-light mb-4 text-xs sm:text-sm max-w-lg">
                             {product.description}
