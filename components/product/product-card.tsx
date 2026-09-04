@@ -87,9 +87,9 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 : { text: null, color: null };
 
     const tagBadge = product.tag && product.tag !== 'Standard' ? {
-        'Best Seller': 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm',
-        'New Arrival': 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm',
-        'Seasonal': 'bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-sm',
+        'Best Seller': 'bg-[#1c1815]/85 text-[#f5d796] border border-[#f5d796]/30 shadow-md backdrop-blur-md',
+        'New Arrival': 'bg-[#0f1f18]/85 text-[#86efac] border border-[#86efac]/30 shadow-md backdrop-blur-md',
+        'Seasonal': 'bg-[#1e1528]/85 text-[#d8b4fe] border border-[#d8b4fe]/30 shadow-md backdrop-blur-md',
     }[product.tag] : null;
 
     return (
@@ -106,11 +106,16 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => { setIsHovered(false); setCurrentImageIdx(0); }}
             >
-                {/* Tag badge */}
+                {/* Premium Luxury Tag Badge */}
                 {tagBadge && product.tag && (
-                    <span className={`absolute top-2 left-2 z-10 text-[9px] md:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${tagBadge}`}>
-                        {product.tag === 'Best Seller' ? '🔥 Best Seller' : product.tag}
-                    </span>
+                    <div className="absolute top-2.5 left-2.5 z-10">
+                        <span className={`inline-flex items-center gap-1 text-[8.5px] md:text-[9.5px] font-semibold tracking-[0.16em] uppercase px-2.5 py-1 rounded-full ${tagBadge}`}>
+                            {product.tag === 'Best Seller' && <span className="w-1.5 h-1.5 rounded-full bg-[#f5d796] animate-pulse" />}
+                            {product.tag === 'New Arrival' && <span className="w-1.5 h-1.5 rounded-full bg-[#86efac]" />}
+                            {product.tag === 'Seasonal' && <span className="w-1.5 h-1.5 rounded-full bg-[#d8b4fe]" />}
+                            <span>{product.tag}</span>
+                        </span>
+                    </div>
                 )}
                 <Link
                     href={`/product/${product.slug}`}
