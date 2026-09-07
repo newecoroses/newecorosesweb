@@ -218,8 +218,8 @@ export default function Home() {
             viewport={{ once: true }}
             className="mb-5 md:mb-8"
           >
-            <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Curated For You</span>
-            <h2 className="font-serif text-lg md:text-3xl text-[#3a3226] leading-tight">Our Best Picks</h2>
+            <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">CURATED FOR YOU</span>
+            <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">Our Best Picks</h2>
           </motion.div>
 
           <motion.div
@@ -271,8 +271,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-center mb-6 sm:mb-10"
             >
-              <span className="block text-[10px] uppercase tracking-[0.2em] font-semibold text-[#1e40af] mb-1.5">Shop By</span>
-              <h2 className="font-serif text-lg sm:text-2xl md:text-3xl text-[#1e293b] font-bold tracking-tight">For Every Relationship</h2>
+              <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">Shop By</span>
+              <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">For Every Relationship</h2>
             </motion.div>
 
             {/* Responsive Card Grid: 4 cols on tablet, 8 on desktop, smooth side-scrollable on small mobile with large rich cards */}
@@ -288,7 +288,7 @@ export default function Home() {
                     className="w-[140px] sm:w-auto flex-shrink-0 flex flex-col items-center"
                   >
                     <Link href={`/shop?relation=${item.name.toLowerCase()}`} className="flex flex-col items-center gap-2.5 sm:gap-3 w-full group">
-                      <span className="text-sm sm:text-base font-bold text-[#1e293b] text-center line-clamp-1 group-hover:text-[#1e40af] transition-colors">
+                      <span className="text-sm sm:text-base font-bold text-[#1c1917] text-center line-clamp-1 group-hover:text-black transition-colors">
                         {item.name}
                       </span>
 
@@ -311,8 +311,8 @@ export default function Home() {
                       </div>
 
                       {/* Reference-style Clean White Pill Button */}
-                      <span className="inline-flex items-center gap-1.5 bg-white hover:bg-white/95 text-[#1e293b] group-hover:text-[#1e40af] text-[10px] sm:text-[11px] font-semibold px-3.5 sm:px-4 py-1.5 rounded-full shadow-xs border border-white/80 transition-all group-hover:shadow-sm">
-                        Order Now <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform text-[#1e40af]" />
+                      <span className="inline-flex items-center gap-1.5 bg-white hover:bg-white/95 text-[#1c1917] group-hover:text-black text-[10px] sm:text-[11px] font-semibold px-3.5 sm:px-4 py-1.5 rounded-full shadow-xs border border-white/80 transition-all group-hover:shadow-sm">
+                        Order Now <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform text-[#1c1917]" />
                       </span>
                     </Link>
                   </motion.div>
@@ -336,9 +336,9 @@ export default function Home() {
             viewport={{ once: true }}
             className="mb-5 md:mb-8"
           >
-            <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Curated For You</span>
-            <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Our Collections</h2>
-            <p className="text-[#8a7a5a] text-xs font-light mt-1.5 max-w-lg">Discover thoughtfully arranged categories, each designed to make every occasion unforgettable.</p>
+            <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">Browse Categories</span>
+            <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">Our Collections</h2>
+            <p className="text-gray-500 text-xs font-normal mt-0.5 max-w-lg">Discover thoughtfully arranged categories, each designed to make every occasion unforgettable.</p>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[240px]">
             {displayCollections.map((cat, idx) => (
@@ -446,9 +446,9 @@ export default function Home() {
               viewport={{ once: true }}
               className="mb-5 md:mb-8"
             >
-              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Just In</span>
-              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">New Arrivals</h2>
-              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Discover our latest collection of premium gifts and floral arrangements.</p>
+              <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">Just In</span>
+              <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">New Arrivals</h2>
+              <p className="text-gray-500 text-xs font-normal mt-0.5 max-w-lg">Discover our latest collection of premium gifts and floral arrangements.</p>
             </motion.div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
               {newArrivals.map((product, idx) => (
@@ -470,17 +470,17 @@ export default function Home() {
               viewport={{ once: true }}
               className="mb-5 md:mb-8"
             >
-              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">Most Loved</span>
-              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Best Sellers</h2>
-              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Our most adored premium gifts — curated for those who appreciate the finest.</p>
+              <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">Most Loved</span>
+              <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">Best Sellers</h2>
+              <p className="text-gray-500 text-xs font-normal mt-0.5 max-w-lg">Our most adored premium gifts — curated for those who appreciate the finest.</p>
             </motion.div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
               {bestSellers.map((product, idx) => (
                 <ProductCard key={product.id} product={product as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }} index={idx} />
               ))}
             </div>
-            <div className="text-center mt-12 md:mt-14">
-              <Link href="/shop" className="group inline-flex items-center gap-2.5 border-2 border-[#5c6e4f]/30 text-[#3a3226] px-8 py-3.5 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#5c6e4f] hover:text-white hover:border-[#5c6e4f] transition-all duration-400 shadow-sm hover:shadow-md">
+            <div className="text-center mt-8 md:mt-10">
+              <Link href="/shop" className="group inline-flex items-center gap-2 border border-gray-900 text-[#1c1917] px-7 py-3 text-xs uppercase tracking-[0.15em] font-bold rounded-full hover:bg-black hover:text-white transition-all duration-300 shadow-xs hover:shadow-sm">
                 View All Products <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -574,9 +574,9 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">What Our Clients Say</span>
-              <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Love Notes</h2>
-              <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Real stories from people who chose us for their most special moments.</p>
+              <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">What Our Clients Say</span>
+              <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">Love Notes</h2>
+              <p className="text-gray-500 text-xs font-normal mt-0.5 max-w-lg">Real stories from people who chose us for their most special moments.</p>
             </motion.div>
           </div>
           <div className="relative w-full mask-linear-fade">

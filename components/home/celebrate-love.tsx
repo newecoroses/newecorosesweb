@@ -62,7 +62,7 @@ export default function CelebrateLove() {
                                             />
                                         </div>
                                     </div>
-                                    <span className="text-[11px] md:text-[13px] font-semibold text-[#3a3226] text-center group-hover:text-[#5c6e4f] transition-colors tracking-wide">
+                                    <span className="text-[11px] md:text-[13px] font-bold text-[#1c1917] text-center group-hover:text-black transition-colors tracking-wide">
                                         {cat.title}
                                     </span>
                                 </Link>

@@ -132,11 +132,11 @@ export default function Navbar() {
                                         className="rounded-full transition-transform duration-300 group-hover:scale-105 drop-shadow-sm flex-shrink-0"
                                     />
                                     <div className="flex items-center gap-2 self-center">
-                                        <span className="font-serif text-[22px] lg:text-[25px] font-bold text-[#5c5520] group-hover:text-primary transition-colors leading-none tracking-tight -translate-y-[2px] inline-flex items-center">
+                                        <span className="font-sans text-[22px] lg:text-[25px] font-extrabold text-[#1c1917] group-hover:text-black transition-colors leading-none tracking-tight -translate-y-[2px] inline-flex items-center">
                                             ner
                                         </span>
-                                        <div className="h-6 w-[1.5px] bg-[#5c5520]/40 flex-shrink-0 self-center" />
-                                        <div className="flex flex-col justify-center leading-none text-[#5c5520] tracking-[0.16em] uppercase font-bold text-[8px] lg:text-[8.5px] self-center">
+                                        <div className="h-6 w-[1.5px] bg-[#1c1917]/30 flex-shrink-0 self-center" />
+                                        <div className="flex flex-col justify-center leading-none text-[#1c1917] tracking-[0.16em] uppercase font-extrabold text-[8px] lg:text-[8.5px] self-center">
                                             <span>NEW</span>
                                             <span className="my-[1.5px]">ECO</span>
                                             <span>ROSES</span>
@@ -166,7 +166,7 @@ export default function Navbar() {
 
                                     {/* Text Stack */}
                                     <div className="flex flex-col text-left justify-center whitespace-nowrap">
-                                        <span className="font-sans font-medium text-[#2a2420] text-xs sm:text-[12.5px] leading-tight whitespace-nowrap">
+                                        <span className="font-sans font-medium text-[#1c1917] text-xs sm:text-[12.5px] leading-tight whitespace-nowrap">
                                             Where to deliver?
                                         </span>
                                         <span className="text-xs sm:text-[11.5px] font-semibold flex items-center gap-1 leading-tight mt-0.5 whitespace-nowrap">
@@ -189,7 +189,7 @@ export default function Navbar() {
                                         <Link
                                             key={link.href}
                                             href={link.href}
-                                            className="link-underline text-[0.76rem] xl:text-[0.8rem] uppercase tracking-[0.14em] font-medium transition-colors duration-300 text-[#4a4238] hover:text-primary whitespace-nowrap"
+                                            className="link-underline text-[0.76rem] xl:text-[0.8rem] uppercase tracking-[0.14em] font-semibold transition-colors duration-300 text-[#1c1917] hover:text-black whitespace-nowrap"
                                         >
                                             {link.label}
                                         </Link>
@@ -204,14 +204,14 @@ export default function Navbar() {
                                     title="My Occasion Reminders"
                                 >
                                     {/* Calendar with Star Vector */}
-                                    <svg className="w-5 h-5 text-[#2a2420] group-hover:text-primary transition-colors stroke-[2]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <svg className="w-5 h-5 text-[#1c1917] group-hover:text-black transition-colors stroke-[2]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <line x1="8" y1="2" x2="8" y2="6" strokeLinecap="round" />
                                         <line x1="16" y1="2" x2="16" y2="6" strokeLinecap="round" />
                                         <rect x="3" y="4" width="18" height="17" rx="3.5" strokeWidth="2" />
                                         <line x1="3" y1="9" x2="21" y2="9" strokeWidth="1.5" />
-                                        <polygon points="12 11.5 13.2 14 16 14.3 13.9 16.1 14.5 18.8 12 17.3 9.5 18.8 10.1 16.1 8 14.3 10.8 14" fill="#3a3226" stroke="none" className="group-hover:fill-primary transition-colors" />
+                                        <polygon points="12 11.5 13.2 14 16 14.3 13.9 16.1 14.5 18.8 12 17.3 9.5 18.8 10.1 16.1 8 14.3 10.8 14" fill="#1c1917" stroke="none" className="group-hover:fill-black transition-colors" />
                                     </svg>
-                                    <span className="text-[10px] font-medium text-[#2a2420] group-hover:text-primary transition-colors whitespace-nowrap mt-0.5">
+                                    <span className="text-[10px] font-semibold text-[#1c1917] group-hover:text-black transition-colors whitespace-nowrap mt-0.5">
                                         My Reminders
                                     </span>
                                 </button>

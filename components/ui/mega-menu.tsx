@@ -82,17 +82,17 @@ function MegaDropdownPanel({
                 <div className="flex gap-8">
                     {/* Column 1 — Collection Details & Browse */}
                     <div className="flex-shrink-0 w-[200px]">
-                        <h3 className="font-serif text-base text-[#3a3226] font-semibold mb-4 pb-2 border-b border-[#ede4d6]">
+                        <h3 className="font-sans text-base text-[#1c1917] font-bold mb-4 pb-2 border-b border-gray-100">
                             {collection.name}
                         </h3>
                         {collection.description && (
-                            <p className="text-xs text-[#8a7a5a] leading-relaxed mb-4 font-light">
+                            <p className="text-xs text-gray-500 leading-relaxed mb-4 font-normal">
                                 {collection.description}
                             </p>
                         )}
                         <Link
                             href={`/shop?cat=${collection.slug}`}
-                            className="mega-link inline-flex items-center gap-1 text-xs uppercase tracking-[0.15em] font-semibold text-[#5c6e4f] hover:text-[#3a3226] transition-colors"
+                            className="mega-link inline-flex items-center gap-1 text-xs uppercase tracking-[0.15em] font-bold text-[#1c1917] hover:text-black transition-colors"
                             onClick={onClose}
                         >
                             View All <ChevronRight size={12} />
@@ -100,12 +100,12 @@ function MegaDropdownPanel({
                     </div>
 
                     {/* Divider */}
-                    <div className="w-px bg-[#ede4d6] flex-shrink-0" />
+                    <div className="w-px bg-gray-100 flex-shrink-0" />
 
                     {/* Column 2 — Featured Products (Text Only) */}
                     {hasProducts && (
                         <div className="flex-[2] min-w-[250px]">
-                            <h4 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#8a7a5a] mb-4">
+                            <h4 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-4">
                                 Popular Picks
                             </h4>
                             <div className="grid grid-cols-2 gap-x-6 gap-y-3">
@@ -116,7 +116,7 @@ function MegaDropdownPanel({
                                         className="group flex flex-col"
                                         onClick={onClose}
                                     >
-                                        <p className="text-sm font-medium text-[#3a3226] group-hover:text-[#5c6e4f] transition-colors line-clamp-2">
+                                        <p className="text-sm font-medium text-[#1c1917] group-hover:text-black transition-colors line-clamp-2">
                                             {product.name}
                                         </p>
                                     </Link>
@@ -127,13 +127,13 @@ function MegaDropdownPanel({
 
                     {/* Divider */}
                     {hasProducts && hasTags && (
-                        <div className="w-px bg-[#ede4d6] flex-shrink-0" />
+                        <div className="w-px bg-gray-100 flex-shrink-0" />
                     )}
 
                     {/* Column 3 — Tags / Filtered Collections */}
                     {hasTags && (
                         <div className="flex-shrink-0 w-[180px]">
-                            <h4 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#8a7a5a] mb-4">
+                            <h4 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-4">
                                 Quick Filters
                             </h4>
                             <ul className="space-y-2.5">
@@ -141,7 +141,7 @@ function MegaDropdownPanel({
                                     <li key={idx}>
                                         <Link
                                             href={tag.link}
-                                            className="mega-link text-sm text-[#3a3226] hover:text-[#5c6e4f] transition-colors font-light"
+                                            className="mega-link text-sm text-[#1c1917] hover:text-black transition-colors font-medium"
                                             onClick={onClose}
                                         >
                                             {tag.label}
@@ -231,12 +231,12 @@ function MobileAccordion({
                 className="w-full flex items-center justify-between py-4 px-2 text-left"
                 aria-expanded={isOpen}
             >
-                <span className="font-serif text-lg text-[#3a3226]">{collection.name}</span>
+                <span className="font-sans font-bold text-base text-[#1c1917]">{collection.name}</span>
                 <motion.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.25 }}
                 >
-                    <ChevronDown size={18} className="text-[#8a7a5a]" />
+                    <ChevronDown size={18} className="text-gray-400" />
                 </motion.span>
             </button>
 
@@ -253,7 +253,7 @@ function MobileAccordion({
                             {/* Browse all link */}
                             <Link
                                 href={`/shop?cat=${collection.slug}`}
-                                className="block text-sm text-[#5c6e4f] font-semibold uppercase tracking-wider"
+                                className="block text-sm text-[#1c1917] font-bold uppercase tracking-wider hover:text-black"
                                 onClick={onClose}
                             >
                                 View All →
@@ -262,7 +262,7 @@ function MobileAccordion({
                             {/* Products */}
                             {productsInCollection.length > 0 && (
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#8a7a5a] font-semibold mb-2">
+                                    <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-semibold mb-2">
                                         Popular
                                     </p>
                                     <div className="space-y-1.5">
@@ -270,7 +270,7 @@ function MobileAccordion({
                                             <Link
                                                 key={p.id}
                                                 href={`/product/${p.slug}`}
-                                                className="block text-sm text-[#3a3226] hover:text-[#5c6e4f] transition-colors pl-3 border-l-2 border-[#ede4d6]"
+                                                className="block text-sm text-[#1c1917] hover:text-black transition-colors pl-3 border-l-2 border-gray-200"
                                                 onClick={onClose}
                                             >
                                                 {p.name}
@@ -283,7 +283,7 @@ function MobileAccordion({
                             {/* Tags */}
                             {tags.length > 0 && (
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#8a7a5a] font-semibold mb-2">
+                                    <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-semibold mb-2">
                                         Quick Filters
                                     </p>
                                     <div className="flex flex-wrap gap-2">
@@ -291,7 +291,7 @@ function MobileAccordion({
                                             <Link
                                                 key={idx}
                                                 href={tag.link}
-                                                className="text-xs bg-[#faf7f2] text-[#3a3226] px-3 py-1.5 rounded-full border border-[#ede4d6] hover:border-[#5c6e4f] transition-colors"
+                                                className="text-xs bg-[#faf7f2] text-[#1c1917] px-3 py-1.5 rounded-full border border-gray-200 hover:border-black transition-colors"
                                                 onClick={onClose}
                                             >
                                                 {tag.label}

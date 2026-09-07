@@ -58,7 +58,7 @@ function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string 
                                     style={item.scale ? { transform: `scale(${item.scale})` } : undefined}
                                 />
                             </div>
-                            <p className="text-center font-semibold text-[#3a3226] text-sm md:text-base mt-2.5 group-hover:text-[#5c6e4f] transition-colors">
+                            <p className="text-center font-bold text-[#1c1917] text-xs sm:text-sm mt-2 group-hover:text-black transition-colors">
                                 {item.name}
                             </p>
                         </Link>
@@ -73,14 +73,14 @@ export default function FeaturedPicks() {
     return (
         <>
             {/* ── Pick Their Fav Flowers ── */}
-            <section className="py-4 md:py-8 bg-white w-full max-w-full overflow-hidden">
+            <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
                 <div className="max-w-7xl mx-auto md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="font-serif text-base md:text-2xl text-[#3a3226] font-bold px-3 md:px-0 mb-3 md:mb-5"
+                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight px-3 md:px-0 mb-2 md:mb-3"
                     >
                         Pick Their Fav Flowers
                     </motion.h2>
@@ -89,14 +89,14 @@ export default function FeaturedPicks() {
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
-            <section className="py-4 md:py-8 bg-white w-full max-w-full overflow-hidden">
+            <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
                 <div className="max-w-7xl mx-auto md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="font-serif text-base md:text-2xl text-[#3a3226] font-bold px-3 md:px-0 mb-3 md:mb-5"
+                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight px-3 md:px-0 mb-2 md:mb-3"
                     >
                         Birthday Gifts That Wow
                     </motion.h2>

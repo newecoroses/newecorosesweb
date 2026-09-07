@@ -375,11 +375,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 </button>
                             )}
 
-                            {/* Buy Now (Rich Olive/Gold matching FNP) */}
+                            {/* Buy Now (Sleek Black Pill) */}
                             <button
                                 type="button"
                                 onClick={handleBuyNow}
-                                className="flex-1 bg-[#5c5520] hover:bg-[#4d471b] text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                                className="flex-1 bg-[#1c1917] hover:bg-black text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                             >
                                 <ShoppingCart size={16} />
                                 <span>Buy Now</span>
@@ -405,7 +405,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 {/* ── You May Also Like Section (Down page for deeper browsing) ── */}
                 {relatedProducts.length > 0 && (
                     <section className="mt-16 lg:mt-20 pt-10 border-t border-gray-100">
-                        <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1c1917] mb-6">
+                        <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight mb-6">
                             You May Also Like
                         </h2>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">

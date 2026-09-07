@@ -4,19 +4,19 @@
 
 @theme {
   --color-background: #ffffff;
-  --color-foreground: #3a3226;
-  --color-primary: #bfaf1a;
-  --color-primary-light: #d4c920;
-  --color-primary-dark: #9c8f15;
+  --color-foreground: #1c1917;
+  --color-primary: #1c1917;
+  --color-primary-light: #27272a;
+  --color-primary-dark: #000000;
   --color-secondary: #faf7f2;
-  --color-accent: #c9a247;
+  --color-accent: #1c1917;
   --color-blush: #faf7f2;
-  --color-charcoal: #2a2420;
-  --color-muted: #8a7a5a;
+  --color-charcoal: #1c1917;
+  --color-muted: #6b7280;
 
   --font-sans: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
-  --font-accent: 'Poppins', 'Inter', ui-sans-serif, sans-serif;
+  --font-serif: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-accent: 'Inter', 'Poppins', ui-sans-serif, sans-serif;
   --font-montserrat: var(--font-montserrat), 'Montserrat', sans-serif;
 }
 
