@@ -64,7 +64,7 @@ export default function Footer() {
                                 height={52}
                                 className="rounded-full ring-2 ring-white/40 group-hover:ring-white transition-all duration-300 drop-shadow-md"
                             />
-                            <span className="font-serif text-2xl font-bold tracking-[0.08em] text-white group-hover:text-[#7dd3fc] transition-colors">
+                            <span className="font-serif text-base font-bold tracking-[0.08em] text-white group-hover:text-[#7dd3fc] transition-colors">
                                 NEW ECO ROSES
                             </span>
                         </Link>
