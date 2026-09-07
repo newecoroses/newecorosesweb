@@ -130,7 +130,8 @@ export default function Home() {
   const showCelebrations = false; // Hidden for now per user request
   const showRelationships = settings['show_relationships'] !== 'false';
   const showTestimonials = settings['show_testimonials'] !== 'false';
-  const showFeaturedRoses = settings['show_featured_roses'] !== 'false';
+  const showFeaturedRoses = false; // Hidden for now per user request
+  const showOurStory = false; // Hidden for now per user request
   const happyCustomers = settings['happy_customers_count'] || '5K+';
   const giftsDelivered = settings['gifts_delivered_count'] || '10K+';
   const starRating = settings['star_rating'] || '4.9';
@@ -183,7 +184,7 @@ export default function Home() {
   return (
     <>
       {/* ═══ 1. HERO BANNER CAROUSEL ═══ */}
-      <div className="pt-[90px] md:pt-[100px] bg-white">
+      <div className="pt-[84px] sm:pt-[92px] lg:pt-[130px] bg-white">
         <HeroSlider />
       </div>
 
@@ -525,41 +526,43 @@ export default function Home() {
       )}
 
       {/* ═══ ABOUT BRAND ═══ */}
-      <section id="about" className="py-8 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card">
-              <Image src="/images/our-story.webp" alt="New Eco Roses Storefront" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} viewport={{ once: true }}>
-              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-3">Our Story</span>
-              <h2 className="font-serif text-xl md:text-4xl lg:text-5xl text-[#3a3226] mb-4 leading-tight">
-                Crafted With Love,<br /><em className="italic text-[#5c6e4f]">Delivered With Care</em>
-              </h2>
-              <p className="text-[#8a7a5a] leading-relaxed mb-5 font-light max-w-lg">
-                At New Eco Roses, we believe every occasion deserves to be celebrated beautifully. Located in the heart of Kolkata, we have built a reputation as one of the city&apos;s most trusted and loved gifting destinations.
-              </p>
-              <p className="text-[#8a7a5a] leading-relaxed mb-10 font-light max-w-lg">
-                Every arrangement is crafted using fresh, handpicked blooms sourced with care and arranged by experienced florists who understand the art of elegance.
-              </p>
-              <div className="grid grid-cols-3 gap-4 md:gap-6 pt-6 border-t border-[#ede4d6]">
-                <div className="text-center">
-                  <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{happyCustomers}</p>
-                  <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Happy Customers</p>
+      {showOurStory && (
+        <section id="about" className="py-8 md:py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }} className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card">
+                <Image src="/images/our-story.webp" alt="New Eco Roses Storefront" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+              </motion.div>
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} viewport={{ once: true }}>
+                <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-3">Our Story</span>
+                <h2 className="font-serif text-xl md:text-4xl lg:text-5xl text-[#3a3226] mb-4 leading-tight">
+                  Crafted With Love,<br /><em className="italic text-[#5c6e4f]">Delivered With Care</em>
+                </h2>
+                <p className="text-[#8a7a5a] leading-relaxed mb-5 font-light max-w-lg">
+                  At New Eco Roses, we believe every occasion deserves to be celebrated beautifully. Located in the heart of Kolkata, we have built a reputation as one of the city&apos;s most trusted and loved gifting destinations.
+                </p>
+                <p className="text-[#8a7a5a] leading-relaxed mb-10 font-light max-w-lg">
+                  Every arrangement is crafted using fresh, handpicked blooms sourced with care and arranged by experienced florists who understand the art of elegance.
+                </p>
+                <div className="grid grid-cols-3 gap-4 md:gap-6 pt-6 border-t border-[#ede4d6]">
+                  <div className="text-center">
+                    <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{happyCustomers}</p>
+                    <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Happy Customers</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{giftsDelivered}</p>
+                    <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Gifts Delivered</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{starRating}</p>
+                    <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Star Rating</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{giftsDelivered}</p>
-                  <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Gifts Delivered</p>
-                </div>
-                <div className="text-center">
-                  <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{starRating}</p>
-                  <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Star Rating</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ═══ TESTIMONIALS ═══ */}
       {showTestimonials && testimonials.length > 0 && (

@@ -3,9 +3,9 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Truck, Package, Shield, ChevronRight, ShoppingCart, Check, Minus, Plus } from 'lucide-react';
-import { motion } from 'framer-motion';
-import ProductCard from '@/components/product/product-card';
+import { ArrowLeft, ShoppingCart, Check, Minus, Plus, Star, MapPin, Maximize2, Flame, Info, ChevronDown, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ProductCard, { getProductPriceInfo } from '@/components/product/product-card';
 import WhatsAppFloat from '@/components/ui/whatsapp-float';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchProductBySlug, fetchProductsByCollection, fetchWhatsappSettings, DBProduct } from '@/lib/supabase';
@@ -22,6 +22,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [relatedProducts, setRelatedProducts] = useState<DBProduct[]>([]);
     const [whatsappLink, setWhatsappLink] = useState('');
     const [loading, setLoading] = useState(true);
+    const [pincode, setPincode] = useState('');
+    const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const { addItem, updateQuantity, getItemQuantity } = useCart();
     const cartQuantity = product ? getItemQuantity(product.id) : 0;
 
@@ -32,12 +35,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 setProduct(dbProduct);
                 // Load related products
                 const related = await fetchProductsByCollection(dbProduct.collection_slug).catch(() => []);
-                setRelatedProducts(related.filter(p => p.id !== dbProduct.id).slice(0, 3));
+                setRelatedProducts(related.filter(p => p.id !== dbProduct.id).slice(0, 4));
             } else {
-                // Fall back to static data
                 const staticProduct = getProductBySlug(slug);
                 if (staticProduct) {
-                    // Convert to DBProduct shape
                     setProduct({
                         id: staticProduct.id,
                         name: staticProduct.name,
@@ -61,7 +62,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     });
                     const related = getProductsByCollection(staticProduct.collectionSlug)
                         .filter(p => p.id !== staticProduct.id)
-                        .slice(0, 3);
+                        .slice(0, 4);
                     setRelatedProducts(related as unknown as DBProduct[]);
                 }
             }
@@ -84,26 +85,28 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         });
     }, [slug]);
 
-    // Build WhatsApp link using Supabase number
+    // Build WhatsApp link
     useEffect(() => {
         if (!product) return;
         const origin = typeof window !== 'undefined' ? window.location.origin : '';
         const productUrl = `${origin}/product/${product.slug}`;
         fetchWhatsappSettings().then(s => {
             const phone = s?.phone_number ?? FALLBACK_PHONE;
-            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
+            const msg = `Hi! I would like to order "${product.name}". Is same-day delivery available?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
         }).catch(() => {
-            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
+            const msg = `Hi! I would like to order "${product.name}". Is same-day delivery available?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${FALLBACK_PHONE}?text=${encodeURIComponent(msg)}`);
         });
     }, [product]);
 
-    const tagColors: Record<string, string> = {
-        'Best Seller': 'bg-amber-50 text-amber-700 border-amber-200',
-        'New Arrival': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        'Seasonal': 'bg-purple-50 text-purple-700 border-purple-200',
-        'Standard': 'bg-gray-50 text-gray-600 border-gray-200',
+    const handleCheckPincode = () => {
+        if (!pincode.trim()) return;
+        if (pincode.startsWith('700') || pincode.toLowerCase().includes('kolkata')) {
+            setPincodeStatus('Available for Same-Day & Midnight Delivery in Kolkata! 🎉');
+        } else {
+            setPincodeStatus('Delivery available! Standard and Express delivery options supported.');
+        }
     };
 
     if (loading) {
@@ -129,213 +132,345 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const allImages = product.images?.length > 0 ? product.images : [product.image_url];
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
+    const { price, originalPrice, discountPercent, rating, reviewCount, ordersPastMonth } = getProductPriceInfo(product);
+
+    const tagInfo = (() => {
+        if (!product.tag || product.tag === 'Standard') return { label: 'Bestseller', bg: 'bg-[#581c87] text-white' };
+        if (product.tag.toLowerCase().includes('best') || product.tag.toLowerCase().includes('bestseller')) {
+            return { label: 'Bestseller', bg: 'bg-[#581c87] text-white' };
+        }
+        if (product.tag.toLowerCase().includes('new')) {
+            return { label: 'New Arrival', bg: 'bg-[#1d4ed8] text-white' };
+        }
+        if (product.tag.toLowerCase().includes('luxe') || product.tag.toLowerCase().includes('luxury')) {
+            return { label: 'LUXE', bg: 'bg-[#18181b] text-white' };
+        }
+        if (product.tag.toLowerCase().includes('season')) {
+            return { label: 'Seasonal', bg: 'bg-[#047857] text-white' };
+        }
+        return { label: product.tag, bg: 'bg-rose-100 text-rose-800' };
+    })();
+
+    const handleAddToCart = () => {
+        addItem({
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            image_url: product.image_url,
+            price: price,
+        });
+    };
+
+    const handleBuyNow = () => {
+        handleAddToCart();
+        if (typeof window !== 'undefined') {
+            window.location.href = whatsappLink;
+        }
+    };
+
     return (
-        <div className="pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-16 bg-background min-h-screen">
+        <div className="pt-[100px] sm:pt-[110px] lg:pt-[140px] pb-14 bg-white min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Breadcrumb */}
-                <nav className="flex items-center gap-2 text-[11px] sm:text-xs text-muted mb-2.5 font-medium uppercase tracking-wider overflow-x-auto whitespace-nowrap">
+                {/* ── Breadcrumb Bar ── */}
+                <nav className="flex items-center gap-2 text-xs text-gray-500 mb-4 font-normal overflow-x-auto whitespace-nowrap py-0.5">
                     <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                    <ChevronRight size={12} className="flex-shrink-0" />
-                    <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-                    <ChevronRight size={12} className="flex-shrink-0" />
-                    <Link href={`/collection/${product.collection_slug}`} className="hover:text-primary transition-colors">
-                        {product.collection_name}
+                    <span>/</span>
+                    <Link href={`/shop?cat=${product.collection_slug}`} className="hover:text-primary transition-colors">
+                        {product.collection_name || 'Flowers'}
                     </Link>
-                    <ChevronRight size={12} className="flex-shrink-0" />
-                    <span className="text-foreground truncate font-semibold">{product.name}</span>
+                    <span>/</span>
+                    <span className="text-[#1c1917] font-medium truncate">{product.name}</span>
                 </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
-                    {/* ── Image Gallery ── */}
-                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-
-                        {/* Main Image Container — fitted seamlessly across mobile, tablet, and desktop */}
-                        <div className="relative aspect-[4/5] max-h-[300px] min-[400px]:max-h-[340px] sm:max-h-[380px] md:max-h-[400px] lg:max-h-[420px] xl:max-h-[450px] w-full mx-auto flex items-center justify-center mb-3">
-                            <Image
-                                src={images[selectedImage] || '/images/placeholder.webp'}
-                                alt={product.name}
-                                fill
-                                className="object-contain transition-all duration-500 hover:scale-[1.02]"
-                                sizes="(max-width: 1024px) 100vw, 50vw"
-                                priority
-                            />
-                        </div>
-
-                        {/* Thumbnails */}
+                {/* ── 2-Column Main Section (Perfect FNP Alignment) ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+                    
+                    {/* ══ LEFT: Vertical Thumbnails Strip + Main Showcase Image (7 cols) ══ */}
+                    <div className="lg:col-span-7 flex flex-col-reverse sm:flex-row gap-3.5 items-start">
+                        {/* Vertical Thumbnail Strip */}
                         {images.length > 1 && (
-                            <div className="grid grid-cols-4 gap-2.5 max-w-[420px]">
+                            <div className="flex sm:flex-col gap-2.5 overflow-x-auto sm:overflow-y-auto max-h-[500px] w-full sm:w-20 flex-shrink-0 no-scrollbar">
                                 {images.map((img, i) => (
                                     <button
                                         key={i}
                                         onClick={() => setSelectedImage(i)}
-                                        className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${selectedImage === i ? 'ring-2 ring-primary shadow-soft' : 'opacity-70 hover:opacity-100'}`}
+                                        className={`relative aspect-square w-16 sm:w-full rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 cursor-pointer ${
+                                            selectedImage === i
+                                                ? 'border-[#2a2420] ring-1 ring-[#2a2420] shadow-xs'
+                                                : 'border-gray-200 hover:border-gray-400 opacity-80 hover:opacity-100'
+                                        }`}
                                     >
-                                        <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="100px" />
+                                        <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" sizes="80px" />
                                     </button>
                                 ))}
                             </div>
                         )}
-                    </motion.div>
 
-                    {/* ── Product Details ── */}
-                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col justify-start">
-                        {/* Collection Link */}
-                        <Link href={`/collection/${product.collection_slug}`} className="text-xs uppercase tracking-[0.22em] text-primary font-semibold mb-1 hover:underline inline-block">
-                            {product.collection_name}
-                        </Link>
+                        {/* Main Showcase Image */}
+                        <div className="relative aspect-[4/3] sm:aspect-square w-full rounded-2xl md:rounded-3xl overflow-hidden bg-[#faf7f2] border border-gray-100 shadow-xs flex items-center justify-center group">
+                            <Image
+                                src={images[selectedImage] || product.image_url}
+                                alt={product.name}
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                sizes="(max-width: 1024px) 100vw, 55vw"
+                                priority
+                            />
 
-                        <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl text-foreground font-semibold mb-1 leading-tight">
-                            {product.name}
-                        </h1>
+                            {/* Expand Fullscreen Icon */}
+                            <button
+                                type="button"
+                                onClick={() => setIsImageModalOpen(true)}
+                                className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/85 backdrop-blur-md border border-gray-200 text-gray-700 hover:text-black hover:bg-white flex items-center justify-center transition-all shadow-xs cursor-pointer"
+                                aria-label="Expand Image"
+                            >
+                                <Maximize2 size={14} />
+                            </button>
+                        </div>
+                    </div>
 
-                        {/* Tag Badge under product title (FNP Style) */}
-                        {product.tag && product.tag !== 'Standard' && (
-                            <div className="mb-3">
-                                <span className={`inline-block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-[3px] shadow-2xs ${
-                                    product.tag === 'Best Seller'
-                                        ? 'bg-[#b91c1c] text-white'
-                                        : product.tag === 'New Arrival'
-                                        ? 'bg-[#2563eb] text-white'
-                                        : product.tag === 'Seasonal'
-                                        ? 'bg-[#059669] text-white'
-                                        : 'bg-[#5a6e4f] text-white'
-                                }`}>
-                                    {product.tag}
+                    {/* ══ RIGHT: Product Details Panel (5 cols) ══ */}
+                    <div className="lg:col-span-5 flex flex-col justify-start">
+                        
+                        {/* Title & Rating Header */}
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                            <h1 className="text-xl sm:text-2xl lg:text-[25px] font-bold text-[#1c1917] leading-snug">
+                                {product.name}
+                            </h1>
+
+                            {/* Star Rating Pill Badge */}
+                            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold flex-shrink-0 shadow-2xs mt-0.5">
+                                <Star size={12} className="text-amber-500 fill-amber-500" />
+                                <span>{rating}</span>
+                                <span className="text-gray-300 font-light">|</span>
+                                <span className="text-gray-600 font-normal">{reviewCount}</span>
+                            </div>
+                        </div>
+
+                        {/* Tag Pill (e.g. Bestseller / New Arrival) */}
+                        <div className="mb-3">
+                            <span className={`inline-block px-2.5 py-0.5 rounded-[4px] text-[11px] font-bold uppercase tracking-wider ${tagInfo.bg}`}>
+                                {tagInfo.label}
+                            </span>
+                        </div>
+
+                        {/* Price Block */}
+                        <div className="flex items-center gap-2.5 mb-2">
+                            <span className="text-2xl sm:text-3xl font-bold text-[#1c1917]">
+                                ₹{price.toLocaleString()}
+                            </span>
+                            {originalPrice > price && (
+                                <span className="text-base sm:text-lg text-gray-400 line-through font-normal">
+                                    ₹{originalPrice.toLocaleString()}
                                 </span>
+                            )}
+                            <span className="text-sm sm:text-base font-bold text-[#16a34a]">
+                                {discountPercent}% OFF
+                            </span>
+                            <span className="text-gray-400 hover:text-gray-600 cursor-pointer" title="Includes all applicable taxes">
+                                <Info size={14} />
+                            </span>
+                        </div>
+
+                        {/* Urgency / Social Proof Banner */}
+                        <div className="flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-amber-700 mb-3.5">
+                            <Flame size={15} className="text-amber-600 fill-amber-500 flex-shrink-0" />
+                            <span>Ordered {ordersPastMonth}+ times in Past Month</span>
+                        </div>
+
+                        <div className="h-px bg-gray-100 mb-3.5" />
+
+                        {/* ── Choose Delivery Preference ── */}
+                        <div className="space-y-2 mb-4">
+                            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#1c1917]">
+                                <MapPin size={14} className="text-primary flex-shrink-0" />
+                                <span>Choose Delivery Preference</span>
+                            </div>
+
+                            {/* Location Input Box with India Flag */}
+                            <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 bg-white shadow-2xs">
+                                <div className="flex items-center gap-1.5 px-3 py-2.5 border-r border-gray-200 bg-gray-50/60 flex-shrink-0 cursor-default">
+                                    {/* India Flag */}
+                                    <div className="w-5 h-3 rounded-[2px] overflow-hidden border border-black/10 flex-shrink-0">
+                                        <svg className="w-full h-full" viewBox="0 0 36 24" fill="none">
+                                            <rect width="36" height="8" fill="#FF9933" />
+                                            <rect y="8" width="36" height="8" fill="#FFFFFF" />
+                                            <rect y="16" width="36" height="8" fill="#138808" />
+                                            <circle cx="18" cy="12" r="3" fill="none" stroke="#000080" strokeWidth="0.8" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-xs font-bold text-[#2a2420]">IND</span>
+                                    <ChevronDown size={12} className="text-gray-400" />
+                                </div>
+
+                                <input
+                                    type="text"
+                                    placeholder="Enter pincode, locality, etc"
+                                    value={pincode}
+                                    onChange={(e) => setPincode(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleCheckPincode()}
+                                    className="w-full px-3 py-2.5 text-xs sm:text-sm text-[#1c1917] focus:outline-none placeholder:text-gray-400"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={handleCheckPincode}
+                                    className="px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/5 transition-colors cursor-pointer flex-shrink-0"
+                                >
+                                    Check
+                                </button>
+                            </div>
+
+                            {pincodeStatus && (
+                                <p className="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 py-1.5 px-2.5 rounded-lg mt-1.5">
+                                    {pincodeStatus}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* ── Explore More Options (Proper Square Proportions) ── */}
+                        {relatedProducts.length > 0 && (
+                            <div className="space-y-2 mb-5">
+                                <p className="text-xs sm:text-sm font-bold text-[#1c1917]">
+                                    Explore more options
+                                </p>
+                                <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+                                    {relatedProducts.slice(0, 3).map((item) => (
+                                        <Link
+                                            key={item.id}
+                                            href={`/product/${item.slug}`}
+                                            className="group block rounded-xl overflow-hidden border border-gray-100 hover:border-primary/40 transition-all bg-[#faf7f2] p-1.5 shadow-2xs hover:shadow-xs"
+                                        >
+                                            <div className="relative aspect-square w-full rounded-lg overflow-hidden mb-1.5">
+                                                <Image
+                                                    src={item.image_url}
+                                                    alt={item.name}
+                                                    fill
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    sizes="(max-width: 768px) 30vw, 120px"
+                                                />
+                                            </div>
+                                            <p className="text-[11px] font-semibold text-[#1c1917] truncate px-1 text-center group-hover:text-primary transition-colors">
+                                                {item.name}
+                                            </p>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
                         )}
 
-                        <p className="text-muted leading-relaxed font-light mb-4 text-xs sm:text-sm max-w-lg">
-                            {product.description}
-                        </p>
-
-                        {/* CTA Buttons — Positioned high for instant visibility */}
-                        <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                            {/* Add to Cart / Stepper */}
+                        {/* ── Action CTA Buttons ── */}
+                        <div className="flex gap-3 mb-3">
+                            {/* Add To Cart */}
                             {cartQuantity > 0 ? (
-                                <div className="flex-1 py-2 px-4 rounded-xl border border-primary/40 bg-primary/5 flex items-center justify-between shadow-xs">
+                                <div className="flex-1 py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-xs">
                                     <button
                                         type="button"
-                                        onClick={() => product && updateQuantity(product.id, cartQuantity - 1)}
-                                        className="w-9 h-9 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
-                                        title="Decrease quantity"
+                                        onClick={() => updateQuantity(product.id, cartQuantity - 1)}
+                                        className="w-8 h-8 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
                                     >
-                                        <Minus size={15} />
+                                        <Minus size={13} />
                                     </button>
-                                    <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5">
-                                        <Check size={15} className="text-emerald-600" />
-                                        {cartQuantity} in Cart
+                                    <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1">
+                                        <Check size={14} className="text-emerald-600" /> {cartQuantity} in Cart
                                     </span>
                                     <button
                                         type="button"
-                                        onClick={() => product && addItem({
-                                            id: product.id,
-                                            name: product.name,
-                                            slug: product.slug,
-                                            image_url: product.image_url,
-                                            price: null,
-                                        })}
-                                        className="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
-                                        title="Increase quantity"
+                                        onClick={handleAddToCart}
+                                        className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
                                     >
-                                        <Plus size={15} />
+                                        <Plus size={13} />
                                     </button>
                                 </div>
                             ) : (
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        if (product) {
-                                            addItem({
-                                                id: product.id,
-                                                name: product.name,
-                                                slug: product.slug,
-                                                image_url: product.image_url,
-                                                price: null,
-                                            });
-                                        }
-                                    }}
-                                    className="flex-1 bg-primary hover:bg-primary-dark text-white py-3.5 px-4 text-center rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-bold cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                                    onClick={handleAddToCart}
+                                    className="flex-1 bg-white hover:bg-gray-50 text-[#1c1917] border-2 border-gray-800 py-3.5 px-4 text-center rounded-xl shadow-xs hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
                                 >
-                                    <ShoppingCart size={16} className="text-white" />
-                                    <span>Add to Cart</span>
+                                    <ShoppingCart size={16} />
+                                    <span>Add To Cart</span>
                                 </button>
                             )}
 
-                            {/* WhatsApp / Enquire Now CTA */}
+                            {/* Buy Now (Rich Olive/Gold matching FNP) */}
+                            <button
+                                type="button"
+                                onClick={handleBuyNow}
+                                className="flex-1 bg-[#5c5520] hover:bg-[#4d471b] text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                            >
+                                <ShoppingCart size={16} />
+                                <span>Buy Now</span>
+                            </button>
+                        </div>
+
+                        {/* WhatsApp Fast Enquiry link */}
+                        <div className="text-center">
                             <a
                                 href={whatsappLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 bg-white hover:bg-[#faf7f2] text-[#2a2420] border border-[#e8dcc8] hover:border-[#25D366] py-3.5 px-4 text-center rounded-2xl shadow-xs hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-xs sm:text-sm font-bold cursor-pointer hover:scale-[1.01] active:scale-[0.99] group"
-                                onClick={() => {
-                                    if (product) trackEnquiry(product.id, product.name);
-                                }}
+                                onClick={() => trackEnquiry(product.id, product.name)}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline"
                             >
-                                <WhatsappIcon size={16} className="text-[#25D366] group-hover:scale-110 transition-transform" />
-                                <span>Enquire Now</span>
+                                <WhatsappIcon size={14} className="text-emerald-600" />
+                                <span>Order via WhatsApp &amp; Chat with our florist ↗</span>
                             </a>
                         </div>
-
-                        {/* Features */}
-                        <div className="space-y-2.5 py-4 mb-5 border-y border-gray-200/80 text-xs sm:text-sm text-muted">
-                            {[
-                                { icon: <Truck size={17} />, text: 'Same-day delivery available' },
-                                { icon: <Package size={17} />, text: 'Signature luxury packaging included' },
-                                { icon: <Shield size={17} />, text: 'Freshness guaranteed or full refund' },
-                            ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-3">
-                                    <span className="text-primary flex-shrink-0">{item.icon}</span>
-                                    <span>{item.text}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Perfect For */}
-                        {product.relationships?.length > 0 && (
-                            <div className="mb-4">
-                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-2">Perfect For</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {product.relationships.map((rel) => (
-                                        <Link key={rel} href={`/shop?relation=${encodeURIComponent(rel.toLowerCase())}`}
-                                            className="inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-gray-200 hover:border-primary">
-                                            {rel}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Celebrate On */}
-                        {product.celebrations?.length > 0 && (
-                            <div className="mb-4">
-                                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-foreground mb-2">Celebrate On</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {product.celebrations.map((cel) => (
-                                        <Link key={cel} href={`/shop?celebration=${encodeURIComponent(cel.toLowerCase())}`}
-                                            className="inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-blush text-foreground hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20 hover:border-primary">
-                                            🎉 {cel}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </motion.div>
+                    </div>
                 </div>
 
-                {/* ── Related Products ── */}
+                {/* ── You May Also Like Section (Down page for deeper browsing) ── */}
                 {relatedProducts.length > 0 && (
-                    <section className="mt-24 lg:mt-32">
-                        <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-10 text-center">You May Also Like</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
+                    <section className="mt-16 lg:mt-20 pt-10 border-t border-gray-100">
+                        <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1c1917] mb-6">
+                            You May Also Like
+                        </h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
                             {relatedProducts.map((p, idx) => (
-                                <ProductCard key={p.id} product={p as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number }} index={idx} />
+                                <ProductCard
+                                    key={p.id}
+                                    product={p as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }}
+                                    index={idx}
+                                />
                             ))}
                         </div>
                     </section>
                 )}
             </div>
+
+            {/* Fullscreen Image Preview Lightbox Modal */}
+            <AnimatePresence>
+                {isImageModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+                        onClick={() => setIsImageModalOpen(false)}
+                    >
+                        <button
+                            type="button"
+                            onClick={() => setIsImageModalOpen(false)}
+                            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 text-white hover:bg-white/40 flex items-center justify-center transition-all cursor-pointer"
+                        >
+                            <X size={20} />
+                        </button>
+                        <div className="relative max-w-3xl max-h-[85vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                            <Image
+                                src={images[selectedImage] || product.image_url}
+                                alt={product.name}
+                                fill
+                                className="object-contain"
+                                sizes="90vw"
+                            />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <WhatsAppFloat />
         </div>
     );
 }
+

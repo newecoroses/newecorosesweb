@@ -72,36 +72,48 @@ export default function Footer() {
                             Kolkata&apos;s finest luxury floral &amp; gifting boutique. Hand-curated roses and bespoke gifts, delivered with love to your doorstep.
                         </p>
 
-                        {/* Social Icons */}
-                        <div className="flex items-center gap-3 pt-2">
-                            <a
-                                href="https://www.instagram.com/newecoroses___kolkata/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
-                                aria-label="Instagram"
-                                title="Follow us on Instagram"
-                            >
-                                <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-5 h-5 filter invert group-hover:scale-110 transition-transform" />
-                            </a>
-                            <a
-                                href="https://wa.me/919936911611"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
-                                aria-label="WhatsApp"
-                                title="Message on WhatsApp"
-                            >
-                                <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-5 h-5 filter invert group-hover:scale-110 transition-transform" />
-                            </a>
-                            <a
-                                href="/socials"
-                                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
-                                aria-label="Google Reviews & Maps"
-                                title="Google Reviews & Store Locations"
-                            >
-                                <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                            </a>
+                        {/* Social Icons & Hub */}
+                        <div className="space-y-3 pt-2">
+                            <div className="flex items-center gap-3">
+                                <a
+                                    href="https://www.instagram.com/newecoroses___kolkata/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                                    aria-label="Instagram"
+                                    title="Follow us on Instagram"
+                                >
+                                    <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-5 h-5 filter invert group-hover:scale-110 transition-transform" />
+                                </a>
+                                <a
+                                    href="https://wa.me/919936911611"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                                    aria-label="WhatsApp"
+                                    title="Message on WhatsApp"
+                                >
+                                    <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-5 h-5 filter invert group-hover:scale-110 transition-transform" />
+                                </a>
+                                <a
+                                    href="/socials"
+                                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                                    aria-label="Google Reviews & Maps"
+                                    title="Google Reviews & Store Locations"
+                                >
+                                    <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                </a>
+                            </div>
+
+                            <div>
+                                <Link
+                                    href="/socials"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all duration-300 hover:scale-[1.02]"
+                                >
+                                    <span>Explore All Socials</span>
+                                    <span className="text-[10px]">↗</span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
@@ -118,7 +130,8 @@ export default function Footer() {
                                 { href: '/shop?cat=chocolate-bouquet', label: 'Chocolate Bouquet' },
                                 { href: '/shop?cat=personalized', label: 'Personalized' },
                                 { href: '/shop?cat=hamper', label: 'Hamper' },
-                                { href: '/shop?cat=balloon-bouquet', label: 'Balloon Bouquet' }
+                                { href: '/shop?cat=balloon-bouquet', label: 'Balloon Bouquet' },
+                                { href: '/socials', label: 'Socials & Media' }
                             ].map((link) => (
                                 <li key={link.href}>
                                     <Link
@@ -254,6 +267,9 @@ export default function Footer() {
                         &copy; 2026 New Eco Roses. All rights reserved — Crafted with <span className="inline-block text-rose-300 animate-pulse mx-0.5">❤️</span> in Kolkata.
                     </p>
                     <div className="flex items-center gap-6">
+                        <Link href="/socials" className="text-xs text-white/85 hover:text-white transition-colors">
+                            Socials &amp; Media
+                        </Link>
                         <Link href="/privacy" className="text-xs text-white/85 hover:text-white transition-colors">
                             Privacy Policy
                         </Link>
