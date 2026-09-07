@@ -203,22 +203,9 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     </div>
                 </div>
 
-                {/* Pricing Row with Quick Add Button */}
+                {/* Bottom Row with Quick Add Button */}
                 <div className="flex items-center justify-between pt-1 border-t border-gray-50 mt-1">
-                    {/* Price Stack */}
-                    <div className="flex items-baseline flex-wrap gap-x-1.5">
-                        <span className="text-sm sm:text-base font-bold text-[#1c1917]">
-                            ₹{price.toLocaleString()}
-                        </span>
-                        {originalPrice > price && (
-                            <span className="text-[11px] sm:text-xs text-gray-400 line-through font-normal">
-                                ₹{originalPrice.toLocaleString()}
-                            </span>
-                        )}
-                        <span className="text-[10px] sm:text-[11px] font-bold text-[#16a34a]">
-                            {discountPercent}% OFF
-                        </span>
-                    </div>
+                    <span className="text-[11px] font-medium text-emerald-700">In Stock</span>
 
                     {/* Quick Add Button (+) */}
                     <button

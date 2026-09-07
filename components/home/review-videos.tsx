@@ -273,11 +273,6 @@ function StoryCard({
                                         <span className="text-[10px] font-semibold text-[#1c1917] line-clamp-1 leading-tight">
                                             {prod.name}
                                         </span>
-                                        {prod.price && (
-                                            <span className="text-[10px] font-bold text-[#1e40af] mt-0.5">
-                                                ₹{prod.price.toLocaleString()}
-                                            </span>
-                                        )}
                                     </div>
                                 </Link>
                             ))}
@@ -476,11 +471,6 @@ function StoryModal({
                                     <h4 className="text-xs sm:text-sm font-semibold text-[#1c1917] group-hover:text-[#1e40af] line-clamp-1 transition-colors">
                                         {prod.name}
                                     </h4>
-                                    {prod.price && (
-                                        <p className="text-xs sm:text-sm font-bold text-[#1e40af] mt-0.5">
-                                            ₹{prod.price.toLocaleString()}
-                                        </p>
-                                    )}
                                     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#1e40af] mt-1">
                                         View Product <ChevronRight size={10} />
                                     </span>

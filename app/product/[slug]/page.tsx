@@ -248,27 +248,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         </div>
 
                         {/* Tag Pill (e.g. Bestseller / New Arrival) */}
-                        <div className="mb-3">
+                        <div className="mb-2">
                             <span className={`inline-block px-2.5 py-0.5 rounded-[4px] text-[11px] font-bold uppercase tracking-wider ${tagInfo.bg}`}>
                                 {tagInfo.label}
-                            </span>
-                        </div>
-
-                        {/* Price Block */}
-                        <div className="flex items-center gap-2.5 mb-2">
-                            <span className="text-2xl sm:text-3xl font-bold text-[#1c1917]">
-                                ₹{price.toLocaleString()}
-                            </span>
-                            {originalPrice > price && (
-                                <span className="text-base sm:text-lg text-gray-400 line-through font-normal">
-                                    ₹{originalPrice.toLocaleString()}
-                                </span>
-                            )}
-                            <span className="text-sm sm:text-base font-bold text-[#16a34a]">
-                                {discountPercent}% OFF
-                            </span>
-                            <span className="text-gray-400 hover:text-gray-600 cursor-pointer" title="Includes all applicable taxes">
-                                <Info size={14} />
                             </span>
                         </div>
 
