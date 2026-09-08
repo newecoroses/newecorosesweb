@@ -34,7 +34,7 @@ function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string 
         <div
             className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-mandatory md:overflow-visible overscroll-x-contain"
         >
-            <div className="flex md:flex-wrap gap-3 md:gap-4 px-4 md:px-0 w-max md:w-full">
+            <div className="flex md:flex-wrap gap-3.5 md:gap-4 w-max md:w-full pb-1">
                 {items.map((item, idx) => (
                     <motion.div
                         key={item.name}
@@ -74,7 +74,7 @@ export default function FeaturedPicks() {
         <>
             {/* ── Pick Their Fav Flowers ── */}
             <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
@@ -84,15 +84,13 @@ export default function FeaturedPicks() {
                     >
                         Pick Their Fav Flowers
                     </motion.h2>
-                    <div className="-mx-4 md:mx-0">
-                        <ScrollRow items={FAV_FLOWERS} cardWidth="w-[40vw] sm:w-[35vw]" />
-                    </div>
+                    <ScrollRow items={FAV_FLOWERS} cardWidth="w-[38vw] sm:w-[32vw]" />
                 </div>
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
             <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
@@ -102,9 +100,7 @@ export default function FeaturedPicks() {
                     >
                         Birthday Gifts That Wow
                     </motion.h2>
-                    <div className="-mx-4 md:mx-0">
-                        <ScrollRow items={BIRTHDAY_GIFTS} cardWidth="w-[40vw] sm:w-[35vw]" />
-                    </div>
+                    <ScrollRow items={BIRTHDAY_GIFTS} cardWidth="w-[38vw] sm:w-[32vw]" />
                 </div>
             </section>
         </>
