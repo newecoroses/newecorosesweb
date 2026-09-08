@@ -46,7 +46,7 @@ function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string 
                     >
                         <Link href={item.link} className="group block">
                             <div
-                                className="relative aspect-[4/5] rounded-2xl md:rounded-3xl overflow-hidden shadow-sm group-hover:shadow-card transition-all duration-500 group-hover:-translate-y-1"
+                                className="relative aspect-square rounded-2xl md:rounded-3xl overflow-hidden shadow-sm group-hover:shadow-card transition-all duration-500 group-hover:-translate-y-1"
                                 style={{ backgroundColor: item.bg }}
                             >
                                 <Image

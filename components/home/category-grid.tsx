@@ -42,7 +42,7 @@ function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number
                             href={item.link}
                             className="group snap-start flex flex-col items-center gap-2 w-[76px] md:w-full"
                         >
-                            <div className="w-[68px] h-[68px] md:w-full md:aspect-square rounded-2xl bg-[#faf7f2] border border-gray-200 flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-card group-hover:border-black/40 relative overflow-hidden">
+                            <div className="w-[68px] h-[68px] md:w-full md:h-auto aspect-square rounded-2xl bg-[#faf7f2] border border-gray-200 flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-card group-hover:border-black/40 relative overflow-hidden">
                                 <Image
                                     src={item.image}
                                     alt={item.name}
