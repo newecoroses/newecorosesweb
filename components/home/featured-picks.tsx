@@ -46,7 +46,7 @@ function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string 
                     >
                         <Link href={item.link} className="group block">
                             <div
-                                className="relative aspect-square rounded-2xl md:rounded-3xl overflow-hidden shadow-sm group-hover:shadow-card transition-all duration-500 group-hover:-translate-y-1"
+                                className="relative aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden shadow-sm group-hover:shadow-card transition-all duration-500 group-hover:-translate-y-1"
                                 style={{ backgroundColor: item.bg }}
                             >
                                 <Image
@@ -74,33 +74,37 @@ export default function FeaturedPicks() {
         <>
             {/* ── Pick Their Fav Flowers ── */}
             <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto md:px-8">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight px-3 md:px-0 mb-2 md:mb-3"
+                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight mb-2 md:mb-3"
                     >
                         Pick Their Fav Flowers
                     </motion.h2>
-                    <ScrollRow items={FAV_FLOWERS} cardWidth="w-[42vw]" />
+                    <div className="-mx-4 md:mx-0">
+                        <ScrollRow items={FAV_FLOWERS} cardWidth="w-[40vw] sm:w-[35vw]" />
+                    </div>
                 </div>
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
             <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto md:px-8">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight px-3 md:px-0 mb-2 md:mb-3"
+                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight mb-2 md:mb-3"
                     >
                         Birthday Gifts That Wow
                     </motion.h2>
-                    <ScrollRow items={BIRTHDAY_GIFTS} cardWidth="w-[38vw]" />
+                    <div className="-mx-4 md:mx-0">
+                        <ScrollRow items={BIRTHDAY_GIFTS} cardWidth="w-[40vw] sm:w-[35vw]" />
+                    </div>
                 </div>
             </section>
         </>
