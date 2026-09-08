@@ -16,12 +16,12 @@ export default function Footer() {
     };
 
     return (
-        <footer className="text-white relative overflow-hidden" style={{ backgroundColor: '#072B61' }}>
+        <footer className="text-white relative overflow-hidden" style={{ backgroundColor: '#353301' }}>
 
 
 
             {/* ═══ GIANT LUXURY BRAND STATEMENT BANNER ═══ */}
-            <div className="w-full max-w-full py-8 sm:py-12 md:py-16 border-b border-[#0f3d7d] relative overflow-hidden select-none group">
+            <div className="w-full max-w-full py-8 sm:py-12 md:py-16 border-b border-white/15 relative overflow-hidden select-none group">
                 <div className="w-full max-w-full overflow-hidden px-2 text-center relative z-10 flex items-center justify-center">
                     <h2
                         className="font-montserrat text-[6.2vw] min-[400px]:text-[6.8vw] sm:text-[7.5vw] md:text-[8vw] lg:text-[8.5vw] font-black uppercase tracking-[0.04em] min-[400px]:tracking-[0.06em] sm:tracking-[0.14em] md:tracking-[0.18em] leading-none transition-all duration-500 cursor-default select-none whitespace-nowrap max-w-full"

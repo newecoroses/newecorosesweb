@@ -44,22 +44,11 @@ export default function AnnouncementBar() {
 
     return (
         <div 
-            className="relative overflow-hidden py-2.5 border-b border-[#0f3d7d] z-[51] select-none shadow-xs text-white"
-            style={{ backgroundColor: '#072B61' }}
+            className="relative overflow-hidden py-2.5 border-b border-white/15 z-[51] select-none shadow-xs text-white"
+            style={{ backgroundColor: '#353301' }}
         >
-            {/* Orion Blue Celestial Star Geo Pattern Background */}
-            <div
-                className="absolute inset-0 opacity-40 pointer-events-none"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='40' viewBox='0 0 100 40'%3E%3Cpath d='M0 0 A25 25 0 0 1 50 0 A25 25 0 0 1 100 0' fill='none' stroke='%2338bdf8' stroke-width='1.2' stroke-opacity='0.5'/%3E%3Cpath d='M50 2 Q50 20 68 20 Q50 20 50 38 Q50 20 32 20 Q50 20 50 2 Z' fill='none' stroke='%237dd3fc' stroke-width='1.3' stroke-opacity='0.85'/%3E%3Cpath d='M0 8 Q0 20 12 20 Q0 20 0 32 Q0 20 -12 20 Q0 20 0 8 Z' fill='none' stroke='%237dd3fc' stroke-width='1' stroke-opacity='0.7'/%3E%3Cpath d='M100 8 Q100 20 112 20 Q100 20 100 32 Q100 20 88 20 Q100 20 100 8 Z' fill='none' stroke='%237dd3fc' stroke-width='1' stroke-opacity='0.7'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'repeat-x',
-                    backgroundPosition: 'center',
-                    backgroundSize: '80px 36px',
-                }}
-            />
-
-            {/* Orion Blue Cosmic Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#041a3d]/80 via-transparent to-[#041a3d]/80 pointer-events-none" />
+            {/* Subtle Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 pointer-events-none" />
 
             {/* Scrolling Marquee Content */}
             <div className="flex whitespace-nowrap relative z-10">
