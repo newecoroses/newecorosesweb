@@ -246,8 +246,8 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                             justAdded
                                 ? 'bg-emerald-600 text-white border-emerald-600 scale-105 shadow-sm'
                                 : cartQuantity > 0
-                                ? 'bg-[#1c1917] text-white border-[#1c1917] hover:bg-black shadow-xs'
-                                : 'bg-[#1c1917] text-white border-[#1c1917] hover:bg-black hover:shadow-xs'
+                                ? 'bg-white text-[#1c1917] border-gray-200 hover:border-[#bfa81f] hover:bg-gray-50 shadow-xs'
+                                : 'bg-white text-[#1c1917] border-gray-200 hover:border-[#bfa81f] hover:bg-gray-50 shadow-xs'
                         }`}
                         title={cartQuantity > 0 ? `${cartQuantity} in Cart • Click to add more` : 'Add to Cart'}
                         aria-label="Add to Cart"
@@ -259,7 +259,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                             </>
                         ) : (
                             <>
-                                <Plus size={13} className="stroke-[2.5]" />
+                                <Plus size={13} className="stroke-[2.5] text-[#bfa81f]" />
                                 <span>{cartQuantity > 0 ? `Cart (${cartQuantity})` : 'Cart'}</span>
                             </>
                         )}
