@@ -45,7 +45,7 @@ export default function AnnouncementBar() {
     return (
         <div 
             className="relative overflow-hidden py-2.5 border-b border-white/15 z-[51] select-none shadow-xs text-white"
-            style={{ backgroundColor: '#353301' }}
+            style={{ backgroundColor: '#333201' }}
         >
             {/* Subtle Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 pointer-events-none" />

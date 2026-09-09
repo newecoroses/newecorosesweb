@@ -16,19 +16,19 @@ export default function Footer() {
     };
 
     return (
-        <footer className="text-white relative overflow-hidden" style={{ backgroundColor: '#353301' }}>
-
-
+        <footer className="bg-[#333201] text-white relative overflow-hidden" style={{ backgroundColor: '#333201' }}>
 
             {/* ═══ GIANT LUXURY BRAND STATEMENT BANNER ═══ */}
-            <div className="w-full max-w-full py-8 sm:py-12 md:py-16 border-b border-white/15 relative overflow-hidden select-none group">
+            <div className="w-full max-w-full bg-[#333201] py-8 sm:py-12 md:py-16 border-b border-white/15 relative overflow-hidden select-none group">
                 <div className="w-full max-w-full overflow-hidden px-2 text-center relative z-10 flex items-center justify-center">
                     <h2
                         className="font-montserrat text-[6.2vw] min-[400px]:text-[6.8vw] sm:text-[7.5vw] md:text-[8vw] lg:text-[8.5vw] font-black uppercase tracking-[0.04em] min-[400px]:tracking-[0.06em] sm:tracking-[0.14em] md:tracking-[0.18em] leading-none transition-all duration-500 cursor-default select-none whitespace-nowrap max-w-full"
                         style={{
                             fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif',
                             fontWeight: 900,
-                            color: '#ffffff',
+                            color: '#343200',
+                            WebkitTextStroke: '2px #F5DE74',
+                            paintOrder: 'stroke fill',
                         }}
                     >
                         NEW ECO ROSES
@@ -39,7 +39,7 @@ export default function Footer() {
                 <button
                     type="button"
                     onClick={scrollToTop}
-                    className="absolute bottom-3 sm:bottom-5 right-3 sm:right-6 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/15 text-white border border-white/30 hover:bg-white hover:text-[#072B61] transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 cursor-pointer group/top"
+                    className="absolute bottom-3 sm:bottom-5 right-3 sm:right-6 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white text-black border border-gray-200 hover:bg-amber-200 transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 cursor-pointer group/top"
                     title="Back to Top"
                     aria-label="Scroll back to top"
                 >
@@ -64,7 +64,7 @@ export default function Footer() {
                                 height={52}
                                 className="rounded-full ring-2 ring-white/40 group-hover:ring-white transition-all duration-300 drop-shadow-md"
                             />
-                            <span className="font-serif text-base font-bold tracking-[0.08em] text-white group-hover:text-[#7dd3fc] transition-colors">
+                            <span className="font-serif text-base font-bold tracking-[0.08em] text-white group-hover:text-amber-200 transition-colors">
                                 NEW ECO ROSES
                             </span>
                         </Link>
@@ -231,7 +231,7 @@ export default function Footer() {
                         <div className="space-y-2 pt-1">
                             <a
                                 href="tel:+919936911611"
-                                className="flex items-center gap-2 text-xs text-white hover:text-[#7dd3fc] bg-white/10 hover:bg-white/15 px-3 py-2 rounded-xl border border-white/15 transition-all group"
+                                className="flex items-center gap-2 text-xs text-white hover:text-amber-200 bg-black/15 hover:bg-black/30 px-3 py-2 rounded-xl border border-white/15 transition-all group"
                                 title="Call +91 99369 11611"
                             >
                                 <Phone size={14} className="text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
@@ -239,7 +239,7 @@ export default function Footer() {
                             </a>
                             <a
                                 href="tel:+919199501655"
-                                className="flex items-center gap-2 text-xs text-white hover:text-[#7dd3fc] bg-white/10 hover:bg-white/15 px-3 py-2 rounded-xl border border-white/15 transition-all group"
+                                className="flex items-center gap-2 text-xs text-white hover:text-amber-200 bg-black/15 hover:bg-black/30 px-3 py-2 rounded-xl border border-white/15 transition-all group"
                                 title="Call +91 91995 01655"
                             >
                                 <Phone size={14} className="text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
@@ -249,7 +249,7 @@ export default function Footer() {
                                 href="https://mail.google.com/mail/?view=cm&fs=1&to=newecoroses@gmail.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-xs text-white hover:text-[#7dd3fc] bg-white/10 hover:bg-white/15 px-3 py-2 rounded-xl border border-white/15 transition-all group"
+                                className="flex items-center gap-2 text-xs text-white hover:text-amber-200 bg-black/15 hover:bg-black/30 px-3 py-2 rounded-xl border border-white/15 transition-all group"
                                 title="Open Gmail to send email"
                             >
                                 <span className="text-xs">✉️</span>
