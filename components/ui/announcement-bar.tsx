@@ -44,11 +44,11 @@ export default function AnnouncementBar() {
 
     return (
         <div 
-            className="relative overflow-hidden py-2.5 border-b border-[#a89216] z-[51] select-none shadow-xs text-[#1c1917]"
+            className="relative overflow-hidden py-2.5 border-b border-[#a89216] z-[51] select-none shadow-xs text-white"
             style={{ backgroundColor: '#bfa81f' }}
         >
             {/* Subtle Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-transparent to-black/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/10 pointer-events-none" />
 
             {/* Scrolling Marquee Content */}
             <div className="flex whitespace-nowrap relative z-10">
@@ -59,15 +59,15 @@ export default function AnnouncementBar() {
                 >
                     {marqueeItems.map((text, i) => (
                         <div key={i} className="flex items-center gap-10 sm:gap-14">
-                            <span className="text-[10px] md:text-[11.5px] font-extrabold tracking-[0.22em] uppercase text-[#1c1917] shrink-0">
+                            <span className="text-[10px] md:text-[11.5px] font-extrabold tracking-[0.22em] uppercase text-white shrink-0 drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
                                 {text}
                             </span>
                             
                             {/* Star detailing separator between items */}
-                            <div className="flex items-center gap-1.5 shrink-0 text-[#1c1917]">
-                                <StarSparkle className="w-2.5 h-2.5 text-[#1c1917]/70" />
-                                <StarSparkle className="w-3.5 h-3.5 text-[#1c1917]" />
-                                <StarSparkle className="w-2.5 h-2.5 text-[#1c1917]/70" />
+                            <div className="flex items-center gap-1.5 shrink-0 text-white">
+                                <StarSparkle className="w-2.5 h-2.5 text-white/80" />
+                                <StarSparkle className="w-3.5 h-3.5 text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+                                <StarSparkle className="w-2.5 h-2.5 text-white/80" />
                             </div>
                         </div>
                     ))}
