@@ -44,11 +44,11 @@ export default function AnnouncementBar() {
 
     return (
         <div 
-            className="relative overflow-hidden py-2.5 border-b border-white/15 z-[51] select-none shadow-xs text-white"
-            style={{ backgroundColor: '#333201' }}
+            className="relative overflow-hidden py-2.5 border-b border-[#a89216] z-[51] select-none shadow-xs text-[#1c1917]"
+            style={{ backgroundColor: '#bfa81f' }}
         >
             {/* Subtle Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-transparent to-black/5 pointer-events-none" />
 
             {/* Scrolling Marquee Content */}
             <div className="flex whitespace-nowrap relative z-10">
@@ -59,15 +59,15 @@ export default function AnnouncementBar() {
                 >
                     {marqueeItems.map((text, i) => (
                         <div key={i} className="flex items-center gap-10 sm:gap-14">
-                            <span className="text-[10px] md:text-[11.5px] font-semibold tracking-[0.22em] uppercase text-white shrink-0 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
+                            <span className="text-[10px] md:text-[11.5px] font-extrabold tracking-[0.22em] uppercase text-[#1c1917] shrink-0">
                                 {text}
                             </span>
                             
                             {/* Star detailing separator between items */}
-                            <div className="flex items-center gap-1.5 shrink-0">
-                                <StarSparkle className="w-2.5 h-2.5 text-[#7dd3fc]/80" />
-                                <StarSparkle className="w-3.5 h-3.5 text-[#fbbf24] drop-shadow-[0_0_6px_rgba(251,191,36,0.7)]" />
-                                <StarSparkle className="w-2.5 h-2.5 text-[#7dd3fc]/80" />
+                            <div className="flex items-center gap-1.5 shrink-0 text-[#1c1917]">
+                                <StarSparkle className="w-2.5 h-2.5 text-[#1c1917]/70" />
+                                <StarSparkle className="w-3.5 h-3.5 text-[#1c1917]" />
+                                <StarSparkle className="w-2.5 h-2.5 text-[#1c1917]/70" />
                             </div>
                         </div>
                     ))}

@@ -16,18 +16,18 @@ export default function Footer() {
     };
 
     return (
-        <footer className="bg-[#333201] text-white relative overflow-hidden" style={{ backgroundColor: '#333201' }}>
+        <footer className="bg-[#bfa81f] text-[#1c1917] relative overflow-hidden" style={{ backgroundColor: '#bfa81f' }}>
 
             {/* ═══ GIANT LUXURY BRAND STATEMENT BANNER ═══ */}
-            <div className="w-full max-w-full bg-[#333201] py-8 sm:py-12 md:py-16 border-b border-white/15 relative overflow-hidden select-none group">
+            <div className="w-full max-w-full bg-[#bfa81f] py-8 sm:py-12 md:py-16 border-b border-[#a89216] relative overflow-hidden select-none group">
                 <div className="w-full max-w-full overflow-hidden px-2 text-center relative z-10 flex items-center justify-center">
                     <h2
                         className="font-montserrat text-[6.2vw] min-[400px]:text-[6.8vw] sm:text-[7.5vw] md:text-[8vw] lg:text-[8.5vw] font-black uppercase tracking-[0.04em] min-[400px]:tracking-[0.06em] sm:tracking-[0.14em] md:tracking-[0.18em] leading-none transition-all duration-500 cursor-default select-none whitespace-nowrap max-w-full"
                         style={{
                             fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif',
                             fontWeight: 900,
-                            color: '#343200',
-                            WebkitTextStroke: '2px #F5DE74',
+                            color: '#bfa81f',
+                            WebkitTextStroke: '2px #1c1917',
                             paintOrder: 'stroke fill',
                         }}
                     >
@@ -39,7 +39,7 @@ export default function Footer() {
                 <button
                     type="button"
                     onClick={scrollToTop}
-                    className="absolute bottom-3 sm:bottom-5 right-3 sm:right-6 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white text-black border border-gray-200 hover:bg-amber-200 transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 cursor-pointer group/top"
+                    className="absolute bottom-3 sm:bottom-5 right-3 sm:right-6 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#1c1917] text-white border border-[#1c1917] hover:bg-black transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 cursor-pointer group/top"
                     title="Back to Top"
                     aria-label="Scroll back to top"
                 >
@@ -48,7 +48,7 @@ export default function Footer() {
             </div>
 
             {/* Top Shimmer Accent */}
-            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-black/20 to-transparent" />
 
             {/* Main Footer */}
             <div className="max-w-7xl mx-auto px-6 lg:px-8 py-14 lg:py-18 relative z-10">
@@ -62,14 +62,14 @@ export default function Footer() {
                                 alt="New Eco Roses Logo"
                                 width={52}
                                 height={52}
-                                className="rounded-full ring-2 ring-white/40 group-hover:ring-white transition-all duration-300 drop-shadow-md"
+                                className="rounded-full ring-2 ring-[#1c1917]/30 group-hover:ring-[#1c1917] transition-all duration-300 drop-shadow-md"
                             />
-                            <span className="font-serif text-base font-bold tracking-[0.08em] text-white group-hover:text-amber-200 transition-colors">
+                            <span className="font-serif text-base font-extrabold tracking-[0.08em] text-[#1c1917] group-hover:text-black transition-colors">
                                 NEW ECO ROSES
                             </span>
                         </Link>
 
-                        <p className="text-white/85 text-sm leading-relaxed max-w-sm font-light">
+                        <p className="text-[#1c1917]/90 text-sm leading-relaxed max-w-sm font-medium">
                             Kolkata&apos;s finest luxury floral &amp; gifting boutique. Hand-curated roses and bespoke gifts, delivered with love to your doorstep.
                         </p>
 
@@ -80,25 +80,25 @@ export default function Footer() {
                                     href="https://www.instagram.com/newecoroses___kolkata/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                                    className="w-10 h-10 rounded-xl bg-black/10 hover:bg-black/20 border border-black/15 flex items-center justify-center transition-all duration-300 group shadow-sm"
                                     aria-label="Instagram"
                                     title="Follow us on Instagram"
                                 >
-                                    <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-5 h-5 filter invert group-hover:scale-110 transition-transform" />
+                                    <img src="/social%20svgs/instagram-logo-facebook-2-svgrepo-com%20%281%29.svg" alt="Instagram" className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                 </a>
                                 <a
                                     href="https://wa.me/919936911611"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                                    className="w-10 h-10 rounded-xl bg-black/10 hover:bg-black/20 border border-black/15 flex items-center justify-center transition-all duration-300 group shadow-sm"
                                     aria-label="WhatsApp"
                                     title="Message on WhatsApp"
                                 >
-                                    <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-5 h-5 filter invert group-hover:scale-110 transition-transform" />
+                                    <img src="/social%20svgs/whatsapp-svgrepo-com.svg" alt="WhatsApp" className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                 </a>
                                 <a
                                     href="/socials"
-                                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                                    className="w-10 h-10 rounded-xl bg-black/10 hover:bg-black/20 border border-black/15 flex items-center justify-center transition-all duration-300 group shadow-sm"
                                     aria-label="Google Reviews & Maps"
                                     title="Google Reviews & Store Locations"
                                 >
@@ -109,7 +109,7 @@ export default function Footer() {
                             <div>
                                 <Link
                                     href="/socials"
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all duration-300 hover:scale-[1.02]"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-black/10 hover:bg-black/20 border border-black/15 text-[#1c1917] transition-all duration-300 hover:scale-[1.02]"
                                 >
                                     <span>Explore All Socials</span>
                                     <span className="text-[10px]">↗</span>
@@ -120,8 +120,8 @@ export default function Footer() {
 
                     {/* Quick Links Column (2 cols) */}
                     <div className="lg:col-span-2">
-                        <h4 className="font-serif text-base text-white font-semibold mb-4 tracking-wide flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        <h4 className="font-serif text-base text-[#1c1917] font-extrabold mb-4 tracking-wide flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#1c1917]" />
                             Shop
                         </h4>
                         <ul className="space-y-2.5">
@@ -137,7 +137,7 @@ export default function Footer() {
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-xs md:text-sm text-white/80 hover:text-white transition-colors duration-300 font-light inline-block hover:translate-x-1 transform"
+                                        className="text-xs md:text-sm text-[#1c1917]/90 hover:text-black font-medium transition-colors duration-300 inline-block hover:translate-x-1 transform"
                                     >
                                         {link.label}
                                     </Link>
@@ -148,26 +148,26 @@ export default function Footer() {
 
                     {/* Delivery & Support Column (2 cols) */}
                     <div className="lg:col-span-2">
-                        <h4 className="font-serif text-base text-white font-semibold mb-4 tracking-wide flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        <h4 className="font-serif text-base text-[#1c1917] font-extrabold mb-4 tracking-wide flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#1c1917]" />
                             Delivery
                         </h4>
                         <ul className="space-y-3.5">
                             <li className="flex items-start gap-2.5">
-                                <Clock size={16} className="text-white mt-0.5 flex-shrink-0" />
-                                <span className="text-xs md:text-sm text-white/85 font-light leading-relaxed">
+                                <Clock size={16} className="text-[#1c1917] mt-0.5 flex-shrink-0" />
+                                <span className="text-xs md:text-sm text-[#1c1917]/90 font-medium leading-relaxed">
                                     Mon – Sun: 8 AM – 10 PM
                                 </span>
                             </li>
                             <li className="flex items-start gap-2.5">
-                                <MapPin size={16} className="text-white mt-0.5 flex-shrink-0" />
-                                <span className="text-xs md:text-sm text-white/85 font-light leading-relaxed">
+                                <MapPin size={16} className="text-[#1c1917] mt-0.5 flex-shrink-0" />
+                                <span className="text-xs md:text-sm text-[#1c1917]/90 font-medium leading-relaxed">
                                     Same-day delivery
                                 </span>
                             </li>
                             <li className="flex items-start gap-2.5">
-                                <Heart size={16} className="text-rose-200 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs md:text-sm text-white/85 font-light leading-relaxed">
+                                <Heart size={16} className="text-rose-700 mt-0.5 flex-shrink-0" />
+                                <span className="text-xs md:text-sm text-[#1c1917]/90 font-medium leading-relaxed">
                                     Signature luxury packaging included
                                 </span>
                             </li>
@@ -176,19 +176,19 @@ export default function Footer() {
 
                     {/* Visit Our Outlets Column (4 cols) */}
                     <div className="lg:col-span-4 space-y-3.5">
-                        <h4 className="font-serif text-base text-white font-semibold mb-4 tracking-wide flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        <h4 className="font-serif text-base text-[#1c1917] font-extrabold mb-4 tracking-wide flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#1c1917]" />
                             Visit Our Outlets
                         </h4>
 
                         {/* Outlet 1 Card */}
-                        <div className="bg-white/10 hover:bg-white/15 border border-white/20 rounded-2xl p-3.5 transition-all duration-300 space-y-2 group shadow-sm">
+                        <div className="bg-black/10 hover:bg-black/15 border border-black/15 rounded-2xl p-3.5 transition-all duration-300 space-y-2 group shadow-sm">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-white/20 px-2.5 py-0.5 rounded-full border border-white/20">
+                                <span className="text-[10px] font-bold text-[#1c1917] uppercase tracking-widest bg-black/10 px-2.5 py-0.5 rounded-full border border-black/15">
                                     Outlet 1 — Regent Park
                                 </span>
                             </div>
-                            <p className="text-xs text-white/95 leading-relaxed font-normal">
+                            <p className="text-xs text-[#1c1917] leading-relaxed font-medium">
                                 140/1/306, Netaji Subhash Chandra Bose Rd, Regent Park, Kolkata 700040
                             </p>
                             <div>
@@ -196,7 +196,7 @@ export default function Footer() {
                                     href="https://maps.app.goo.gl/RbKpGWan1p9qDxhr6"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 bg-white/20 hover:bg-white text-white hover:text-black text-xs font-semibold px-3 py-1.5 rounded-xl border border-white/30 transition-all duration-300 group/btn"
+                                    className="inline-flex items-center gap-2 bg-[#1c1917] hover:bg-black text-white text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#1c1917] transition-all duration-300 group/btn"
                                 >
                                     <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-4 h-4 object-contain group-hover/btn:scale-110 transition-transform" />
                                     <span>View Map ↗</span>
@@ -205,13 +205,13 @@ export default function Footer() {
                         </div>
 
                         {/* Outlet 2 Card */}
-                        <div className="bg-white/10 hover:bg-white/15 border border-white/20 rounded-2xl p-3.5 transition-all duration-300 space-y-2 group shadow-sm">
+                        <div className="bg-black/10 hover:bg-black/15 border border-black/15 rounded-2xl p-3.5 transition-all duration-300 space-y-2 group shadow-sm">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-white/20 px-2.5 py-0.5 rounded-full border border-white/20">
+                                <span className="text-[10px] font-bold text-[#1c1917] uppercase tracking-widest bg-black/10 px-2.5 py-0.5 rounded-full border border-black/15">
                                     Outlet 2 — New Alipore
                                 </span>
                             </div>
-                            <p className="text-xs text-white/95 leading-relaxed font-normal">
+                            <p className="text-xs text-[#1c1917] leading-relaxed font-medium">
                                 92/C/1, BL-J, Sahapur, New Alipore, Kolkata 700053
                             </p>
                             <div>
@@ -219,7 +219,7 @@ export default function Footer() {
                                     href="https://maps.app.goo.gl/iGyTCXfQG8oEZmv57"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 bg-white/20 hover:bg-white text-white hover:text-black text-xs font-semibold px-3 py-1.5 rounded-xl border border-white/30 transition-all duration-300 group/btn"
+                                    className="inline-flex items-center gap-2 bg-[#1c1917] hover:bg-black text-white text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#1c1917] transition-all duration-300 group/btn"
                                 >
                                     <img src="/social%20svgs/google-maps-svgrepo-com.svg" alt="Google Maps" className="w-4 h-4 object-contain group-hover/btn:scale-110 transition-transform" />
                                     <span>View Map ↗</span>
@@ -231,29 +231,29 @@ export default function Footer() {
                         <div className="space-y-2 pt-1">
                             <a
                                 href="tel:+919936911611"
-                                className="flex items-center gap-2 text-xs text-white hover:text-amber-200 bg-black/15 hover:bg-black/30 px-3 py-2 rounded-xl border border-white/15 transition-all group"
+                                className="flex items-center gap-2 text-xs text-[#1c1917] hover:text-black bg-black/10 hover:bg-black/15 px-3 py-2 rounded-xl border border-black/15 transition-all group font-semibold"
                                 title="Call +91 99369 11611"
                             >
-                                <Phone size={14} className="text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
+                                <Phone size={14} className="text-[#1c1917] flex-shrink-0 group-hover:scale-110 transition-transform" />
                                 <span className="font-medium">+91 99369 11611</span>
                             </a>
                             <a
                                 href="tel:+919199501655"
-                                className="flex items-center gap-2 text-xs text-white hover:text-amber-200 bg-black/15 hover:bg-black/30 px-3 py-2 rounded-xl border border-white/15 transition-all group"
+                                className="flex items-center gap-2 text-xs text-[#1c1917] hover:text-black bg-black/10 hover:bg-black/15 px-3 py-2 rounded-xl border border-black/15 transition-all group font-semibold"
                                 title="Call +91 91995 01655"
                             >
-                                <Phone size={14} className="text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
+                                <Phone size={14} className="text-[#1c1917] flex-shrink-0 group-hover:scale-110 transition-transform" />
                                 <span className="font-medium">+91 91995 01655</span>
                             </a>
                             <a
                                 href="https://mail.google.com/mail/?view=cm&fs=1&to=newecoroses@gmail.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-xs text-white hover:text-amber-200 bg-black/15 hover:bg-black/30 px-3 py-2 rounded-xl border border-white/15 transition-all group"
+                                className="flex items-center gap-2 text-xs text-[#1c1917] hover:text-black bg-black/10 hover:bg-black/15 px-3 py-2 rounded-xl border border-black/15 transition-all group font-semibold"
                                 title="Open Gmail to send email"
                             >
                                 <span className="text-xs">✉️</span>
-                                <span className="font-medium underline underline-offset-2 decoration-white/40">newecoroses@gmail.com</span>
+                                <span className="font-medium underline underline-offset-2 decoration-[#1c1917]/40">newecoroses@gmail.com</span>
                             </a>
                         </div>
                     </div>
@@ -262,19 +262,19 @@ export default function Footer() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t border-white/15 bg-black/10">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-3 text-center md:text-left">
-                    <p className="text-xs text-white/85 font-light">
-                        &copy; 2026 New Eco Roses. All rights reserved — Crafted with <span className="inline-block text-rose-300 animate-pulse mx-0.5">❤️</span> in Kolkata.
+            <div className="border-t border-black/15 bg-black/10">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-3 text-center md:text-left text-[#1c1917]">
+                    <p className="text-xs text-[#1c1917]/90 font-medium">
+                        &copy; 2026 New Eco Roses. All rights reserved — Crafted with <span className="inline-block text-rose-700 animate-pulse mx-0.5">❤️</span> in Kolkata.
                     </p>
                     <div className="flex items-center gap-6">
-                        <Link href="/socials" className="text-xs text-white/85 hover:text-white transition-colors">
+                        <Link href="/socials" className="text-xs text-[#1c1917]/90 hover:text-black font-semibold transition-colors">
                             Socials &amp; Media
                         </Link>
-                        <Link href="/privacy" className="text-xs text-white/85 hover:text-white transition-colors">
+                        <Link href="/privacy" className="text-xs text-[#1c1917]/90 hover:text-black font-semibold transition-colors">
                             Privacy Policy
                         </Link>
-                        <Link href="/terms" className="text-xs text-white/85 hover:text-white transition-colors">
+                        <Link href="/terms" className="text-xs text-[#1c1917]/90 hover:text-black font-semibold transition-colors">
                             Terms of Service
                         </Link>
                     </div>
