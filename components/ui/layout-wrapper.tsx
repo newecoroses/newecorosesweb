@@ -6,6 +6,7 @@ import Footer from '@/components/ui/footer';
 import ThemeProvider from '@/components/ui/theme-provider';
 import CartDrawer from '@/components/ui/cart-drawer';
 import { CartProvider } from '@/lib/cart-context';
+import ScrollRestorer from '@/components/ui/scroll-restorer';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -18,6 +19,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return (
         <CartProvider>
             <ThemeProvider />
+            <ScrollRestorer />
             <Navbar />
             <main className="flex-grow w-full max-w-full overflow-x-clip">
                 {children}
@@ -27,4 +29,5 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         </CartProvider>
     );
 }
+
 

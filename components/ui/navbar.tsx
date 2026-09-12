@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, ShoppingBag, ShoppingCart, Calendar, Gift, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,6 +34,7 @@ export default function Navbar() {
     const [deliveryLoc, setDeliveryLoc] = useState('');
     const [orderLink, setOrderLink] = useState(FALLBACK_ORDER_LINK);
     const pathname = usePathname();
+    const router = useRouter();
     const isScrolled = hasScrolled;
     const navRef = useRef<HTMLElement>(null);
     const { itemCount, openDrawer } = useCart();
@@ -122,7 +123,19 @@ export default function Navbar() {
                             {/* Left Section: FNP-Style Logo + Divider + Where to deliver? */}
                             <div className="flex items-center flex-shrink-0 gap-2 sm:gap-3">
                                 {/* FNP Style Logo & Text */}
-                                <Link href="/" className="group flex items-center flex-shrink-0 gap-2 select-none" aria-label="New Eco Roses – Home">
+                                <Link
+                                    href="/"
+                                    className="group flex items-center flex-shrink-0 gap-2 select-none"
+                                    aria-label="New Eco Roses – Home"
+                                    onClick={(e) => {
+                                        // Always go to top of home — clear saved scroll for '/'
+                                        sessionStorage.removeItem('scroll:/');
+                                        if (pathname === '/') {
+                                            e.preventDefault();
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }
+                                    }}
+                                >
                                     <Image
                                         src="/favicon_io/android-chrome-512x512.png"
                                         alt="New Eco Roses Logo"
