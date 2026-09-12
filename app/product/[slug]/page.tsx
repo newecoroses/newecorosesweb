@@ -88,14 +88,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     // Build WhatsApp link
     useEffect(() => {
         if (!product) return;
-        const origin = typeof window !== 'undefined' ? window.location.origin : '';
-        const productUrl = `${origin}/product/${product.slug}`;
+        const productUrl = `https://www.newecoroses.com/product/${product.slug}`;
         fetchWhatsappSettings().then(s => {
             const phone = s?.phone_number ?? FALLBACK_PHONE;
-            const msg = `Hi! I would like to order "${product.name}". Is same-day delivery available?\n\nProduct: ${productUrl}`;
+            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
         }).catch(() => {
-            const msg = `Hi! I would like to order "${product.name}". Is same-day delivery available?\n\nProduct: ${productUrl}`;
+            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${FALLBACK_PHONE}?text=${encodeURIComponent(msg)}`);
         });
     }, [product]);

@@ -271,7 +271,7 @@ export function buildWhatsappUrl(
 ): string {
     let finalMsg = message;
     if (productName) {
-        finalMsg = `Hi, I'm interested in ${productName}. Is it available?${productUrl ? ` Reference: ${productUrl}` : ''}`;
+        finalMsg = `Hi, I'm interested in ${productName}. Is it available for delivery today?${productUrl ? `\n\nProduct: ${productUrl}` : ''}`;
     }
     return `https://wa.me/${phone}?text=${encodeURIComponent(finalMsg)}`;
 }
