@@ -66,7 +66,14 @@ function ShopContent() {
     }, [searchParams, collections]);
 
     const filteredProducts = products.filter((product) => {
-        const matchesCollection = activeCollection === 'All' || (product.collection_name ?? '').split(',').map(s => s.trim()).includes(activeCollection);
+        const cName = (product.collection_name ?? '').toLowerCase();
+        const cSlug = (product.collection_slug ?? '').toLowerCase();
+        const aColl = activeCollection.toLowerCase();
+
+        const matchesCollection = activeCollection === 'All' || 
+            (product.collection_name ?? '').split(',').map(s => s.trim().toLowerCase()).includes(aColl) ||
+            ((aColl === 'decorations' || aColl === 'balloon bouquet' || aColl === 'decor') && (cName.includes('decor') || cSlug.includes('decor') || product.name.toLowerCase().includes('decor')));
+
         const matchesTag = activeTag === 'All' || product.tag === activeTag;
         const q = searchQuery.toLowerCase();
         const matchesSearch = !q ||
@@ -75,7 +82,8 @@ function ShopContent() {
             (product.celebrations ?? []).some((c: string) =>
                 c.toLowerCase().includes(q) || q.includes(c.toLowerCase())
             ) ||
-            (product.collection_name ?? '').toLowerCase().includes(q);
+            cName.includes(q) ||
+            cSlug.includes(q);
         return matchesCollection && matchesTag && matchesSearch;
     });
 

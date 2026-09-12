@@ -1144,4 +1144,5 @@ export const COLLECTIONS = [
     { name: 'Plants', slug: 'plants' },
     { name: 'Cake', slug: 'cake' },
     { name: 'Balloon Bouquet', slug: 'balloon-bouquet' },
+    { name: 'Decorations', slug: 'decorations' },
 ];

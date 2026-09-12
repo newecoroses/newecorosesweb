@@ -1,3 +1,4 @@
+import { PRODUCTS, COLLECTIONS } from './products';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -93,62 +94,109 @@ const resolveImages = (images: string[] | null | undefined): string[] => {
 };
 
 // ── Frontend Helpers ──────────────────────────────────────
-/** Fetch all visible products from Supabase */
+
+function staticToDBProduct(p: any): DBProduct {
+    return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        description: p.description || '',
+        collection_name: p.collection || 'General',
+        collection_slug: p.collectionSlug || 'general',
+        relationships: p.relationships || [],
+        celebrations: p.celebrations || [],
+        tag: p.tag || 'Standard',
+        image_url: resolveImage(p.image_url),
+        images: resolveImages(p.images || [p.image_url]),
+        image_scale: p.imageScale ?? 1,
+        stock: p.stock ?? 10,
+        is_visible: true,
+        is_featured: p.tag === 'Best Seller' || p.tag === 'New Arrival',
+        sort_order: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        item_count: p.itemCount ?? 1,
+    };
+}
+
+/** Fetch all visible products from Supabase merged with static fallback catalog */
 export function fetchProducts(): Promise<DBProduct[]> {
     return cachedQuery('products:all', async () => {
-        const { data } = await supabase
-            .from('products')
-            .select('*')
-            .eq('is_visible', true)
-            .order('sort_order');
-        return (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
+        let dbProds: DBProduct[] = [];
+        try {
+            const { data } = await supabase
+                .from('products')
+                .select('*')
+                .eq('is_visible', true)
+                .order('sort_order');
+            dbProds = (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
+        } catch (_) {}
+
+        const dbSlugs = new Set(dbProds.map(p => p.slug));
+        const extraStatic = PRODUCTS.filter(p => !dbSlugs.has(p.slug)).map(staticToDBProduct);
+
+        const ganeshItems = extraStatic.filter(p => (p.celebrations ?? []).includes('Ganesh Chaturthi') || p.name.toLowerCase().includes('ganesh'));
+        const otherExtra = extraStatic.filter(p => !ganeshItems.includes(p));
+
+        return [...ganeshItems, ...dbProds, ...otherExtra];
     });
 }
 
 /** Fetch visible products by tag */
-export function fetchProductsByTag(tag: string): Promise<DBProduct[]> {
-    return cachedQuery(`products:tag:${tag}`, async () => {
-        const { data } = await supabase
-            .from('products')
-            .select('*')
-            .eq('is_visible', true)
-            .eq('tag', tag)
-            .order('sort_order');
-        return (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
-    });
+export async function fetchProductsByTag(tag: string): Promise<DBProduct[]> {
+    const all = await fetchProducts();
+    return all.filter(p => p.tag === tag);
 }
 
 /** Fetch visible products by collection slug */
 export async function fetchProductsByCollection(collectionSlug: string): Promise<DBProduct[]> {
-    const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_visible', true)
-        .eq('collection_slug', collectionSlug)
-        .order('sort_order');
-    return (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
+    const all = await fetchProducts();
+    const cSlug = collectionSlug.toLowerCase();
+    return all.filter(p => {
+        const pSlug = (p.collection_slug ?? '').toLowerCase();
+        const pName = (p.collection_name ?? '').toLowerCase();
+        const pTitle = (p.name ?? '').toLowerCase();
+
+        if (cSlug === 'decorations' || cSlug === 'balloon-bouquet' || cSlug === 'decor') {
+            return pSlug === 'decorations' || pSlug === 'balloon-bouquet' || pName.includes('decor') || pTitle.includes('decor');
+        }
+        return pSlug === cSlug || pName === cSlug;
+    });
 }
 
 /** Fetch a single product by slug */
 export async function fetchProductBySlug(slug: string): Promise<DBProduct | null> {
-    const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-    if (!data) return null;
-    return { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
+    const all = await fetchProducts();
+    return all.find(p => p.slug === slug) ?? null;
 }
 
 /** Fetch all visible collections */
 export function fetchCollections(): Promise<DBCollection[]> {
     return cachedQuery('collections', async () => {
-        const { data } = await supabase
-            .from('collections')
-            .select('*')
-            .eq('is_visible', true)
-            .order('sort_order');
-        return (data ?? []).map((c: any) => ({ ...c, image_url: resolveImage(c.image_url) })) as DBCollection[];
+        let dbCols: DBCollection[] = [];
+        try {
+            const { data } = await supabase
+                .from('collections')
+                .select('*')
+                .eq('is_visible', true)
+                .order('sort_order');
+            dbCols = (data ?? []).map((c: any) => ({ ...c, image_url: resolveImage(c.image_url) })) as DBCollection[];
+        } catch (_) {}
+
+        const dbSlugs = new Set(dbCols.map(c => c.slug));
+        const staticCols: DBCollection[] = COLLECTIONS.map((c, i) => ({
+            id: `static-col-${i}`,
+            name: c.name,
+            slug: c.slug,
+            image_url: `/images/categories/${c.slug}.webp`,
+            description: '',
+            is_visible: true,
+            sort_order: i,
+            created_at: '',
+        }));
+
+        const missing = staticCols.filter(c => !dbSlugs.has(c.slug));
+        return [...dbCols, ...missing];
     });
 }
 
