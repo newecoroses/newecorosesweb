@@ -4,128 +4,94 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 /**
- * ScrollRestorer v2 — saves scroll position per page and restores it on back navigation.
+ * ScrollRestorer v3
  *
- * The key fix over v1: after navigating back, the page content loads async (products
- * from Supabase). We watch the page height with ResizeObserver and keep re-applying
- * the target scroll until either:
- *   a) we reach within 5px of the target, or
- *   b) 3 seconds have passed (timeout safety)
+ * Key insight: when pathname changes in Next.js App Router, window.scrollY
+ * is already 0 by the time the useEffect fires — so we must NEVER save
+ * scroll inside the pathname useEffect (it would overwrite the real value with 0).
+ *
+ * Instead we rely 100% on the passive scroll listener which correctly captures
+ * the position BEFORE navigation.
+ *
+ * Restoration: after navigating back, content loads async (Supabase), so
+ * we poll every 80ms to re-apply the target until the page is tall enough.
  */
 export default function ScrollRestorer() {
     const pathname = usePathname();
-    const isFirstRender = useRef<boolean>(true);
     const lastPathname = useRef<string | null>(null);
-    const targetScrollY = useRef<number | null>(null);
-    const observerRef = useRef<ResizeObserver | null>(null);
-    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const isFirstMount = useRef<boolean>(true);
+    const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-    // Tell the browser we handle scroll — not it
+    // Tell browser we handle scroll
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            window.history.scrollRestoration = 'manual';
-        }
+        window.history.scrollRestoration = 'manual';
     }, []);
 
-    // Continuously save scroll position while on current page
+    // Save scroll on every scroll event — keyed by the CURRENT path in ref
     useEffect(() => {
-        const saveScroll = () => {
+        const save = () => {
             if (lastPathname.current) {
-                sessionStorage.setItem(
-                    'scroll:' + lastPathname.current,
-                    String(Math.round(window.scrollY))
-                );
+                sessionStorage.setItem('__scroll__' + lastPathname.current, String(Math.round(window.scrollY)));
             }
         };
-        window.addEventListener('scroll', saveScroll, { passive: true });
-        return () => window.removeEventListener('scroll', saveScroll);
+        window.addEventListener('scroll', save, { passive: true });
+        return () => window.removeEventListener('scroll', save);
     }, []);
 
-    // Helper: keep scrolling to targetScrollY until the page is tall enough
-    function applyScrollUntilReady(y: number) {
-        // Clean up any existing observer/timer
-        if (observerRef.current) { observerRef.current.disconnect(); observerRef.current = null; }
-        if (timeoutRef.current) { clearTimeout(timeoutRef.current); timeoutRef.current = null; }
-
-        targetScrollY.current = y;
-
-        const tryScroll = () => {
-            const maxScroll = document.body.scrollHeight - window.innerHeight;
-            const reachable = Math.min(y, Math.max(0, maxScroll));
-            window.scrollTo({ top: reachable, behavior: 'instant' as ScrollBehavior });
-
-            // If we couldn't reach the full target, keep watching for layout growth
-            if (reachable < y - 5) {
-                return false; // not done yet
-            }
-            return true; // reached target
-        };
-
-        // Try immediately
-        if (tryScroll()) return;
-
-        // Watch for page height changes (async content loading) and re-apply
-        const observer = new ResizeObserver(() => {
-            if (tryScroll()) {
-                observer.disconnect();
-                observerRef.current = null;
-                if (timeoutRef.current) clearTimeout(timeoutRef.current);
-            }
-        });
-        observer.observe(document.body);
-        observerRef.current = observer;
-
-        // Safety: give up after 3 seconds
-        timeoutRef.current = setTimeout(() => {
-            observer.disconnect();
-            observerRef.current = null;
-            targetScrollY.current = null;
-        }, 3000);
-    }
-
-    // On pathname change: save old scroll, restore new position
+    // When pathname changes: restore saved position (do NOT re-save old page here)
     useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            lastPathname.current = pathname;
-            const saved = sessionStorage.getItem('scroll:' + pathname);
-            if (saved) {
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        applyScrollUntilReady(parseInt(saved, 10));
-                    });
-                });
-            }
+        // Stop any ongoing poll
+        if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+
+        // Update tracked path AFTER cleanup
+        lastPathname.current = pathname;
+
+        if (isFirstMount.current) {
+            isFirstMount.current = false;
+            // On fresh page load restore saved position if any
+            const saved = sessionStorage.getItem('__scroll__' + pathname);
+            if (saved) startRestore(parseInt(saved, 10));
             return;
         }
 
-        // Save old page scroll before leaving
-        if (lastPathname.current && lastPathname.current !== pathname) {
-            sessionStorage.setItem(
-                'scroll:' + lastPathname.current,
-                String(Math.round(window.scrollY))
-            );
-        }
-
-        lastPathname.current = pathname;
-
-        const saved = sessionStorage.getItem('scroll:' + pathname);
+        const saved = sessionStorage.getItem('__scroll__' + pathname);
         if (saved) {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    applyScrollUntilReady(parseInt(saved, 10));
-                });
-            });
+            startRestore(parseInt(saved, 10));
         } else {
-            // New page — scroll to top
             window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
         }
-
-        return () => {
-            if (observerRef.current) { observerRef.current.disconnect(); }
-            if (timeoutRef.current) { clearTimeout(timeoutRef.current); }
-        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]);
+
+    function startRestore(target: number) {
+        let attempts = 0;
+        const MAX = 40; // 40 * 80ms = 3.2 seconds max
+
+        const tryScroll = () => {
+            const docH = document.documentElement.scrollHeight;
+            const winH = window.innerHeight;
+            const maxScroll = docH - winH;
+
+            if (maxScroll >= target - 5) {
+                // Page is tall enough — scroll and stop
+                window.scrollTo({ top: target, behavior: 'instant' as ScrollBehavior });
+                if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+                return;
+            }
+            // Page still too short — scroll to current max and keep waiting
+            window.scrollTo({ top: Math.max(0, maxScroll), behavior: 'instant' as ScrollBehavior });
+            attempts++;
+            if (attempts >= MAX && pollRef.current) {
+                clearInterval(pollRef.current);
+                pollRef.current = null;
+            }
+        };
+
+        // First attempt immediately
+        requestAnimationFrame(() => { requestAnimationFrame(tryScroll); });
+        // Then poll every 80ms while content loads
+        pollRef.current = setInterval(tryScroll, 80);
+    }
 
     return null;
 }

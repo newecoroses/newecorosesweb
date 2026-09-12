@@ -100,8 +100,36 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     if (loading) {
         return (
-            <div className="pt-32 pb-20 bg-background min-h-screen flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="pt-[100px] sm:pt-[110px] lg:pt-[140px] pb-14 bg-white min-h-screen animate-pulse">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Breadcrumb skeleton */}
+                    <div className="flex items-center gap-2 mb-4">
+                        <div className="h-3 w-12 bg-gray-200 rounded" />
+                        <div className="h-3 w-2 bg-gray-200 rounded" />
+                        <div className="h-3 w-20 bg-gray-200 rounded" />
+                        <div className="h-3 w-2 bg-gray-200 rounded" />
+                        <div className="h-3 w-40 bg-gray-200 rounded" />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+                        {/* Left: image area */}
+                        <div className="lg:col-span-7">
+                            <div className="aspect-square w-full rounded-2xl bg-gray-200" />
+                        </div>
+                        {/* Right: details */}
+                        <div className="lg:col-span-5 flex flex-col gap-4 pt-2">
+                            <div className="h-8 w-3/4 bg-gray-200 rounded" />
+                            <div className="h-5 w-1/3 bg-gray-200 rounded" />
+                            <div className="h-10 w-1/2 bg-gray-200 rounded" />
+                            <div className="h-4 w-full bg-gray-200 rounded" />
+                            <div className="h-4 w-5/6 bg-gray-200 rounded" />
+                            <div className="h-4 w-4/6 bg-gray-200 rounded" />
+                            <div className="mt-4 flex gap-3">
+                                <div className="h-12 flex-1 bg-gray-200 rounded-full" />
+                                <div className="h-12 flex-1 bg-gray-200 rounded-full" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
