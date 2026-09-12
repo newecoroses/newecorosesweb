@@ -22,7 +22,7 @@ const ROW_2 = [
     { name: 'Wedding Gifts', slug: 'wedding-gifts', image: '/images/categories/wedding-gifts.webp', link: '/shop?celebration=wedding' },
     { name: 'Plants', slug: 'plants', image: '/images/categories/plants.webp', link: '/shop?cat=plants' },
     { name: 'Gift Hampers', slug: 'gift-hampers', image: '/images/categories/gift-hampers.webp', link: '/shop?cat=hamper' },
-    { name: 'Gift Sets', slug: 'gift-sets', image: '/images/categories/gift-sets.webp', link: '/shop?search=gift+set' },
+    { name: 'Decorations', slug: 'decorations', image: '/images/categories/decorations.webp', link: '/shop?search=decor' },
     { name: 'Garland', slug: 'garland', image: '/images/products/garland-set.jpeg', link: '/shop?search=garland' },
 ];
 
