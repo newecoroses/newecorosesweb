@@ -164,10 +164,25 @@ export async function fetchProductsByCollection(collectionSlug: string): Promise
     });
 }
 
-/** Fetch a single product by slug */
+/** Fetch a single product by slug — fast: checks static catalog first, then Supabase */
 export async function fetchProductBySlug(slug: string): Promise<DBProduct | null> {
-    const all = await fetchProducts();
-    return all.find(p => p.slug === slug) ?? null;
+    // 1. Instant lookup from local static catalog (no network needed for decoration/new products)
+    const staticMatch = PRODUCTS.find(p => p.slug === slug);
+    if (staticMatch) {
+        return staticToDBProduct(staticMatch);
+    }
+    // 2. Then try Supabase for DB products
+    try {
+        const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq('slug', slug)
+            .single();
+        if (!data) return null;
+        return { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
+    } catch (_) {
+        return null;
+    }
 }
 
 /** Fetch all visible collections */

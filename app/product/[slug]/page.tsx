@@ -29,59 +29,49 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const cartQuantity = product ? getItemQuantity(product.id) : 0;
 
     useEffect(() => {
-        // Load product from Supabase, fallback to static
+        // 1. INSTANT: Check static catalog synchronously — zero network wait
+        const staticProduct = getProductBySlug(slug);
+        if (staticProduct) {
+            const dbLike: DBProduct = {
+                id: staticProduct.id,
+                name: staticProduct.name,
+                slug: staticProduct.slug,
+                description: staticProduct.description,
+                collection_name: staticProduct.collection,
+                collection_slug: staticProduct.collectionSlug,
+                relationships: staticProduct.relationships,
+                celebrations: staticProduct.celebrations,
+                tag: staticProduct.tag,
+                image_url: staticProduct.images[0],
+                images: staticProduct.images,
+                image_scale: staticProduct.imageScale ?? 1,
+                stock: staticProduct.stock,
+                item_count: staticProduct.itemCount ?? 0,
+                is_visible: true,
+                is_featured: false,
+                sort_order: 0,
+                created_at: '',
+                updated_at: '',
+            };
+            setProduct(dbLike);
+            // Set related products from static catalog instantly too
+            const related = getProductsByCollection(staticProduct.collectionSlug)
+                .filter(p => p.id !== staticProduct.id)
+                .slice(0, 4);
+            setRelatedProducts(related as unknown as DBProduct[]);
+            setLoading(false); // Show page immediately!
+        }
+
+        // 2. BACKGROUND: Silently upgrade with live Supabase data (no spinner)
         fetchProductBySlug(slug).then(async (dbProduct) => {
             if (dbProduct) {
                 setProduct(dbProduct);
-                // Load related products
                 const related = await fetchProductsByCollection(dbProduct.collection_slug).catch(() => []);
                 setRelatedProducts(related.filter(p => p.id !== dbProduct.id).slice(0, 4));
-            } else {
-                const staticProduct = getProductBySlug(slug);
-                if (staticProduct) {
-                    setProduct({
-                        id: staticProduct.id,
-                        name: staticProduct.name,
-                        slug: staticProduct.slug,
-                        description: staticProduct.description,
-                        collection_name: staticProduct.collection,
-                        collection_slug: staticProduct.collectionSlug,
-                        relationships: staticProduct.relationships,
-                        celebrations: staticProduct.celebrations,
-                        tag: staticProduct.tag,
-                        image_url: staticProduct.images[0],
-                        images: staticProduct.images,
-                        image_scale: staticProduct.imageScale ?? 1,
-                        stock: staticProduct.stock,
-                        item_count: staticProduct.itemCount ?? 0,
-                        is_visible: true,
-                        is_featured: false,
-                        sort_order: 0,
-                        created_at: '',
-                        updated_at: '',
-                    });
-                    const related = getProductsByCollection(staticProduct.collectionSlug)
-                        .filter(p => p.id !== staticProduct.id)
-                        .slice(0, 4);
-                    setRelatedProducts(related as unknown as DBProduct[]);
-                }
             }
-            setLoading(false);
+            if (!staticProduct) setLoading(false); // Only show spinner if static also had nothing
         }).catch(() => {
-            const staticProduct = getProductBySlug(slug);
-            if (staticProduct) {
-                setProduct({
-                    id: staticProduct.id, name: staticProduct.name, slug: staticProduct.slug,
-                    description: staticProduct.description, collection_name: staticProduct.collection,
-                    collection_slug: staticProduct.collectionSlug, relationships: staticProduct.relationships,
-                    celebrations: staticProduct.celebrations, tag: staticProduct.tag,
-                    image_url: staticProduct.images[0], images: staticProduct.images,
-                    image_scale: staticProduct.imageScale ?? 1, stock: staticProduct.stock,
-                    item_count: staticProduct.itemCount ?? 0,
-                    is_visible: true, is_featured: false, sort_order: 0, created_at: '', updated_at: '',
-                });
-            }
-            setLoading(false);
+            if (!staticProduct) setLoading(false);
         });
     }, [slug]);
 
