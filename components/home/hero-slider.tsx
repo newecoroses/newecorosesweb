@@ -18,36 +18,20 @@ interface BannerItem {
 const ALL_BANNERS: BannerItem[] = [
     // ── Scheduled Seasonal Event Banners (Dynamic Date Window) ──
     {
-        id: 'janmashtami',
-        src: '/images/banners/hero/janmastami.webp',
-        alt: 'Janmashtami Specials',
-        link: '/shop?search=janmashtami',
-        startDate: '2026-08-25', // 10 days before Sept 4
-        endDate: '2026-09-06',   // 2 days after Sept 4
-    },
-    {
-        id: 'teachers-day',
-        src: '/images/banners/hero/teachers day.webp',
-        alt: "Teachers' Day Specials",
-        link: '/shop?search=teachers+day',
-        startDate: '2026-08-26', // 10 days before Sept 5
-        endDate: '2026-09-07',   // 2 days after Sept 5
-    },
-    {
-        id: 'ganesh-chaturthi',
-        src: '/images/banners/hero/ganesh chaturthi.webp',
+        id: 'ganesh-chaturthi-1',
+        src: '/images/banners/hero/ganesh chaturthi banner 1.webp',
         alt: 'Ganesh Chaturthi Specials',
-        link: '/shop?search=ganesh+chaturthi',
-        startDate: '2026-09-04', // 10 days before Sept 14
-        endDate: '2026-09-16',   // 2 days after Sept 14
+        link: '/shop?search=ganesh',
+        startDate: '2026-09-01',
+        endDate: '2026-09-30',
     },
     {
-        id: 'vishwakarma-puja',
-        src: '/images/banners/hero/viswakarma puja.webp',
+        id: 'viswakarma-puja-1',
+        src: '/images/banners/hero/viswakarma puja banner 1.webp',
         alt: 'Vishwakarma Puja Specials',
         link: '/shop?search=vishwakarma',
-        startDate: '2026-09-07', // 10 days before Sept 17
-        endDate: '2026-09-19',   // 2 days after Sept 17
+        startDate: '2026-09-01',
+        endDate: '2026-09-30',
     },
     {
         id: 'durga-puja',
