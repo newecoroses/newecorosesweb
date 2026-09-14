@@ -19,38 +19,18 @@ const ALL_BANNERS: BannerItem[] = [
     // ── Scheduled Seasonal Event Banners (Dynamic Date Window) ──
     {
         id: 'ganesh-chaturthi-1',
-        src: '/images/banners/hero/ganesh chaturthi banner 1.webp',
+        src: '/images/banners/hero/ganesh-chaturthi-banner-1.webp',
         alt: 'Ganesh Chaturthi Specials',
         link: '/shop?search=ganesh',
-        startDate: '2026-09-01',
-        endDate: '2026-09-30',
+        evergreen: true,
     },
     {
         id: 'viswakarma-puja-1',
-        src: '/images/banners/hero/viswakarma puja banner 1.webp',
+        src: '/images/banners/hero/viswakarma-puja-banner-1.webp',
         alt: 'Vishwakarma Puja Specials',
         link: '/shop?search=vishwakarma',
-        startDate: '2026-09-01',
-        endDate: '2026-09-30',
+        evergreen: true,
     },
-    {
-        id: 'durga-puja',
-        src: '/images/banners/hero/durga puja.webp',
-        alt: 'Durga Puja Specials',
-        link: '/shop?search=durga+puja',
-        startDate: '2026-09-27', // 20 days before Oct 17
-        endDate: '2026-10-22',   // 2 days after Oct 20
-    },
-    {
-        id: 'dussehra',
-        src: '/images/banners/hero/dussehra.webp',
-        alt: 'Dussehra Specials',
-        link: '/shop?search=dussehra',
-        startDate: '2026-10-10', // 10 days before Oct 20
-        endDate: '2026-10-22',   // 2 days after Oct 20
-    },
-
-    // ── Evergreen Year-Round Banners ──
     {
         id: 'birthday',
         src: '/images/banners/hero/birthday.webp',
@@ -85,6 +65,22 @@ const ALL_BANNERS: BannerItem[] = [
         alt: 'Plants Collection',
         link: '/shop?cat=plants',
         evergreen: true,
+    },
+    {
+        id: 'durga-puja',
+        src: '/images/banners/hero/durga-puja.webp',
+        alt: 'Durga Puja Specials',
+        link: '/shop?search=durga+puja',
+        startDate: '2026-09-27', // 20 days before Oct 17
+        endDate: '2026-10-22',   // 2 days after Oct 20
+    },
+    {
+        id: 'dussehra',
+        src: '/images/banners/hero/dussehra.webp',
+        alt: 'Dussehra Specials',
+        link: '/shop?search=dussehra',
+        startDate: '2026-10-10', // 10 days before Oct 20
+        endDate: '2026-10-22',   // 2 days after Oct 20
     },
 ];
 
