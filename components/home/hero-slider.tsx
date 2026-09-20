@@ -18,31 +18,10 @@ interface BannerItem {
 const ALL_BANNERS: BannerItem[] = [
     // ── Scheduled Seasonal Event Banners (Dynamic Date Window) ──
     {
-        id: 'ganesh-chaturthi-1',
-        src: '/images/banners/hero/ganesh-chaturthi-banner-1.webp',
-        alt: 'Ganesh Chaturthi Specials',
-        link: '/shop?search=ganesh',
-        evergreen: true,
-    },
-    {
-        id: 'viswakarma-puja-1',
-        src: '/images/banners/hero/viswakarma-puja-banner-1.webp',
-        alt: 'Vishwakarma Puja Specials',
-        link: '/shop?search=vishwakarma',
-        evergreen: true,
-    },
-    {
         id: 'birthday-cakes',
         src: '/images/banners/hero/birthday-cakes.webp',
         alt: 'Birthday Cakes & Gifts',
         link: '/shop?celebration=birthday',
-        evergreen: true,
-    },
-    {
-        id: 'anniversary',
-        src: '/images/banners/hero/anniversary.webp',
-        alt: 'Anniversary Specials',
-        link: '/shop?celebration=anniversary',
         evergreen: true,
     },
     {
@@ -121,8 +100,8 @@ export default function HeroSlider() {
 
     return (
         <section className="w-full max-w-full overflow-hidden px-3 md:px-8 pt-5 md:pt-6">
-            <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated bg-[#2a2420]">
-                {/* Crossfade Slides — All active banners rendered with instant smooth crossfade (Zero white flash) */}
+            <div className="relative w-full aspect-[3/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-elevated bg-gray-100">
+                {/* Crossfade Slides — All active banners rendered with instant smooth crossfade */}
                 {activeBanners.map((banner, idx) => {
                     const isActive = idx === activeCurrent;
                     return (
@@ -136,9 +115,8 @@ export default function HeroSlider() {
                                     alt={banner.alt}
                                     fill
                                     className="object-cover"
-                                    priority={idx === 0 || idx === 1}
-                                    sizes="(max-width: 768px) 100vw, 90vw"
-                                    quality={90}
+                                    priority
+                                    unoptimized
                                 />
                             </Link>
                         </div>
