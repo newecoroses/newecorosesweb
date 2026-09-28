@@ -135,10 +135,11 @@ export function fetchProducts(): Promise<DBProduct[]> {
         const dbSlugs = new Set(dbProds.map(p => p.slug));
         const extraStatic = PRODUCTS.filter(p => !dbSlugs.has(p.slug)).map(staticToDBProduct);
 
-        const ganeshItems = extraStatic.filter(p => (p.celebrations ?? []).includes('Ganesh Chaturthi') || p.name.toLowerCase().includes('ganesh'));
-        const otherExtra = extraStatic.filter(p => !ganeshItems.includes(p));
+        const sep28Items = extraStatic.filter(p => p.id.startsWith('sep28-'));
+        const ganeshItems = extraStatic.filter(p => !sep28Items.includes(p) && ((p.celebrations ?? []).includes('Ganesh Chaturthi') || p.name.toLowerCase().includes('ganesh')));
+        const otherExtra = extraStatic.filter(p => !sep28Items.includes(p) && !ganeshItems.includes(p));
 
-        return [...ganeshItems, ...dbProds, ...otherExtra];
+        return [...sep28Items, ...ganeshItems, ...dbProds, ...otherExtra];
     });
 }
 
