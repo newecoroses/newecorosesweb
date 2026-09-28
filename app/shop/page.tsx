@@ -72,7 +72,8 @@ function ShopContent() {
 
         const matchesCollection = activeCollection === 'All' || 
             (product.collection_name ?? '').split(',').map(s => s.trim().toLowerCase()).includes(aColl) ||
-            ((aColl === 'decorations' || aColl === 'balloon bouquet' || aColl === 'decor') && (cName.includes('decor') || cSlug.includes('decor') || product.name.toLowerCase().includes('decor')));
+            (aColl === 'balloon bouquet' && (cName.includes('balloon') || cSlug.includes('balloon') || product.name.toLowerCase().includes('balloon'))) ||
+            ((aColl === 'decorations' || aColl === 'decor') && (cName.includes('decor') || cSlug.includes('decor') || (product.name.toLowerCase().includes('decor') && !product.name.toLowerCase().includes('balloon'))));
 
         const matchesTag = activeTag === 'All' || product.tag === activeTag;
         const q = searchQuery.toLowerCase();

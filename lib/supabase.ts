@@ -158,8 +158,11 @@ export async function fetchProductsByCollection(collectionSlug: string): Promise
         const pName = (p.collection_name ?? '').toLowerCase();
         const pTitle = (p.name ?? '').toLowerCase();
 
-        if (cSlug === 'decorations' || cSlug === 'balloon-bouquet' || cSlug === 'decor') {
-            return pSlug === 'decorations' || pSlug === 'balloon-bouquet' || pName.includes('decor') || pTitle.includes('decor');
+        if (cSlug === 'balloon-bouquet') {
+            return pSlug === 'balloon-bouquet' || pName.includes('balloon') || pTitle.includes('balloon');
+        }
+        if (cSlug === 'decorations' || cSlug === 'decor') {
+            return pSlug === 'decorations' || pSlug === 'decor' || pName.includes('decor') || (pTitle.includes('decor') && !pTitle.includes('balloon'));
         }
         return pSlug === cSlug || pName === cSlug;
     });
