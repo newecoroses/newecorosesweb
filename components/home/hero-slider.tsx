@@ -52,14 +52,6 @@ const ALL_BANNERS: BannerItem[] = [
         link: '/shop?cat=plants',
         evergreen: true,
     },
-    {
-        id: 'dussehra',
-        src: '/images/banners/hero/dussehra.webp',
-        alt: 'Dussehra Specials',
-        link: '/shop?search=dussehra',
-        startDate: '2026-10-10', // 10 days before Oct 20
-        endDate: '2026-10-22',   // 2 days after Oct 20
-    },
 ];
 
 export default function HeroSlider() {
