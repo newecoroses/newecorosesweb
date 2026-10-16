@@ -17,6 +17,36 @@
 
 export const PRODUCTS: Product[] = [
     {
+            "id": "oct16-1",
+            "name": "Baby’s Breath Floral Crown",
+            "slug": "babys-breath-floral-crown",
+            "description": "A delicate halo of white Gypsophila blossoms, crafted for timeless romantic moments.",
+            "collection": "Fresh Flower",
+            "collectionSlug": "fresh-flower",
+            "relationships": [
+                    "Her",
+                    "Friends",
+                    "Family",
+                    "Corporate"
+            ],
+            "celebrations": [
+                    "Birthday",
+                    "Anniversary",
+                    "Wedding",
+                    "Festival",
+                    "Congratulations"
+            ],
+            "tag": "Best Seller",
+            "image_url": "/images/products/Baby’s Breath Floral Crown 1.webp",
+            "images": [
+                    "/images/products/Baby’s Breath Floral Crown 1.webp",
+                    "/images/products/Baby’s Breath Floral Crown 2.webp",
+                    "/images/products/Baby’s Breath Floral Crown 3.webp"
+            ],
+            "stock": 15,
+            "itemCount": 1
+    },
+    {
             "id": "oct1-1",
             "name": "Blush Rose Bouquet with Baby's Breath",
             "slug": "blush-rose-bouquet-with-baby-s-breath",

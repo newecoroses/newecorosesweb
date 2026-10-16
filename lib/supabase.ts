@@ -135,12 +135,13 @@ export function fetchProducts(): Promise<DBProduct[]> {
         const dbSlugs = new Set(dbProds.map(p => p.slug));
         const extraStatic = PRODUCTS.filter(p => !dbSlugs.has(p.slug)).map(staticToDBProduct);
 
+        const oct16Items = extraStatic.filter(p => p.id.startsWith('oct16-'));
         const oct1Items = extraStatic.filter(p => p.id.startsWith('oct1-'));
         const sep28Items = extraStatic.filter(p => p.id.startsWith('sep28-'));
-        const ganeshItems = extraStatic.filter(p => !oct1Items.includes(p) && !sep28Items.includes(p) && ((p.celebrations ?? []).includes('Ganesh Chaturthi') || p.name.toLowerCase().includes('ganesh')));
-        const otherExtra = extraStatic.filter(p => !oct1Items.includes(p) && !sep28Items.includes(p) && !ganeshItems.includes(p));
+        const ganeshItems = extraStatic.filter(p => !oct16Items.includes(p) && !oct1Items.includes(p) && !sep28Items.includes(p) && ((p.celebrations ?? []).includes('Ganesh Chaturthi') || p.name.toLowerCase().includes('ganesh')));
+        const otherExtra = extraStatic.filter(p => !oct16Items.includes(p) && !oct1Items.includes(p) && !sep28Items.includes(p) && !ganeshItems.includes(p));
 
-        return [...oct1Items, ...sep28Items, ...ganeshItems, ...dbProds, ...otherExtra];
+        return [...oct16Items, ...oct1Items, ...sep28Items, ...ganeshItems, ...dbProds, ...otherExtra];
     });
 }
 
@@ -172,7 +173,8 @@ export async function fetchProductsByCollection(collectionSlug: string): Promise
 /** Fetch a single product by slug — fast: checks static catalog first, then Supabase */
 export async function fetchProductBySlug(slug: string): Promise<DBProduct | null> {
     // 1. Instant lookup from local static catalog (no network needed for decoration/new products)
-    const staticMatch = PRODUCTS.find(p => p.slug === slug);
+    const normalizedSlug = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const staticMatch = PRODUCTS.find(p => p.slug === slug || p.slug.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug);
     if (staticMatch) {
         return staticToDBProduct(staticMatch);
     }
