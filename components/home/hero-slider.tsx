@@ -18,13 +18,6 @@ interface BannerItem {
 const ALL_BANNERS: BannerItem[] = [
     // ── Scheduled Seasonal Event Banners (Dynamic Date Window) ──
     {
-        id: 'durga-puja-banner-1',
-        src: '/images/banners/hero/durga-puja-banner-1.webp',
-        alt: 'Durga Puja Specials',
-        link: '/shop?search=durga+puja',
-        evergreen: true,
-    },
-    {
         id: 'birthday-cakes',
         src: '/images/banners/hero/birthday-cakes.webp',
         alt: 'Birthday Cakes & Gifts',
