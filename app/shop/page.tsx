@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Link from 'next/link';
 import ProductCard from '@/components/product/product-card';
 import SectionHeader from '@/components/ui/section-header';
 import WhatsAppFloat from '@/components/ui/whatsapp-float';
@@ -12,6 +13,35 @@ import { fetchProducts, fetchCollections, DBProduct, DBCollection } from '@/lib/
 import { PRODUCTS, COLLECTIONS } from '@/lib/products';
 
 const TAG_FILTERS = ['All', 'Best Seller', 'New Arrival', 'Seasonal', 'Standard'];
+
+function isLakshmiPujaItem(p: DBProduct): boolean {
+    const text = `${p.name} ${p.collection_name ?? ''} ${(p.celebrations ?? []).join(' ')} ${p.description ?? ''}`.toLowerCase();
+    
+    if (text.includes('teddy') || text.includes('carlsberg') || text.includes('15th birthday') || text.includes('40th birthday') || text.includes('50th birthday')) {
+        return false;
+    }
+    
+    if (text.includes('puja') || text.includes('altar') || text.includes('mandap') || text.includes('temple') || text.includes('pooja')) {
+        return true;
+    }
+    if (text.includes('garland')) {
+        return true;
+    }
+    if (text.includes('marigold') || text.includes('entrance door decoration') || text.includes('door hanging') || text.includes('floor decoration') || text.includes('floral console')) {
+        return true;
+    }
+    if (text.includes('yellow rose') || text.includes('red rose') || text.includes('sunflower') || text.includes('lily & rose') || text.includes('lily & orchid') || text.includes('table centerpiece') || text.includes('floral wreath') || text.includes('floral crown')) {
+        return true;
+    }
+    if (text.includes('flower basket hamper') || text.includes('floral box hamper') || text.includes('vase hamper') || text.includes('hatbox hamper') || text.includes('mixed flower basket')) {
+        return true;
+    }
+    if ((p.celebrations ?? []).some(c => c.toLowerCase().includes('lakshmi') || c.toLowerCase().includes('lakkhi') || c.toLowerCase().includes('puja') || c.toLowerCase().includes('pooja'))) {
+        return true;
+    }
+    return false;
+}
+
 
 function ShopContent() {
     const searchParams = useSearchParams();
@@ -65,6 +95,16 @@ function ShopContent() {
         if (search) setSearchQuery(search);
     }, [searchParams, collections]);
 
+        const celebrationParam = searchParams.get('celebration') || '';
+    const searchParam = searchParams.get('search') || '';
+    const isLakshmiPuja = 
+        celebrationParam.toLowerCase().includes('lak') ||
+        celebrationParam.toLowerCase().includes('lakkhi') ||
+        searchParam.toLowerCase().includes('lak') ||
+        searchParam.toLowerCase().includes('lakkhi') ||
+        searchQuery.toLowerCase().includes('lak') ||
+        searchQuery.toLowerCase().includes('lakkhi');
+
     const filteredProducts = products.filter((product) => {
         const cName = (product.collection_name ?? '').toLowerCase();
         const cSlug = (product.collection_slug ?? '').toLowerCase();
@@ -76,13 +116,34 @@ function ShopContent() {
             ((aColl === 'decorations' || aColl === 'decor') && (cName.includes('decor') || cSlug.includes('decor') || (product.name.toLowerCase().includes('decor') && !product.name.toLowerCase().includes('balloon'))));
 
         const matchesTag = activeTag === 'All' || product.tag === activeTag;
+
+        if (isLakshmiPuja) {
+            const cele = (product.celebrations ?? []).map(c => c.toLowerCase());
+            const hasCeleb = cele.some(c => c.includes('lakshmi') || c.includes('lakkhi'));
+            if (!hasCeleb && !isLakshmiPujaItem(product)) {
+                return false;
+            }
+            const q = searchQuery.toLowerCase().replace(/^(lakshmi[- ]?puja|lakkhi[- ]?puja)$/i, '').trim();
+            if (q) {
+                const matchesSearch = product.name.toLowerCase().includes(q) ||
+                    (product.relationships ?? []).some((r: string) => r.toLowerCase().includes(q)) ||
+                    cName.includes(q) ||
+                    cSlug.includes(q);
+                return matchesCollection && matchesTag && matchesSearch;
+            }
+            return matchesCollection && matchesTag;
+        }
+
         const q = searchQuery.toLowerCase();
+        const cleanQ = q.replace(/-/g, ' ').trim();
         const matchesSearch = !q ||
             product.name.toLowerCase().includes(q) ||
-            (product.relationships ?? []).some((r: string) => r.toLowerCase().includes(q)) ||
-            (product.celebrations ?? []).some((c: string) =>
-                c.toLowerCase().includes(q) || q.includes(c.toLowerCase())
-            ) ||
+            product.name.toLowerCase().includes(cleanQ) ||
+            (product.relationships ?? []).some((r: string) => r.toLowerCase().includes(q) || r.toLowerCase().includes(cleanQ)) ||
+            (product.celebrations ?? []).some((c: string) => {
+                const lc = c.toLowerCase();
+                return lc.includes(q) || q.includes(lc) || lc.includes(cleanQ) || cleanQ.includes(lc);
+            }) ||
             cName.includes(q) ||
             cSlug.includes(q);
         return matchesCollection && matchesTag && matchesSearch;
@@ -156,10 +217,16 @@ function ShopContent() {
                 {/* Minimal Header */}
                 <div className="text-center mb-5 sm:mb-6">
                     <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                        Our Collection
+                        {isLakshmiPuja 
+                            ? 'Lakkhi Puja Specials' 
+                            : activeCollection !== 'All' 
+                                ? `${activeCollection} Collection` 
+                                : 'Our Collection'}
                     </h1>
                     <p className="text-xs sm:text-sm text-muted mt-0.5 font-light">
-                        Thoughtfully curated luxury gifts &amp; flowers
+                        {isLakshmiPuja 
+                            ? 'Auspicious fresh blooms, traditional garlands & sacred floral decor for Maa Lakshmi’s blessings' 
+                            : 'Thoughtfully curated luxury gifts & flowers'}
                     </p>
                 </div>
 
@@ -193,8 +260,14 @@ function ShopContent() {
 
                     {/* Product Grid */}
                     <div className="flex-grow w-full">
-                        {(activeCollection !== 'All' || activeTag !== 'All' || searchQuery) && (
+                        {(activeCollection !== 'All' || activeTag !== 'All' || searchQuery || isLakshmiPuja) && (
                             <div className="mb-6 flex flex-wrap items-center gap-2">
+                                {isLakshmiPuja && (
+                                    <span className="inline-flex items-center gap-1.5 bg-[#bfa81f] text-white text-xs uppercase tracking-wider font-medium px-3.5 py-1.5 rounded-full shadow-xs">
+                                        🪔 Lakkhi Puja Specials
+                                        <Link href="/shop" className="hover:opacity-70"><X size={12} /></Link>
+                                    </span>
+                                )}
                                 {activeCollection !== 'All' && (
                                     <span className="inline-flex items-center gap-1.5 bg-primary text-white text-xs uppercase tracking-wider font-medium px-3 py-1.5 rounded-full">
                                         {activeCollection}
@@ -207,7 +280,7 @@ function ShopContent() {
                                         <button onClick={() => setActiveTag('All')} className="hover:opacity-70"><X size={12} /></button>
                                     </span>
                                 )}
-                                {searchQuery && (
+                                {searchQuery && !isLakshmiPuja && (
                                     <span className="inline-flex items-center gap-1.5 bg-secondary text-foreground text-xs uppercase tracking-wider font-medium px-3 py-1.5 rounded-full">
                                         &ldquo;{searchQuery}&rdquo;
                                         <button onClick={() => setSearchQuery('')} className="hover:opacity-70"><X size={12} /></button>

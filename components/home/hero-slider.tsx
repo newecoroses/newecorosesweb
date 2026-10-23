@@ -21,7 +21,7 @@ const ALL_BANNERS: BannerItem[] = [
         id: 'lakshmi-puja',
         src: '/images/banners/hero/a-little-more-beauty-this-lakshmi-puja.webp',
         alt: 'A Little More Beauty This Lakshmi Puja',
-        link: '/shop?search=puja',
+        link: '/shop?celebration=lakshmi-puja',
         evergreen: true,
     },
     {
