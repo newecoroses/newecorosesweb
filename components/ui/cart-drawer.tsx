@@ -209,15 +209,24 @@ export default function CartDrawer() {
                                     </div>
                                 )}
 
+                                <Link
+                                    href="/checkout"
+                                    onClick={closeDrawer}
+                                    className="w-full flex items-center justify-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white py-3.5 rounded-xl text-sm uppercase tracking-[0.15em] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.99]"
+                                >
+                                    <span>Proceed to Checkout</span>
+                                    <ArrowRight size={16} />
+                                </Link>
+
                                 <a
                                     href={buildWhatsAppLink()}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={closeDrawer}
-                                    className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1fb855] text-white py-3.5 rounded-xl text-sm uppercase tracking-[0.15em] font-semibold transition-all shadow-lg shadow-green-500/15 hover:shadow-xl hover:shadow-green-500/25"
+                                    className="w-full flex items-center justify-center gap-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold transition-all"
                                 >
-                                    <WhatsappIcon size={20} />
-                                    Place Order / Enquire on WhatsApp
+                                    <WhatsappIcon size={16} className="text-emerald-600" />
+                                    <span>Order / Enquire on WhatsApp</span>
                                 </a>
                                 <p className="text-[11px] text-center text-muted font-light">
                                     Your item list will be sent via WhatsApp for quick confirmation.

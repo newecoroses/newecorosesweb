@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Plus, Check, Star, ShoppingCart } from 'lucide-react';
 import { fetchWhatsappSettings } from '@/lib/supabase';
@@ -50,6 +51,7 @@ export function getProductPriceInfo(product: { id?: string; name?: string; price
 }
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+    const router = useRouter();
     const [isHovered, setIsHovered] = useState(false);
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
     const [justAdded, setJustAdded] = useState(false);
@@ -138,7 +140,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             image_url: product.image_url,
             price: hasPrice ? price : null,
         });
-        openDrawer();
+        router.push('/checkout');
     };
 
     return (

@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, ShoppingCart, Check, Minus, Plus, Star, MapPin, Maximize2, Flame, Info, ChevronDown, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProductCard, { getProductPriceInfo } from '@/components/product/product-card';
@@ -16,6 +17,7 @@ import { useCart } from '@/lib/cart-context';
 const FALLBACK_PHONE = '919936911611';
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+    const router = useRouter();
     const { slug } = use(params);
     const [selectedImage, setSelectedImage] = useState(0);
     const [product, setProduct] = useState<DBProduct | null>(null);
@@ -180,7 +182,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     const handleBuyNow = () => {
         handleAddToCart();
-        openDrawer();
+        router.push('/checkout');
     };
 
     return (
