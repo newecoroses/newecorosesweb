@@ -318,7 +318,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                 e.stopPropagation();
                                 trackEnquiry(product.name, 'card_whatsapp');
                             }}
-                            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[11px] font-bold transition-all duration-200 active:scale-95 shadow-2xs group/wa"
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] text-white text-[11px] font-bold transition-all duration-200 active:scale-95 shadow-2xs group/wa"
                             title="Enquire on WhatsApp"
                         >
                             <svg className="w-3.5 h-3.5 fill-white group-hover/wa:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">

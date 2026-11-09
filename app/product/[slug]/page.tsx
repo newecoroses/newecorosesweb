@@ -486,7 +486,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={() => trackEnquiry(product.id, product.name)}
-                                        className="flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm hover:shadow-md transition-all active:scale-[0.99]"
+                                        className="flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] border border-[#a89216] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm hover:shadow-md transition-all active:scale-[0.99]"
                                     >
                                         <WhatsappIcon size={18} className="text-white" />
                                         <span>Enquire Now</span>
