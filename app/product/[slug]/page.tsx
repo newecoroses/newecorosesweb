@@ -27,7 +27,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [pincode, setPincode] = useState('');
     const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-    const { addItem, updateQuantity, getItemQuantity, openDrawer } = useCart();
+    const { addItem, updateQuantity, getItemQuantity, openDrawer, openAddonModal } = useCart();
     const cartQuantity = product ? getItemQuantity(product.id) : 0;
 
     useEffect(() => {
@@ -181,8 +181,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     };
 
     const handleBuyNow = () => {
-        handleAddToCart();
-        router.push('/checkout');
+        if (!product) return;
+        openAddonModal({
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            image_url: product.image_url,
+            price: price,
+        });
     };
 
     return (

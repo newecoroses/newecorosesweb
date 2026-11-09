@@ -14,7 +14,7 @@ const FALLBACK_PHONE = '919936911611';
 const SITE_URL = typeof window !== 'undefined' ? window.location.origin : 'https://www.newecoroses.com';
 
 export default function CartDrawer() {
-    const { items, removeItem, updateQuantity, clearCart, itemCount, isDrawerOpen, closeDrawer } = useCart();
+    const { items, removeItem, updateQuantity, clearCart, itemCount, isDrawerOpen, closeDrawer, openAddonModal } = useCart();
     const [phone, setPhone] = useState(FALLBACK_PHONE);
     const backdropRef = useRef<HTMLDivElement>(null);
 
@@ -209,15 +209,14 @@ export default function CartDrawer() {
                                     </div>
                                 )}
 
-                                <Link
-                                    href="/checkout"
-                                    prefetch={true}
-                                    onClick={closeDrawer}
+                                <button
+                                    type="button"
+                                    onClick={() => openAddonModal()}
                                     className="w-full flex items-center justify-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white py-3.5 rounded-xl text-sm uppercase tracking-[0.15em] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
                                 >
                                     <span>Proceed to Checkout</span>
                                     <ArrowRight size={16} />
-                                </Link>
+                                </button>
 
                                 <a
                                     href={buildWhatsAppLink()}

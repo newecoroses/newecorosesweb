@@ -56,7 +56,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
     const [justAdded, setJustAdded] = useState(false);
     const [whatsappPhone, setWhatsappPhone] = useState(FALLBACK_PHONE);
-    const { addItem, getItemQuantity, openDrawer } = useCart();
+    const { addItem, getItemQuantity, openDrawer, openAddonModal } = useCart();
     const cartQuantity = getItemQuantity(product.id);
 
     useEffect(() => {
@@ -133,14 +133,13 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     const handleBuyNow = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        addItem({
+        openAddonModal({
             id: product.id,
             name: product.name,
             slug: product.slug,
             image_url: product.image_url,
             price: hasPrice ? price : null,
         });
-        router.push('/checkout');
     };
 
     return (

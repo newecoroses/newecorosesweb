@@ -24,6 +24,9 @@ interface CartContextType {
     openDrawer: () => void;
     closeDrawer: () => void;
     toggleDrawer: () => void;
+    isAddonModalOpen: boolean;
+    openAddonModal: (itemToAdd?: Omit<CartItem, 'quantity'>) => void;
+    closeAddonModal: () => void;
 }
 
 const STORAGE_KEY = 'ner_cart';
@@ -42,6 +45,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [hydrated, setHydrated] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isAddonModalOpen, setIsAddonModalOpen] = useState(false);
 
     // Hydrate from localStorage on mount
     useEffect(() => {
@@ -95,10 +99,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const closeDrawer = useCallback(() => setIsDrawerOpen(false), []);
     const toggleDrawer = useCallback(() => setIsDrawerOpen(p => !p), []);
 
+    const openAddonModal = useCallback((itemToAdd?: Omit<CartItem, 'quantity'>) => {
+        if (itemToAdd) {
+            addItem(itemToAdd);
+        }
+        setIsDrawerOpen(false);
+        setIsAddonModalOpen(true);
+    }, [addItem]);
+
+    const closeAddonModal = useCallback(() => setIsAddonModalOpen(false), []);
+
     return (
         <CartContext.Provider value={{
             items, addItem, removeItem, updateQuantity, getItemQuantity, clearCart,
             itemCount, isDrawerOpen, openDrawer, closeDrawer, toggleDrawer,
+            isAddonModalOpen, openAddonModal, closeAddonModal,
         }}>
             {children}
         </CartContext.Provider>
