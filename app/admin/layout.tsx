@@ -25,12 +25,14 @@ import {
     Film,
     Sparkles,
     Palette,
-    BarChart2
+    BarChart2,
+    UserCheck
 } from 'lucide-react';
 
 const NAV_ITEMS = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/products', label: 'Products', icon: Package },
+    { href: '/admin/staff', label: 'Staff Management', icon: UserCheck },
     { href: '/admin/collections', label: 'Collections', icon: FolderOpen },
     { href: '/admin/celebrations', label: 'Celebrations', icon: Calendar },
     { href: '/admin/relationships', label: 'Relationships', icon: Users },

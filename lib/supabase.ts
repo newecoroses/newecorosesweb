@@ -28,6 +28,8 @@ export interface DBProduct {
     is_featured: boolean; sort_order: number;
     created_at: string; updated_at: string;
     item_count?: number;
+    price?: number | null;
+    original_price?: number | null;
 }
 
 export interface DBCollection {
@@ -132,6 +134,18 @@ export function fetchProducts(): Promise<DBProduct[]> {
             dbProds = (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
         } catch (_) {}
 
+        let priceOverrides: Record<string, { price: number; original_price?: number }> = {};
+        try {
+            const { data: priceData } = await supabase
+                .from('site_settings')
+                .select('value')
+                .eq('key', 'product_prices')
+                .single();
+            if (priceData?.value) {
+                priceOverrides = JSON.parse(priceData.value);
+            }
+        } catch (_) {}
+
         const dbSlugs = new Set(dbProds.map(p => p.slug));
         const extraStatic = PRODUCTS.filter(p => !dbSlugs.has(p.slug)).map(staticToDBProduct);
 
@@ -141,7 +155,19 @@ export function fetchProducts(): Promise<DBProduct[]> {
         const ganeshItems = extraStatic.filter(p => !oct16Items.includes(p) && !oct1Items.includes(p) && !sep28Items.includes(p) && ((p.celebrations ?? []).includes('Ganesh Chaturthi') || p.name.toLowerCase().includes('ganesh')));
         const otherExtra = extraStatic.filter(p => !oct16Items.includes(p) && !oct1Items.includes(p) && !sep28Items.includes(p) && !ganeshItems.includes(p));
 
-        return [...oct16Items, ...oct1Items, ...sep28Items, ...ganeshItems, ...dbProds, ...otherExtra];
+        const all = [...oct16Items, ...oct1Items, ...sep28Items, ...ganeshItems, ...dbProds, ...otherExtra];
+
+        return all.map(p => {
+            const override = priceOverrides[p.id] || priceOverrides[p.slug];
+            if (override && override.price > 0) {
+                return {
+                    ...p,
+                    price: override.price,
+                    original_price: override.original_price || p.original_price,
+                };
+            }
+            return p;
+        });
     });
 }
 
@@ -172,24 +198,44 @@ export async function fetchProductsByCollection(collectionSlug: string): Promise
 
 /** Fetch a single product by slug — fast: checks static catalog first, then Supabase */
 export async function fetchProductBySlug(slug: string): Promise<DBProduct | null> {
-    // 1. Instant lookup from local static catalog (no network needed for decoration/new products)
+    let priceOverrides: Record<string, { price: number; original_price?: number }> = {};
+    try {
+        const { data: priceData } = await supabase
+            .from('site_settings')
+            .select('value')
+            .eq('key', 'product_prices')
+            .single();
+        if (priceData?.value) {
+            priceOverrides = JSON.parse(priceData.value);
+        }
+    } catch (_) {}
+
     const normalizedSlug = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
     const staticMatch = PRODUCTS.find(p => p.slug === slug || p.slug.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug);
+    let prod: DBProduct | null = null;
     if (staticMatch) {
-        return staticToDBProduct(staticMatch);
+        prod = staticToDBProduct(staticMatch);
+    } else {
+        try {
+            const { data } = await supabase
+                .from('products')
+                .select('*')
+                .eq('slug', slug)
+                .single();
+            if (data) {
+                prod = { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
+            }
+        } catch (_) {}
     }
-    // 2. Then try Supabase for DB products
-    try {
-        const { data } = await supabase
-            .from('products')
-            .select('*')
-            .eq('slug', slug)
-            .single();
-        if (!data) return null;
-        return { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
-    } catch (_) {
-        return null;
+
+    if (prod) {
+        const override = priceOverrides[prod.id] || priceOverrides[prod.slug];
+        if (override && override.price > 0) {
+            prod.price = override.price;
+            prod.original_price = override.original_price || prod.original_price;
+        }
     }
+    return prod;
 }
 
 /** Fetch all visible collections */

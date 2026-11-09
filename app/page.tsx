@@ -79,6 +79,7 @@ export default function Home() {
   const [relationships, setRelationships] = useState<DBRelationship[]>(FALLBACK_RELATIONSHIPS as DBRelationship[]);
   const [newArrivals, setNewArrivals] = useState<DBProduct[]>([]);
   const [bestSellers, setBestSellers] = useState<DBProduct[]>([]);
+  const [trending, setTrending] = useState<DBProduct[]>([]);
   const [featuredRoses, setFeaturedRoses] = useState<DBFeaturedItem[]>(FALLBACK_FEATURED as DBFeaturedItem[]);
   const [testimonials, setTestimonials] = useState<DBTestimonial[]>([]);
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -92,10 +93,11 @@ export default function Home() {
       fetchRelationships(),
       fetchProductsByTag('New Arrival'),
       fetchProductsByTag('Best Seller'),
+      fetchProductsByTag('Trending'),
       fetchFeaturedItems('handpicked'),
       fetchTestimonials(),
       fetchAllSettings(),
-    ]).then(([prods, cols, celebs, rels, arrivals, sellers, featured, testimonial, setts]) => {
+    ]).then(([prods, cols, celebs, rels, arrivals, sellers, trendList, featured, testimonial, setts]) => {
       if (prods.length > 0) setProducts(prods);
       else setProducts(PRODUCTS as unknown as DBProduct[]); // fallback
 
@@ -104,6 +106,7 @@ export default function Home() {
       if (rels.length > 0) setRelationships(rels);
       if (arrivals.length > 0) setNewArrivals(arrivals);
       if (sellers.length > 0) setBestSellers(sellers);
+      if (trendList && trendList.length > 0) setTrending(trendList);
       if (featured.length > 0) setFeaturedRoses(featured);
       if (testimonial.length > 0) setTestimonials(testimonial);
       setSettings(setts);
@@ -483,6 +486,30 @@ export default function Home() {
               <Link href="/shop" className="group inline-flex items-center gap-2 border border-gray-900 text-[#1c1917] px-7 py-3 text-xs uppercase tracking-[0.15em] font-bold rounded-full hover:bg-black hover:text-white transition-all duration-300 shadow-xs hover:shadow-sm">
                 View All Products <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ TRENDING NOW ═══ */}
+      {trending.length > 0 && (
+        <section className="py-8 md:py-14 bg-[#faf7f2] border-b border-[#ede4d6]">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="mb-5 md:mb-8"
+            >
+              <span className="block text-[10px] uppercase tracking-[0.16em] font-bold text-gray-400 mb-1">What's Hot</span>
+              <h2 className="font-sans text-base sm:text-lg md:text-xl font-extrabold text-[#1c1917] tracking-tight">Trending Now</h2>
+              <p className="text-gray-500 text-xs font-normal mt-0.5 max-w-lg">Customer favorites catching everyone&apos;s attention right now.</p>
+            </motion.div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
+              {trending.map((product, idx) => (
+                <ProductCard key={product.id} product={product as any} index={idx} />
+              ))}
             </div>
           </div>
         </section>

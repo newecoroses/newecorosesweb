@@ -92,16 +92,29 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     // Dynamic tag styling (FNP style)
     const tagInfo = (() => {
         if (!product.tag || product.tag === 'Standard') return null;
-        if (product.tag.toLowerCase().includes('best') || product.tag.toLowerCase().includes('bestseller')) {
+        const lower = product.tag.toLowerCase();
+        if (lower.includes('best') || lower.includes('bestseller')) {
             return { label: 'Bestseller', bg: 'bg-[#581c87] text-white' };
         }
-        if (product.tag.toLowerCase().includes('new')) {
+        if (lower.includes('new')) {
             return { label: 'New Arrival', bg: 'bg-[#1d4ed8] text-white' };
         }
-        if (product.tag.toLowerCase().includes('luxe') || product.tag.toLowerCase().includes('luxury')) {
+        if (lower.includes('trend')) {
+            return { label: 'Trending', bg: 'bg-amber-600 text-white' };
+        }
+        if (lower.includes('feature')) {
+            return { label: 'Featured', bg: 'bg-purple-700 text-white' };
+        }
+        if (lower.includes('sale')) {
+            return { label: 'Sale', bg: 'bg-rose-600 text-white' };
+        }
+        if (lower.includes('limit')) {
+            return { label: 'Limited Edition', bg: 'bg-emerald-700 text-white' };
+        }
+        if (lower.includes('luxe') || lower.includes('luxury')) {
             return { label: 'LUXE', bg: 'bg-[#18181b] text-white' };
         }
-        if (product.tag.toLowerCase().includes('season')) {
+        if (lower.includes('season')) {
             return { label: 'Seasonal', bg: 'bg-[#047857] text-white' };
         }
         return { label: product.tag, bg: 'bg-rose-100 text-rose-800' };
