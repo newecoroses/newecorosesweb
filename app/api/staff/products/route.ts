@@ -17,6 +17,9 @@ const AVAILABLE_TAGS = [
     'Limited Edition',
 ];
 
+const isUUID = (val?: string | null) =>
+    typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+
 export async function GET() {
     try {
         const session = await getStaffSession();
@@ -67,8 +70,8 @@ export async function GET() {
             const override = priceOverrides[p.id] || priceOverrides[p.slug];
             return {
                 ...p,
-                price: override?.price ?? p.price ?? null,
-                original_price: override?.original_price ?? p.original_price ?? null,
+                price: override?.price !== undefined ? override.price : (p.price ?? null),
+                original_price: override?.original_price !== undefined ? override.original_price : (p.original_price ?? null),
             };
         });
 
@@ -117,8 +120,6 @@ export async function PATCH(request: Request) {
             description,
             price,
             original_price,
-            image_url,
-            images,
             stock,
             is_visible,
             is_featured,
@@ -134,74 +135,122 @@ export async function PATCH(request: Request) {
 
         const changesList: string[] = [];
 
-        // ── 1. Check Permissions ──
-        if (price !== undefined || original_price !== undefined) {
-            // Price editing is instantly enabled for staff to publish or update prices immediately
-            if (price !== undefined) {
-                changesList.push(`Price updated to ₹${price} and published live`);
+        // ── 1. Handle Price Update ──
+        if (price !== undefined) {
+            const numPrice = price === null || price === '' ? 0 : Number(price);
+            const numOrig = original_price ? Number(original_price) : (numPrice > 0 ? Math.round(numPrice * 1.15) : 0);
+            
+            if (productId) {
+                await setProductPriceOverride(productId, numPrice, numOrig, session.name);
             }
+            if (slug && slug !== productId) {
+                await setProductPriceOverride(slug, numPrice, numOrig, session.name);
+            }
+            changesList.push(numPrice > 0 ? `Price updated to ₹${numPrice}` : 'Price removed');
         }
 
+        // ── 2. Check if DB columns are being updated ──
+        const hasDbColumnChanges =
+            name !== undefined ||
+            description !== undefined ||
+            stock !== undefined ||
+            is_visible !== undefined ||
+            is_featured !== undefined ||
+            sort_order !== undefined ||
+            tag !== undefined ||
+            collection_name !== undefined ||
+            collection_slug !== undefined;
+
+        let updatedProduct: any = null;
+        let productName = name || slug || productId;
+
+        // If no DB column changes, we're done with just the price update!
+        if (!hasDbColumnChanges) {
+            await logStaffActivity({
+                staffId: session.id,
+                staffName: session.name,
+                action: 'Updated Product Price',
+                productId: productId || slug,
+                productName: productName,
+                details: changesList.join('; '),
+            });
+
+            return NextResponse.json({
+                success: true,
+                price,
+                original_price,
+                changes: changesList,
+            });
+        }
+
+        // ── 3. Validate permissions for other fields ──
         if (name !== undefined || description !== undefined) {
             if (!session.permissions.canEditDetails) {
-                return NextResponse.json({ error: 'You do not have permission to edit product details.' }, { status: 403 });
+                return NextResponse.json({ error: 'Permission denied: Cannot edit product details' }, { status: 403 });
             }
-            if (name !== undefined) changesList.push(`Name updated`);
-            if (description !== undefined) changesList.push(`Description updated`);
-        }
-
-        if (image_url !== undefined || images !== undefined) {
-            if (!session.permissions.canEditImages) {
-                return NextResponse.json({ error: 'You do not have permission to edit product images.' }, { status: 403 });
-            }
-            changesList.push(`Images updated`);
+            if (name !== undefined) changesList.push('Name updated');
+            if (description !== undefined) changesList.push('Description updated');
         }
 
         if (is_visible !== undefined) {
             if (!session.permissions.canEditVisibility) {
-                return NextResponse.json({ error: 'You do not have permission to toggle product visibility.' }, { status: 403 });
+                return NextResponse.json({ error: 'Permission denied: Cannot toggle visibility' }, { status: 403 });
             }
-            changesList.push(`Visibility changed to ${is_visible ? 'Published (Live)' : 'Hidden'}`);
+            changesList.push(`Visibility set to ${is_visible ? 'Visible' : 'Hidden'}`);
         }
 
         if (stock !== undefined) {
             if (!session.permissions.canEditStock) {
-                return NextResponse.json({ error: 'You do not have permission to update stock.' }, { status: 403 });
+                return NextResponse.json({ error: 'Permission denied: Cannot edit stock' }, { status: 403 });
             }
-            changesList.push(`Stock updated to ${stock} (${stock > 0 ? 'In Stock' : 'Out of Stock'})`);
+            changesList.push(`Stock set to ${stock}`);
         }
 
         if (collection_name !== undefined || collection_slug !== undefined) {
             if (!session.permissions.canManageCategories) {
-                return NextResponse.json({ error: 'You do not have permission to manage categories.' }, { status: 403 });
+                return NextResponse.json({ error: 'Permission denied: Cannot manage categories' }, { status: 403 });
             }
             changesList.push(`Category updated to ${collection_name || collection_slug}`);
         }
 
         if (is_featured !== undefined || sort_order !== undefined || tag !== undefined) {
             if (!session.permissions.canManageHomepage) {
-                return NextResponse.json({ error: 'You do not have permission to manage homepage / featured status.' }, { status: 403 });
+                return NextResponse.json({ error: 'Permission denied: Cannot manage homepage/tags' }, { status: 403 });
             }
-            if (is_featured !== undefined) changesList.push(`Homepage Featured set to ${is_featured ? 'Yes' : 'No'}`);
-            if (sort_order !== undefined) changesList.push(`Homepage display order set to #${sort_order}`);
-            if (tag !== undefined) changesList.push(`Tag assigned: ${tag}`);
+            if (is_featured !== undefined) changesList.push(`Featured set to ${is_featured}`);
+            if (tag !== undefined) changesList.push(`Tag set to ${tag}`);
         }
 
-        if (changesList.length === 0) {
-            return NextResponse.json({ message: 'No changes provided' });
+        // ── 4. Safely query existing DB product without causing UUID cast errors ──
+        let existing: any = null;
+
+        if (isUUID(productId)) {
+            const { data } = await (supabaseAdmin as any)
+                .from('products')
+                .select('*')
+                .eq('id', productId)
+                .maybeSingle();
+            existing = data;
         }
 
-        // ── 2. Handle Price Update ──
-        if (price !== undefined && price !== null) {
-            const numPrice = Number(price);
-            const numOrig = original_price ? Number(original_price) : Math.round(numPrice * 1.15);
-            await setProductPriceOverride(productId || slug, numPrice, numOrig, session.name);
-            if (slug && slug !== productId) {
-                await setProductPriceOverride(slug, numPrice, numOrig, session.name);
-            }
+        if (!existing && slug) {
+            const { data } = await (supabaseAdmin as any)
+                .from('products')
+                .select('*')
+                .eq('slug', slug)
+                .maybeSingle();
+            existing = data;
         }
 
-        // ── 3. Handle Product DB Updates ──
+        if (!existing && productId && !isUUID(productId)) {
+            const { data } = await (supabaseAdmin as any)
+                .from('products')
+                .select('*')
+                .eq('slug', productId)
+                .maybeSingle();
+            existing = data;
+        }
+
         const dbUpdates: Record<string, any> = {
             updated_at: new Date().toISOString(),
         };
@@ -212,21 +261,8 @@ export async function PATCH(request: Request) {
         if (is_featured !== undefined) dbUpdates.is_featured = Boolean(is_featured);
         if (sort_order !== undefined) dbUpdates.sort_order = Number(sort_order);
         if (tag !== undefined) dbUpdates.tag = tag;
-        if (image_url !== undefined) dbUpdates.image_url = image_url;
-        if (images !== undefined) dbUpdates.images = images;
         if (collection_name !== undefined) dbUpdates.collection_name = collection_name;
         if (collection_slug !== undefined) dbUpdates.collection_slug = collection_slug;
-
-        // Check if product exists in Supabase
-        const { data: existing }: any = await (supabaseAdmin as any)
-            .from('products')
-            .select('*')
-            .or(`id.eq.${productId || 'none'},slug.eq.${slug || 'none'}`)
-            .limit(1)
-            .maybeSingle();
-
-        let updatedProduct: any = existing;
-        let productName = name || existing?.name || slug;
 
         if (existing) {
             const { data, error }: any = await (supabaseAdmin as any)
@@ -243,11 +279,10 @@ export async function PATCH(request: Request) {
             updatedProduct = data;
             productName = data.name;
         } else {
-            // If product was only in static catalog, insert into DB with changes
+            // Static product: Insert into DB, ensuring valid UUID
             const staticMatch = PRODUCTS.find(p => p.id === productId || p.slug === slug);
-            const newRow = {
-                id: productId || staticMatch?.id || `prod-${Date.now()}`,
-                name: name || staticMatch?.name || 'New Product',
+            const newRow: Record<string, any> = {
+                name: name || staticMatch?.name || 'Product',
                 slug: slug || staticMatch?.slug || `prod-${Date.now()}`,
                 description: description || staticMatch?.description || '',
                 collection_name: collection_name || staticMatch?.collection || 'General',
@@ -255,8 +290,8 @@ export async function PATCH(request: Request) {
                 relationships: staticMatch?.relationships || [],
                 celebrations: staticMatch?.celebrations || [],
                 tag: tag || staticMatch?.tag || 'Standard',
-                image_url: image_url || staticMatch?.image_url || '',
-                images: images || staticMatch?.images || [image_url || staticMatch?.image_url || ''],
+                image_url: staticMatch?.image_url || '',
+                images: staticMatch?.images || (staticMatch?.image_url ? [staticMatch.image_url] : []),
                 image_scale: staticMatch?.imageScale ?? 1,
                 stock: stock !== undefined ? Number(stock) : (staticMatch?.stock ?? 10),
                 is_visible: is_visible !== undefined ? Boolean(is_visible) : true,
@@ -264,6 +299,11 @@ export async function PATCH(request: Request) {
                 sort_order: sort_order !== undefined ? Number(sort_order) : 0,
                 ...dbUpdates,
             };
+
+            // ONLY provide `id` if it's a valid UUID; otherwise let Postgres generate one
+            if (isUUID(productId)) {
+                newRow.id = productId;
+            }
 
             const { data, error }: any = await (supabaseAdmin as any)
                 .from('products')
@@ -279,7 +319,7 @@ export async function PATCH(request: Request) {
             productName = data.name;
         }
 
-        // ── 4. Record Activity ──
+        // ── 5. Record Activity ──
         await logStaffActivity({
             staffId: session.id,
             staffName: session.name,

@@ -213,19 +213,19 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
     const normalizedSlug = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
     const staticMatch = PRODUCTS.find(p => p.slug === slug || p.slug.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug);
     let prod: DBProduct | null = null;
-    if (staticMatch) {
+    try {
+        const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq('slug', slug)
+            .maybeSingle();
+        if (data) {
+            prod = { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
+        }
+    } catch (_) {}
+
+    if (!prod && staticMatch) {
         prod = staticToDBProduct(staticMatch);
-    } else {
-        try {
-            const { data } = await supabase
-                .from('products')
-                .select('*')
-                .eq('slug', slug)
-                .single();
-            if (data) {
-                prod = { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
-            }
-        } catch (_) {}
     }
 
     if (prod) {

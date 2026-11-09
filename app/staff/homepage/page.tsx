@@ -193,7 +193,7 @@ export default function StaffHomepagePage() {
 
     if (permissions && !permissions.canManageHomepage) {
         return (
-            <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4">
+            <div className="bg-[#111827] border border-gray-800 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-amber-950 border border-amber-700/60 flex items-center justify-center mx-auto text-amber-400">
                     <Lock className="w-6 h-6" />
                 </div>
@@ -259,7 +259,7 @@ export default function StaffHomepagePage() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                         activeTab === 'featured'
                             ? 'bg-purple-600 text-white shadow-lg shadow-purple-950/60'
-                            : 'bg-[#161b22] text-gray-400 hover:text-white border border-gray-800'
+                            : 'bg-[#111827] text-gray-400 hover:text-white border border-gray-800'
                     }`}
                 >
                     <Star className="w-4 h-4" />
@@ -271,7 +271,7 @@ export default function StaffHomepagePage() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                         activeTab === 'new_arrivals'
                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-950/60'
-                            : 'bg-[#161b22] text-gray-400 hover:text-white border border-gray-800'
+                            : 'bg-[#111827] text-gray-400 hover:text-white border border-gray-800'
                     }`}
                 >
                     <Sparkles className="w-4 h-4" />
@@ -283,7 +283,7 @@ export default function StaffHomepagePage() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                         activeTab === 'best_sellers'
                             ? 'bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-950/60'
-                            : 'bg-[#161b22] text-gray-400 hover:text-white border border-gray-800'
+                            : 'bg-[#111827] text-gray-400 hover:text-white border border-gray-800'
                     }`}
                 >
                     <Star className="w-4 h-4" />
@@ -295,7 +295,7 @@ export default function StaffHomepagePage() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                         activeTab === 'trending'
                             ? 'bg-amber-600 text-white shadow-lg shadow-amber-950/60'
-                            : 'bg-[#161b22] text-gray-400 hover:text-white border border-gray-800'
+                            : 'bg-[#111827] text-gray-400 hover:text-white border border-gray-800'
                     }`}
                 >
                     <Flame className="w-4 h-4" />
@@ -306,7 +306,7 @@ export default function StaffHomepagePage() {
             {/* TAB 1: FEATURED BEST PICKS */}
             {activeTab === 'featured' && (
                 <div className="space-y-4">
-                    <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="bg-[#111827] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h2 className="text-base font-bold text-white flex items-center gap-2">
                                 <Star className="w-4 h-4 text-purple-400" />
@@ -325,13 +325,13 @@ export default function StaffHomepagePage() {
                     </div>
 
                     {featured.length === 0 ? (
-                        <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-12 text-center text-gray-400 space-y-2">
+                        <div className="bg-[#111827] border border-gray-800 rounded-3xl p-12 text-center text-gray-400 space-y-2">
                             <Star className="w-10 h-10 mx-auto text-gray-600 mb-2" />
                             <p className="text-base font-bold text-white">No featured products selected</p>
                             <p className="text-xs text-gray-500">Click &ldquo;Add Product to Featured&rdquo; to choose products for the homepage.</p>
                         </div>
                     ) : (
-                        <div className="bg-[#161b22] border border-gray-800 rounded-3xl overflow-hidden shadow-xl">
+                        <div className="bg-[#111827] border border-gray-800 rounded-3xl overflow-hidden shadow-xl">
                             <div className="divide-y divide-gray-800/60">
                                 {featured.map((p, idx) => (
                                     <div key={p.id} className="p-4 flex items-center justify-between gap-4 hover:bg-gray-800/30 transition-colors">
@@ -403,7 +403,7 @@ export default function StaffHomepagePage() {
             {/* TAB 2: NEW ARRIVALS */}
             {activeTab === 'new_arrivals' && (
                 <div className="space-y-4">
-                    <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="bg-[#111827] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h2 className="text-base font-bold text-white flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-blue-400" />
@@ -422,13 +422,13 @@ export default function StaffHomepagePage() {
                     </div>
 
                     {newArrivals.length === 0 ? (
-                        <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-12 text-center text-gray-400">
+                        <div className="bg-[#111827] border border-gray-800 rounded-3xl p-12 text-center text-gray-400">
                             <p className="text-sm font-semibold text-white">No products currently tagged New Arrival.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {newArrivals.map(p => (
-                                <div key={p.id} className="bg-[#161b22] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
+                                <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
                                             {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />}
@@ -455,7 +455,7 @@ export default function StaffHomepagePage() {
             {/* TAB 3: BEST SELLERS */}
             {activeTab === 'best_sellers' && (
                 <div className="space-y-4">
-                    <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="bg-[#111827] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h2 className="text-base font-bold text-white flex items-center gap-2">
                                 <Star className="w-4 h-4 text-fuchsia-400" />
@@ -474,13 +474,13 @@ export default function StaffHomepagePage() {
                     </div>
 
                     {bestSellers.length === 0 ? (
-                        <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-12 text-center text-gray-400">
+                        <div className="bg-[#111827] border border-gray-800 rounded-3xl p-12 text-center text-gray-400">
                             <p className="text-sm font-semibold text-white">No products currently tagged Best Seller.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {bestSellers.map(p => (
-                                <div key={p.id} className="bg-[#161b22] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
+                                <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
                                             {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />}
@@ -507,7 +507,7 @@ export default function StaffHomepagePage() {
             {/* TAB 4: TRENDING NOW */}
             {activeTab === 'trending' && (
                 <div className="space-y-4">
-                    <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="bg-[#111827] border border-gray-800 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h2 className="text-base font-bold text-white flex items-center gap-2">
                                 <Flame className="w-4 h-4 text-amber-400" />
@@ -526,13 +526,13 @@ export default function StaffHomepagePage() {
                     </div>
 
                     {trending.length === 0 ? (
-                        <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-12 text-center text-gray-400">
+                        <div className="bg-[#111827] border border-gray-800 rounded-3xl p-12 text-center text-gray-400">
                             <p className="text-sm font-semibold text-white">No products currently tagged Trending.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {trending.map(p => (
-                                <div key={p.id} className="bg-[#161b22] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
+                                <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
                                             {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />}
@@ -559,7 +559,7 @@ export default function StaffHomepagePage() {
             {/* MODAL: ADD PRODUCT PICKER */}
             {isAddPickerOpen && (
                 <div className="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4">
-                    <div className="bg-[#161b22] border border-gray-800 rounded-3xl max-w-xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
+                    <div className="bg-[#111827] border border-gray-800 rounded-3xl max-w-xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
                         <div className="p-5 border-b border-gray-800 flex items-center justify-between">
                             <div>
                                 <h3 className="text-base font-bold text-white">
@@ -575,7 +575,7 @@ export default function StaffHomepagePage() {
                         </div>
 
                         {/* Search in modal */}
-                        <div className="p-4 border-b border-gray-800 bg-[#0d1117]">
+                        <div className="p-4 border-b border-gray-800 bg-[#030712]">
                             <div className="relative">
                                 <Search className="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                                 <input

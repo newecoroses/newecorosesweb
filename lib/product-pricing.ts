@@ -37,15 +37,24 @@ export async function setProductPriceOverride(
 ): Promise<boolean> {
     try {
         const current = await getProductPriceOverrides();
-        const updated: Record<string, ProductPriceRecord> = {
-            ...current,
-            [productKey]: {
-                price,
-                original_price: original_price || Math.round(price * 1.15),
-                updated_at: new Date().toISOString(),
-                updated_by,
-            },
-        };
+
+        let updated: Record<string, ProductPriceRecord>;
+
+        // If price is 0 or less, remove the price override
+        if (!price || price <= 0) {
+            delete current[productKey];
+            updated = { ...current };
+        } else {
+            updated = {
+                ...current,
+                [productKey]: {
+                    price,
+                    original_price: original_price || Math.round(price * 1.15),
+                    updated_at: new Date().toISOString(),
+                    updated_by,
+                },
+            };
+        }
 
         const { error }: any = await (supabaseAdmin as any)
             .from('site_settings')

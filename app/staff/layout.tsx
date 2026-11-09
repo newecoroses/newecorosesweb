@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -10,13 +11,7 @@ import {
     Clock,
     LogOut,
     Menu,
-    X,
-    ExternalLink,
-    ShieldCheck,
     ChevronRight,
-    User,
-    CheckCircle2,
-    Lock
 } from 'lucide-react';
 import { StaffPermissions } from '@/lib/staff-auth';
 
@@ -30,9 +25,9 @@ interface StaffInfo {
 
 const NAV_ITEMS = [
     { href: '/staff', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/staff/products', label: 'Product Catalog', icon: Package },
-    { href: '/staff/homepage', label: 'Homepage Sections', icon: Sparkles },
-    { href: '/staff/activity', label: 'Activity Audit Log', icon: Clock },
+    { href: '/staff/products', label: 'Products', icon: Package },
+    { href: '/staff/homepage', label: 'Homepage', icon: Sparkles },
+    { href: '/staff/activity', label: 'Activity Log', icon: Clock },
 ];
 
 export default function StaffLayout({ children }: { children: React.ReactNode }) {
@@ -83,164 +78,137 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0d1117] flex flex-col items-center justify-center space-y-3">
-                <div className="w-10 h-10 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs text-gray-400 font-medium">Verifying staff credentials...</p>
+            <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="h-screen bg-[#0d1117] flex overflow-hidden font-sans">
-            {/* Mobile backdrop */}
+        <div className="h-screen bg-gray-950 flex overflow-hidden">
+            {/* Mobile overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/60 z-40 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* Sidebar */}
             <aside
-                className={`fixed top-0 left-0 bottom-0 w-64 bg-[#161b22] border-r border-gray-800 z-50 flex flex-col transition-transform duration-300 ${
+                className={`fixed top-0 left-0 bottom-0 w-64 bg-gray-900 border-r border-gray-800 z-50 flex flex-col transition-transform duration-300 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 } lg:translate-x-0 lg:static lg:z-auto`}
             >
-                {/* Brand Logo & Portal Tag */}
-                <div className="h-16 border-b border-gray-800 px-5 flex items-center justify-between">
-                    <Link href="/staff" className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-950/40">
-                            <ShieldCheck className="w-5 h-5 text-white" />
-                        </div>
+                {/* Logo */}
+                <div className="p-6 border-b border-gray-800">
+                    <div className="flex items-center gap-3">
+                        <NextImage
+                            src="/favicon_io/android-chrome-192x192.png"
+                            alt="New Eco Roses"
+                            width={36}
+                            height={36}
+                            className="rounded-full ring-1 ring-gray-600"
+                        />
                         <div>
-                            <span className="font-extrabold text-white text-sm tracking-tight block">
-                                New Eco Roses
-                            </span>
-                            <span className="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider block">
-                                Staff Portal
-                            </span>
-                        </div>
-                    </Link>
-                    <button
-                        onClick={() => setSidebarOpen(false)}
-                        className="lg:hidden text-gray-400 hover:text-white p-1 rounded-lg"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* Staff User Card */}
-                {staff && (
-                    <div className="p-4 mx-3 my-3 bg-[#0d1117] rounded-2xl border border-gray-800">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-700/60 flex items-center justify-center text-emerald-300 font-bold text-sm">
-                                {staff.name.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-sm font-semibold text-white truncate">{staff.name}</div>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700/40">
-                                        {staff.role}
-                                    </span>
-                                </div>
-                            </div>
+                            <p className="font-semibold text-white text-sm">Staff Portal</p>
+                            <p className="text-gray-400 text-xs">New Eco Roses</p>
                         </div>
                     </div>
-                )}
+                </div>
 
-                {/* Navigation links */}
-                <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
-                    {NAV_ITEMS.map(item => {
-                        const Icon = item.icon;
-                        const active = pathname === item.href || (item.href !== '/staff' && pathname.startsWith(item.href));
+                {/* Nav */}
+                <nav className="flex-1 overflow-y-auto py-4 px-3">
+                    <p className="text-gray-500 text-[10px] uppercase tracking-widest font-medium px-3 mb-3">Navigation</p>
+                    {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+                        const isActive = pathname === href || (href !== '/staff' && pathname.startsWith(href));
                         return (
                             <Link
-                                key={item.href}
-                                href={item.href}
+                                key={href}
+                                href={href}
                                 onClick={() => setSidebarOpen(false)}
-                                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                                    active
-                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40 font-semibold'
-                                        : 'text-gray-400 hover:text-white hover:bg-gray-800/60'
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 text-sm font-medium transition-all group ${
+                                    isActive
+                                        ? 'bg-zinc-100 text-zinc-900 font-semibold shadow-sm'
+                                        : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                 }`}
                             >
-                                <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-gray-400'}`} />
-                                <span className="flex-1">{item.label}</span>
-                                {active && <ChevronRight className="w-3.5 h-3.5 opacity-70" />}
+                                <Icon size={16} className={isActive ? 'text-zinc-900 stroke-[2.5px]' : 'text-gray-500 group-hover:text-gray-300'} />
+                                {label}
+                                {isActive && <ChevronRight size={12} className="ml-auto" />}
                             </Link>
                         );
                     })}
                 </nav>
 
-                {/* Sidebar Footer */}
-                <div className="p-3 border-t border-gray-800 space-y-1">
-                    <Link
-                        href="/"
-                        target="_blank"
-                        className="flex items-center justify-between px-3.5 py-2 text-xs font-medium text-gray-400 hover:text-white hover:bg-gray-800/60 rounded-xl transition-colors"
-                    >
-                        <span className="flex items-center gap-2">
-                            <ExternalLink className="w-3.5 h-3.5 text-emerald-400" />
-                            View Live Website
-                        </span>
-                    </Link>
+                {/* User */}
+                <div className="p-4 border-t border-gray-800">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-500 to-zinc-700 flex items-center justify-center text-white text-xs font-bold">
+                            {staff?.name?.charAt(0).toUpperCase() || 'S'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-white text-xs font-medium truncate">{staff?.name || 'Staff'}</p>
+                            <p className="text-gray-500 text-[10px] capitalize">{staff?.role || 'Staff'}</p>
+                        </div>
+                    </div>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-xl transition-colors text-left"
+                        className="flex items-center gap-2 w-full text-gray-400 hover:text-red-400 text-xs py-2 px-3 rounded-lg hover:bg-red-500/10 transition-all cursor-pointer"
                     >
-                        <LogOut className="w-3.5 h-3.5" />
+                        <LogOut size={14} />
                         Sign Out
                     </button>
+
+                    {/* Developer Credit */}
+                    <div className="mt-4 pt-3 border-t border-gray-800/50">
+                        <p className="text-[10px] text-gray-600 text-center leading-relaxed">
+                            Made by{' '}
+                            <span className="text-gray-400 font-medium">Aditya Choudhury</span>
+                            <br />
+                            at{' '}
+                            <a
+                                href="https://oryxen.co.in"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-zinc-400 hover:text-white font-semibold tracking-wide transition-colors duration-300"
+                            >
+                                Oryxen
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </aside>
 
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                {/* Top Bar */}
-                <header className="h-16 bg-[#161b22] border-b border-gray-800 px-4 sm:px-6 flex items-center justify-between flex-shrink-0">
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="lg:hidden p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl transition-colors"
-                        >
-                            <Menu className="w-5 h-5" />
-                        </button>
-                        <div className="hidden sm:block">
-                            <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
-                                Staff Portal
-                            </span>
-                            <span className="mx-2 text-gray-600">&bull;</span>
-                            <span className="text-xs text-emerald-400 font-medium">
-                                Real-time Website Sync
-                            </span>
-                        </div>
+            {/* Main */}
+            <div className="flex-1 flex flex-col min-w-0">
+                {/* Top bar */}
+                <header className="h-14 bg-gray-900 border-b border-gray-800 flex items-center px-4 gap-4 sticky top-0 z-30">
+                    <button
+                        onClick={() => setSidebarOpen(true)}
+                        className="lg:hidden text-gray-400 hover:text-white"
+                    >
+                        <Menu size={20} />
+                    </button>
+
+                    <div className="flex-1">
+                        <p className="text-white text-sm font-medium">
+                            {NAV_ITEMS.find(n => pathname === n.href || (n.href !== '/staff' && pathname.startsWith(n.href)))?.label ?? 'Staff'}
+                        </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href="/"
-                            target="_blank"
-                            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors border border-gray-700"
-                        >
-                            <span>Live Store</span>
-                            <ExternalLink className="w-3 h-3 text-emerald-400" />
-                        </Link>
-                        {staff && (
-                            <div className="flex items-center gap-2 pl-3 border-l border-gray-800">
-                                <div className="text-right hidden sm:block">
-                                    <div className="text-xs font-semibold text-white leading-tight">{staff.name}</div>
-                                    <div className="text-[10px] text-gray-400 capitalize">{staff.role}</div>
-                                </div>
-                                <div className="w-8 h-8 rounded-full bg-emerald-950 border border-emerald-700 flex items-center justify-center text-xs font-bold text-emerald-300">
-                                    {staff.name.charAt(0).toUpperCase()}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <Link
+                        href="/"
+                        target="_blank"
+                        className="text-gray-400 hover:text-zinc-100 text-xs flex items-center gap-1.5 transition-colors"
+                    >
+                        View Site
+                        <ChevronRight size={12} />
+                    </Link>
                 </header>
 
-                {/* Page Content */}
-                <main className="flex-1 overflow-y-auto bg-[#0d1117] p-4 sm:p-6 lg:p-8">
+                {/* Content */}
+                <main className="flex-1 p-6 overflow-auto bg-gray-950">
                     {children}
                 </main>
             </div>

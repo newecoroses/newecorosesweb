@@ -112,7 +112,7 @@ export default function StaffActivityPage() {
             </div>
 
             {/* Filter Toolbar */}
-            <div className="bg-[#161b22] border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div className="bg-[#111827] border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col sm:flex-row gap-3 items-center justify-between">
                 <div className="w-full sm:w-80 relative">
                     <Search className="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
@@ -120,7 +120,7 @@ export default function StaffActivityPage() {
                         placeholder="Search by staff, product, or keyword..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full bg-[#0d1117] border border-gray-700 focus:border-emerald-500 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none"
+                        className="w-full bg-[#030712] border border-gray-700 focus:border-emerald-500 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none"
                     />
                 </div>
 
@@ -133,7 +133,7 @@ export default function StaffActivityPage() {
                         className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all ${
                             actionFilter === 'all'
                                 ? 'bg-emerald-600 text-white font-semibold shadow-md'
-                                : 'bg-[#0d1117] text-gray-400 hover:text-white border border-gray-800'
+                                : 'bg-[#030712] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                     >
                         All Actions ({logs.length})
@@ -143,7 +143,7 @@ export default function StaffActivityPage() {
                         className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all ${
                             actionFilter === 'price'
                                 ? 'bg-emerald-600 text-white font-semibold shadow-md'
-                                : 'bg-[#0d1117] text-gray-400 hover:text-white border border-gray-800'
+                                : 'bg-[#030712] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                     >
                         Pricing
@@ -153,7 +153,7 @@ export default function StaffActivityPage() {
                         className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all ${
                             actionFilter === 'stock'
                                 ? 'bg-emerald-600 text-white font-semibold shadow-md'
-                                : 'bg-[#0d1117] text-gray-400 hover:text-white border border-gray-800'
+                                : 'bg-[#030712] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                     >
                         Stock
@@ -163,7 +163,7 @@ export default function StaffActivityPage() {
                         className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all ${
                             actionFilter === 'visibility'
                                 ? 'bg-emerald-600 text-white font-semibold shadow-md'
-                                : 'bg-[#0d1117] text-gray-400 hover:text-white border border-gray-800'
+                                : 'bg-[#030712] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                     >
                         Visibility
@@ -173,7 +173,7 @@ export default function StaffActivityPage() {
                         className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all ${
                             actionFilter === 'homepage'
                                 ? 'bg-emerald-600 text-white font-semibold shadow-md'
-                                : 'bg-[#0d1117] text-gray-400 hover:text-white border border-gray-800'
+                                : 'bg-[#030712] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                     >
                         Homepage
@@ -188,16 +188,16 @@ export default function StaffActivityPage() {
                     <p className="text-sm">Loading audit trail...</p>
                 </div>
             ) : filteredLogs.length === 0 ? (
-                <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-12 text-center text-gray-400 space-y-2">
+                <div className="bg-[#111827] border border-gray-800 rounded-3xl p-12 text-center text-gray-400 space-y-2">
                     <Clock className="w-12 h-12 mx-auto text-gray-600 mb-2" />
                     <p className="text-base font-bold text-white">No activity records found</p>
                     <p className="text-xs text-gray-500">Every change made in the staff portal is recorded here automatically.</p>
                 </div>
             ) : (
-                <div className="bg-[#161b22] border border-gray-800 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="bg-[#111827] border border-gray-800 rounded-3xl overflow-hidden shadow-2xl">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm text-gray-300">
-                            <thead className="bg-[#0d1117] text-gray-400 text-xs uppercase tracking-wider border-b border-gray-800">
+                            <thead className="bg-[#030712] text-gray-400 text-xs uppercase tracking-wider border-b border-gray-800">
                                 <tr>
                                     <th className="px-5 py-4">Timestamp</th>
                                     <th className="px-4 py-4">Staff Member</th>

@@ -25,7 +25,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [pincode, setPincode] = useState('');
     const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-    const { addItem, updateQuantity, getItemQuantity } = useCart();
+    const { addItem, updateQuantity, getItemQuantity, openDrawer } = useCart();
     const cartQuantity = product ? getItemQuantity(product.id) : 0;
 
     useEffect(() => {
@@ -149,7 +149,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const allImages = product.images?.length > 0 ? product.images : [product.image_url];
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
-    const { price, originalPrice, discountPercent, rating, reviewCount, ordersPastMonth } = getProductPriceInfo(product);
+    const { hasPrice, price, originalPrice, discountPercent, rating, reviewCount, ordersPastMonth } = getProductPriceInfo(product);
 
     const tagInfo = (() => {
         if (!product.tag || product.tag === 'Standard') return { label: 'Bestseller', bg: 'bg-[#581c87] text-white' };
@@ -180,9 +180,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     const handleBuyNow = () => {
         handleAddToCart();
-        if (typeof window !== 'undefined') {
-            window.location.href = whatsappLink;
-        }
+        openDrawer();
     };
 
     return (
@@ -272,9 +270,38 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         </div>
 
                         {/* Urgency / Social Proof Banner */}
-                        <div className="flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-amber-700 mb-3.5">
+                        <div className="flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-amber-700 mb-3">
                             <Flame size={15} className="text-amber-600 fill-amber-500 flex-shrink-0" />
                             <span>Ordered {ordersPastMonth}+ times in Past Month</span>
+                        </div>
+
+                        {/* Price Display */}
+                        <div className="mb-3.5">
+                            {hasPrice ? (
+                                <div className="flex items-baseline gap-2.5">
+                                    <span className="text-2xl sm:text-3xl font-extrabold text-[#1c1917]">
+                                        ₹{price}
+                                    </span>
+                                    {originalPrice > price && (
+                                        <>
+                                            <span className="text-base text-gray-400 line-through">
+                                                ₹{originalPrice}
+                                            </span>
+                                            {discountPercent > 0 && (
+                                                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                                    {discountPercent}% OFF
+                                                </span>
+                                            )}
+                                        </>
+                                    )}
+                                    <span className="text-xs text-gray-500 font-medium ml-1">Inclusive of all taxes</span>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xl font-bold text-[#1c1917]">Price on Request</span>
+                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">Contact florist for latest pricing</span>
+                                </div>
+                            )}
                         </div>
 
                         <div className="h-px bg-gray-100 mb-3.5" />
@@ -359,63 +386,82 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         )}
 
                         {/* ── Action CTA Buttons ── */}
-                        <div className="flex gap-3 mb-3">
-                            {/* Add To Cart */}
-                            {cartQuantity > 0 ? (
-                                <div className="flex-1 py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-xs">
+                        {hasPrice ? (
+                            <div className="space-y-2.5 mb-3">
+                                <div className="flex gap-3">
+                                    {/* Add To Cart */}
+                                    {cartQuantity > 0 ? (
+                                        <div className="flex-1 py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-xs">
+                                            <button
+                                                type="button"
+                                                onClick={() => updateQuantity(product.id, cartQuantity - 1)}
+                                                className="w-8 h-8 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                                            >
+                                                <Minus size={13} />
+                                            </button>
+                                            <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1">
+                                                <Check size={14} className="text-emerald-600" /> {cartQuantity} in Cart
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={handleAddToCart}
+                                                className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
+                                            >
+                                                <Plus size={13} />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={handleAddToCart}
+                                            className="flex-1 bg-white hover:bg-gray-50 text-[#1c1917] border-2 border-gray-800 py-3.5 px-4 text-center rounded-xl shadow-xs hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                            <ShoppingCart size={16} />
+                                            <span>Add To Cart</span>
+                                        </button>
+                                    )}
+
+                                    {/* Buy Now (Sleek Black Pill) */}
                                     <button
                                         type="button"
-                                        onClick={() => updateQuantity(product.id, cartQuantity - 1)}
-                                        className="w-8 h-8 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                                        onClick={handleBuyNow}
+                                        className="flex-1 bg-[#1c1917] hover:bg-black text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                                     >
-                                        <Minus size={13} />
-                                    </button>
-                                    <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1">
-                                        <Check size={14} className="text-emerald-600" /> {cartQuantity} in Cart
-                                    </span>
-                                    <button
-                                        type="button"
-                                        onClick={handleAddToCart}
-                                        className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
-                                    >
-                                        <Plus size={13} />
+                                        <ShoppingCart size={16} />
+                                        <span>Buy Now</span>
                                     </button>
                                 </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={handleAddToCart}
-                                    className="flex-1 bg-white hover:bg-gray-50 text-[#1c1917] border-2 border-gray-800 py-3.5 px-4 text-center rounded-xl shadow-xs hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
+
+                                {/* Little Enquire Now Button Aesthetically Aligned for products WITH price */}
+                                <a
+                                    href={whatsappLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => trackEnquiry(product.id, product.name)}
+                                    className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-gray-200 hover:border-emerald-500 bg-emerald-50/40 hover:bg-emerald-50 text-emerald-800 text-xs font-semibold transition-all group"
                                 >
-                                    <ShoppingCart size={16} />
-                                    <span>Add To Cart</span>
-                                </button>
-                            )}
-
-                            {/* Buy Now (Sleek Black Pill) */}
-                            <button
-                                type="button"
-                                onClick={handleBuyNow}
-                                className="flex-1 bg-[#1c1917] hover:bg-black text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
-                            >
-                                <ShoppingCart size={16} />
-                                <span>Buy Now</span>
-                            </button>
-                        </div>
-
-                        {/* WhatsApp Fast Enquiry link */}
-                        <div className="text-center">
-                            <a
-                                href={whatsappLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => trackEnquiry(product.id, product.name)}
-                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline"
-                            >
-                                <WhatsappIcon size={14} className="text-emerald-600" />
-                                <span>Order via WhatsApp &amp; Chat with our florist ↗</span>
-                            </a>
-                        </div>
+                                    <WhatsappIcon size={14} className="text-emerald-600 group-hover:scale-110 transition-transform" />
+                                    <span>Have questions or custom requirements? Enquire on WhatsApp</span>
+                                </a>
+                            </div>
+                        ) : (
+                            /* No Price: Prominent Enquire Now on WhatsApp button */
+                            <div className="mb-4">
+                                <a
+                                    href={whatsappLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => trackEnquiry(product.id, product.name)}
+                                    className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-sm font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all active:scale-[0.99]"
+                                >
+                                    <WhatsappIcon size={20} className="text-white" />
+                                    <span>Enquire Now on WhatsApp</span>
+                                </a>
+                                <p className="text-center text-xs text-gray-500 mt-2">
+                                    Instant assistance from our expert Kolkata florists
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
