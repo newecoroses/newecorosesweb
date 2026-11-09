@@ -421,11 +421,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                         </button>
                                     )}
 
-                                    {/* Buy Now (Sleek Black Pill) */}
+                                    {/* Buy Now (Top Moving Banner Gold: #bfa81f) */}
                                     <button
                                         type="button"
                                         onClick={handleBuyNow}
-                                        className="flex-1 bg-[#1c1917] hover:bg-black text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                                        className="flex-1 bg-[#bfa81f] hover:bg-[#a89216] border border-[#a89216] text-white py-3.5 px-4 text-center rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                                     >
                                         <ShoppingCart size={16} />
                                         <span>Buy Now</span>
@@ -445,20 +445,55 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 </a>
                             </div>
                         ) : (
-                            /* No Price: Prominent Enquire Now on WhatsApp button */
-                            <div className="mb-4">
-                                <a
-                                    href={whatsappLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={() => trackEnquiry(product.id, product.name)}
-                                    className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-sm font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all active:scale-[0.99]"
-                                >
-                                    <WhatsappIcon size={20} className="text-white" />
-                                    <span>Enquire Now on WhatsApp</span>
-                                </a>
-                                <p className="text-center text-xs text-gray-500 mt-2">
-                                    Instant assistance from our expert Kolkata florists
+                            /* No Price: Add to Cart (Multi-item enquiry) + Enquire Now Button */
+                            <div className="space-y-2.5 mb-4">
+                                <div className="flex gap-3">
+                                    {/* Add To Cart */}
+                                    {cartQuantity > 0 ? (
+                                        <div className="flex-1 py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between shadow-xs">
+                                            <button
+                                                type="button"
+                                                onClick={() => updateQuantity(product.id, cartQuantity - 1)}
+                                                className="w-8 h-8 rounded-lg bg-white border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                                            >
+                                                <Minus size={13} />
+                                            </button>
+                                            <span className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1">
+                                                <Check size={14} className="text-emerald-600" /> {cartQuantity} in Cart
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={handleAddToCart}
+                                                className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
+                                            >
+                                                <Plus size={13} />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={handleAddToCart}
+                                            className="flex-1 bg-white hover:bg-gray-50 text-[#1c1917] border-2 border-gray-800 py-3.5 px-4 text-center rounded-xl shadow-xs hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
+                                        >
+                                            <ShoppingCart size={16} />
+                                            <span>Add To Cart</span>
+                                        </button>
+                                    )}
+
+                                    {/* Direct Enquire */}
+                                    <a
+                                        href={whatsappLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={() => trackEnquiry(product.id, product.name)}
+                                        className="flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm hover:shadow-md transition-all active:scale-[0.99]"
+                                    >
+                                        <WhatsappIcon size={18} className="text-white" />
+                                        <span>Enquire Now</span>
+                                    </a>
+                                </div>
+                                <p className="text-center text-[11px] text-gray-500">
+                                    Add multiple items to cart to enquire and order them all together!
                                 </p>
                             </div>
                         )}

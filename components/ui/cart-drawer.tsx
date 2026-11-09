@@ -40,11 +40,15 @@ export default function CartDrawer() {
     const buildWhatsAppLink = () => {
         const lines = items.map((item, i) => {
             const url = `${SITE_URL}/product/${item.slug}`;
-            return `${i + 1}. ${item.name} (Qty: ${item.quantity})\n   ${url}`;
+            const priceStr = item.price && item.price > 0 ? ` [₹${item.price}]` : ' [Price on Request]';
+            return `${i + 1}. ${item.name} (Qty: ${item.quantity})${priceStr}\n   ${url}`;
         });
-        const message = `Hi! I would like to place an order for the following items:\n\n${lines.join('\n\n')}\n\nPlease confirm availability and total. Thank you!`;
+        const message = `Hi! I would like to place an order / enquire for the following items:\n\n${lines.join('\n\n')}\n\nPlease confirm availability and total. Thank you!`;
         return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     };
+
+    const totalPrice = items.reduce((sum, item) => sum + (item.price && item.price > 0 ? item.price * item.quantity : 0), 0);
+    const hasUnpriced = items.some(item => !item.price || item.price <= 0);
 
     return (
         <AnimatePresence>
@@ -82,7 +86,7 @@ export default function CartDrawer() {
                             </div>
                             <button
                                 onClick={closeDrawer}
-                                className="p-2 rounded-full hover:bg-gray-100 transition-colors text-muted hover:text-foreground"
+                                className="p-2 rounded-full hover:bg-gray-100 transition-colors text-muted hover:text-foreground cursor-pointer"
                                 aria-label="Close cart"
                             >
                                 <X size={20} />
@@ -136,17 +140,20 @@ export default function CartDrawer() {
                                                     <Link
                                                         href={`/product/${item.slug}`}
                                                         onClick={closeDrawer}
-                                                        className="text-sm font-medium text-foreground leading-tight line-clamp-2 hover:text-primary transition-colors"
+                                                        className="text-sm font-medium text-foreground leading-tight line-clamp-2 hover:text-primary transition-colors block"
                                                     >
                                                         {item.name}
                                                     </Link>
+                                                    <p className="text-xs font-semibold text-primary mt-1">
+                                                        {item.price && item.price > 0 ? `₹${item.price}` : 'Price on request'}
+                                                    </p>
                                                 </div>
                                                 {/* Quantity Controls */}
                                                 <div className="flex items-center justify-between mt-2">
-                                                    <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                                                    <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white">
                                                         <button
                                                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                            className="px-2.5 py-1 hover:bg-gray-100 text-muted hover:text-foreground transition-colors"
+                                                            className="px-2.5 py-1 hover:bg-gray-100 text-muted hover:text-foreground transition-colors cursor-pointer"
                                                             aria-label="Decrease quantity"
                                                         >
                                                             <Minus size={13} />
@@ -156,7 +163,7 @@ export default function CartDrawer() {
                                                         </span>
                                                         <button
                                                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                            className="px-2.5 py-1 hover:bg-gray-100 text-muted hover:text-foreground transition-colors"
+                                                            className="px-2.5 py-1 hover:bg-gray-100 text-muted hover:text-foreground transition-colors cursor-pointer"
                                                             aria-label="Increase quantity"
                                                         >
                                                             <Plus size={13} />
@@ -164,7 +171,7 @@ export default function CartDrawer() {
                                                     </div>
                                                     <button
                                                         onClick={() => removeItem(item.id)}
-                                                        className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                                                        className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
                                                         aria-label="Remove item"
                                                     >
                                                         <Trash2 size={15} />
@@ -177,7 +184,7 @@ export default function CartDrawer() {
                             )}
                         </div>
 
-                        {/* Footer — Place Order */}
+                        {/* Footer — Place Order & Enquire */}
                         {items.length > 0 && (
                             <div className="border-t border-gray-100 px-5 py-5 space-y-3 bg-white">
                                 <div className="flex items-center justify-between text-sm">
@@ -186,11 +193,22 @@ export default function CartDrawer() {
                                     </span>
                                     <button
                                         onClick={clearCart}
-                                        className="text-xs text-gray-400 hover:text-red-500 underline underline-offset-2 transition-colors"
+                                        className="text-xs text-gray-400 hover:text-red-500 underline underline-offset-2 transition-colors cursor-pointer"
                                     >
                                         Clear all
                                     </button>
                                 </div>
+
+                                {totalPrice > 0 && (
+                                    <div className="flex items-center justify-between text-sm py-1.5 px-3 rounded-lg bg-gray-50 border border-gray-100">
+                                        <span className="text-gray-600 font-medium">Subtotal:</span>
+                                        <span className="font-bold text-foreground text-base">
+                                            ₹{totalPrice}
+                                            {hasUnpriced && <span className="text-[11px] text-gray-500 font-normal ml-1">(+ custom items)</span>}
+                                        </span>
+                                    </div>
+                                )}
+
                                 <a
                                     href={buildWhatsAppLink()}
                                     target="_blank"
@@ -199,10 +217,10 @@ export default function CartDrawer() {
                                     className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1fb855] text-white py-3.5 rounded-xl text-sm uppercase tracking-[0.15em] font-semibold transition-all shadow-lg shadow-green-500/15 hover:shadow-xl hover:shadow-green-500/25"
                                 >
                                     <WhatsappIcon size={20} />
-                                    Place Order on WhatsApp
+                                    Place Order / Enquire on WhatsApp
                                 </a>
                                 <p className="text-[11px] text-center text-muted font-light">
-                                    Your item list will be sent via WhatsApp for confirmation.
+                                    Your item list will be sent via WhatsApp for quick confirmation.
                                 </p>
                             </div>
                         )}

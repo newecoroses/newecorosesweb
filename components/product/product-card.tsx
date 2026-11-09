@@ -122,7 +122,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             name: product.name,
             slug: product.slug,
             image_url: product.image_url,
-            price: price,
+            price: hasPrice ? price : null,
         });
         setJustAdded(true);
         setTimeout(() => setJustAdded(false), 1200);
@@ -136,7 +136,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             name: product.name,
             slug: product.slug,
             image_url: product.image_url,
-            price: price,
+            price: hasPrice ? price : null,
         });
         openDrawer();
     };
@@ -270,50 +270,46 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     </div>
                 </div>
 
-                {/* ── Action Buttons ── */}
-                <div className="pt-2 border-t border-gray-100">
-                    {hasPrice ? (
-                        /* Has Price: Show Add to Cart and Buy Now */
-                        <div className="flex items-center gap-1.5">
-                            {/* Add to Cart */}
-                            <button
-                                type="button"
-                                onClick={handleAddToCart}
-                                className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl transition-all duration-200 text-[11px] font-semibold flex-shrink-0 cursor-pointer border active:scale-95 ${
-                                    justAdded
-                                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                                        : cartQuantity > 0
-                                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                                        : 'bg-white text-[#1c1917] border-gray-200 hover:border-gray-400 hover:bg-gray-50'
-                                }`}
-                                title={cartQuantity > 0 ? `${cartQuantity} in Cart` : 'Add to Cart'}
-                            >
-                                {justAdded ? (
-                                    <>
-                                        <Check size={12} className="stroke-[3]" />
-                                        <span>Added</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Plus size={12} className="stroke-[2.5]" />
-                                        <span>{cartQuantity > 0 ? `Cart (${cartQuantity})` : 'Cart'}</span>
-                                    </>
-                                )}
-                            </button>
+                {/* ── Action Buttons: Cart for ALL + Buy Now (Gold) or Enquire (WhatsApp) ── */}
+                <div className="pt-2 border-t border-gray-100 flex items-center gap-1.5">
+                    {/* Add to Cart (Available for ALL products) */}
+                    <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl transition-all duration-200 text-[11px] font-semibold flex-shrink-0 cursor-pointer border active:scale-95 ${
+                            justAdded
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                                : cartQuantity > 0
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                : 'bg-white text-[#1c1917] border-gray-200 hover:border-gray-400 hover:bg-gray-50'
+                        }`}
+                        title={cartQuantity > 0 ? `${cartQuantity} in Cart` : 'Add to Cart'}
+                    >
+                        {justAdded ? (
+                            <>
+                                <Check size={12} className="stroke-[3]" />
+                                <span>Added</span>
+                            </>
+                        ) : (
+                            <>
+                                <Plus size={12} className="stroke-[2.5]" />
+                                <span>{cartQuantity > 0 ? `Cart (${cartQuantity})` : 'Cart'}</span>
+                            </>
+                        )}
+                    </button>
 
-                            {/* Buy Now */}
-                            <button
-                                type="button"
-                                onClick={handleBuyNow}
-                                className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#1c1917] hover:bg-black text-white text-[11px] font-bold transition-all active:scale-95 shadow-2xs"
-                                title="Buy Now"
-                            >
-                                <ShoppingCart size={12} />
-                                <span>Buy Now</span>
-                            </button>
-                        </div>
+                    {/* Secondary Action: Buy Now (in Top Banner Gold) OR Enquire (WhatsApp Green) */}
+                    {hasPrice ? (
+                        <button
+                            type="button"
+                            onClick={handleBuyNow}
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] border border-[#a89216] text-white text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                            title="Buy Now"
+                        >
+                            <ShoppingCart size={12} />
+                            <span>Buy Now</span>
+                        </button>
                     ) : (
-                        /* No Price: Show Enquire Now button */
                         <a
                             href={whatsappUrl}
                             target="_blank"
@@ -322,13 +318,13 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                 e.stopPropagation();
                                 trackEnquiry(product.name, 'card_whatsapp');
                             }}
-                            className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[11px] font-bold transition-all duration-200 active:scale-95 shadow-2xs group/wa"
+                            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[11px] font-bold transition-all duration-200 active:scale-95 shadow-2xs group/wa"
                             title="Enquire on WhatsApp"
                         >
                             <svg className="w-3.5 h-3.5 fill-white group-hover/wa:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
                                 <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.763.459 3.485 1.332 5.001L2 22l5.127-1.343c1.465.799 3.116 1.22 4.881 1.22.004 0 .007 0 .011 0 5.504 0 9.988-4.478 9.989-9.985 0-2.668-1.039-5.176-2.927-7.062A9.923 9.923 0 0 0 12.012 2zm5.66 14.195c-.237.667-1.376 1.272-1.9 1.346-.494.07-1.134.1-3.32-.806-2.797-1.159-4.597-4.004-4.737-4.191-.14-.187-1.136-1.514-1.136-2.887 0-1.373.719-2.05.976-2.332.257-.282.561-.353.748-.353.187 0 .374.002.537.01.173.008.406-.065.635.485.237.569.807 1.97.877 2.112.07.141.117.306.023.493-.094.187-.14.305-.281.47-.14.165-.295.369-.422.496-.14.141-.286.295-.123.575.163.28 0.725 1.196 1.558 1.938 1.07.953 1.973 1.25 2.253 1.39.28.14.444.117.608-.07.163-.187.699-.817.886-1.097.187-.28.374-.235.631-.14.257.094 1.636.77 1.916.91.28.14.468.211.538.328.07.117.07.678-.167 1.345z" />
                             </svg>
-                            <span>Enquire Now</span>
+                            <span>Enquire</span>
                         </a>
                     )}
                 </div>
