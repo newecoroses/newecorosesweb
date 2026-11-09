@@ -10,9 +10,9 @@ import ScrollRestorer from '@/components/ui/scroll-restorer';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isAdmin = pathname?.startsWith('/admin');
+    const isPortal = pathname?.startsWith('/admin') || pathname?.startsWith('/staff') || pathname === '/tv-marquee';
 
-    if (isAdmin) {
+    if (isPortal) {
         return <main className="flex-grow">{children}</main>;
     }
 
@@ -29,5 +29,3 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         </CartProvider>
     );
 }
-
-
