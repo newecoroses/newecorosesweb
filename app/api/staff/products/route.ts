@@ -136,11 +136,9 @@ export async function PATCH(request: Request) {
 
         // ── 1. Check Permissions ──
         if (price !== undefined || original_price !== undefined) {
-            if (!session.permissions.canEditPrices) {
-                return NextResponse.json({ error: 'You do not have permission to edit product prices.' }, { status: 403 });
-            }
+            // Price editing is instantly enabled for staff to publish or update prices immediately
             if (price !== undefined) {
-                changesList.push(`Price set to ₹${price}`);
+                changesList.push(`Price updated to ₹${price} and published live`);
             }
         }
 

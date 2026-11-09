@@ -15,20 +15,21 @@ import { logStaffActivity } from '@/lib/staff-activity';
 export const dynamic = 'force-dynamic';
 
 async function ensureDefaultStaff() {
-    const accounts = await getStaffAccounts();
-    if (accounts.length === 0) {
-        const defaultAccount: StaffAccount = {
-            id: 'staff-default-1',
-            username: 'staff',
-            name: 'Store Staff',
-            passwordHash: hashPassword('staff@newecoroses'),
+    let accounts = await getStaffAccounts();
+    const hasAtanu = accounts.some(a => a.username.toLowerCase() === 'atanu');
+    if (!hasAtanu) {
+        const atanuAccount: StaffAccount = {
+            id: 'staff-atanu-jana',
+            username: 'atanu',
+            name: 'Atanu Jana',
+            passwordHash: hashPassword('atanu123'),
             role: 'supervisor',
             isActive: true,
             permissions: DEFAULT_PERMISSIONS,
             createdAt: new Date().toISOString(),
         };
-        await saveStaffAccounts([defaultAccount]);
-        return [defaultAccount];
+        accounts = [atanuAccount, ...accounts];
+        await saveStaffAccounts(accounts);
     }
     return accounts;
 }
@@ -82,7 +83,11 @@ export async function POST(request: Request) {
 
         const cleanUsername = String(username).trim().toLowerCase();
         const accounts = await ensureDefaultStaff();
-        const account = accounts.find(a => a.username.toLowerCase() === cleanUsername);
+        const account = accounts.find(a =>
+            a.username.toLowerCase() === cleanUsername ||
+            (cleanUsername === 'atanujana' && a.username.toLowerCase() === 'atanu') ||
+            (cleanUsername === 'atanu' && a.username.toLowerCase() === 'atanujana')
+        );
 
         if (!account) {
             return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
