@@ -86,7 +86,7 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                     </h2>
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 rounded-full border border-gray-300 hover:border-black text-gray-500 hover:text-black flex items-center justify-center transition-colors cursor-pointer"
+                        className="w-8 h-8 rounded-full border border-gray-300 hover:border-[#bfa81f] text-gray-500 hover:text-[#bfa81f] flex items-center justify-center transition-colors cursor-pointer"
                         aria-label="Close"
                     >
                         <X size={18} />
@@ -108,14 +108,14 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                                 <div
                                     className={`w-11 h-11 rounded-full flex items-center justify-center text-lg bg-gray-50 border transition-all ${
                                         isActive
-                                            ? 'border-[#6b6b2c] ring-2 ring-[#6b6b2c]/20 bg-amber-50/40'
+                                            ? 'border-[#bfa81f] ring-2 ring-[#bfa81f]/20 bg-amber-50/50'
                                             : 'border-gray-200 hover:border-gray-300'
                                     }`}
                                 >
                                     <span>{cat.icon}</span>
                                 </div>
                                 <span className={`text-[11px] font-semibold tracking-tight whitespace-nowrap ${
-                                    isActive ? 'text-[#6b6b2c] font-bold border-b-2 border-[#6b6b2c] pb-0.5' : 'text-gray-700'
+                                    isActive ? 'text-[#bfa81f] font-bold border-b-2 border-[#bfa81f] pb-0.5' : 'text-gray-700'
                                 }`}>
                                     {cat.label}
                                 </span>
@@ -167,24 +167,24 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                                             {qty === 0 ? (
                                                 <button
                                                     onClick={() => handleAdd(item)}
-                                                    className="px-3 py-1 rounded-md border border-[#6b6b2c] text-[#6b6b2c] hover:bg-[#6b6b2c]/10 text-[11px] font-bold uppercase transition-colors cursor-pointer"
+                                                    className="px-3 py-1 rounded-md border border-[#bfa81f] text-[#bfa81f] hover:bg-[#bfa81f] hover:text-white text-[11px] font-bold uppercase transition-colors cursor-pointer"
                                                 >
                                                     ADD
                                                 </button>
                                             ) : (
-                                                <div className="flex items-center border border-[#6b6b2c] rounded-md overflow-hidden bg-white">
+                                                <div className="flex items-center border border-[#bfa81f] rounded-md overflow-hidden bg-white">
                                                     <button
                                                         onClick={() => handleUpdateQty(item.id, -1)}
-                                                        className="px-1.5 py-1 text-[#6b6b2c] hover:bg-gray-100 transition-colors cursor-pointer"
+                                                        className="px-1.5 py-1 text-[#bfa81f] hover:bg-amber-50 transition-colors cursor-pointer"
                                                     >
                                                         <Minus size={11} />
                                                     </button>
-                                                    <span className="px-1.5 text-xs font-bold text-[#6b6b2c]">
+                                                    <span className="px-1.5 text-xs font-bold text-[#bfa81f]">
                                                         {qty}
                                                     </span>
                                                     <button
                                                         onClick={() => handleUpdateQty(item.id, 1)}
-                                                        className="px-1.5 py-1 text-[#6b6b2c] hover:bg-gray-100 transition-colors cursor-pointer"
+                                                        className="px-1.5 py-1 text-[#bfa81f] hover:bg-amber-50 transition-colors cursor-pointer"
                                                     >
                                                         <Plus size={11} />
                                                     </button>
@@ -199,18 +199,18 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                 </div>
 
                 {/* ── Sticky Bottom Action Bar ── */}
-                <div className="p-3.5 sm:p-4 border-t border-gray-100 bg-white flex justify-end items-center">
+                <div className="p-3.5 sm:p-4 border-t border-gray-100 bg-white flex justify-end items-center gap-3">
                     {totalSelectedCount === 0 ? (
                         <button
                             onClick={handleProceed}
-                            className="px-6 py-2.5 rounded-lg border border-gray-400 text-gray-700 hover:text-black hover:border-black text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+                            className="px-6 py-2.5 rounded-lg border border-[#bfa81f] text-[#bfa81f] hover:bg-[#bfa81f] hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer"
                         >
                             Skip & Continue
                         </button>
                     ) : (
                         <button
                             onClick={handleProceed}
-                            className="px-7 py-2.5 rounded-lg bg-[#6b6b2c] hover:bg-[#585823] text-white text-xs sm:text-sm font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
+                            className="px-7 py-2.5 rounded-lg bg-[#bfa81f] hover:bg-[#a89216] text-white text-xs sm:text-sm font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
                         >
                             Continue • {totalSelectedCount} {totalSelectedCount === 1 ? 'Add-on' : 'Add-ons'}
                         </button>
