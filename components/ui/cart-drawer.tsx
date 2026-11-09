@@ -211,8 +211,9 @@ export default function CartDrawer() {
 
                                 <Link
                                     href="/checkout"
+                                    prefetch={true}
                                     onClick={closeDrawer}
-                                    className="w-full flex items-center justify-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white py-3.5 rounded-xl text-sm uppercase tracking-[0.15em] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.99]"
+                                    className="w-full flex items-center justify-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white py-3.5 rounded-xl text-sm uppercase tracking-[0.15em] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
                                 >
                                     <span>Proceed to Checkout</span>
                                     <ArrowRight size={16} />

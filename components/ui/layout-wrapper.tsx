@@ -10,35 +10,23 @@ import ScrollRestorer from '@/components/ui/scroll-restorer';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isPortal = pathname?.startsWith('/admin') || pathname?.startsWith('/staff') || pathname === '/tv-marquee';
+    const isBarePortal = pathname?.startsWith('/admin') || pathname?.startsWith('/staff') || pathname === '/tv-marquee';
     const isCheckout = pathname?.startsWith('/checkout');
 
-    if (isPortal) {
+    if (isBarePortal) {
         return <main className="flex-grow">{children}</main>;
-    }
-
-    if (isCheckout) {
-        return (
-            <CartProvider>
-                <ThemeProvider />
-                <ScrollRestorer />
-                <main className="flex-grow w-full max-w-full">
-                    {children}
-                </main>
-            </CartProvider>
-        );
     }
 
     return (
         <CartProvider>
             <ThemeProvider />
             <ScrollRestorer />
-            <Navbar />
+            {!isCheckout && <Navbar />}
             <main className="flex-grow w-full max-w-full overflow-x-clip">
                 {children}
             </main>
-            <Footer />
-            <CartDrawer />
+            {!isCheckout && <Footer />}
+            {!isCheckout && <CartDrawer />}
         </CartProvider>
     );
 }

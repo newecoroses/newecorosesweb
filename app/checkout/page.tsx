@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ShoppingBag, ArrowLeft, ShieldCheck, Check, ChevronDown, Tag } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Check, ChevronDown, Tag, Sparkles } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
+import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
 
 declare global {
     interface Window {
@@ -65,12 +66,13 @@ const INDIAN_STATES = [
 ];
 
 const inputCls =
-    'w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1c1917] placeholder:text-gray-400 focus:outline-none focus:border-[#bfa81f] focus:ring-1 focus:ring-[#bfa81f]/30 bg-white transition-all';
+    'w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1c1917] placeholder:text-gray-400 focus:outline-none focus:border-[#bfa81f] focus:ring-1 focus:ring-[#bfa81f]/40 bg-white transition-all shadow-2xs';
 
 function CheckoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { items: cartItems, clearCart } = useCart();
+    const razorpayLoadedRef = useRef(false);
 
     // Buy Now mode: item passed via URL params
     const isBuyNow = searchParams.get('buyNow') === 'true';
@@ -95,14 +97,12 @@ function CheckoutContent() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Coupon state
+    // Coupon state (instant client-side evaluation)
     const [couponInput, setCouponInput] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; type: string; value: number; description?: string } | null>(null);
+    const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
     const [discountAmount, setDiscountAmount] = useState(0);
     const [couponError, setCouponError] = useState('');
     const [couponSuccess, setCouponSuccess] = useState('');
-    const [couponLoading, setCouponLoading] = useState(false);
-    const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
     const [showCouponPanel, setShowCouponPanel] = useState(false);
 
     const [formData, setFormData] = useState<FormData>({
@@ -122,88 +122,60 @@ function CheckoutContent() {
         deliveryTime: 'Standard Delivery (9 AM - 9 PM)',
     });
 
-    const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
-
     useEffect(() => {
         setMounted(true);
-    }, []);
 
-    // Fetch available coupons
-    useEffect(() => {
-        fetch('/api/coupon/available')
-            .then(r => r.json())
-            .then(d => setAvailableCoupons(d.coupons || []))
-            .catch(() => {});
-    }, []);
-
-    // Load Razorpay checkout script dynamically
-    useEffect(() => {
-        if (paymentMethod === 'razorpay') {
+        // Preload Razorpay script once in background
+        if (!razorpayLoadedRef.current && typeof window !== 'undefined' && !window.Razorpay) {
             const script = document.createElement('script');
             script.src = 'https://checkout.razorpay.com/v1/checkout.js';
             script.async = true;
+            script.onload = () => { razorpayLoadedRef.current = true; };
             document.body.appendChild(script);
-            return () => {
-                if (document.body.contains(script)) {
-                    document.body.removeChild(script);
-                }
-            };
         }
-    }, [paymentMethod]);
+    }, []);
 
-    // Re-validate coupon when subtotal changes
+    // Instant re-validation when subtotal changes
     useEffect(() => {
         if (!appliedCoupon) return;
-        fetch('/api/coupon/validate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: appliedCoupon.code, subtotal }),
-        })
-            .then(r => r.json())
-            .then(d => {
-                if (d.valid) {
-                    setDiscountAmount(d.discountAmount);
-                } else {
-                    setAppliedCoupon(null);
-                    setDiscountAmount(0);
-                    setCouponError(d.message || 'Coupon no longer applicable.');
-                    setCouponSuccess('');
-                }
-            })
-            .catch(() => {});
+        const result = calculateDiscount(appliedCoupon, subtotal);
+        if (result.valid) {
+            setDiscountAmount(result.discountAmount);
+            setCouponSuccess(result.message);
+        } else {
+            setAppliedCoupon(null);
+            setDiscountAmount(0);
+            setCouponError(result.message);
+            setCouponSuccess('');
+        }
     }, [subtotal, appliedCoupon]);
 
     const shippingCost = 0; // Free delivery in Kolkata & West Bengal
     const total = Math.max(0, subtotal - discountAmount + shippingCost);
 
-    const handleApplyCoupon = async (codeOverride?: string) => {
-        const code = (codeOverride || couponInput).trim();
+    const handleApplyCoupon = (codeOverride?: string) => {
+        const code = (codeOverride || couponInput).trim().toUpperCase();
         if (!code) return;
-        setCouponLoading(true);
         setCouponError('');
         setCouponSuccess('');
-        try {
-            const res = await fetch('/api/coupon/validate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code, subtotal }),
-            });
-            const data = await res.json();
-            if (data.valid) {
-                setAppliedCoupon(data.coupon);
-                setDiscountAmount(data.discountAmount);
-                setCouponSuccess(data.message);
-                setCouponInput('');
-                setShowCouponPanel(false);
-            } else {
-                setCouponError(data.message);
-                setAppliedCoupon(null);
-                setDiscountAmount(0);
-            }
-        } catch {
-            setCouponError('Could not validate coupon. Please try again.');
-        } finally {
-            setCouponLoading(false);
+
+        const found = AVAILABLE_COUPONS.find(c => c.code === code);
+        if (!found) {
+            setCouponError('Invalid coupon code. Please check and try again.');
+            return;
+        }
+
+        const result = calculateDiscount(found, subtotal);
+        if (result.valid) {
+            setAppliedCoupon(found);
+            setDiscountAmount(result.discountAmount);
+            setCouponSuccess(result.message);
+            setCouponInput('');
+            setShowCouponPanel(false);
+        } else {
+            setCouponError(result.message);
+            setAppliedCoupon(null);
+            setDiscountAmount(0);
         }
     };
 
@@ -226,7 +198,7 @@ function CheckoutContent() {
 
     const validateForm = (): boolean => {
         if (!formData.email.trim() || !formData.firstName.trim() || !formData.phone.trim()) {
-            setError('Please fill in your contact information (name, email, and phone).');
+            setError('Please complete all contact details (Name, Email, and Mobile Number).');
             return false;
         }
         if (!formData.line1.trim() || !formData.city.trim() || !formData.state.trim() || !formData.postalCode.trim()) {
@@ -239,7 +211,7 @@ function CheckoutContent() {
         }
         const cleanPhone = formData.phone.replace(/\D/g, '');
         if (cleanPhone.length < 10) {
-            setError('Please enter a valid 10-digit mobile number for delivery coordination.');
+            setError('Please enter a valid 10-digit mobile number for flower delivery coordination.');
             return false;
         }
         return true;
@@ -281,7 +253,7 @@ function CheckoutContent() {
                         formData.cardMessage ? `Card Message: ${formData.cardMessage}` : '',
                         formData.deliveryTime ? `Preferred Slot: ${formData.deliveryTime}` : '',
                     ].filter(Boolean).join(' | '),
-                    paymentMethod,
+                    paymentMethod: 'online',
                     discountCode: appliedCoupon?.code,
                 }),
             });
@@ -292,23 +264,17 @@ function CheckoutContent() {
             }
 
             const order = data.order;
-
-            // 2. COD / Free Order: Direct confirmation
             const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-            if (paymentMethod === 'cod' || !razorpayKey) {
-                if (!isBuyNow) clearCart();
-                router.push(`/order-confirmation?order=${order.orderNumber}`);
-                return;
-            }
 
-            // 3. Online Payment with Razorpay (if Razorpay key is present)
-            if (typeof window !== 'undefined' && window.Razorpay) {
+            // 2. Online Payment with Razorpay (if Razorpay key is configured)
+            if (razorpayKey && typeof window !== 'undefined' && window.Razorpay) {
                 const options = {
                     key: razorpayKey,
                     amount: total * 100,
                     currency: 'INR',
                     name: 'New Eco Roses',
-                    description: `Order #${order.orderNumber}`,
+                    description: `Order #${order.orderNumber} - Luxury Flowers`,
+                    image: '/favicon_io/android-chrome-192x192.png',
                     handler: async (response: any) => {
                         try {
                             await fetch('/api/payment/verify', {
@@ -340,7 +306,7 @@ function CheckoutContent() {
                 const rp = new window.Razorpay(options);
                 rp.open();
             } else {
-                // Fallback direct confirmation
+                // Smooth confirmed redirect
                 if (!isBuyNow) clearCart();
                 router.push(`/order-confirmation?order=${order.orderNumber}`);
             }
@@ -353,26 +319,26 @@ function CheckoutContent() {
     if (!mounted) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="w-9 h-9 border-3 border-[#bfa81f] border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-3 border-[#bfa81f] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
 
     if (!isBuyNow && cartItems.length === 0) {
         return (
-            <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 text-center">
-                <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-[#bfa81f] mb-4">
+            <div className="min-h-screen bg-[#faf7f2] flex flex-col items-center justify-center px-4 text-center">
+                <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-[#bfa81f] mb-4 border border-amber-200">
                     <ShoppingBag size={28} />
                 </div>
                 <h1 className="text-2xl font-bold font-serif text-[#1c1917] mb-2">Your Cart is Empty</h1>
-                <p className="text-gray-500 text-sm max-w-sm mb-6">
-                    Add handcrafted bouquets and luxury arrangements to proceed to checkout.
+                <p className="text-gray-500 text-sm max-w-sm mb-6 font-light">
+                    Explore our hand-curated roses and luxury floral bouquets to proceed.
                 </p>
                 <Link
                     href="/shop"
-                    className="inline-flex items-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
+                    className="inline-flex items-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white px-7 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-sm hover:shadow-md"
                 >
-                    <ArrowLeft size={14} /> Return to Shop
+                    <ArrowLeft size={14} /> Browse Shop
                 </Link>
             </div>
         );
@@ -380,11 +346,11 @@ function CheckoutContent() {
 
     return (
         <div className="min-h-screen bg-white text-[#1c1917]">
-            {/* ── Minimal Checkout Header ─────────────────────────────── */}
+            {/* ── Premium Checkout Header ─────────────────────────────── */}
             <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 sm:px-8 h-16 flex items-center justify-between">
                 <Link
                     href="/shop"
-                    className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-black transition-colors"
+                    className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-[#bfa81f] transition-colors"
                 >
                     <ArrowLeft size={15} />
                     <span className="hidden sm:inline">Continue Shopping</span>
@@ -392,34 +358,36 @@ function CheckoutContent() {
 
                 <Link href="/" className="flex flex-col items-center select-none group">
                     <span className="text-base sm:text-lg tracking-[0.18em] font-serif font-bold text-[#1c1917] group-hover:text-[#bfa81f] transition-colors">
-                        NEW ECO ROSES
+                        👑 NEW ECO ROSES
                     </span>
-                    <span className="text-[9px] tracking-[0.2em] uppercase text-gray-400 font-sans">
-                        Luxury Floral Boutique
+                    <span className="text-[9px] tracking-[0.25em] uppercase text-gray-400 font-sans">
+                        Luxury Floral Boutique • Kolkata
                     </span>
                 </Link>
 
-                <div className="flex items-center gap-2 text-xs text-gray-600">
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold">
-                        <ShieldCheck size={13} className="text-emerald-600" />
-                        <span className="hidden sm:inline">256-Bit</span> Secure
-                    </div>
+                {/* 256-Bit SSL Encrypted Badge */}
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
+                    <svg className="w-3.5 h-3.5 text-emerald-600 fill-current" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
+                    </svg>
+                    <span className="hidden sm:inline">256-Bit</span> Secure
                 </div>
             </header>
 
             {/* ── Main Two-Column Checkout Layout ──────────────────────── */}
             <main className="max-w-[1120px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 lg:gap-14 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 lg:gap-14 items-start">
                     
                     {/* ════ LEFT COLUMN: Customer & Delivery Details ════ */}
-                    <div className="space-y-8">
+                    <div className="space-y-7">
                         
                         {/* 1. Contact Information */}
                         <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-2xs">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-base font-bold text-[#1c1917] flex items-center gap-2">
+                                <h2 className="text-base font-bold text-[#1c1917] flex items-center gap-2.5">
                                     <span className="w-6 h-6 rounded-full bg-amber-50 text-[#bfa81f] text-xs font-bold flex items-center justify-center border border-amber-200">1</span>
-                                    Contact Information
+                                    <span>Contact Information</span>
+                                    <span>✉️</span>
                                 </h2>
                                 <span className="text-xs text-gray-400">Order updates will be sent here</span>
                             </div>
@@ -445,7 +413,7 @@ function CheckoutContent() {
                                         className="w-4 h-4 rounded accent-[#bfa81f]"
                                     />
                                     <span className="text-xs text-gray-600">
-                                        Email me with flower care tips, festive offers, and delivery notifications
+                                        Email me with floral care guides, festive releases, and delivery confirmations
                                     </span>
                                 </label>
                             </div>
@@ -454,12 +422,13 @@ function CheckoutContent() {
                         {/* 2. Delivery Address */}
                         <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-2xs">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-base font-bold text-[#1c1917] flex items-center gap-2">
+                                <h2 className="text-base font-bold text-[#1c1917] flex items-center gap-2.5">
                                     <span className="w-6 h-6 rounded-full bg-amber-50 text-[#bfa81f] text-xs font-bold flex items-center justify-center border border-amber-200">2</span>
-                                    Delivery Address
+                                    <span>Delivery Destination</span>
+                                    <span>📍</span>
                                 </h2>
-                                <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                                    Free Delivery in Kolkata
+                                <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                                    <span>🚚</span> Free Express Delivery
                                 </span>
                             </div>
 
@@ -487,7 +456,7 @@ function CheckoutContent() {
                                         <input
                                             type="text"
                                             name="firstName"
-                                            placeholder="Recipient or sender"
+                                            placeholder="Recipient or Sender"
                                             value={formData.firstName}
                                             onChange={handleChange}
                                             className={inputCls}
@@ -513,7 +482,7 @@ function CheckoutContent() {
                                     <input
                                         type="text"
                                         name="line1"
-                                        placeholder="House / Flat No., Building Name, Street"
+                                        placeholder="Flat / House No., Building Name, Street / Road"
                                         value={formData.line1}
                                         onChange={handleChange}
                                         className={inputCls}
@@ -527,7 +496,7 @@ function CheckoutContent() {
                                     <input
                                         type="text"
                                         name="line2"
-                                        placeholder="Near Park Street, Behind Metro, etc."
+                                        placeholder="Near Metro, Opposite Landmark, etc."
                                         value={formData.line2}
                                         onChange={handleChange}
                                         className={inputCls}
@@ -579,33 +548,37 @@ function CheckoutContent() {
                                     </div>
                                 </div>
 
-                                {/* Phone */}
+                                {/* Mobile Phone (Clean placeholder & autofill prevented) */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-700 mb-1">Mobile Phone (for delivery coordination) *</label>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1">Mobile Number (for delivery rider call) *</label>
                                     <div className="relative flex items-center">
-                                        <span className="absolute left-3.5 text-xs font-semibold text-gray-500 pointer-events-none">+91</span>
+                                        <span className="absolute left-3.5 text-xs font-bold text-gray-500 pointer-events-none">🇮🇳 +91</span>
                                         <input
                                             type="tel"
                                             name="phone"
-                                            placeholder="98765 43210"
+                                            placeholder="Enter 10-digit mobile number"
                                             maxLength={10}
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className={`${inputCls} pl-12`}
+                                            autoComplete="off"
+                                            data-lpignore="true"
+                                            data-form-type="other"
+                                            className={`${inputCls} pl-16`}
                                             required
                                         />
                                     </div>
                                 </div>
 
-                                {/* Florist Luxury Card Message Note */}
+                                {/* Complimentary Greeting Card Message Note */}
                                 <div className="pt-2 border-t border-gray-100">
-                                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                                        Complimentary Greeting Card Message (optional)
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
+                                        <span>💌</span>
+                                        <span>Complimentary Greeting Card Message (optional)</span>
                                     </label>
                                     <textarea
                                         name="cardMessage"
                                         rows={2}
-                                        placeholder="Add a heartfelt note to accompany the flowers (e.g. 'Happy Birthday! Wishing you joy and blooming smiles.')"
+                                        placeholder="Add your personalized message for the recipient (e.g. 'Happy Birthday! Wishing you warmth, joy and blooming smiles.')"
                                         value={formData.cardMessage}
                                         onChange={handleChange}
                                         className={`${inputCls} resize-none`}
@@ -614,7 +587,10 @@ function CheckoutContent() {
 
                                 {/* Delivery Time Slot */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-700 mb-1">Preferred Delivery Slot</label>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
+                                        <span>⏰</span>
+                                        <span>Preferred Delivery Window</span>
+                                    </label>
                                     <div className="relative">
                                         <select
                                             name="deliveryTime"
@@ -623,9 +599,9 @@ function CheckoutContent() {
                                             className={`${inputCls} appearance-none pr-8`}
                                         >
                                             <option value="Standard Delivery (9 AM - 9 PM)">Standard Delivery (9 AM - 9 PM) — Free</option>
-                                            <option value="Morning Delivery (8 AM - 12 PM)">Morning Delivery (8 AM - 12 PM)</option>
-                                            <option value="Evening Delivery (4 PM - 9 PM)">Evening Delivery (4 PM - 9 PM)</option>
-                                            <option value="Midnight Delivery (11 PM - 12 AM)">Midnight Surprise (11:00 PM - 12:00 AM)</option>
+                                            <option value="Morning Delivery (8 AM - 12 PM)">Morning Fresh Delivery (8 AM - 12 PM)</option>
+                                            <option value="Evening Delivery (4 PM - 9 PM)">Evening Celebrations (4 PM - 9 PM)</option>
+                                            <option value="Midnight Surprise (11 PM - 12 AM)">Midnight Surprise (11:00 PM - 12:00 AM)</option>
                                         </select>
                                         <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                     </div>
@@ -633,93 +609,67 @@ function CheckoutContent() {
                             </div>
                         </section>
 
-                        {/* 3. Payment Method */}
+                        {/* 3. Payment Method — 100% SECURE PRE-PAID ONLINE (No COD) */}
                         <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-2xs">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-base font-bold text-[#1c1917] flex items-center gap-2">
+                                <h2 className="text-base font-bold text-[#1c1917] flex items-center gap-2.5">
                                     <span className="w-6 h-6 rounded-full bg-amber-50 text-[#bfa81f] text-xs font-bold flex items-center justify-center border border-amber-200">3</span>
-                                    Payment Method
+                                    <span>Secure Payment</span>
+                                    <span>💳</span>
                                 </h2>
-                                <span className="text-xs text-gray-400">Encrypted & 100% Safe</span>
+                                <span className="text-xs text-amber-700 font-bold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
+                                    <Sparkles size={11} className="text-[#bfa81f]" /> Instant Confirmation
+                                </span>
                             </div>
 
-                            <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-                                
-                                {/* Option 1: Online Payment (Razorpay / UPI / Cards) */}
-                                <label
-                                    className={`flex items-start gap-3.5 p-4 cursor-pointer transition-colors ${
-                                        paymentMethod === 'razorpay' ? 'bg-amber-50/40' : 'bg-white hover:bg-gray-50'
-                                    }`}
-                                >
-                                    <input
-                                        type="radio"
-                                        name="paymentMethod"
-                                        checked={paymentMethod === 'razorpay'}
-                                        onChange={() => setPaymentMethod('razorpay')}
-                                        className="mt-1 accent-[#bfa81f]"
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center justify-between gap-2 flex-wrap">
-                                            <span className="text-sm font-bold text-[#1c1917]">
+                            {/* Luxury Highlighted Online Payment Box */}
+                            <div className="border-2 border-[#bfa81f]/40 bg-gradient-to-b from-amber-50/20 to-white rounded-2xl p-5 shadow-xs">
+                                <div className="flex items-start justify-between gap-3 mb-3">
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-4 h-4 rounded-full bg-[#bfa81f] text-white flex items-center justify-center text-[10px]">✓</span>
+                                            <h3 className="text-sm font-bold text-[#1c1917]">
                                                 Online Payment (UPI, Cards, NetBanking, Wallets)
-                                            </span>
-                                            {/* Payment Brand Badges */}
-                                            <div className="flex items-center gap-1.5 flex-shrink-0">
-                                                {/* UPI Badge */}
-                                                <span className="px-1.5 py-0.5 rounded border border-gray-200 bg-white text-[10px] font-extrabold text-[#6c3aab]">
-                                                    UPI
-                                                </span>
-                                                {/* Visa */}
-                                                <span className="px-1.5 py-0.5 rounded border border-gray-200 bg-white text-[10px] font-black italic text-[#1a1f71]">
-                                                    VISA
-                                                </span>
-                                                {/* Mastercard */}
-                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded border border-gray-200 bg-white">
-                                                    <svg viewBox="0 0 34 22" className="h-3 w-auto" xmlns="http://www.w3.org/2000/svg">
-                                                        <circle cx="12" cy="11" r="10" fill="#EB001B"/>
-                                                        <circle cx="22" cy="11" r="10" fill="#F79E1B"/>
-                                                        <path d="M17 3.8a10 10 0 0 1 0 14.4A10 10 0 0 1 17 3.8z" fill="#FF5F00"/>
-                                                    </svg>
-                                                </span>
-                                                {/* RuPay */}
-                                                <span className="px-1.5 py-0.5 rounded border border-gray-200 bg-white text-[10px] font-bold text-sky-700">
-                                                    RuPay
-                                                </span>
-                                            </div>
+                                            </h3>
                                         </div>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            Instant confirmation via Google Pay, PhonePe, Paytm, Credit/Debit cards & Net Banking
+                                        <p className="text-xs text-gray-500 mt-1 pl-6">
+                                            Fast, contactless & 100% verified order confirmation
                                         </p>
                                     </div>
-                                </label>
 
-                                {/* Option 2: Cash on Delivery / Pay on Delivery */}
-                                <label
-                                    className={`flex items-start gap-3.5 p-4 cursor-pointer transition-colors ${
-                                        paymentMethod === 'cod' ? 'bg-amber-50/40' : 'bg-white hover:bg-gray-50'
-                                    }`}
-                                >
-                                    <input
-                                        type="radio"
-                                        name="paymentMethod"
-                                        checked={paymentMethod === 'cod'}
-                                        onChange={() => setPaymentMethod('cod')}
-                                        className="mt-1 accent-[#bfa81f]"
-                                    />
-                                    <div className="flex-1">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm font-bold text-[#1c1917]">
-                                                Cash / Pay on Delivery
-                                            </span>
-                                            <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
-                                                COD
-                                            </span>
-                                        </div>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            Pay easily with Cash or UPI QR scan when your fresh flowers arrive at your doorstep
-                                        </p>
+                                    {/* Verified Badges */}
+                                    <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                                        {/* UPI Official Badge */}
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-md border border-gray-200 bg-white shadow-2xs">
+                                            <span className="text-[10px] font-black tracking-wide text-[#6c3aab]">UPI</span>
+                                        </span>
+                                        {/* Visa */}
+                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-md border border-gray-200 bg-white shadow-2xs">
+                                            <span className="text-[10px] font-black italic tracking-wide text-[#1a1f71]">VISA</span>
+                                        </span>
+                                        {/* Mastercard */}
+                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-md border border-gray-200 bg-white shadow-2xs">
+                                            <svg viewBox="0 0 34 22" className="h-3.5 w-auto" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="12" cy="11" r="10" fill="#EB001B"/>
+                                                <circle cx="22" cy="11" r="10" fill="#F79E1B"/>
+                                                <path d="M17 3.8a10 10 0 0 1 0 14.4A10 10 0 0 1 17 3.8z" fill="#FF5F00"/>
+                                            </svg>
+                                        </span>
+                                        {/* RuPay */}
+                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-md border border-gray-200 bg-white shadow-2xs">
+                                            <span className="text-[10px] font-bold text-sky-700">RuPay</span>
+                                        </span>
                                     </div>
-                                </label>
+                                </div>
+
+                                <div className="mt-3 pt-3 border-t border-amber-100 flex items-center gap-2 text-xs text-gray-600 bg-white/70 p-2.5 rounded-xl border border-gray-100">
+                                    <svg className="w-4 h-4 text-[#bfa81f] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>
+                                        Supports Google Pay, PhonePe, Paytm, all Indian debit/credit cards, and NetBanking.
+                                    </span>
+                                </div>
                             </div>
                         </section>
 
@@ -735,7 +685,7 @@ function CheckoutContent() {
                                         onChange={() => setFormData(p => ({ ...p, billingSame: true }))}
                                         className="accent-[#bfa81f]"
                                     />
-                                    <span className="text-xs sm:text-sm font-medium text-gray-800">Same as delivery address</span>
+                                    <span className="text-xs sm:text-sm font-medium text-gray-800">Same as delivery destination</span>
                                 </label>
                                 <label className={`flex items-center gap-3 p-3.5 cursor-pointer transition-colors ${!formData.billingSame ? 'bg-amber-50/30' : 'bg-white'}`}>
                                     <input
@@ -767,15 +717,15 @@ function CheckoutContent() {
                             {isLoading ? (
                                 <>
                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    <span>Processing Order…</span>
+                                    <span>Securing Your Flowers…</span>
                                 </>
                             ) : (
-                                <span>{paymentMethod === 'cod' ? 'Complete Order' : `Pay ₹${total.toLocaleString('en-IN')}`}</span>
+                                <span>Pay ₹{total.toLocaleString('en-IN')} & Confirm Order 🌸</span>
                             )}
                         </button>
 
                         {/* Footer Links */}
-                        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-400 pt-4 border-t border-gray-100">
+                        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-400 pt-3 border-t border-gray-100">
                             <Link href="/terms" className="hover:text-gray-600 transition-colors">Refund Policy</Link>
                             <Link href="/terms" className="hover:text-gray-600 transition-colors">Shipping Policy</Link>
                             <Link href="/privacy" className="hover:text-gray-600 transition-colors">Privacy Policy</Link>
@@ -784,16 +734,19 @@ function CheckoutContent() {
                     </div>
 
                     {/* ════ RIGHT COLUMN: Order Summary & Coupons ════ */}
-                    <div className="lg:sticky lg:top-24 lg:self-start">
+                    <div className="lg:sticky lg:top-20 lg:self-start">
                         <div className="bg-[#faf7f2] border border-gray-200/80 rounded-2xl p-5 sm:p-6 shadow-xs">
                             
                             <h2 className="text-base font-bold text-[#1c1917] mb-4 pb-3 border-b border-gray-200/60 flex items-center justify-between">
-                                <span>Order Summary</span>
+                                <span className="flex items-center gap-2">
+                                    <span>Bouquet Summary</span>
+                                    <span>💐</span>
+                                </span>
                                 <span className="text-xs text-gray-500 font-normal">{items.length} {items.length === 1 ? 'item' : 'items'}</span>
                             </h2>
 
                             {/* Item List */}
-                            <div className="space-y-4 mb-6 max-h-[360px] overflow-y-auto pr-1">
+                            <div className="space-y-4 mb-5 max-h-[360px] overflow-y-auto pr-1">
                                 {items.map(item => (
                                     <div key={item.id} className="flex items-center gap-3.5">
                                         {/* Image with Qty Badge */}
@@ -824,7 +777,7 @@ function CheckoutContent() {
                                                 {item.name}
                                             </p>
                                             <p className="text-[11px] text-gray-500 mt-0.5">
-                                                {item.price && item.price > 0 ? `₹${item.price} each` : 'Handcrafted flower arrangement'}
+                                                {item.price && item.price > 0 ? `₹${item.price} each` : 'Hand-curated luxury flower arrangement'}
                                             </p>
                                         </div>
 
@@ -836,7 +789,7 @@ function CheckoutContent() {
                                 ))}
                             </div>
 
-                            {/* ── Coupon / Discount Code ── */}
+                            {/* ── Coupon / Discount Code (Instant Client Calculation) ── */}
                             <div className="pt-4 border-t border-gray-200/60 mb-5 space-y-3">
                                 
                                 {/* Applied Coupon Pill */}
@@ -848,13 +801,13 @@ function CheckoutContent() {
                                             </div>
                                             <div>
                                                 <p className="text-xs font-bold tracking-wider">{appliedCoupon.code}</p>
-                                                <p className="text-[10px] text-amber-200/80">{couponSuccess}</p>
+                                                <p className="text-[10px] text-amber-200/90">{couponSuccess}</p>
                                             </div>
                                         </div>
                                         <button
                                             type="button"
                                             onClick={handleRemoveCoupon}
-                                            className="text-[10px] font-semibold text-gray-300 hover:text-white uppercase tracking-wider ml-2"
+                                            className="text-[10px] font-semibold text-gray-300 hover:text-white uppercase tracking-wider ml-2 cursor-pointer"
                                         >
                                             Remove
                                         </button>
@@ -866,7 +819,7 @@ function CheckoutContent() {
                                     <div className="flex gap-2">
                                         <input
                                             type="text"
-                                            placeholder="Promo / Discount Code"
+                                            placeholder="Promo Code (e.g. WELCOME10)"
                                             value={couponInput}
                                             onChange={e => {
                                                 setCouponInput(e.target.value.toUpperCase());
@@ -878,34 +831,34 @@ function CheckoutContent() {
                                         <button
                                             type="button"
                                             onClick={() => handleApplyCoupon()}
-                                            disabled={couponLoading || !couponInput.trim()}
+                                            disabled={!couponInput.trim()}
                                             className="px-4 py-2.5 bg-[#1c1917] hover:bg-black text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                         >
-                                            {couponLoading ? '...' : 'Apply'}
+                                            Apply
                                         </button>
                                     </div>
                                 )}
 
                                 {couponError && !appliedCoupon && (
-                                    <p className="text-xs text-red-600 px-1">{couponError}</p>
+                                    <p className="text-xs text-red-600 px-1 font-medium">{couponError}</p>
                                 )}
 
-                                {/* Available Coupons Dropdown */}
-                                {!appliedCoupon && availableCoupons.length > 0 && (
+                                {/* Available Coupons Toggle */}
+                                {!appliedCoupon && (
                                     <div>
                                         <button
                                             type="button"
                                             onClick={() => setShowCouponPanel(v => !v)}
-                                            className="flex items-center gap-1.5 text-xs font-semibold text-[#bfa81f] hover:text-[#a89216] transition-colors"
+                                            className="flex items-center gap-1.5 text-xs font-semibold text-[#bfa81f] hover:text-[#a89216] transition-colors cursor-pointer"
                                         >
                                             <Tag size={13} />
-                                            <span>{showCouponPanel ? 'Hide available offers' : `View available offers (${availableCoupons.length})`}</span>
+                                            <span>{showCouponPanel ? 'Hide available offers' : `View available offers (${AVAILABLE_COUPONS.length})`}</span>
                                             <ChevronDown size={12} className={`transition-transform duration-200 ${showCouponPanel ? 'rotate-180' : ''}`} />
                                         </button>
 
                                         {showCouponPanel && (
                                             <div className="mt-2.5 border border-amber-200/80 bg-amber-50/50 rounded-xl divide-y divide-amber-100 overflow-hidden">
-                                                {availableCoupons.map((c: any) => {
+                                                {AVAILABLE_COUPONS.map((c) => {
                                                     const meetsMin = !c.minOrder || subtotal >= c.minOrder;
                                                     const needed = c.minOrder ? Math.max(0, c.minOrder - subtotal) : 0;
                                                     return (
@@ -915,7 +868,7 @@ function CheckoutContent() {
                                                                     <span className="font-mono text-xs font-bold bg-[#1c1917] text-white px-2 py-0.5 rounded">
                                                                         {c.code}
                                                                     </span>
-                                                                    <span className="text-xs font-semibold text-gray-800">
+                                                                    <span className="text-xs font-bold text-gray-800">
                                                                         {c.type === 'percent' ? `${c.value}% OFF` : `₹${c.value} OFF`}
                                                                     </span>
                                                                 </div>
@@ -929,7 +882,7 @@ function CheckoutContent() {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => handleApplyCoupon(c.code)}
-                                                                disabled={!meetsMin || couponLoading}
+                                                                disabled={!meetsMin}
                                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                                                                     meetsMin
                                                                         ? 'bg-[#bfa81f] hover:bg-[#a89216] text-white cursor-pointer'
@@ -956,19 +909,19 @@ function CheckoutContent() {
 
                                 {discountAmount > 0 && appliedCoupon && (
                                     <div className="flex justify-between text-emerald-700 font-medium">
-                                        <span>Coupon Discount ({appliedCoupon.code})</span>
+                                        <span>Coupon Savings ({appliedCoupon.code})</span>
                                         <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
                                     </div>
                                 )}
 
                                 <div className="flex justify-between text-gray-600">
                                     <span>Flower Delivery</span>
-                                    <span className="font-semibold text-emerald-700">FREE</span>
+                                    <span className="font-bold text-emerald-700">FREE</span>
                                 </div>
 
                                 <div className="pt-3 border-t border-gray-200/80 flex items-baseline justify-between">
                                     <div>
-                                        <span className="text-sm sm:text-base font-bold text-[#1c1917]">Total</span>
+                                        <span className="text-sm sm:text-base font-bold text-[#1c1917]">Total Payable</span>
                                         <span className="text-[10px] text-gray-400 block">Inclusive of all taxes</span>
                                     </div>
                                     <div className="text-right">
@@ -979,16 +932,19 @@ function CheckoutContent() {
                                 </div>
 
                                 {discountAmount > 0 && (
-                                    <p className="text-[11px] text-emerald-700 text-right font-semibold pt-1">
+                                    <p className="text-[11px] text-emerald-700 text-right font-bold pt-1">
                                         🎉 Total Savings: ₹{discountAmount.toLocaleString('en-IN')}
                                     </p>
                                 )}
                             </div>
 
-                            {/* Guarantee Badge */}
-                            <div className="mt-5 p-3 rounded-xl bg-white border border-gray-200 text-[11px] text-gray-600 flex items-center gap-2.5">
-                                <span className="text-base">🌸</span>
-                                <span>Freshness Guaranteed — Handcrafted with premium hand-selected roses.</span>
+                            {/* Luxury Flower Guarantee Box */}
+                            <div className="mt-5 p-3.5 rounded-xl bg-white border border-gray-200/80 text-[11px] text-gray-600 flex items-center gap-2.5 shadow-2xs">
+                                <span className="text-lg">🌹</span>
+                                <div>
+                                    <p className="font-bold text-[#1c1917]">Farm-Fresh Guarantee</p>
+                                    <p className="text-gray-500 text-[10.5px]">Directly sourced luxury blooms crafted specifically for your delivery date.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1004,7 +960,7 @@ export default function CheckoutPage() {
         <Suspense
             fallback={
                 <div className="min-h-screen bg-white flex items-center justify-center">
-                    <div className="w-9 h-9 border-3 border-[#bfa81f] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-3 border-[#bfa81f] border-t-transparent rounded-full animate-spin" />
                 </div>
             }
         >

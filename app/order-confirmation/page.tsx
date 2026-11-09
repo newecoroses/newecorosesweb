@@ -184,7 +184,7 @@ function OrderConfirmationContent() {
                         <div className="flex justify-between items-baseline pt-4 border-t border-gray-100">
                             <div>
                                 <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Paid</span>
-                                <span className="text-[10px] text-gray-400 block">Payment: {order?.paymentMethod === 'cod' ? 'Cash / Pay on Delivery' : 'Online Payment (Confirmed)'}</span>
+                                <span className="text-[10px] text-emerald-700 font-semibold block">✓ 100% Verified Online Payment</span>
                             </div>
                             <span className="text-xl font-extrabold text-[#1c1917]">
                                 {order?.total ? `₹${order.total.toLocaleString('en-IN')}` : 'Order Received'}

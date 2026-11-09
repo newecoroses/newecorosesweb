@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ordersStore, SavedOrder } from '@/lib/order-cache';
-import { PUBLIC_COUPONS } from '../coupon/available/route';
+import { AVAILABLE_COUPONS, calculateDiscount } from '@/lib/coupons';
 
 export async function POST(request: NextRequest) {
     try {
@@ -28,13 +28,11 @@ export async function POST(request: NextRequest) {
         let discountAmount = 0;
         if (discountCode) {
             const code = discountCode.toUpperCase().trim();
-            const coupon = PUBLIC_COUPONS.find(c => c.code === code);
-            if (coupon && (!coupon.minOrder || subtotal >= coupon.minOrder)) {
-                if (coupon.type === 'percent') {
-                    discountAmount = Math.round(subtotal * (coupon.value / 100));
-                    if (coupon.maxDiscount) discountAmount = Math.min(discountAmount, coupon.maxDiscount);
-                } else {
-                    discountAmount = Math.min(coupon.value, subtotal);
+            const coupon = AVAILABLE_COUPONS.find(c => c.code === code);
+            if (coupon) {
+                const result = calculateDiscount(coupon, subtotal);
+                if (result.valid) {
+                    discountAmount = result.discountAmount;
                 }
             }
         }
@@ -70,13 +68,13 @@ export async function POST(request: NextRequest) {
                 country: shippingAddress.country || 'India',
             },
             specialNote: specialNote || '',
-            paymentMethod: paymentMethod || 'cod',
+            paymentMethod: 'online',
             subtotal,
             discountAmount,
             discountCode: discountCode ? discountCode.toUpperCase() : undefined,
             shippingCost,
             total,
-            status: paymentMethod === 'cod' ? 'confirmed' : 'pending_payment',
+            status: 'confirmed',
             createdAt: new Date().toISOString(),
         };
 
@@ -105,7 +103,6 @@ export async function GET(request: NextRequest) {
 
         const order = ordersStore.get(orderNumber);
         if (!order) {
-            // Return placeholder order structure if server container restarted
             return NextResponse.json({
                 success: true,
                 order: {
@@ -113,6 +110,7 @@ export async function GET(request: NextRequest) {
                     createdAt: new Date().toISOString(),
                     total: 0,
                     status: 'confirmed',
+                    paymentMethod: 'online',
                     customer: { name: 'Customer', email: '', phone: '' },
                     shippingAddress: { city: 'Kolkata', state: 'West Bengal' },
                 },
