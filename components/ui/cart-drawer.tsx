@@ -107,7 +107,7 @@ export default function CartDrawer() {
                                     <Link
                                         href="/shop"
                                         onClick={closeDrawer}
-                                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold bg-primary text-white hover:opacity-90 transition-all"
+                                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold bg-[#bfa81f] hover:bg-[#a89216] text-white transition-all shadow-sm"
                                     >
                                         Browse Shop <ArrowRight size={14} />
                                     </Link>
@@ -223,9 +223,9 @@ export default function CartDrawer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={closeDrawer}
-                                    className="w-full flex items-center justify-center gap-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 py-3 rounded-xl text-xs uppercase tracking-wider font-semibold transition-all"
+                                    className="w-full flex items-center justify-center gap-2.5 border-2 border-[#bfa81f] text-[#bfa81f] hover:bg-[#bfa81f] hover:text-white py-3 rounded-xl text-xs uppercase tracking-wider font-bold transition-all"
                                 >
-                                    <WhatsappIcon size={16} className="text-emerald-600" />
+                                    <WhatsappIcon size={16} />
                                     <span>Order / Enquire on WhatsApp</span>
                                 </a>
                                 <p className="text-[11px] text-center text-muted font-light">

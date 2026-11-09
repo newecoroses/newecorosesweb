@@ -182,7 +182,7 @@ export default function DeliveryLocationModal({ isOpen, onClose, onLocationSet }
                     </button>
 
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-[#4a5c3e] to-[#3d4f30] px-5 pt-4 pb-4 flex items-center gap-3">
+                    <div className="bg-gradient-to-r from-[#bfa81f] to-[#a89216] px-5 pt-4 pb-4 flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center flex-shrink-0">
                             <MapPin size={17} className="text-white" strokeWidth={2} />
                         </div>
@@ -203,7 +203,7 @@ export default function DeliveryLocationModal({ isOpen, onClose, onLocationSet }
                             type="button"
                             disabled={loading}
                             onClick={handleDetectLocation}
-                            className="w-full bg-[#4a5c3e] hover:bg-[#3d4f30] active:bg-[#2e3d23] text-white font-semibold text-[13px] py-3 px-4 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="w-full bg-[#bfa81f] hover:bg-[#a89216] active:bg-[#968212] text-white font-semibold text-[13px] py-3 px-4 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <><Loader2 size={15} className="animate-spin text-amber-300 flex-shrink-0" /><span>Detecting location...</span></>
@@ -229,12 +229,12 @@ export default function DeliveryLocationModal({ isOpen, onClose, onLocationSet }
                                 value={pincode}
                                 onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
                                 placeholder="Enter 6-digit pincode…"
-                                className="w-full pl-4 pr-12 py-3 bg-[#faf8f4] border border-[#e8dcc8] focus:border-[#4a5c3e] rounded-2xl text-[13px] text-[#2a2420] placeholder:text-[#b0a48a] focus:outline-none focus:ring-2 focus:ring-[#4a5c3e]/12 transition-all font-mono tracking-wider"
+                                className="w-full pl-4 pr-12 py-3 bg-[#faf8f4] border border-[#e8dcc8] focus:border-[#bfa81f] rounded-2xl text-[13px] text-[#2a2420] placeholder:text-[#b0a48a] focus:outline-none focus:ring-2 focus:ring-[#bfa81f]/12 transition-all font-mono tracking-wider"
                             />
                             <button
                                 type="submit"
                                 disabled={pincode.length !== 6 || loading}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 bg-[#4a5c3e] hover:bg-[#3d4f30] text-white rounded-xl transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 bg-[#bfa81f] hover:bg-[#a89216] text-white rounded-xl transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 <Search size={14} strokeWidth={2.5} />
                             </button>
@@ -242,7 +242,7 @@ export default function DeliveryLocationModal({ isOpen, onClose, onLocationSet }
 
                         {/* Coverage hint */}
                         <p className="text-[10.5px] text-[#9e8f72] text-center leading-snug">
-                            Works for all <strong className="text-[#4a5c3e]">Kolkata 700XXX</strong> pincodes — Regent Park &amp; New Alipore
+                            Works for all <strong className="text-[#bfa81f]">Kolkata 700XXX</strong> pincodes — Regent Park &amp; New Alipore
                         </p>
 
                         {/* ── Status Results ── */}

@@ -359,7 +359,7 @@ export default function AdiFinderModal({ isOpen, onClose }: AdiFinderModalProps)
                                 />
                                 <button
                                     type="submit"
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#5c6e4f] hover:bg-[#4a5a3d] text-white rounded-lg transition-all cursor-pointer"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#bfa81f] hover:bg-[#a89216] text-white rounded-lg transition-all cursor-pointer"
                                     title="Search with Adi"
                                 >
                                     <Search size={15} />

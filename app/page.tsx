@@ -406,7 +406,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="mb-8 md:mb-12"
             >
-              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#5c6e4f] mb-3">Mark Your Calendar</span>
+              <span className="block text-[10px] md:text-xs uppercase tracking-[0.25em] font-medium text-[#bfa81f] mb-3">Mark Your Calendar</span>
               <h2 className="font-serif text-xl md:text-3xl text-[#3a3226]">Celebrations Calendar</h2>
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8">
@@ -429,7 +429,7 @@ export default function Home() {
                         <Image src={event.image_url} alt={event.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, 33vw" />
                       </div>
                     </div>
-                    <h3 className="text-center font-semibold text-[#3a3226] text-sm md:text-base mt-4 group-hover:text-[#5c6e4f] transition-colors">{event.name}</h3>
+                    <h3 className="text-center font-semibold text-[#3a3226] text-sm md:text-base mt-4 group-hover:text-[#bfa81f] transition-colors">{event.name}</h3>
                   </Link>
                 </motion.div>
               ))}
@@ -526,7 +526,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="mb-5 md:mb-8"
             >
-              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-1.5">The Rose Collection</span>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#bfa81f] mb-1.5">The Rose Collection</span>
               <h2 className="font-serif text-lg md:text-2xl text-[#3a3226]">Handpicked Perfection</h2>
               <p className="text-[#8a7a5a] text-xs font-light mt-1.5">Every rose is carefully selected and arranged by our master florists.</p>
             </motion.div>
@@ -561,9 +561,9 @@ export default function Home() {
                 <Image src="/images/our-story.webp" alt="New Eco Roses Storefront" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }} viewport={{ once: true }}>
-                <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#5c6e4f] mb-3">Our Story</span>
+                <span className="block text-[10px] uppercase tracking-[0.2em] font-medium text-[#bfa81f] mb-3">Our Story</span>
                 <h2 className="font-serif text-xl md:text-4xl lg:text-5xl text-[#3a3226] mb-4 leading-tight">
-                  Crafted With Love,<br /><em className="italic text-[#5c6e4f]">Delivered With Care</em>
+                  Crafted With Love,<br /><em className="italic text-[#bfa81f]">Delivered With Care</em>
                 </h2>
                 <p className="text-[#8a7a5a] leading-relaxed mb-5 font-light max-w-lg">
                   At New Eco Roses, we believe every occasion deserves to be celebrated beautifully. Located in the heart of Kolkata, we have built a reputation as one of the city&apos;s most trusted and loved gifting destinations.
@@ -573,15 +573,15 @@ export default function Home() {
                 </p>
                 <div className="grid grid-cols-3 gap-4 md:gap-6 pt-6 border-t border-[#ede4d6]">
                   <div className="text-center">
-                    <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{happyCustomers}</p>
+                    <p className="font-serif text-2xl md:text-3xl text-[#bfa81f] mb-1">{happyCustomers}</p>
                     <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Happy Customers</p>
                   </div>
                   <div className="text-center">
-                    <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{giftsDelivered}</p>
+                    <p className="font-serif text-2xl md:text-3xl text-[#bfa81f] mb-1">{giftsDelivered}</p>
                     <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Gifts Delivered</p>
                   </div>
                   <div className="text-center">
-                    <p className="font-serif text-2xl md:text-3xl text-[#5c6e4f] mb-1">{starRating}</p>
+                    <p className="font-serif text-2xl md:text-3xl text-[#bfa81f] mb-1">{starRating}</p>
                     <p className="text-[10px] md:text-xs text-[#8a7a5a] uppercase tracking-widest">Star Rating</p>
                   </div>
                 </div>
@@ -611,7 +611,7 @@ export default function Home() {
             <motion.div className="flex gap-4 md:gap-6 w-max mb-4 md:mb-6 pl-4" animate={{ x: "-50%" }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}>
               {[...T1, ...T1].map((t, idx) => (
                 <div key={`r1-${idx}`} className="bg-white rounded-2xl p-5 md:p-6 shadow-soft w-[280px] md:w-[350px] flex-shrink-0 relative border border-[#ede4d6]/50">
-                  <Quote size={18} className="text-[#5c6e4f]/20 absolute top-4 right-4" />
+                  <Quote size={18} className="text-[#bfa81f]/20 absolute top-4 right-4" />
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star key={i} size={13} className={i < Math.floor(t.rating) ? "text-[#c9a247] fill-[#c9a247]" : i < t.rating ? "text-[#c9a247] fill-[#c9a247]/50" : "text-gray-200 fill-gray-200"} />
@@ -627,7 +627,7 @@ export default function Home() {
               <motion.div className="flex gap-4 md:gap-6 w-max pl-4" animate={{ x: "0%" }} initial={{ x: "-50%" }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}>
                 {[...T2, ...T2].map((t, idx) => (
                   <div key={`r2-${idx}`} className="bg-white rounded-2xl p-5 md:p-6 shadow-soft w-[280px] md:w-[350px] flex-shrink-0 relative border border-[#ede4d6]/50">
-                    <Quote size={18} className="text-[#5c6e4f]/20 absolute top-4 right-4" />
+                    <Quote size={18} className="text-[#bfa81f]/20 absolute top-4 right-4" />
                     <div className="flex gap-0.5 mb-3">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star key={i} size={13} className={i < Math.floor(t.rating) ? "text-[#c9a247] fill-[#c9a247]" : i < t.rating ? "text-[#c9a247] fill-[#c9a247]/50" : "text-gray-200 fill-gray-200"} />
@@ -805,7 +805,7 @@ export default function Home() {
             <h2 className="font-serif text-2xl md:text-5xl text-white mb-4">Ready to Make Someone&apos;s Day?</h2>
             <p className="text-white/60 mb-8 max-w-lg mx-auto font-light text-sm md:text-base">Browse our collection or message us on WhatsApp for a bespoke gift.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
-              <Link href="/shop" className="inline-flex items-center gap-2 bg-white text-[#3a3226] px-7 md:px-8 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#5c6e4f] hover:text-white transition-all duration-400">
+              <Link href="/shop" className="inline-flex items-center gap-2 bg-white text-[#3a3226] px-7 md:px-8 py-3.5 md:py-4 text-xs uppercase tracking-[0.2em] font-semibold rounded-full hover:bg-[#bfa81f] hover:text-white transition-all duration-400">
                 Browse Collection <ArrowRight size={14} />
               </Link>
               <a href={ctaWaLink} target="_blank" rel="noopener noreferrer"

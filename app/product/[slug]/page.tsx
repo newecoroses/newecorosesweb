@@ -413,7 +413,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             <button
                                                 type="button"
                                                 onClick={handleAddToCart}
-                                                className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
+                                                className="w-8 h-8 rounded-lg bg-[#bfa81f] hover:bg-[#a89216] text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
                                             >
                                                 <Plus size={13} />
                                             </button>
@@ -446,9 +446,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => trackEnquiry(product.id, product.name)}
-                                    className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-gray-200 hover:border-emerald-500 bg-emerald-50/40 hover:bg-emerald-50 text-emerald-800 text-xs font-semibold transition-all group"
+                                    className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-[#bfa81f]/40 hover:border-[#bfa81f] bg-amber-50/50 hover:bg-amber-100/70 text-amber-900 text-xs font-bold transition-all group"
                                 >
-                                    <WhatsappIcon size={14} className="text-emerald-600 group-hover:scale-110 transition-transform" />
+                                    <WhatsappIcon size={14} className="text-[#bfa81f] group-hover:scale-110 transition-transform" />
                                     <span>Have questions or custom requirements? Enquire on WhatsApp</span>
                                 </a>
                             </div>
@@ -472,7 +472,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             <button
                                                 type="button"
                                                 onClick={handleAddToCart}
-                                                className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
+                                                className="w-8 h-8 rounded-lg bg-[#bfa81f] hover:bg-[#a89216] text-white flex items-center justify-center hover:opacity-90 transition-colors cursor-pointer"
                                             >
                                                 <Plus size={13} />
                                             </button>

@@ -214,7 +214,7 @@ function OrderConfirmationContent() {
                             {/* Continue Shopping */}
                             <Link
                                 href="/shop"
-                                className="w-full flex items-center justify-center gap-2 bg-[#1c1917] hover:bg-black text-white py-3 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm transition-all"
+                                className="w-full flex items-center justify-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-white py-3 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm transition-all"
                             >
                                 <ShoppingBag size={16} />
                                 <span>Explore More Floral Gifts</span>
