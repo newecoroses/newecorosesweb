@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ordersStore, SavedOrder } from '@/lib/order-cache';
+import { ordersStore, SavedOrder, getAllOrders, updateOrderStatus } from '@/lib/order-cache';
 import { AVAILABLE_COUPONS, calculateDiscount } from '@/lib/coupons';
 
 export async function POST(request: NextRequest) {
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
             createdAt: new Date().toISOString(),
         };
 
-        // Cache order for instant lookup on confirmation page
+        // Cache order for instant lookup
         ordersStore.set(orderNumber, newOrder);
         ordersStore.set(orderId, newOrder);
 
@@ -97,8 +97,14 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const orderNumber = searchParams.get('orderNumber');
 
+        // If no orderNumber specified, return all orders for the admin panel
         if (!orderNumber) {
-            return NextResponse.json({ success: false, error: 'Order number is required' }, { status: 400 });
+            const orders = getAllOrders();
+            return NextResponse.json({
+                success: true,
+                orders,
+                total: orders.length,
+            });
         }
 
         const order = ordersStore.get(orderNumber);
@@ -123,6 +129,30 @@ export async function GET(request: NextRequest) {
         });
     } catch (err: any) {
         console.error('Fetch order error:', err);
+        return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    }
+}
+
+export async function PATCH(request: NextRequest) {
+    try {
+        const body = await request.json();
+        const { orderId, status } = body;
+
+        if (!orderId || !status) {
+            return NextResponse.json({ success: false, error: 'Order ID and status are required' }, { status: 400 });
+        }
+
+        const updated = updateOrderStatus(orderId, status);
+        if (!updated) {
+            return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            order: updated,
+        });
+    } catch (err: any) {
+        console.error('Update order error:', err);
         return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
 }

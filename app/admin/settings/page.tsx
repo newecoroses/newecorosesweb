@@ -94,7 +94,7 @@ export default function AdminSettingsPage() {
                         <RefreshCw size={16} />
                     </button>
                     <button onClick={handleSaveAll} disabled={saving}
-                        className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50">
+                        className="flex items-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-black font-bold font-bold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={16} />}
                         {saving ? 'Saving...' : 'Save All'}
                     </button>

@@ -690,7 +690,7 @@ export default function AnalyticsPage() {
                                         href={`/admin/analytics/${selectedExplorerMonth}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-full bg-zinc-100 hover:bg-white text-zinc-900 text-xs font-semibold py-2.5 rounded-xl transition-all duration-300 text-center block shadow-sm hover:shadow"
+                                        className="w-full bg-[#bfa81f] hover:bg-[#a89216] text-black font-bold text-xs font-semibold py-2.5 rounded-xl transition-all duration-300 text-center block shadow-sm hover:shadow"
                                     >
                                         View Full Analytics
                                     </a>

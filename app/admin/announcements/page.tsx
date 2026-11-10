@@ -69,7 +69,7 @@ export default function AdminAnnouncementsPage() {
                         <p className="text-gray-400 text-sm mt-0.5">The scrolling ticker bar at the top of your website</p>
                     </div>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-black font-bold font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Text
                 </button>
             </div>
@@ -156,7 +156,7 @@ export default function AdminAnnouncementsPage() {
                 </div>
                 <div className="flex gap-3 mt-5">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm hover:bg-gray-700">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-zinc-100 hover:bg-white text-zinc-900 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-[#bfa81f] hover:bg-[#a89216] text-black font-bold font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save'}
                     </button>
