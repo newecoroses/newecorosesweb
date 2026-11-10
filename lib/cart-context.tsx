@@ -25,7 +25,9 @@ interface CartContextType {
     closeDrawer: () => void;
     toggleDrawer: () => void;
     isAddonModalOpen: boolean;
-    openAddonModal: (itemToAdd?: Omit<CartItem, 'quantity'>) => void;
+    addonModalTargetItem: CartItem | null;
+    isBuyNowMode: boolean;
+    openAddonModal: (itemToAdd?: Omit<CartItem, 'quantity'>, isBuyNow?: boolean) => void;
     closeAddonModal: () => void;
 }
 
@@ -46,6 +48,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [hydrated, setHydrated] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isAddonModalOpen, setIsAddonModalOpen] = useState(false);
+    const [addonModalTargetItem, setAddonModalTargetItem] = useState<CartItem | null>(null);
+    const [isBuyNowMode, setIsBuyNowMode] = useState(false);
 
     // Hydrate from localStorage on mount
     useEffect(() => {
@@ -99,21 +103,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const closeDrawer = useCallback(() => setIsDrawerOpen(false), []);
     const toggleDrawer = useCallback(() => setIsDrawerOpen(p => !p), []);
 
-    const openAddonModal = useCallback((itemToAdd?: Omit<CartItem, 'quantity'>) => {
+    const openAddonModal = useCallback((itemToAdd?: Omit<CartItem, 'quantity'>, isBuyNow = false) => {
+        setIsBuyNowMode(Boolean(isBuyNow));
         if (itemToAdd) {
-            addItem(itemToAdd);
+            setAddonModalTargetItem({ ...itemToAdd, quantity: 1 });
+            if (!isBuyNow) {
+                addItem(itemToAdd);
+            }
+        } else {
+            setAddonModalTargetItem(null);
         }
         setIsDrawerOpen(false);
         setIsAddonModalOpen(true);
     }, [addItem]);
 
-    const closeAddonModal = useCallback(() => setIsAddonModalOpen(false), []);
+    const closeAddonModal = useCallback(() => {
+        setIsAddonModalOpen(false);
+        setAddonModalTargetItem(null);
+        setIsBuyNowMode(false);
+    }, []);
 
     return (
         <CartContext.Provider value={{
             items, addItem, removeItem, updateQuantity, getItemQuantity, clearCart,
             itemCount, isDrawerOpen, openDrawer, closeDrawer, toggleDrawer,
-            isAddonModalOpen, openAddonModal, closeAddonModal,
+            isAddonModalOpen, addonModalTargetItem, isBuyNowMode, openAddonModal, closeAddonModal,
         }}>
             {children}
         </CartContext.Provider>

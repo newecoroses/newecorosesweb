@@ -15,7 +15,7 @@ interface AddonModalProps {
 
 export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalProps) {
     const router = useRouter();
-    const { addItem } = useCart();
+    const { addItem, isBuyNowMode, addonModalTargetItem } = useCart();
     const [activeTab, setActiveTab] = useState<string>('all');
     // Map of addon id -> selected quantity in modal
     const [selectedAddons, setSelectedAddons] = useState<Record<string, number>>({});
@@ -49,6 +49,49 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
     const totalSelectedCount = Object.values(selectedAddons).reduce((sum, q) => sum + q, 0);
 
     const handleProceed = () => {
+        if (isBuyNowMode && addonModalTargetItem) {
+            // BUY NOW MODE:
+            // Do NOT add to global cart.
+            // Build the checkout list containing only the clicked product + any chosen addons
+            const chosenAddons = Object.entries(selectedAddons).flatMap(([itemId, qty]) => {
+                const item = ADDON_ITEMS.find(a => a.id === itemId);
+                if (item && qty > 0) {
+                    return [{
+                        id: item.id,
+                        name: item.name,
+                        slug: item.id,
+                        image_url: item.image_url,
+                        price: item.price,
+                        quantity: qty,
+                    }];
+                }
+                return [];
+            });
+
+            const buyNowCheckoutList = [
+                { ...addonModalTargetItem, quantity: 1 },
+                ...chosenAddons
+            ];
+
+            try {
+                sessionStorage.setItem('ner_buy_now', JSON.stringify(buyNowCheckoutList));
+            } catch {}
+
+            setSelectedAddons({});
+            onClose();
+
+            const urlParams = new URLSearchParams({
+                buyNow: 'true',
+                productId: addonModalTargetItem.id,
+                name: addonModalTargetItem.name,
+                price: String(addonModalTargetItem.price || 0),
+                image: addonModalTargetItem.image_url || '',
+                slug: addonModalTargetItem.slug || '',
+            });
+            router.push(`/checkout?${urlParams.toString()}`);
+            return;
+        }
+
         // Add all selected items into global cart
         Object.entries(selectedAddons).forEach(([itemId, qty]) => {
             const item = ADDON_ITEMS.find(a => a.id === itemId);
@@ -65,6 +108,7 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
             }
         });
 
+        setSelectedAddons({});
         onClose();
         if (onContinue) {
             onContinue();

@@ -80,6 +80,22 @@ function CheckoutContent() {
 
     // Buy Now mode support
     const isBuyNow = searchParams.get('buyNow') === 'true';
+    const [buyNowSessionItems, setBuyNowSessionItems] = useState<any[] | null>(null);
+
+    useEffect(() => {
+        if (isBuyNow) {
+            try {
+                const stored = sessionStorage.getItem('ner_buy_now');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        setBuyNowSessionItems(parsed);
+                    }
+                }
+            } catch {}
+        }
+    }, [isBuyNow]);
+
     const buyNowItem = useMemo(() => {
         if (!isBuyNow) return null;
         const price = Number(searchParams.get('price') || 0);
@@ -93,7 +109,12 @@ function CheckoutContent() {
         };
     }, [isBuyNow, searchParams]);
 
-    const items = isBuyNow && buyNowItem ? [buyNowItem] : cartItems;
+    const items = useMemo(() => {
+        if (!isBuyNow) return cartItems;
+        if (buyNowSessionItems && buyNowSessionItems.length > 0) return buyNowSessionItems;
+        if (buyNowItem) return [buyNowItem];
+        return [];
+    }, [isBuyNow, cartItems, buyNowSessionItems, buyNowItem]);
 
     // Coupon state
     const [couponInput, setCouponInput] = useState('');
@@ -284,6 +305,7 @@ function CheckoutContent() {
                             });
                         } catch {}
                         if (!isBuyNow) clearCart();
+                        try { sessionStorage.removeItem('ner_buy_now'); } catch {}
                         router.push(`/order-confirmation?order=${order.orderNumber}`);
                     },
                     prefill: {
@@ -300,6 +322,7 @@ function CheckoutContent() {
                 rp.open();
             } else {
                 if (!isBuyNow) clearCart();
+                try { sessionStorage.removeItem('ner_buy_now'); } catch {}
                 router.push(`/order-confirmation?order=${order.orderNumber}`);
             }
         } catch (err: any) {
@@ -337,10 +360,16 @@ function CheckoutContent() {
             {/* ── Minimal checkout header (exact DripNGrid style) ─────────────────────────────── */}
             <header className="sticky top-0 z-50 bg-white border-b border-gray-100 px-6 h-14 flex items-center justify-between">
                 <div className="w-8" /> {/* spacer */}
-                <Link href="/" className="flex items-center select-none">
-                    <span className="text-sm tracking-[0.16em] uppercase font-serif font-black text-[#bfa81f]">
-                        NEW ECO ROSES
-                    </span>
+                <Link href="/" className="flex items-center gap-2 select-none group">
+                    <img
+                        src="/favicon_io/android-chrome-512x512.png"
+                        alt="New Eco Roses"
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-lg object-contain"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/favicon_io/android-chrome-192x192.png'; }}
+                    />
+                    <span className="text-sm tracking-[0.14em] uppercase font-serif font-black text-[#1c1917]">New Eco Roses</span>
                 </Link>
                 <Link href="/shop" className="text-gray-500 hover:text-[#bfa81f] transition-colors" title="Cart / Shop">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -359,12 +388,7 @@ function CheckoutContent() {
 
                             {/* Contact Section */}
                             <section>
-                                <div className="flex items-center justify-between mb-4">
-                                    <h2 className="text-base font-semibold text-black">Contact</h2>
-                                    <span className="text-xs font-bold text-[#bfa81f] uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-                                        Checkout
-                                    </span>
-                                </div>
+                                <h2 className="text-base font-semibold text-black mb-4">Contact</h2>
                                 <div className="space-y-3">
                                     <input
                                         type="email"

@@ -144,7 +144,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             slug: product.slug,
             image_url: product.image_url,
             price: hasPrice ? price : null,
-        });
+        }, true);
     };
 
     return (
