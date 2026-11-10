@@ -132,28 +132,28 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
     );
 
     return (
-        <div className="h-screen bg-[#090a0f] text-zinc-100 flex overflow-hidden font-sans">
+        <div className="h-screen bg-slate-50 dark:bg-[#090a0f] text-zinc-900 dark:text-zinc-100 flex overflow-hidden font-sans">
             {/* Mobile backdrop */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/80 z-40 lg:hidden backdrop-blur-xs transition-opacity"
+                    className="fixed inset-0 bg-black/60 dark:bg-black/80 z-40 lg:hidden backdrop-blur-xs transition-opacity"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* ── Modern Sidebar ────────────────────────────────────── */}
             <aside
-                className={`fixed top-0 left-0 bottom-0 w-64 bg-[#0d0f17] border-r border-white/[0.08] z-50 flex flex-col transition-all duration-300 ${
+                className={`fixed top-0 left-0 bottom-0 w-64 bg-white dark:bg-[#0d0f17] border-r border-zinc-200 dark:border-white/[0.08] z-50 flex flex-col transition-all duration-300 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 } lg:translate-x-0 lg:static lg:z-auto`}
             >
                 {/* Brand Header */}
-                <div className="p-4 sm:p-5 border-b border-white/[0.06] flex items-center justify-between">
+                <div className="p-4 sm:p-5 border-b border-zinc-200 dark:border-white/[0.06] flex items-center justify-between">
                     <Link
                         href="/staff"
                         className="flex items-center gap-3 select-none group min-w-0"
                     >
-                        <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-[#151824] border border-zinc-700/50 flex items-center justify-center flex-shrink-0">
+                        <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-zinc-100 dark:bg-[#151824] border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center flex-shrink-0">
                             <NextImage
                                 src="/favicon_io/android-chrome-192x192.png"
                                 alt="New Eco Roses"
@@ -162,12 +162,12 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                             />
                         </div>
                         <div className="min-w-0">
-                            <p className="font-serif font-black text-white text-sm tracking-wide truncate group-hover:text-zinc-300 transition-colors">
+                            <p className="font-serif font-black text-zinc-950 dark:text-white text-sm tracking-wide truncate group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
                                 NEW ECO ROSES
                             </p>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold uppercase tracking-wider">
                                     Staff Portal
                                 </span>
                             </div>
@@ -176,7 +176,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 
                     <button
                         onClick={() => setSidebarOpen(false)}
-                        className="lg:hidden text-zinc-400 hover:text-white p-1 rounded-lg"
+                        className="lg:hidden text-zinc-400 hover:text-zinc-900 dark:hover:text-white p-1 rounded-lg"
                     >
                         <X size={18} />
                     </button>
@@ -186,7 +186,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                 <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5 no-scrollbar">
                     {STAFF_NAV_GROUPS.map(group => (
                         <div key={group.group}>
-                            <p className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold px-3 mb-2">
+                            <p className="text-zinc-400 dark:text-zinc-500 text-[10px] uppercase tracking-widest font-bold px-3 mb-2">
                                 {group.group}
                             </p>
                             <div className="space-y-0.5">
@@ -203,14 +203,16 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                                             onClick={() => setSidebarOpen(false)}
                                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer ${
                                                 isActive
-                                                    ? 'bg-white text-zinc-950 font-bold shadow-xs'
-                                                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.05]'
+                                                    ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold shadow-xs'
+                                                    : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-white/[0.05]'
                                             }`}
                                         >
                                             <Icon
                                                 size={16}
                                                 className={`flex-shrink-0 transition-transform group-hover:scale-105 ${
-                                                    isActive ? 'text-zinc-950 stroke-[2.5px]' : 'text-zinc-400 group-hover:text-zinc-200'
+                                                    isActive
+                                                        ? 'text-white dark:text-zinc-950 stroke-[2.5px]'
+                                                        : 'text-zinc-500 group-hover:text-zinc-900 dark:text-zinc-400 dark:group-hover:text-zinc-200'
                                                 }`}
                                             />
                                             <span className="truncate">{item.label}</span>
@@ -218,8 +220,8 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                                                 <span
                                                     className={`ml-auto text-[10px] font-bold px-1.5 py-0.2 rounded-full uppercase tracking-wider ${
                                                         isActive
-                                                            ? 'bg-zinc-900 text-white'
-                                                            : 'bg-zinc-800 text-zinc-200 border border-zinc-700'
+                                                            ? 'bg-white/20 text-white dark:bg-zinc-900 dark:text-white'
+                                                            : 'bg-zinc-100 text-zinc-700 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-700'
                                                     }`}
                                                 >
                                                     {item.badge}
@@ -237,14 +239,14 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                 </nav>
 
                 {/* Footer User Profile & Logout */}
-                <div className="p-3.5 border-t border-white/[0.06] bg-[#0b0c13]">
-                    <div className="flex items-center gap-3 p-2 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center text-white font-extrabold text-xs flex-shrink-0 shadow-xs">
+                <div className="p-3.5 border-t border-zinc-200 dark:border-white/[0.06] bg-zinc-50 dark:bg-[#0b0c13]">
+                    <div className="flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/[0.04] shadow-xs">
+                        <div className="w-8 h-8 rounded-full bg-zinc-900 text-white dark:bg-gradient-to-br dark:from-zinc-600 dark:to-zinc-800 flex items-center justify-center font-extrabold text-xs flex-shrink-0 shadow-xs">
                             {staff?.name?.charAt(0).toUpperCase() || 'S'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-white text-xs font-bold truncate">{staff?.name || 'Store Executive'}</p>
-                            <p className="text-zinc-400 text-[10px] font-semibold truncate tracking-wide">
+                            <p className="text-zinc-950 dark:text-white text-xs font-bold truncate">{staff?.name || 'Store Executive'}</p>
+                            <p className="text-zinc-500 dark:text-zinc-400 text-[10px] font-semibold truncate tracking-wide">
                                 {staff?.name?.toLowerCase().includes('atanu') || staff?.role === 'supervisor'
                                     ? 'Boutique Director'
                                     : 'Store Executive'}
@@ -253,16 +255,15 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                         <button
                             onClick={handleLogout}
                             title="Sign Out"
-                            className="text-zinc-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors ml-auto cursor-pointer"
+                            className="text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors ml-auto cursor-pointer"
                         >
                             <LogOut size={15} />
                         </button>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-white/[0.04] text-[10px] text-zinc-500 text-center leading-relaxed">
-                        <span>Designed by{' '}<span className="text-zinc-300 font-semibold">Aditya Choudhury</span></span>
-                        <br />
-                        <span className="text-zinc-400 font-semibold">New Eco Roses</span>
+                    <div className="mt-3 pt-2 border-t border-zinc-200 dark:border-white/[0.04] text-[10px] text-zinc-500 text-center leading-relaxed">
+                        <div>Designed by{' '}<span className="text-zinc-800 dark:text-zinc-300 font-semibold">Aditya Choudhury</span></div>
+                        <div className="text-zinc-600 dark:text-zinc-400 font-semibold mt-0.5">New Eco Roses</div>
                     </div>
                 </div>
             </aside>
@@ -270,22 +271,22 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
             {/* ── Main View Area ─────────────────────────────────────── */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Header */}
-                <header className="h-16 bg-[#0d0f17]/90 backdrop-blur-md border-b border-white/[0.08] flex items-center justify-between px-4 sm:px-6 gap-4 sticky top-0 z-30">
+                <header className="h-16 bg-white/90 dark:bg-[#0d0f17]/90 backdrop-blur-md border-b border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-4 sm:px-6 gap-4 sticky top-0 z-30">
                     {/* Left: Mobile hamburger + Breadcrumb */}
                     <div className="flex items-center gap-3 min-w-0">
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="lg:hidden text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                            className="lg:hidden text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                         >
                             <Menu size={20} />
                         </button>
 
-                        <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-400">
-                            <Link href="/staff" className="hover:text-zinc-200 transition-colors">
+                        <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                            <Link href="/staff" className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors">
                                 Staff Portal
                             </Link>
-                            <ChevronRight size={13} className="text-zinc-600" />
-                            <span className="text-white font-semibold truncate">
+                            <ChevronRight size={13} className="text-zinc-400 dark:text-zinc-600" />
+                            <span className="text-zinc-950 dark:text-white font-semibold truncate">
                                 {currentItem?.label ?? 'Dashboard'}
                             </span>
                         </div>
@@ -293,8 +294,8 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 
                     {/* Right: Theme Toggle & Site Link */}
                     <div className="flex items-center gap-3 flex-shrink-0">
-                        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             <span>Staff Portal Active</span>
                         </div>
 
@@ -304,7 +305,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                         <Link
                             href="/"
                             target="_blank"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 hover:text-white text-xs font-semibold border border-white/[0.08] transition-all cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] dark:text-zinc-300 dark:hover:text-white text-xs font-semibold border border-zinc-200 dark:border-white/[0.08] transition-all cursor-pointer"
                         >
                             <span>Live Site</span>
                             <ArrowUpRight size={13} />
@@ -313,7 +314,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                 </header>
 
                 {/* Page Content */}
-                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto bg-[#090a0f]">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto bg-slate-50 dark:bg-[#090a0f]">
                     <div className="max-w-7xl mx-auto">
                         {children}
                     </div>

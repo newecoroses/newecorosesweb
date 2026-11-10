@@ -146,29 +146,35 @@ export default function StaffOrdersPage() {
                         <div
                             key={card.key}
                             onClick={() => setStatusFilter(card.key)}
-                            className={`p-5 rounded-2xl border transition-all cursor-pointer group ${
+                            className={`p-5 rounded-2xl border transition-all cursor-pointer group shadow-xs ${
                                 isSelected
-                                    ? 'bg-white text-zinc-950 border-white shadow-md'
-                                    : 'bg-[#12141c]/90 border-white/[0.08] hover:border-zinc-700/80 text-zinc-100'
+                                    ? 'bg-zinc-950 text-white border-zinc-950 dark:bg-white dark:text-zinc-950 dark:border-white shadow-md'
+                                    : 'bg-white dark:bg-[#12141c]/90 border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-zinc-700/80 text-zinc-900 dark:text-zinc-100'
                             }`}
                         >
                             <div className="flex items-center justify-between gap-2 mb-3">
-                                <span className={`text-xs font-medium uppercase tracking-wider ${isSelected ? 'text-zinc-600' : 'text-zinc-400'}`}>
+                                <span className={`text-xs font-semibold uppercase tracking-wider ${
+                                    isSelected ? 'text-zinc-300 dark:text-zinc-600' : 'text-zinc-500 dark:text-zinc-400'
+                                }`}>
                                     {card.label}
                                 </span>
                                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center border flex-shrink-0 transition-transform group-hover:scale-105 ${
                                     isSelected
-                                        ? 'bg-zinc-950 text-white border-zinc-900'
-                                        : 'bg-zinc-800 text-zinc-200 border-zinc-700/60'
+                                        ? 'bg-white text-zinc-950 dark:bg-zinc-950 dark:text-white border-transparent'
+                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-zinc-700/60'
                                 }`}>
                                     <Icon size={16} />
                                 </div>
                             </div>
                             <div className="flex items-baseline justify-between gap-2">
-                                <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums ${isSelected ? 'text-zinc-950' : 'text-white'}`}>
+                                <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums ${
+                                    isSelected ? 'text-white dark:text-zinc-950' : 'text-zinc-950 dark:text-white'
+                                }`}>
                                     {loading ? '—' : card.count}
                                 </span>
-                                <span className={`text-[11px] font-medium ${isSelected ? 'text-zinc-700' : 'text-zinc-400'}`}>
+                                <span className={`text-[11px] font-medium ${
+                                    isSelected ? 'text-zinc-300 dark:text-zinc-600' : 'text-zinc-500 dark:text-zinc-400'
+                                }`}>
                                     {card.desc}
                                 </span>
                             </div>

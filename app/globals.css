@@ -1,3 +1,4 @@
+@custom-variant dark (&:where(.dark, .dark *));
 @import "../node_modules/tailwindcss/index.css";
 
 /* ===== Premium Design System — New Eco Roses ===== */
@@ -586,23 +587,27 @@ html.light,
 
 /* Page backgrounds */
 html.light .bg-\[\#090a0f\],
-[data-theme="light"] .bg-\[\#090a0f\] {
-  background-color: #f1f5f9 !important;
+html.light [class*="bg-[#090a0f]"],
+[data-theme="light"] .bg-\[\#090a0f\],
+[data-theme="light"] [class*="bg-[#090a0f]"] {
+  background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
 /* Sidebar / header main backgrounds */
 html.light .bg-\[\#0d0f17\],
+html.light [class*="bg-[#0d0f17]"],
 [data-theme="light"] .bg-\[\#0d0f17\],
-html.light .bg-\[\#0d0f17\]\/90,
-[data-theme="light"] .bg-\[\#0d0f17\]\/90 {
+[data-theme="light"] [class*="bg-[#0d0f17]"] {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
 }
 
 html.light .bg-\[\#0b0c13\],
-[data-theme="light"] .bg-\[\#0b0c13\] {
+html.light [class*="bg-[#0b0c13]"],
+[data-theme="light"] .bg-\[\#0b0c13\],
+[data-theme="light"] [class*="bg-[#0b0c13]"] {
   background-color: #f8fafc !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
@@ -610,112 +615,62 @@ html.light .bg-\[\#0b0c13\],
 
 /* Card + modal backgrounds */
 html.light .bg-\[\#0f1118\],
-html.light .bg-\[\#0f1118\]\/90,
-html.light .bg-\[\#0f1118\]\/80,
-html.light .bg-\[\#0f1118\]\/60,
-[data-theme="light"] .bg-\[\#0f1118\],
-[data-theme="light"] .bg-\[\#0f1118\]\/90,
-[data-theme="light"] .bg-\[\#0f1118\]\/80,
-[data-theme="light"] .bg-\[\#0f1118\]\/60 {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  color: #0f172a !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
-}
-
+html.light [class*="bg-[#0f1118]"],
 html.light .bg-\[\#12141c\],
-html.light .bg-\[\#12141c\]\/90,
-html.light .bg-\[\#12141c\]\/80,
+html.light [class*="bg-[#12141c]"],
+[data-theme="light"] .bg-\[\#0f1118\],
+[data-theme="light"] [class*="bg-[#0f1118]"],
 [data-theme="light"] .bg-\[\#12141c\],
-[data-theme="light"] .bg-\[\#12141c\]\/90,
-[data-theme="light"] .bg-\[\#12141c\]\/80 {
+[data-theme="light"] [class*="bg-[#12141c]"] {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
 
-html.light .bg-\[\#131622\]\/90,
-[data-theme="light"] .bg-\[\#131622\]\/90 {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-html.light .bg-\[\#0e1017\]\/90,
-[data-theme="light"] .bg-\[\#0e1017\]\/90 {
-  background-color: #ffffff !important;
-}
-
-/* Stat card gradient override */
-html.light .bg-gradient-to-b,
-[data-theme="light"] .bg-gradient-to-b {
-  background: #ffffff !important;
-}
-
+/* Sub-panels and search boxes */
 html.light .bg-\[\#151824\],
+html.light [class*="bg-[#151824]"],
 html.light .bg-\[\#141724\],
+html.light [class*="bg-[#141724]"],
+html.light .bg-\[\#131622\],
+html.light [class*="bg-[#131622]"],
+html.light .bg-\[\#0e1017\],
+html.light [class*="bg-[#0e1017]"],
 [data-theme="light"] .bg-\[\#151824\],
-[data-theme="light"] .bg-\[\#141724\] {
+[data-theme="light"] [class*="bg-[#151824]"],
+[data-theme="light"] .bg-\[\#141724\],
+[data-theme="light"] [class*="bg-[#141724]"],
+[data-theme="light"] .bg-\[\#131622\],
+[data-theme="light"] [class*="bg-[#131622]"],
+[data-theme="light"] .bg-\[\#0e1017\],
+[data-theme="light"] [class*="bg-[#0e1017]"] {
   background-color: #f1f5f9 !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
 }
 
-/* Zinc backgrounds */
-html.light .bg-zinc-900,
-[data-theme="light"] .bg-zinc-900 {
-  background-color: #f1f5f9 !important;
-  border-color: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-html.light .bg-zinc-900\/60,
-html.light .bg-zinc-900\/80,
-html.light .bg-zinc-900\/90,
-[data-theme="light"] .bg-zinc-900\/60,
-[data-theme="light"] .bg-zinc-900\/80,
-[data-theme="light"] .bg-zinc-900\/90 {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-}
-
-html.light .bg-zinc-800,
-[data-theme="light"] .bg-zinc-800 {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-html.light .bg-zinc-800\/80,
-[data-theme="light"] .bg-zinc-800\/80 {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-
-/* bg-white stays white in light mode */
-html.light .bg-white,
-[data-theme="light"] .bg-white {
-  background-color: #ffffff !important;
-}
-
-/* bg-white/[...] subtle overlays */
+/* Subtle white overlays in light mode become subtle dark overlays */
 html.light .bg-white\/\[0\.02\],
 html.light .bg-white\/\[0\.04\],
 html.light .bg-white\/\[0\.08\],
 html.light .bg-white\/\[0\.01\],
+html.light [class*="bg-white/[0.0"],
 [data-theme="light"] .bg-white\/\[0\.02\],
 [data-theme="light"] .bg-white\/\[0\.04\],
 [data-theme="light"] .bg-white\/\[0\.08\],
-[data-theme="light"] .bg-white\/\[0\.01\] {
-  background-color: rgba(0,0,0,0.02) !important;
+[data-theme="light"] .bg-white\/\[0\.01\],
+[data-theme="light"] [class*="bg-white/[0.0"] {
+  background-color: rgba(0, 0, 0, 0.02) !important;
 }
 
-/* Text overrides */
-html.light .text-white,
-[data-theme="light"] .text-white {
+/* Headings in light mode */
+html.light h1, html.light h2, html.light h3, html.light h4, html.light h5,
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5 {
   color: #0f172a !important;
 }
 
+/* Text overrides in light mode */
 html.light .text-zinc-100,
 html.light .text-zinc-200,
 [data-theme="light"] .text-zinc-100,
@@ -738,7 +693,36 @@ html.light .text-zinc-500,
   color: #94a3b8 !important;
 }
 
+/* Turn text-white to dark slate ONLY when not inside an intentionally dark element */
+html.light :not(.bg-zinc-950):not(.bg-zinc-900):not(.bg-black):not([class*="bg-zinc-950"]):not([class*="bg-zinc-900"]):not([class*="bg-black"]) > .text-white,
+[data-theme="light"] :not(.bg-zinc-950):not(.bg-zinc-900):not(.bg-black):not([class*="bg-zinc-950"]):not([class*="bg-zinc-900"]):not([class*="bg-black"]) > .text-white {
+  color: #0f172a;
+}
+
+/* Ensure white text remains white inside dark buttons, pills and badges */
+html.light .bg-zinc-950 .text-white,
+html.light .bg-zinc-900 .text-white,
+html.light .bg-black .text-white,
+html.light [class*="bg-zinc-950"] .text-white,
+html.light [class*="bg-zinc-900"] .text-white,
+html.light [class*="bg-black"] .text-white,
+[data-theme="light"] .bg-zinc-950 .text-white,
+[data-theme="light"] .bg-zinc-900 .text-white,
+[data-theme="light"] .bg-black .text-white,
+[data-theme="light"] [class*="bg-zinc-950"] .text-white,
+[data-theme="light"] [class*="bg-zinc-900"] .text-white,
+[data-theme="light"] [class*="bg-black"] .text-white {
+  color: #ffffff !important;
+}
+
+/* Table cells text */
+html.light table tbody td,
+[data-theme="light"] table tbody td {
+  color: #0f172a;
+}
+
 /* Borders */
+html.light [class*="border-white/"],
 html.light .border-white\/\[0\.08\],
 html.light .border-white\/\[0\.06\],
 html.light .border-white\/\[0\.04\],
@@ -747,6 +731,7 @@ html.light .border-zinc-800,
 html.light .border-zinc-700,
 html.light .border-zinc-700\/60,
 html.light .border-zinc-700\/80,
+[data-theme="light"] [class*="border-white/"],
 [data-theme="light"] .border-white\/\[0\.08\],
 [data-theme="light"] .border-white\/\[0\.06\],
 [data-theme="light"] .border-white\/\[0\.04\],
@@ -771,10 +756,10 @@ html.light table tbody tr:hover,
 }
 
 /* Form elements */
-html.light input,
+html.light input:not([type="checkbox"]):not([type="radio"]),
 html.light select,
 html.light textarea,
-[data-theme="light"] input,
+[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
 [data-theme="light"] select,
 [data-theme="light"] textarea {
   background-color: #ffffff !important;
@@ -787,15 +772,6 @@ html.light textarea::placeholder,
 [data-theme="light"] input::placeholder,
 [data-theme="light"] textarea::placeholder {
   color: #94a3b8 !important;
-}
-
-/* Nav active item — keep white bg readable */
-html.light .bg-white.text-zinc-950,
-html.light .bg-white.text-black,
-[data-theme="light"] .bg-white.text-zinc-950,
-[data-theme="light"] .bg-white.text-black {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
 }
 
 /* Hover backgrounds */

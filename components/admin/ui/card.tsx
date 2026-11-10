@@ -14,7 +14,7 @@ export function Card({
     return (
         <div
             className={cn(
-                'group relative flex flex-col rounded-2xl bg-[#0f1118]/90 text-zinc-100 border border-white/[0.08] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] backdrop-blur-md transition-all duration-200 overflow-hidden',
+                'group relative flex flex-col rounded-2xl bg-white dark:bg-[#0f1118]/90 text-zinc-950 dark:text-zinc-100 border border-zinc-200 dark:border-white/[0.08] shadow-xs dark:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] backdrop-blur-md transition-all duration-200 overflow-hidden',
                 className
             )}
             {...props}
@@ -32,7 +32,7 @@ export function CardHeader({
     return (
         <div
             className={cn(
-                'flex flex-col space-y-1.5 p-5 pb-3 border-b border-white/[0.04]',
+                'flex flex-col space-y-1.5 p-5 pb-3 border-b border-zinc-100 dark:border-white/[0.04]',
                 className
             )}
             {...props}
@@ -50,7 +50,7 @@ export function CardTitle({
     return (
         <h3
             className={cn(
-                'text-base font-semibold tracking-tight text-white leading-none',
+                'text-base font-semibold tracking-tight text-zinc-950 dark:text-white leading-none',
                 className
             )}
             {...props}
@@ -67,7 +67,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
     return (
         <p
-            className={cn('text-xs text-zinc-400 mt-1', className)}
+            className={cn('text-xs text-zinc-500 dark:text-zinc-400 mt-1', className)}
             {...props}
         >
             {children}
@@ -110,7 +110,7 @@ export function CardFooter({
     return (
         <div
             className={cn(
-                'flex items-center p-5 pt-3 border-t border-white/[0.04] bg-white/[0.01]',
+                'flex items-center p-5 pt-3 border-t border-zinc-100 dark:border-white/[0.04] bg-zinc-50/50 dark:bg-white/[0.01]',
                 className
             )}
             {...props}
