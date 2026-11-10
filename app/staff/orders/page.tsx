@@ -12,14 +12,18 @@ import {
     X,
     Phone,
     MapPin,
+    Plus,
     Calendar,
     ChevronRight,
-    Eye
+    Eye,
+    MessageSquare,
+    Store
 } from 'lucide-react';
 import { PageHeader } from '@/components/admin/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/admin/ui/card';
 import { Badge } from '@/components/admin/ui/badge';
 import { SavedOrder } from '@/lib/order-cache';
+import { AddOrderModal } from '@/components/admin/add-order-modal';
 
 export default function StaffOrdersPage() {
     const [orders, setOrders] = useState<SavedOrder[]>([]);
@@ -28,6 +32,7 @@ export default function StaffOrdersPage() {
     const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'processing' | 'delivered' | 'cancelled'>('all');
     const [selectedOrder, setSelectedOrder] = useState<SavedOrder | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [addOrderOpen, setAddOrderOpen] = useState(false);
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -83,12 +88,16 @@ export default function StaffOrdersPage() {
         });
     }, [orders, search, statusFilter]);
 
+    const confirmedCount = orders.filter(o => o.status === 'confirmed').length;
+    const processingCount = orders.filter(o => o.status === 'processing').length;
+    const deliveredCount = orders.filter(o => o.status === 'delivered').length;
+
     const getStatusBadge = (status: SavedOrder['status']) => {
         switch (status) {
             case 'confirmed':
                 return <Badge variant="default"><Clock size={10} /> Confirmed</Badge>;
             case 'processing':
-                return <Badge variant="info"><Truck size={10} /> Out for Delivery</Badge>;
+                return <Badge variant="info"><Truck size={10} /> In Transit</Badge>;
             case 'delivered':
                 return <Badge variant="success"><CheckCircle2 size={10} /> Delivered</Badge>;
             case 'cancelled':
@@ -113,36 +122,79 @@ export default function StaffOrdersPage() {
                     <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
                     <span>Refresh</span>
                 </button>
+
+                <button
+                    onClick={() => setAddOrderOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-bold transition-all shadow-xs cursor-pointer"
+                >
+                    <Plus size={14} className="stroke-[2.5]" />
+                    <span>Add Manual Order (WhatsApp / Store)</span>
+                </button>
             </PageHeader>
 
-            {/* Quick Metrics */}
+            {/* CLICKABLE Filter Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Total Orders', value: loading ? '—' : orders.length, icon: ShoppingBag },
-                    { label: 'Awaiting Delivery', value: loading ? '—' : orders.filter(o => o.status === 'confirmed').length, icon: Clock },
-                    { label: 'In Transit', value: loading ? '—' : orders.filter(o => o.status === 'processing').length, icon: Truck },
-                    { label: 'Successfully Delivered', value: loading ? '—' : orders.filter(o => o.status === 'delivered').length, icon: CheckCircle2 },
-                ].map(item => (
-                    <Card key={item.label}>
-                        <CardContent className="flex items-center gap-4 py-5">
-                            <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center border border-zinc-700 flex-shrink-0">
-                                <item.icon size={18} className="text-zinc-200" />
+                    { key: 'all' as const, label: 'Total Orders', count: orders.length, icon: ShoppingBag, desc: 'All bookings' },
+                    { key: 'confirmed' as const, label: 'Awaiting Delivery', count: confirmedCount, icon: Clock, desc: 'Ready to prepare' },
+                    { key: 'processing' as const, label: 'In Transit', count: processingCount, icon: Truck, desc: 'Out on road' },
+                    { key: 'delivered' as const, label: 'Delivered Orders', count: deliveredCount, icon: CheckCircle2, desc: 'Completed successfully' },
+                ].map(card => {
+                    const isSelected = statusFilter === card.key;
+                    const Icon = card.icon;
+                    return (
+                        <div
+                            key={card.key}
+                            onClick={() => setStatusFilter(card.key)}
+                            className={`p-5 rounded-2xl border transition-all cursor-pointer group ${
+                                isSelected
+                                    ? 'bg-white text-zinc-950 border-white shadow-md'
+                                    : 'bg-[#12141c]/90 border-white/[0.08] hover:border-zinc-700/80 text-zinc-100'
+                            }`}
+                        >
+                            <div className="flex items-center justify-between gap-2 mb-3">
+                                <span className={`text-xs font-medium uppercase tracking-wider ${isSelected ? 'text-zinc-600' : 'text-zinc-400'}`}>
+                                    {card.label}
+                                </span>
+                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center border flex-shrink-0 transition-transform group-hover:scale-105 ${
+                                    isSelected
+                                        ? 'bg-zinc-950 text-white border-zinc-900'
+                                        : 'bg-zinc-800 text-zinc-200 border-zinc-700/60'
+                                }`}>
+                                    <Icon size={16} />
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-xs text-zinc-400 font-medium">{item.label}</p>
-                                <p className="text-2xl font-bold text-white tabular-nums">{item.value}</p>
+                            <div className="flex items-baseline justify-between gap-2">
+                                <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums ${isSelected ? 'text-zinc-950' : 'text-white'}`}>
+                                    {loading ? '—' : card.count}
+                                </span>
+                                <span className={`text-[11px] font-medium ${isSelected ? 'text-zinc-700' : 'text-zinc-400'}`}>
+                                    {card.desc}
+                                </span>
                             </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Orders Table */}
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
                     <div>
-                        <CardTitle>All Store Bookings</CardTitle>
-                        <CardDescription>Live orders with customer routing info</CardDescription>
+                        <CardTitle>
+                            {statusFilter === 'all'
+                                ? 'All Store Bookings'
+                                : statusFilter === 'confirmed'
+                                ? 'Orders Awaiting Delivery'
+                                : statusFilter === 'processing'
+                                ? 'Orders In Transit'
+                                : statusFilter === 'delivered'
+                                ? 'Delivered Orders'
+                                : 'Cancelled Orders'}
+                        </CardTitle>
+                        <CardDescription>
+                            Showing {filtered.length} order{filtered.length === 1 ? '' : 's'} (click a card above to filter)
+                        </CardDescription>
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap">
@@ -153,25 +205,18 @@ export default function StaffOrdersPage() {
                                 placeholder="Search by order #, phone, name..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                className="pl-9 pr-4 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 w-60"
+                                className="pl-9 pr-4 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 w-64"
                             />
                         </div>
 
-                        <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 p-1 rounded-xl text-xs">
-                            {(['all', 'confirmed', 'processing', 'delivered', 'cancelled'] as const).map(st => (
-                                <button
-                                    key={st}
-                                    onClick={() => setStatusFilter(st)}
-                                    className={`px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer capitalize ${
-                                        statusFilter === st
-                                            ? 'bg-white text-zinc-950'
-                                            : 'text-zinc-400 hover:text-white'
-                                    }`}
-                                >
-                                    {st === 'all' ? 'All' : st}
-                                </button>
-                            ))}
-                        </div>
+                        {statusFilter !== 'all' && (
+                            <button
+                                onClick={() => setStatusFilter('all')}
+                                className="text-xs text-zinc-400 hover:text-white underline px-2 cursor-pointer"
+                            >
+                                Clear Filter
+                            </button>
+                        )}
                     </div>
                 </CardHeader>
 
@@ -180,51 +225,69 @@ export default function StaffOrdersPage() {
                         <table className="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr className="border-b border-white/[0.06] bg-white/[0.01] text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
-                                    <th className="py-3 px-5">Order #</th>
-                                    <th className="py-3 px-4">Recipient &amp; Phone</th>
-                                    <th className="py-3 px-4">Delivery Region</th>
-                                    <th className="py-3 px-4">Bouquets Ordered</th>
-                                    <th className="py-3 px-4 text-right">Amount</th>
-                                    <th className="py-3 px-4">Status</th>
-                                    <th className="py-3 px-5 text-center">Action</th>
+                                    <th className="py-4 px-4 text-center">#</th>
+                                    <th className="py-4 px-5">Order #</th>
+                                    <th className="py-4 px-5">Customer &amp; Phone</th>
+                                    <th className="py-4 px-5">Delivery Location</th>
+                                    <th className="py-4 px-5">Bouquets Ordered</th>
+                                    <th className="py-4 px-4 text-right">Amount</th>
+                                    <th className="py-4 px-5">Change Status</th>
+                                    <th className="py-4 px-5 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/[0.04]">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={7} className="py-12 text-center text-zinc-500">
+                                        <td colSpan={8} className="py-12 text-center text-zinc-500">
                                             Loading orders...
                                         </td>
                                     </tr>
                                 ) : filtered.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="py-12 text-center text-zinc-500">
-                                            No orders found matching &ldquo;{search}&rdquo;.
+                                        <td colSpan={8} className="py-12 text-center text-zinc-500">
+                                            No orders found for this status. Click &ldquo;Add Manual Order&rdquo; to create one.
                                         </td>
                                     </tr>
                                 ) : (
-                                    filtered.map(o => (
+                                    filtered.map((o, idx) => (
                                         <tr key={o.id} className="hover:bg-white/[0.02] transition-colors">
-                                            <td className="py-3 px-5 font-mono font-bold text-white">
-                                                {o.orderNumber}
+                                            {/* Sequential Number 1, 2, 3... */}
+                                            <td className="py-4 px-4 text-center font-mono font-bold text-zinc-400 text-xs">
+                                                #{idx + 1}
                                             </td>
-                                            <td className="py-3 px-4">
+
+                                            {/* Order Number */}
+                                            <td className="py-4 px-5 font-mono font-bold text-white">
+                                                <button
+                                                    onClick={() => setSelectedOrder(o)}
+                                                    className="hover:underline cursor-pointer"
+                                                >
+                                                    {o.orderNumber}
+                                                </button>
+                                            </td>
+
+                                            {/* Customer */}
+                                            <td className="py-4 px-5">
                                                 <p className="font-semibold text-zinc-200">{o.customer.name}</p>
                                                 <span className="flex items-center gap-1 text-[11px] text-zinc-400 font-mono">
                                                     <Phone size={10} />
                                                     {o.customer.phone}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-4 text-zinc-300">
-                                                <span className="flex items-center gap-1">
-                                                    <MapPin size={11} className="text-zinc-500 flex-shrink-0" />
-                                                    <span className="truncate max-w-[160px]">{o.shippingAddress.line1}, {o.shippingAddress.city}</span>
+
+                                            {/* Address */}
+                                            <td className="py-4 px-5 text-zinc-300">
+                                                <span className="flex items-center gap-1.5">
+                                                    <MapPin size={12} className="text-zinc-500 flex-shrink-0" />
+                                                    <span className="truncate max-w-[180px]">{o.shippingAddress.line1}, {o.shippingAddress.city}</span>
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-4 text-zinc-300">
+
+                                            {/* Items */}
+                                            <td className="py-4 px-5 text-zinc-300">
                                                 <div className="flex flex-col gap-0.5">
-                                                    {o.items.slice(0, 2).map((item, idx) => (
-                                                        <span key={idx} className="truncate max-w-[200px]">
+                                                    {o.items.slice(0, 2).map((item, i) => (
+                                                        <span key={i} className="truncate max-w-[210px]">
                                                             {item.quantity}x {item.name}
                                                         </span>
                                                     ))}
@@ -233,18 +296,33 @@ export default function StaffOrdersPage() {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-4 text-right font-bold text-white tabular-nums">
+
+                                            {/* Amount */}
+                                            <td className="py-4 px-4 text-right font-bold text-white tabular-nums">
                                                 ₹{o.total.toLocaleString('en-IN')}
                                             </td>
-                                            <td className="py-3 px-4">
-                                                {getStatusBadge(o.status)}
+
+                                            {/* Interactive Status Selector */}
+                                            <td className="py-4 px-5">
+                                                <select
+                                                    value={o.status}
+                                                    onChange={e => handleUpdateStatus(o.id, e.target.value as any)}
+                                                    className="px-2.5 py-1.5 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white focus:outline-none focus:border-zinc-500 font-medium cursor-pointer"
+                                                >
+                                                    <option value="confirmed">Confirmed</option>
+                                                    <option value="processing">In Transit</option>
+                                                    <option value="delivered">Delivered</option>
+                                                    <option value="cancelled">Cancelled</option>
+                                                </select>
                                             </td>
-                                            <td className="py-3 px-5 text-center">
+
+                                            {/* Action */}
+                                            <td className="py-4 px-5 text-center">
                                                 <button
                                                     onClick={() => setSelectedOrder(o)}
-                                                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
+                                                    className="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
                                                 >
-                                                    View / Dispatch
+                                                    Details
                                                 </button>
                                             </td>
                                         </tr>
@@ -256,7 +334,7 @@ export default function StaffOrdersPage() {
                 </CardContent>
             </Card>
 
-            {/* Order Dispatch Drawer / Modal */}
+            {/* Order Dispatch Details Modal */}
             {selectedOrder && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-150"
@@ -339,7 +417,7 @@ export default function StaffOrdersPage() {
 
                         {/* Update Dispatch Status */}
                         <div className="pt-3 border-t border-white/[0.08] space-y-2">
-                            <p className="text-xs font-semibold text-zinc-300">Update Status:</p>
+                            <p className="text-xs font-semibold text-zinc-300">Update Delivery Status:</p>
                             <div className="grid grid-cols-3 gap-2">
                                 <button
                                     disabled={isUpdating}
@@ -379,6 +457,13 @@ export default function StaffOrdersPage() {
                     </div>
                 </div>
             )}
+
+            {/* Add Order Modal */}
+            <AddOrderModal
+                open={addOrderOpen}
+                onClose={() => setAddOrderOpen(false)}
+                onOrderCreated={() => fetchOrders()}
+            />
         </div>
     );
 }

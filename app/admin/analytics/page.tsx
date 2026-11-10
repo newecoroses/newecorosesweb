@@ -374,8 +374,8 @@ export default function AnalyticsPage() {
                     <p className="text-gray-400 text-xs font-semibold mb-2">{formattedDate}</p>
                     <div className="flex items-center gap-4 justify-between">
                         <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#f43f5e]" />
-                            <span className="text-gray-300 text-xs">Enquiries</span>
+                            <span className="w-2 h-2 rounded-full bg-[#25D366]" />
+                            <span className="text-gray-300 text-xs">WhatsApp Enquiries</span>
                         </div>
                         <span className="text-white text-xs font-bold">{fmt(payload[0].value)}</span>
                     </div>
@@ -393,7 +393,7 @@ export default function AnalyticsPage() {
                     <p className="text-gray-400 text-xs font-semibold mb-1.5">{fmtHour(Number(label))}</p>
                     <div className="flex items-center gap-3 justify-between">
                         <div className="flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisitor ? '#10b981' : '#f43f5e' }} />
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisitor ? '#38bdf8' : '#25D366' }} />
                             <span className="text-gray-300 text-xs">{payload[0].name}</span>
                         </div>
                         <span className="text-white text-xs font-bold">{fmt(payload[0].value)}</span>
@@ -532,8 +532,8 @@ export default function AnalyticsPage() {
                                             <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                                         </linearGradient>
                                         <linearGradient id="colorEnquiries" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
-                                            <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                                            <stop offset="5%" stopColor="#25D366" stopOpacity={0.2}/>
+                                            <stop offset="95%" stopColor="#25D366" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
@@ -541,13 +541,13 @@ export default function AnalyticsPage() {
                                     <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} axisLine={false} tickLine={false} />
                                     <Tooltip content={<CustomTooltip />} />
                                     <Area type="monotone" dataKey="pageviews" name="Visitors" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPageviews)" dot={false} activeDot={{ r: 4, stroke: '#10b981', strokeWidth: 2 }} />
-                                    <Area type="monotone" dataKey="enquiries" name="Enquiries" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorEnquiries)" dot={false} activeDot={{ r: 4, stroke: '#f43f5e', strokeWidth: 2 }} />
+                                    <Area type="monotone" dataKey="enquiries" name="Enquiries" stroke="#25D366" strokeWidth={2} fillOpacity={1} fill="url(#colorEnquiries)" dot={false} activeDot={{ r: 4, stroke: '#25D366', strokeWidth: 2 }} />
                                 </AreaChart>
                             </ResponsiveContainer>
                         )}
                         <div className="flex gap-6 mt-4 justify-center">
                             <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#10b981] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Visitors</span></div>
-                            <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#f43f5e] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">Enquiries</span></div>
+                            <div className="flex items-center gap-2"><span className="w-3 h-1 bg-[#25D366] inline-block rounded-full" /><span className="text-gray-400 text-xs font-medium">WhatsApp Enquiries</span></div>
                         </div>
                     </Card>
 
@@ -609,8 +609,8 @@ export default function AnalyticsPage() {
                                 <BarChart data={traffic.slice(-30)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                                     <defs>
                                         <linearGradient id="barEnquiries" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.8}/>
-                                            <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                                            <stop offset="0%" stopColor="#25D366" stopOpacity={0.8}/>
+                                            <stop offset="100%" stopColor="#25D366" stopOpacity={0.2}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />
@@ -763,7 +763,7 @@ export default function AnalyticsPage() {
                                 <tr className="border-b border-gray-800">
                                     <th className="text-left text-gray-500 text-xs font-medium px-5 py-3">Product</th>
                                     <th className="text-right text-gray-500 text-xs font-medium px-5 py-3">Views</th>
-                                    <th className="text-right text-gray-500 text-xs font-medium px-5 py-3">Enquiries</th>
+                                    <th className="text-right text-gray-500 text-xs font-medium px-5 py-3">WhatsApp Enquiries</th>
                                     <th className="text-right text-gray-500 text-xs font-medium px-5 py-3">Conversion</th>
                                     <th className="text-right text-gray-500 text-xs font-medium px-5 py-3">Last Click</th>
                                 </tr>
@@ -843,8 +843,8 @@ export default function AnalyticsPage() {
                                 <BarChart data={hourlyEnquiries} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                                     <defs>
                                         <linearGradient id="barHourlyEnquiries" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.8}/>
-                                            <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                                            <stop offset="0%" stopColor="#25D366" stopOpacity={0.8}/>
+                                            <stop offset="100%" stopColor="#25D366" stopOpacity={0.2}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.15} />

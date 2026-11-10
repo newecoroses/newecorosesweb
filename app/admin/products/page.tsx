@@ -295,7 +295,7 @@ export default function AdminProductsPage() {
                     <h1 className="text-2xl font-bold text-white">Products</h1>
                     <p className="text-gray-400 text-sm mt-0.5">{products.length} total products</p>
                 </div>
-                <button onClick={openAdd} className="flex items-center gap-2 bg-[#bfa81f] hover:bg-[#a89216] text-black font-bold font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                <button onClick={openAdd} className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-black font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                     <Plus size={16} /> Add Product
                 </button>
             </div>
@@ -333,6 +333,7 @@ export default function AdminProductsPage() {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-800">
+                                <th className="text-left text-gray-500 text-xs uppercase tracking-wider font-medium px-5 py-4 w-14">#</th>
                                 <th className="text-left text-gray-500 text-xs uppercase tracking-wider font-medium px-5 py-4">Product</th>
                                 <th className="text-left text-gray-500 text-xs uppercase tracking-wider font-medium px-5 py-4">Collection</th>
                                 <th className="text-left text-gray-500 text-xs uppercase tracking-wider font-medium px-5 py-4">Tag</th>
@@ -345,20 +346,21 @@ export default function AdminProductsPage() {
                             {loading ? (
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <tr key={i} className="border-b border-gray-800/50">
-                                        <td colSpan={6} className="px-5 py-4">
+                                        <td colSpan={7} className="px-5 py-4">
                                             <div className="h-4 bg-gray-800 rounded animate-pulse" />
                                         </td>
                                     </tr>
                                 ))
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={6} className="text-center text-gray-500 py-12">No products found</td></tr>
+                                <tr><td colSpan={7} className="text-center text-gray-500 py-12">No products found</td></tr>
                             ) : (
-                                filtered.map(product => (
+                                filtered.map((product, idx) => (
                                     <tr key={product.id} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
+                                        <td className="px-5 py-4 font-mono font-bold text-xs text-zinc-400">#{idx + 1}</td>
                                         <td className="px-5 py-4">
                                             <div className="flex items-center gap-3">
                                                 {product.image_url && (
-                                                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
+                                                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-800 flex-shrink-0 border border-zinc-700/60">
                                                         <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                                                     </div>
                                                 )}
@@ -548,7 +550,7 @@ export default function AdminProductsPage() {
 
                 <div className="flex gap-3 mt-6">
                     <button onClick={() => setModalOpen(false)} className="flex-1 bg-gray-800 text-gray-300 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors">Cancel</button>
-                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-[#bfa81f] hover:bg-[#a89216] text-black font-bold font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                    <button onClick={handleSave} disabled={saving} className="flex-1 bg-white hover:bg-zinc-200 text-black font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
                         {saving ? <span className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> : <Save size={14} />}
                         {saving ? 'Saving...' : 'Save Product'}
                     </button>

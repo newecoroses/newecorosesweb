@@ -16,7 +16,6 @@ import {
     Search,
     Gift
 } from 'lucide-react';
-import { PRODUCTS } from '@/lib/products';
 
 interface AddCustomerModalProps {
     open: boolean;
@@ -34,6 +33,30 @@ const SPECIAL_OCCASIONS = [
     'Other Special Day'
 ];
 
+const COMMON_BOUQUET_ITEMS = [
+    'Rose Bouquet',
+    'Red Roses Bouquet',
+    'Pink Roses Bouquet',
+    'Blush Roses Bouquet',
+    'White Roses Bouquet',
+    'Yellow Roses Bouquet',
+    '20 Roses Bouquet',
+    '50 Roses Luxury Bouquet',
+    '100 Roses Grand Bouquet',
+    'Heart Shape Rose Box',
+    'Flower Crown',
+    'Baby’s Breath Bouquet',
+    'Orchid Arrangement',
+    'Carnations Bouquet',
+    'Lily Bouquet',
+    'Mixed Floral Bouquet',
+    'Luxury Gift Hamper',
+    'Chocolate Box Addon',
+    'Truffle Cake Addon',
+    'Teddy Bear Addon',
+    'Customized Floral Box',
+];
+
 export function AddCustomerModal({ open, onClose, onCustomerAdded }: AddCustomerModalProps) {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
@@ -44,7 +67,7 @@ export function AddCustomerModal({ open, onClose, onCustomerAdded }: AddCustomer
     const [amountSpent, setAmountSpent] = useState('');
     const [notes, setNotes] = useState('');
 
-    // Product search autocomplete
+    // Product search autocomplete (matching clean customer-friendly bouquet names)
     const [productQuery, setProductQuery] = useState('');
     const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -54,13 +77,13 @@ export function AddCustomerModal({ open, onClose, onCustomerAdded }: AddCustomer
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    // Filter products based on typing
+    // Filter clean simplified bouquet names based on typing
     const matchingProducts = productQuery.trim().length > 0
-        ? PRODUCTS.filter(p =>
-            p.name.toLowerCase().includes(productQuery.toLowerCase()) &&
-            !selectedProducts.includes(p.name)
-        ).slice(0, 6)
-        : [];
+        ? COMMON_BOUQUET_ITEMS.filter(item =>
+            item.toLowerCase().includes(productQuery.toLowerCase()) &&
+            !selectedProducts.includes(item)
+        ).slice(0, 7)
+        : COMMON_BOUQUET_ITEMS.filter(item => !selectedProducts.includes(item)).slice(0, 5);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -320,19 +343,19 @@ export function AddCustomerModal({ open, onClose, onCustomerAdded }: AddCustomer
                                 <p className="px-3 py-1 text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
                                     Catalog Matches:
                                 </p>
-                                {matchingProducts.map(p => (
+                                {matchingProducts.map(item => (
                                     <button
-                                        key={p.id}
+                                        key={item}
                                         type="button"
-                                        onClick={() => handleAddProduct(p.name)}
+                                        onClick={() => handleAddProduct(item)}
                                         className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-zinc-800/80 text-left text-xs transition-colors cursor-pointer group"
                                     >
                                         <div className="flex items-center gap-2.5">
                                             <ShoppingBag size={14} className="text-zinc-400 group-hover:text-white" />
-                                            <span className="font-semibold text-white">{p.name}</span>
+                                            <span className="font-semibold text-white">{item}</span>
                                         </div>
                                         <span className="text-[10px] text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded-md border border-zinc-800">
-                                            {p.collection}
+                                            Bouquet Item
                                         </span>
                                     </button>
                                 ))}

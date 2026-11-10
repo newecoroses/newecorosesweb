@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllCustomers, addInStoreCustomer, generateGreetingEmailHtml } from '@/lib/customer-store';
+import { logStaffActivity } from '@/lib/staff-activity';
 
 export async function GET(req: NextRequest) {
     try {
@@ -95,6 +96,18 @@ export async function POST(req: NextRequest) {
                 console.log(`Subject: ${emailData.subject}`);
                 console.log(`Coupon: WELCOME15 (15% OFF Online)`);
             }
+        }
+
+        try {
+            await logStaffActivity({
+                staffId: body.staffId || 'reception',
+                staffName: body.staffName || 'Reception Desk',
+                action: 'Registered Customer',
+                productName: name,
+                details: `Registered guest ${name} (${phone})${amountSpent ? ` - Spent ₹${amountSpent}` : ''}`,
+            });
+        } catch (logErr) {
+            console.error('Error logging customer registration:', logErr);
         }
 
         return NextResponse.json({

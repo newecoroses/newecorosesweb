@@ -59,9 +59,9 @@ const STAFF_NAV_GROUPS: NavGroup[] = [
         ],
     },
     {
-        group: 'Catalog (View Only)',
+        group: 'Catalog & Merchandising',
         items: [
-            { href: '/staff/products', label: 'Products & Stock', icon: Package },
+            { href: '/staff/products', label: 'Products & Best Picks', icon: Package },
         ],
     },
     {
@@ -243,8 +243,12 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                             {staff?.name?.charAt(0).toUpperCase() || 'S'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-white text-xs font-bold truncate">{staff?.name || 'Staff Member'}</p>
-                            <p className="text-zinc-500 text-[10px] capitalize truncate">{staff?.role || 'Receptionist'}</p>
+                            <p className="text-white text-xs font-bold truncate">{staff?.name || 'Store Executive'}</p>
+                            <p className="text-zinc-400 text-[10px] font-semibold truncate tracking-wide">
+                                {staff?.name?.toLowerCase().includes('atanu') || staff?.role === 'supervisor'
+                                    ? 'Boutique Director'
+                                    : 'Store Executive'}
+                            </p>
                         </div>
                         <button
                             onClick={handleLogout}
@@ -289,9 +293,9 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 
                     {/* Right: Theme Toggle & Site Link */}
                     <div className="flex items-center gap-3 flex-shrink-0">
-                        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700/60 text-zinc-300 text-xs font-medium">
-                            <ShieldCheck size={12} className="text-emerald-400" />
-                            <span>Staff View (Catalog Locked)</span>
+                        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            <span>Staff Portal Active</span>
                         </div>
 
                         {/* Dark / Light Mode Switch */}

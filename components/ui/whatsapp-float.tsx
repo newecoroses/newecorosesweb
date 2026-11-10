@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchWhatsappSettings } from '@/lib/supabase';
+import { trackEnquiry } from '@/lib/analytics';
 
 const FALLBACK_PHONE = '919936911611';
 const FALLBACK_MSG = "Hi, I'd like to enquire about a gift.";
@@ -64,6 +65,7 @@ export default function WhatsAppFloat() {
                         href={waLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEnquiry('whatsapp_float', 'WhatsApp Floating Widget')}
                         className="relative w-[60px] h-[60px] bg-[#25D366] rounded-full flex items-center justify-center text-white shadow-xl hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
                         aria-label="Chat on WhatsApp"
                     >

@@ -1,21 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ordersStore, SavedOrder, getAllOrders, updateOrderStatus } from '@/lib/order-cache';
 import { AVAILABLE_COUPONS, calculateDiscount } from '@/lib/coupons';
+import { logStaffActivity } from '@/lib/staff-activity';
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { items, customer, shippingAddress, specialNote, paymentMethod, discountCode } = body;
+        const { items, customer, shippingAddress, specialNote, paymentMethod, discountCode, status, staffName } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ success: false, error: 'No items in order' }, { status: 400 });
         }
-        if (!customer?.email || !customer?.name || !customer?.phone) {
-            return NextResponse.json({ success: false, error: 'Customer details are required' }, { status: 400 });
+        if (!customer?.name || !customer?.phone) {
+            return NextResponse.json({ success: false, error: 'Customer name and phone number are required' }, { status: 400 });
         }
-        if (!shippingAddress?.line1 || !shippingAddress?.city || !shippingAddress?.state || !shippingAddress?.postalCode) {
-            return NextResponse.json({ success: false, error: 'Shipping address is required' }, { status: 400 });
-        }
+
+        const resolvedEmail = customer.email?.trim() || '';
+        const resolvedAddress = {
+            line1: shippingAddress?.line1 || 'In-Store Pickup / Walk-in Counter',
+            line2: shippingAddress?.line2 || '',
+            city: shippingAddress?.city || 'Kolkata',
+            state: shippingAddress?.state || 'West Bengal',
+            postalCode: shippingAddress?.postalCode || '700001',
+            country: shippingAddress?.country || 'India',
+        };
 
         // Calculate subtotal
         const subtotal = items.reduce((sum: number, item: any) => {
@@ -56,31 +64,36 @@ export async function POST(request: NextRequest) {
             })),
             customer: {
                 name: customer.name.trim(),
-                email: customer.email.trim(),
+                email: resolvedEmail,
                 phone: customer.phone.trim(),
             },
-            shippingAddress: {
-                line1: shippingAddress.line1,
-                line2: shippingAddress.line2 || '',
-                city: shippingAddress.city,
-                state: shippingAddress.state,
-                postalCode: shippingAddress.postalCode,
-                country: shippingAddress.country || 'India',
-            },
+            shippingAddress: resolvedAddress,
             specialNote: specialNote || '',
-            paymentMethod: 'online',
+            paymentMethod: paymentMethod || 'In-Store Cash',
             subtotal,
             discountAmount,
             discountCode: discountCode ? discountCode.toUpperCase() : undefined,
             shippingCost,
             total,
-            status: 'confirmed',
+            status: (status as any) || 'confirmed',
             createdAt: new Date().toISOString(),
         };
 
         // Cache order for instant lookup
         ordersStore.set(orderNumber, newOrder);
         ordersStore.set(orderId, newOrder);
+
+        // Log staff activity if staff member created the order
+        if (staffName) {
+            await logStaffActivity({
+                staffId: 'staff_' + Date.now(),
+                staffName: staffName,
+                action: 'Created Manual Order',
+                productId: orderNumber,
+                productName: `${items.length} item(s) for ${customer.name}`,
+                details: `Order #${orderNumber} created manually (Total ₹${total}, Method: ${paymentMethod || 'Cash'})`,
+            });
+        }
 
         return NextResponse.json({
             success: true,
@@ -145,6 +158,19 @@ export async function PATCH(request: NextRequest) {
         const updated = updateOrderStatus(orderId, status);
         if (!updated) {
             return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
+        }
+
+        try {
+            await logStaffActivity({
+                staffId: body.staffId || 'staff',
+                staffName: body.staffName || 'Staff Member',
+                action: 'Updated Order Status',
+                productId: updated.orderNumber,
+                productName: updated.customer.name,
+                details: `Order #${updated.orderNumber} status changed to "${status}"`,
+            });
+        } catch (actErr) {
+            console.error('Error logging order status activity:', actErr);
         }
 
         return NextResponse.json({

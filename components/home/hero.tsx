@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { trackEnquiry } from '@/lib/analytics';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -149,6 +150,7 @@ export default function Hero() {
                         href={waLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEnquiry('hero_cta', 'Hero WhatsApp CTA')}
                         className="group relative overflow-hidden bg-[#25D366] text-white px-8 py-4 rounded-full min-w-[200px] flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_0_40px_-10px_rgba(37,211,102,0.6)] hover:scale-105"
                     >
                         <span className="relative z-10 text-sm font-bold uppercase tracking-[0.15em]">WhatsApp</span>

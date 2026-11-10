@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { trackEnquiry } from '@/lib/analytics';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, ShoppingBag, ShoppingCart, Calendar, Gift, Sparkles, ChevronDown } from 'lucide-react';
@@ -251,6 +252,7 @@ export default function Navbar() {
                                 {/* Order Now CTA - White Background Pill */}
                                 <a
                                     href={orderLink}
+                                    onClick={() => trackEnquiry('navbar_order', 'Navbar Order CTA')}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] uppercase tracking-wider font-bold transition-all duration-300 hover:shadow-md hover:scale-102 bg-white text-[#1c1917] hover:text-black border border-gray-200 hover:border-gray-400 shadow-xs flex-shrink-0"

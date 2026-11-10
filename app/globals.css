@@ -574,3 +574,182 @@ body {
   background-repeat: repeat-x;
   z-index: 10;
 }
+
+
+/* ===== Admin & Staff Portal Light Mode Overrides ===== */
+html.light,
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+html.light .bg-\[\#090a0f\],
+[data-theme="light"] .bg-\[\#090a0f\] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-\[\#0d0f17\],
+[data-theme="light"] .bg-\[\#0d0f17\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-\[\#0d0f17\]\/90,
+[data-theme="light"] .bg-\[\#0d0f17\]\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .bg-\[\#0b0c13\],
+[data-theme="light"] .bg-\[\#0b0c13\] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-\[\#12141c\],
+[data-theme="light"] .bg-\[\#12141c\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .bg-\[\#12141c\]\/90,
+[data-theme="light"] .bg-\[\#12141c\]\/90 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .bg-\[\#0f1118\],
+[data-theme="light"] .bg-\[\#0f1118\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .bg-\[\#0f1118\]\/90,
+[data-theme="light"] .bg-\[\#0f1118\]\/90,
+html.light .bg-\[\#0f1118\]\/80,
+[data-theme="light"] .bg-\[\#0f1118\]\/80 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .bg-\[\#151824\],
+[data-theme="light"] .bg-\[\#151824\],
+html.light .bg-\[\#141724\],
+[data-theme="light"] .bg-\[\#141724\] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-zinc-900,
+[data-theme="light"] .bg-zinc-900 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-zinc-900\/60,
+[data-theme="light"] .bg-zinc-900\/60,
+html.light .bg-zinc-900\/80,
+[data-theme="light"] .bg-zinc-900\/80,
+html.light .bg-zinc-900\/90,
+[data-theme="light"] .bg-zinc-900\/90 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-zinc-800,
+[data-theme="light"] .bg-zinc-800 {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-zinc-800\/80,
+[data-theme="light"] .bg-zinc-800\/80 {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light .text-white,
+[data-theme="light"] .text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-zinc-100,
+[data-theme="light"] .text-zinc-100,
+html.light .text-zinc-200,
+[data-theme="light"] .text-zinc-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-zinc-300,
+[data-theme="light"] .text-zinc-300 {
+  color: #334155 !important;
+}
+
+html.light .text-zinc-400,
+[data-theme="light"] .text-zinc-400 {
+  color: #64748b !important;
+}
+
+html.light .text-zinc-500,
+[data-theme="light"] .text-zinc-500 {
+  color: #94a3b8 !important;
+}
+
+html.light .border-white\/\[0\.08\],
+[data-theme="light"] .border-white\/\[0\.08\],
+html.light .border-white\/\[0\.06\],
+[data-theme="light"] .border-white\/\[0\.06\],
+html.light .border-white\/\[0\.04\],
+[data-theme="light"] .border-white\/\[0\.04\],
+html.light .border-zinc-800,
+[data-theme="light"] .border-zinc-800,
+html.light .border-zinc-700,
+[data-theme="light"] .border-zinc-700,
+html.light .border-zinc-700\/60,
+[data-theme="light"] .border-zinc-700\/60 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light .border-white\/\[0\.12\],
+[data-theme="light"] .border-white\/\[0\.12\] {
+  border-color: #cbd5e1 !important;
+}
+
+html.light table tbody tr:hover,
+[data-theme="light"] table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+html.light input,
+[data-theme="light"] input,
+html.light select,
+[data-theme="light"] select,
+html.light textarea,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder,
+[data-theme="light"] input::placeholder,
+html.light textarea::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
