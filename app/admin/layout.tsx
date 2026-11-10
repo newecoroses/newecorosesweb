@@ -293,9 +293,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </div>
 
                     {!collapsed && (
-                        <div className="mt-3 pt-2 border-t border-white/[0.04] text-[10px] text-zinc-500 text-center">
-                            Designed by{' '}
-                            <span className="text-zinc-300 font-semibold">Aditya Choudhury</span> &middot;{' '}
+                        <div className="mt-3 pt-2 border-t border-white/[0.04] text-[10px] text-zinc-500 text-center leading-relaxed">
+                            <span>Designed by{' '}<span className="text-zinc-300 font-semibold">Aditya Choudhury</span></span>
+                            <br />
                             <span className="text-zinc-400 font-semibold">New Eco Roses</span>
                         </div>
                     )}

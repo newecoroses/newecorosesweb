@@ -7,20 +7,14 @@ import {
     Package,
     RefreshCw,
     CheckCircle2,
-    XCircle,
-    Info,
     X,
-    Layers,
-    Sparkles,
     Star,
-    DollarSign,
     Eye,
     EyeOff,
     Plus,
-    Trash2,
     Check,
-    ArrowUpDown,
-    Edit3
+    Edit3,
+    RefreshCcw
 } from 'lucide-react';
 import { PageHeader } from '@/components/admin/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/admin/ui/card';
@@ -44,6 +38,26 @@ interface ProductItem {
     updated_at: string;
 }
 
+// Premium crown/star SVG for Best Picks
+function BestPicksIcon({ size = 16 }: { size?: number }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M12 2L14.09 8.26L20.5 8.72L15.9 12.65L17.45 19L12 15.75L6.55 19L8.1 12.65L3.5 8.72L9.91 8.26L12 2Z"
+                fill="currentColor"
+                opacity="0.9"
+            />
+            <path
+                d="M12 5.5L13.47 9.74L17.95 10.08L14.6 12.92L15.68 17.3L12 15.08L8.32 17.3L9.4 12.92L6.05 10.08L10.53 9.74L12 5.5Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                opacity="0.3"
+            />
+        </svg>
+    );
+}
+
 export default function StaffProductsPage() {
     const [products, setProducts] = useState<ProductItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -55,8 +69,9 @@ export default function StaffProductsPage() {
     const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
     const [newPrice, setNewPrice] = useState<string>('');
 
-    // Best picks slot picker modal
+    // Best picks slot picker modal — for CHANGE (replace) and ADD (empty slot)
     const [pickingSlotIndex, setPickingSlotIndex] = useState<number | null>(null);
+    const [replacingItem, setReplacingItem] = useState<ProductItem | null>(null); // item being replaced
     const [bestPicksSearch, setBestPicksSearch] = useState('');
 
     const [savingAction, setSavingAction] = useState(false);
@@ -96,7 +111,6 @@ export default function StaffProductsPage() {
     }, [products]);
 
     // 12 Best Picks Slots
-    // We sort products where is_featured is true or tag is 'Featured' / 'Best Seller'
     const bestPicksProducts = useMemo(() => {
         return products.filter(p => p.is_featured || p.tag === 'Best Seller' || p.tag === 'Featured').slice(0, 12);
     }, [products]);
@@ -162,8 +176,8 @@ export default function StaffProductsPage() {
         }
     };
 
-    // Feature in Best Picks / Discard from Best Picks
-    const handleToggleFeatured = async (p: ProductItem, featureState: boolean) => {
+    // Feature in Best Picks
+    const handleFeature = async (p: ProductItem, featureState: boolean) => {
         setSavingAction(true);
         try {
             const res = await fetch('/api/staff/products', {
@@ -181,11 +195,59 @@ export default function StaffProductsPage() {
                 setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_featured: featureState, tag: featureState ? 'Featured' : 'Standard' } : prod));
                 showNotice(`"${p.name}" ${featureState ? 'featured in Our Best Picks' : 'removed from Our Best Picks'}`);
                 setPickingSlotIndex(null);
+                setReplacingItem(null);
+                setBestPicksSearch('');
             }
         } catch (err) {
             console.error('Failed to update featured status:', err);
         } finally {
             setSavingAction(false);
+        }
+    };
+
+    // Handle "Change" button — de-feature old item then feature new one
+    const handleChangeSlot = async (newProduct: ProductItem) => {
+        setSavingAction(true);
+        try {
+            // First remove old item if replacing
+            if (replacingItem) {
+                await fetch('/api/staff/products', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId: replacingItem.id,
+                        slug: replacingItem.slug,
+                        name: replacingItem.name,
+                        is_featured: false,
+                        tag: 'Standard',
+                    }),
+                });
+                setProducts(prev => prev.map(prod => prod.id === replacingItem.id ? { ...prod, is_featured: false, tag: 'Standard' } : prod));
+            }
+            // Now feature new item
+            await fetch('/api/staff/products', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productId: newProduct.id,
+                    slug: newProduct.slug,
+                    name: newProduct.name,
+                    is_featured: true,
+                    tag: 'Featured',
+                }),
+            });
+            setProducts(prev => prev.map(prod => prod.id === newProduct.id ? { ...prod, is_featured: true, tag: 'Featured' } : prod));
+            showNotice(replacingItem
+                ? `Slot changed: "${newProduct.name}" now replaces "${replacingItem.name}"`
+                : `"${newProduct.name}" featured in Our Best Picks`
+            );
+        } catch (err) {
+            console.error('Failed to change slot:', err);
+        } finally {
+            setSavingAction(false);
+            setPickingSlotIndex(null);
+            setReplacingItem(null);
+            setBestPicksSearch('');
         }
     };
 
@@ -196,17 +258,28 @@ export default function StaffProductsPage() {
                 p.name.toLowerCase().includes(search.toLowerCase()) ||
                 (p.collection_name && p.collection_name.toLowerCase().includes(search.toLowerCase())) ||
                 (p.tag && p.tag.toLowerCase().includes(search.toLowerCase()));
-
             const matchesCollection = filterCollection === 'All' || p.collection_name === filterCollection;
             return matchesSearch && matchesCollection;
         });
     }, [products, search, filterCollection]);
 
+    // Products available to pick for slot (exclude already featured, except replacingItem)
+    const availableForSlot = useMemo(() => {
+        return products.filter(p => {
+            if (replacingItem && p.id === replacingItem.id) return false; // don't show item being replaced
+            if (!replacingItem && p.is_featured) return false; // for empty slots, don't show already featured
+            return p.name.toLowerCase().includes(bestPicksSearch.toLowerCase());
+        });
+    }, [products, bestPicksSearch, replacingItem]);
+
     return (
         <div className="space-y-6">
             <PageHeader
-                title="Catalog Products &amp; Best Picks"
-                description="Manage bouquet pricing, toggle online visibility &amp; curate Our Best Picks featured arrangement slots"
+                title={activeTab === 'all' ? 'Catalog Products' : 'Our Best Picks'}
+                description={activeTab === 'all'
+                    ? 'Manage bouquet pricing, toggle online visibility and curate the storefront'
+                    : 'Feature your top 12 bouquet arrangements in the curated Best Picks showcase'
+                }
                 tag="Catalog Operations"
             >
                 <button
@@ -226,37 +299,44 @@ export default function StaffProductsPage() {
                 </div>
             )}
 
-            {/* Navigation Tabs between All Products and Our Best Picks (12 Slots) */}
+            {/* Navigation — 2 Separate Buttons */}
             <div className="flex items-center gap-3 border-b border-white/[0.08] pb-4">
                 <button
                     onClick={() => setActiveTab('all')}
                     className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
                         activeTab === 'all'
-                            ? 'bg-white text-zinc-950 shadow-xs'
-                            : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'
+                            ? 'bg-white text-zinc-950 shadow-sm'
+                            : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
                     }`}
                 >
                     <Package size={14} />
-                    <span>All Products ({products.length})</span>
+                    <span>All Products</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
+                        activeTab === 'all' ? 'bg-zinc-200 text-zinc-800' : 'bg-zinc-800 text-zinc-300'
+                    }`}>
+                        {products.length}
+                    </span>
                 </button>
 
                 <button
                     onClick={() => setActiveTab('best-picks')}
                     className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
                         activeTab === 'best-picks'
-                            ? 'bg-white text-zinc-950 shadow-xs'
-                            : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'
+                            ? 'bg-amber-500 text-zinc-950 shadow-sm'
+                            : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-amber-500/40'
                     }`}
                 >
-                    <Sparkles size={14} className="text-amber-400" />
-                    <span>Our Best Picks (12 Slots Available)</span>
-                    <span className="text-[10px] bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded-md">
+                    <BestPicksIcon size={14} />
+                    <span>Our Best Picks</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
+                        activeTab === 'best-picks' ? 'bg-amber-700/40 text-amber-100' : 'bg-zinc-800 text-zinc-300'
+                    }`}>
                         {bestPicksProducts.length}/12
                     </span>
                 </button>
             </div>
 
-            {/* ── TAB 1: ALL PRODUCTS (With Sequential Numbering & Spacy Rows) ── */}
+            {/* ── TAB 1: ALL PRODUCTS ── */}
             {activeTab === 'all' && (
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4 pb-4">
@@ -297,7 +377,7 @@ export default function StaffProductsPage() {
                             <table className="w-full text-left border-collapse text-xs">
                                 <thead>
                                     <tr className="border-b border-white/[0.06] bg-white/[0.01] text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
-                                        <th className="py-4 px-5 text-center">#</th>
+                                        <th className="py-4 px-5 text-center w-14">#</th>
                                         <th className="py-4 px-6">Product Bouquet</th>
                                         <th className="py-4 px-5">Collection</th>
                                         <th className="py-4 px-5 text-right">Price (Click to Edit)</th>
@@ -322,7 +402,7 @@ export default function StaffProductsPage() {
                                     ) : (
                                         filtered.map((p, idx) => (
                                             <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
-                                                {/* Sequential Number 1, 2, 3... */}
+                                                {/* Sequential Number */}
                                                 <td className="py-4 px-5 text-center font-mono font-bold text-zinc-400 text-xs">
                                                     #{idx + 1}
                                                 </td>
@@ -332,12 +412,7 @@ export default function StaffProductsPage() {
                                                     <div className="flex items-center gap-3.5">
                                                         <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-zinc-800 border border-zinc-700/60 flex-shrink-0">
                                                             {p.image_url ? (
-                                                                <Image
-                                                                    src={p.image_url}
-                                                                    alt={p.name}
-                                                                    fill
-                                                                    className="object-cover"
-                                                                />
+                                                                <Image src={p.image_url} alt={p.name} fill className="object-cover" />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center text-zinc-600">
                                                                     <Package size={18} />
@@ -417,7 +492,7 @@ export default function StaffProductsPage() {
                                                     </span>
                                                 </td>
 
-                                                {/* Visibility Toggle Button */}
+                                                {/* Visibility Toggle */}
                                                 <td className="py-4 px-5 text-center">
                                                     <button
                                                         onClick={() => handleToggleVisibility(p)}
@@ -429,31 +504,25 @@ export default function StaffProductsPage() {
                                                         title="Click to show or hide from website"
                                                     >
                                                         {p.is_visible ? (
-                                                            <>
-                                                                <Eye size={13} />
-                                                                <span>Live on Site</span>
-                                                            </>
+                                                            <><Eye size={13} /><span>Live on Site</span></>
                                                         ) : (
-                                                            <>
-                                                                <EyeOff size={13} />
-                                                                <span>Hidden</span>
-                                                            </>
+                                                            <><EyeOff size={13} /><span>Hidden</span></>
                                                         )}
                                                     </button>
                                                 </td>
 
-                                                {/* Best Picks Toggle Button */}
+                                                {/* Best Picks Toggle */}
                                                 <td className="py-4 px-5 text-center">
                                                     <button
-                                                        onClick={() => handleToggleFeatured(p, !p.is_featured)}
+                                                        onClick={() => handleFeature(p, !p.is_featured)}
                                                         className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                                                             p.is_featured
                                                                 ? 'bg-amber-500/15 text-amber-300 border-amber-500/30 hover:bg-rose-500/10 hover:text-rose-300 hover:border-rose-500/30'
-                                                                : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:bg-white hover:text-zinc-950 hover:border-white'
+                                                                : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:bg-amber-500/15 hover:text-amber-300 hover:border-amber-500/30'
                                                         }`}
                                                     >
                                                         <Star size={12} className={p.is_featured ? 'fill-amber-400 text-amber-400' : ''} />
-                                                        <span>{p.is_featured ? 'Featured' : '+ Best Pick'}</span>
+                                                        <span>{p.is_featured ? 'Featured' : '+ Feature'}</span>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -466,45 +535,61 @@ export default function StaffProductsPage() {
                 </Card>
             )}
 
-            {/* ── TAB 2: OUR BEST PICKS (12 Dedicated Slots Available) ── */}
+            {/* ── TAB 2: OUR BEST PICKS (12 Dedicated Slots) ── */}
             {activeTab === 'best-picks' && (
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-base font-bold text-white flex items-center gap-2">
-                                <Sparkles size={16} className="text-amber-400" />
-                                Our Best Picks Showcase (12 Slots)
-                            </h2>
-                            <p className="text-xs text-zinc-400 mt-0.5">
-                                Feature any arrangement in the curated slots below or discard items to make room for new blooms
-                            </p>
+                <div className="space-y-5">
+                    {/* Header Row */}
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <BestPicksIcon size={18} />
+                                <span className="sr-only">Best Picks</span>
+                            </div>
+                            <div>
+                                <h2 className="text-base font-bold text-white">Our Best Picks Showcase</h2>
+                                <p className="text-xs text-zinc-400 mt-0.5">
+                                    {bestPicksProducts.length} of 12 slots filled — Click <strong className="text-zinc-300">Change</strong> to swap any arrangement, or click an empty slot to fill it
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-bold flex-shrink-0">
+                            <BestPicksIcon size={12} />
+                            {bestPicksProducts.length}/12 Slots
                         </div>
                     </div>
 
+                    {/* 12-slot grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                         {bestPicksSlots.map((item, index) => {
                             const slotNumber = index + 1;
+
                             if (item) {
                                 return (
                                     <div
                                         key={item.id}
-                                        className="relative p-5 rounded-3xl bg-[#12141c]/90 border border-white/[0.08] hover:border-zinc-700 transition-all group flex flex-col justify-between space-y-3.5 shadow-sm"
+                                        className="relative rounded-3xl bg-[#12141c]/90 border border-white/[0.08] hover:border-zinc-700 transition-all group flex flex-col overflow-hidden shadow-sm"
                                     >
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-[11px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                                        {/* Slot badge */}
+                                        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
                                                 Slot #{slotNumber}
                                             </span>
                                             <button
-                                                onClick={() => handleToggleFeatured(item, false)}
-                                                className="text-zinc-400 hover:text-rose-400 text-xs flex items-center gap-1 p-1 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
-                                                title="Discard / Remove from Best Picks"
+                                                onClick={() => {
+                                                    setPickingSlotIndex(slotNumber);
+                                                    setReplacingItem(item);
+                                                    setBestPicksSearch('');
+                                                }}
+                                                className="text-zinc-400 hover:text-white text-xs flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer border border-transparent hover:border-zinc-700"
+                                                title="Change this slot's product"
                                             >
-                                                <Trash2 size={13} />
-                                                <span>Discard</span>
+                                                <RefreshCcw size={12} />
+                                                <span>Change</span>
                                             </button>
                                         </div>
 
-                                        <div className="relative w-full h-44 rounded-2xl overflow-hidden bg-zinc-800 border border-zinc-700/60">
+                                        {/* Image */}
+                                        <div className="relative mx-4 h-44 rounded-2xl overflow-hidden bg-zinc-800 border border-zinc-700/60">
                                             {item.image_url ? (
                                                 <Image
                                                     src={item.image_url}
@@ -519,10 +604,13 @@ export default function StaffProductsPage() {
                                             )}
                                         </div>
 
-                                        <div>
-                                            <p className="font-bold text-white text-sm line-clamp-1">{item.name}</p>
-                                            <p className="text-xs text-zinc-400 mt-0.5">{item.collection_name || 'Bouquet'}</p>
-                                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/[0.06]">
+                                        {/* Info */}
+                                        <div className="px-4 pb-4 pt-3 flex flex-col gap-2 flex-1">
+                                            <div>
+                                                <p className="font-bold text-white text-sm line-clamp-1">{item.name}</p>
+                                                <p className="text-xs text-zinc-400 mt-0.5">{item.collection_name || 'Bouquet'}</p>
+                                            </div>
+                                            <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
                                                 <span className="text-base font-extrabold text-white tabular-nums">
                                                     ₹{(item.price || 0).toLocaleString('en-IN')}
                                                 </span>
@@ -535,23 +623,28 @@ export default function StaffProductsPage() {
                                 );
                             }
 
+                            // Empty slot
                             return (
                                 <div
                                     key={`empty-${slotNumber}`}
-                                    onClick={() => setPickingSlotIndex(slotNumber)}
-                                    className="p-6 rounded-3xl border border-dashed border-zinc-700/80 hover:border-white bg-[#0f1118]/60 hover:bg-[#151824] transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-3 min-h-[280px] group"
+                                    onClick={() => {
+                                        setPickingSlotIndex(slotNumber);
+                                        setReplacingItem(null);
+                                        setBestPicksSearch('');
+                                    }}
+                                    className="rounded-3xl border border-dashed border-zinc-700/80 hover:border-amber-500/50 bg-[#0f1118]/60 hover:bg-[#151824] transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-3 min-h-[260px] p-6 group"
                                 >
-                                    <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+                                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
                                         Slot #{slotNumber}
                                     </span>
-                                    <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:scale-110 group-hover:bg-zinc-800 transition-all">
+                                    <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-amber-400 group-hover:scale-110 group-hover:bg-amber-500/10 group-hover:border-amber-500/30 transition-all">
                                         <Plus size={20} />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-zinc-300 group-hover:text-white transition-colors">
+                                        <p className="text-xs font-bold text-zinc-400 group-hover:text-white transition-colors">
                                             Empty Slot
                                         </p>
-                                        <p className="text-[11px] text-zinc-500 mt-0.5">
+                                        <p className="text-[11px] text-zinc-600 mt-0.5 group-hover:text-zinc-400 transition-colors">
                                             Click to feature an arrangement
                                         </p>
                                     </div>
@@ -562,77 +655,94 @@ export default function StaffProductsPage() {
                 </div>
             )}
 
-            {/* Picker Modal to Feature Any Bouquet in a Selected Slot */}
+            {/* ── Slot Picker Modal ── */}
             {pickingSlotIndex !== null && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-150"
-                    onClick={() => setPickingSlotIndex(null)}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    onClick={() => { setPickingSlotIndex(null); setReplacingItem(null); setBestPicksSearch(''); }}
                 >
                     <div
-                        className="relative w-full max-w-lg bg-[#12141c] border border-white/[0.12] rounded-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col"
+                        className="relative w-full max-w-lg bg-[#12141c] border border-white/[0.12] rounded-3xl shadow-2xl flex flex-col max-h-[85vh]"
                         onClick={e => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                            <div>
-                                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                                    Feature in Slot #{pickingSlotIndex}
-                                </h3>
-                                <p className="text-xs text-zinc-400">Select any bouquet to showcase in Our Best Picks</p>
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 pb-4 border-b border-white/[0.08]">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400">
+                                    <BestPicksIcon size={16} />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-white">
+                                        {replacingItem ? `Change Slot #${pickingSlotIndex}` : `Fill Slot #${pickingSlotIndex}`}
+                                    </h3>
+                                    <p className="text-xs text-zinc-400 mt-0.5">
+                                        {replacingItem
+                                            ? `Replacing "${replacingItem.name}"`
+                                            : 'Choose a bouquet to feature'
+                                        }
+                                    </p>
+                                </div>
                             </div>
                             <button
-                                onClick={() => setPickingSlotIndex(null)}
-                                className="text-zinc-400 hover:text-white p-1 rounded-lg"
+                                onClick={() => { setPickingSlotIndex(null); setReplacingItem(null); setBestPicksSearch(''); }}
+                                className="text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                             >
                                 <X size={18} />
                             </button>
                         </div>
 
-                        <div className="relative">
-                            <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
-                            <input
-                                autoFocus
-                                type="text"
-                                placeholder="Search catalog bouquets..."
-                                value={bestPicksSearch}
-                                onChange={e => setBestPicksSearch(e.target.value)}
-                                className="w-full pl-9 pr-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white placeholder:text-zinc-500 focus:outline-none"
-                            />
+                        {/* Search */}
+                        <div className="px-6 py-4">
+                            <div className="relative">
+                                <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Type to search bouquets..."
+                                    value={bestPicksSearch}
+                                    onChange={e => setBestPicksSearch(e.target.value)}
+                                    className="w-full pl-9 pr-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+                                />
+                            </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-                            {products
-                                .filter(p => !p.is_featured && p.name.toLowerCase().includes(bestPicksSearch.toLowerCase()))
-                                .map(p => (
-                                    <div
-                                        key={p.id}
-                                        onClick={() => handleToggleFeatured(p, true)}
-                                        className="flex items-center justify-between p-3 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800 border border-zinc-800/80 hover:border-zinc-700 transition-all cursor-pointer group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700 flex-shrink-0">
-                                                {p.image_url ? (
-                                                    <Image src={p.image_url} alt={p.name} fill className="object-cover" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-zinc-600">
-                                                        <Package size={14} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-white text-xs group-hover:underline">{p.name}</p>
-                                                <p className="text-[10px] text-zinc-400">{p.collection_name || 'Bouquet'}</p>
-                                            </div>
+                        {/* Product List */}
+                        <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-2">
+                            {availableForSlot.length === 0 ? (
+                                <div className="py-10 text-center text-zinc-500 text-xs">
+                                    {bestPicksSearch ? `No bouquets matching "${bestPicksSearch}"` : 'No bouquets available'}
+                                </div>
+                            ) : availableForSlot.map(p => (
+                                <div
+                                    key={p.id}
+                                    onClick={() => replacingItem ? handleChangeSlot(p) : handleFeature(p, true)}
+                                    className="flex items-center justify-between p-3 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/40 transition-all cursor-pointer group"
+                                >
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700 flex-shrink-0">
+                                            {p.image_url ? (
+                                                <Image src={p.image_url} alt={p.name} fill className="object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                                    <Package size={14} />
+                                                </div>
+                                            )}
                                         </div>
-                                        <div className="text-right">
-                                            <p className="font-bold text-white text-xs tabular-nums">
-                                                ₹{(p.price || 0).toLocaleString('en-IN')}
-                                            </p>
-                                            <span className="text-[10px] text-emerald-400 font-semibold group-hover:underline">
-                                                + Select Slot
-                                            </span>
+                                        <div className="min-w-0">
+                                            <p className="font-semibold text-white text-xs truncate">{p.name}</p>
+                                            <p className="text-[10px] text-zinc-400">{p.collection_name || 'Bouquet'}</p>
                                         </div>
                                     </div>
-                                ))}
+                                    <div className="text-right flex-shrink-0 ml-3">
+                                        <p className="font-bold text-white text-xs tabular-nums">
+                                            ₹{(p.price || 0).toLocaleString('en-IN')}
+                                        </p>
+                                        <span className="text-[10px] text-amber-400 font-semibold group-hover:underline">
+                                            {replacingItem ? '→ Place Here' : '+ Feature'}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

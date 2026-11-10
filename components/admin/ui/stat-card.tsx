@@ -34,7 +34,7 @@ export function StatCard({
     const isPositive = trend === 'up';
 
     const content = (
-        <div className="relative group p-5 rounded-2xl bg-gradient-to-b from-[#131622]/90 to-[#0e1017]/90 border border-white/[0.08] hover:border-zinc-700/80 transition-all duration-300 hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] backdrop-blur-md overflow-hidden">
+        <div className="relative group p-5 rounded-2xl bg-[#0f1118] border border-white/[0.08] hover:border-zinc-700/80 transition-all duration-300 hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] overflow-hidden">
             {/* Top row: Label & Icon */}
             <div className="flex items-center justify-between gap-2 mb-3">
                 <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
