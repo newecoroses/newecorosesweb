@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import NextImage from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -153,12 +152,16 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                         href="/staff"
                         className="flex items-center gap-3 select-none group min-w-0"
                     >
-                        <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-zinc-100 dark:bg-[#151824] border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center flex-shrink-0">
-                            <NextImage
-                                src="/favicon_io/android-chrome-192x192.png"
+                        <div className="w-9 h-9 rounded-xl overflow-hidden bg-zinc-100 dark:bg-[#151824] border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center flex-shrink-0">
+                            <img
+                                src="/favicon_io/android-chrome-512x512.png"
                                 alt="New Eco Roses"
-                                fill
-                                className="object-cover"
+                                width={36}
+                                height={36}
+                                className="w-full h-full object-contain"
+                                onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = '/favicon_io/android-chrome-192x192.png';
+                                }}
                             />
                         </div>
                         <div className="min-w-0">
