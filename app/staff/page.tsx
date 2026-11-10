@@ -2,64 +2,57 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
+    ShoppingBag,
+    DollarSign,
     Package,
-    Eye,
-    EyeOff,
-    Sparkles,
-    AlertCircle,
-    TrendingUp,
+    Users,
+    RefreshCw,
+    Plus,
     Clock,
-    ChevronRight,
-    Edit2,
-    RefreshCw
+    Truck,
+    CheckCircle2,
+    ArrowUpRight,
+    Search,
+    MapPin,
+    Phone
 } from 'lucide-react';
-
-interface ProductItem {
-    id: string;
-    name: string;
-    slug: string;
-    price?: number | null;
-    original_price?: number | null;
-    stock: number;
-    is_visible: boolean;
-    is_featured: boolean;
-    tag?: string;
-    image_url: string;
-    collection_name?: string;
-    updated_at: string;
-}
-
-interface StaffSession {
-    name: string;
-    role: string;
-}
+import { PageHeader } from '@/components/admin/ui/page-header';
+import { StatCard } from '@/components/admin/ui/stat-card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction } from '@/components/admin/ui/card';
+import { Badge } from '@/components/admin/ui/badge';
+import { SavedOrder } from '@/lib/order-cache';
+import { AddCustomerModal } from '@/components/admin/add-customer-modal';
 
 export default function StaffDashboardPage() {
-    const [staff, setStaff] = useState<StaffSession | null>(null);
-    const [products, setProducts] = useState<ProductItem[]>([]);
+    const [orders, setOrders] = useState<SavedOrder[]>([]);
+    const [productCount, setProductCount] = useState<number>(0);
+    const [inStockCount, setInStockCount] = useState<number>(0);
     const [loading, setLoading] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            const [authRes, prodRes] = await Promise.all([
-                fetch('/api/staff/auth'),
+            const [ordersRes, prodsRes] = await Promise.all([
+                fetch('/api/orders'),
                 fetch('/api/staff/products'),
             ]);
 
-            if (authRes.ok) {
-                const authData = await authRes.json();
-                setStaff(authData.staff);
+            if (ordersRes.ok) {
+                const oData = await ordersRes.json();
+                if (oData.success && oData.orders) setOrders(oData.orders);
             }
 
-            if (prodRes.ok) {
-                const prodData = await prodRes.json();
-                setProducts(prodData.products || []);
+            if (prodsRes.ok) {
+                const pData = await prodsRes.json();
+                if (pData.products) {
+                    setProductCount(pData.products.length);
+                    setInStockCount(pData.products.filter((p: any) => p.stock > 0).length);
+                }
             }
         } catch (err) {
-            console.error('Error loading dashboard data:', err);
+            console.error('Error loading staff dashboard:', err);
         } finally {
             setLoading(false);
         }
@@ -69,169 +62,210 @@ export default function StaffDashboardPage() {
         loadData();
     }, []);
 
-    const totalCount = products.length;
-    const publishedCount = products.filter(p => p.is_visible).length;
-    const hiddenCount = products.filter(p => !p.is_visible).length;
-    const featuredCount = products.filter(p => p.is_featured).length;
-    const outOfStockCount = products.filter(p => p.stock <= 0).length;
-    const bestSellerCount = products.filter(p => p.tag === 'Best Seller').length;
+    const totalRevenue = orders.reduce((sum, o) => sum + (o.status !== 'cancelled' ? o.total : 0), 0);
+    const activeOrders = orders.filter(o => o.status === 'confirmed' || o.status === 'processing');
 
-    const STAT_CARDS = [
-        { label: 'Total Products', value: totalCount, icon: Package, color: 'from-blue-500 to-blue-600', href: '/staff/products' },
-        { label: 'Published (Live)', value: publishedCount, icon: Eye, color: 'from-emerald-500 to-emerald-600', href: '/staff/products' },
-        { label: 'Hidden Products', value: hiddenCount, icon: EyeOff, color: 'from-amber-500 to-amber-600', href: '/staff/products' },
-        { label: 'Out of Stock', value: outOfStockCount, icon: AlertCircle, color: 'from-rose-500 to-rose-600', href: '/staff/products' },
-        { label: 'Featured Items', value: featuredCount, icon: Sparkles, color: 'from-purple-500 to-purple-600', href: '/staff/homepage' },
-        { label: 'Best Sellers', value: bestSellerCount, icon: TrendingUp, color: 'from-zinc-200 to-zinc-400 text-zinc-900', href: '/staff/products' },
-    ];
-
-    const QUICK_LINKS = [
-        { href: '/staff/products', label: 'Manage Products', desc: 'Update prices, toggle stock and visibility', icon: Package },
-        { href: '/staff/homepage', label: 'Homepage Sections', desc: 'Curate Featured, Trending and New Arrivals', icon: Sparkles },
-        { href: '/staff/activity', label: 'Activity Log', desc: 'Review team audit history & recent changes', icon: Clock },
-    ];
-
-    const recentlyUpdated = [...products]
-        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-        .slice(0, 6);
+    const getStatusBadge = (status: SavedOrder['status']) => {
+        switch (status) {
+            case 'confirmed':
+                return <Badge variant="default"><Clock size={10} /> Confirmed</Badge>;
+            case 'processing':
+                return <Badge variant="info"><Truck size={10} /> In Transit</Badge>;
+            case 'delivered':
+                return <Badge variant="success"><CheckCircle2 size={10} /> Delivered</Badge>;
+            case 'cancelled':
+                return <Badge variant="destructive">Cancelled</Badge>;
+            default:
+                return <Badge variant="secondary">{status}</Badge>;
+        }
+    };
 
     return (
-        <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-                    <p className="text-gray-400 text-sm mt-1">
-                        Welcome back, {staff?.name || 'Staff'}! Here is an overview of your product catalog.
-                    </p>
-                </div>
+        <div className="space-y-7">
+            {/* Page Header */}
+            <PageHeader
+                title="Staff & Reception Operations"
+                description="Live store order fulfilment, revenue overview & reception desk guest registration"
+                tag="Staff Hub"
+            >
                 <button
                     onClick={loadData}
-                    className="flex items-center gap-2 bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                    disabled={loading}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
                 >
-                    <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-                    Refresh
+                    <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
+                    <span>Refresh Data</span>
                 </button>
+
+                <button
+                    onClick={() => setModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-bold transition-all shadow-xs cursor-pointer"
+                >
+                    <Plus size={14} className="stroke-[2.5]" />
+                    <span>Add Reception Customer</span>
+                </button>
+            </PageHeader>
+
+            {/* 4 Stat Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard
+                    label="Today's Revenue"
+                    value={`₹${totalRevenue.toLocaleString('en-IN')}`}
+                    hint="Gross sales recorded"
+                    icon={DollarSign}
+                    loading={loading}
+                    href="/staff/orders"
+                />
+
+                <StatCard
+                    label="Active Orders"
+                    value={activeOrders.length}
+                    hint={`${orders.length} total orders recorded`}
+                    icon={ShoppingBag}
+                    loading={loading}
+                    href="/staff/orders"
+                />
+
+                <StatCard
+                    label="Catalog Products"
+                    value={productCount}
+                    hint={`${inStockCount} items in stock`}
+                    icon={Package}
+                    loading={loading}
+                    href="/staff/products"
+                />
+
+                <StatCard
+                    label="Reception Portal"
+                    value="Ready"
+                    hint="Check-in guests & issue 15% discount"
+                    icon={Users}
+                    loading={loading}
+                    href="/staff/customers"
+                />
             </div>
 
-            {/* Stats Grid matching Admin */}
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-                {STAT_CARDS.map(({ label, value, icon: Icon, color, href }) => (
-                    <Link key={label} href={href} className="group">
-                        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-gray-700 transition-all hover:-translate-y-0.5">
-                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center mb-3 shadow-xs`}>
-                                <Icon size={18} className="text-white" />
-                            </div>
-                            <p className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                                {loading ? (
-                                    <span className="w-12 h-7 bg-gray-800 rounded animate-pulse inline-block" />
-                                ) : (
-                                    value
-                                )}
-                            </p>
-                            <p className="text-gray-400 text-xs">{label}</p>
+            {/* Quick Actions & Recent Deliveries */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Orders List (2 Cols) */}
+                <Card className="lg:col-span-2">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Recent Customer Orders</CardTitle>
+                            <CardDescription>Latest storefront and phone orders awaiting delivery</CardDescription>
                         </div>
-                    </Link>
-                ))}
-            </div>
+                        <CardAction>
+                            <Link
+                                href="/staff/orders"
+                                className="inline-flex items-center gap-1 text-xs font-bold text-white hover:underline"
+                            >
+                                <span>All Orders ({orders.length})</span>
+                                <ArrowUpRight size={13} />
+                            </Link>
+                        </CardAction>
+                    </CardHeader>
+                    <CardContent className="px-0 py-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr className="border-b border-white/[0.06] bg-white/[0.01] text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
+                                        <th className="py-3 px-5">Order #</th>
+                                        <th className="py-3 px-4">Recipient</th>
+                                        <th className="py-3 px-4">Items</th>
+                                        <th className="py-3 px-4">Status</th>
+                                        <th className="py-3 px-5 text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/[0.04]">
+                                    {orders.slice(0, 6).map(o => (
+                                        <tr key={o.id} className="hover:bg-white/[0.02] transition-colors">
+                                            <td className="py-3 px-5 font-mono font-bold text-white">
+                                                <Link href="/staff/orders" className="hover:text-zinc-300">
+                                                    {o.orderNumber}
+                                                </Link>
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                <p className="font-semibold text-zinc-200">{o.customer.name}</p>
+                                                <p className="text-[11px] text-zinc-500">{o.shippingAddress.city}</p>
+                                            </td>
+                                            <td className="py-3 px-4 text-zinc-400">
+                                                {o.items.length} {o.items.length === 1 ? 'item' : 'items'}
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                {getStatusBadge(o.status)}
+                                            </td>
+                                            <td className="py-3 px-5 text-right font-bold text-white tabular-nums">
+                                                ₹{o.total.toLocaleString('en-IN')}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {orders.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="py-8 text-center text-zinc-500">
+                                                No orders placed yet.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            {/* Quick Actions matching Admin */}
-            <div className="mb-8">
-                <h2 className="text-white font-semibold mb-4">Quick Actions</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {QUICK_LINKS.map(({ href, label, desc, icon: Icon }) => (
-                        <Link key={href} href={href} className="group">
-                            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-zinc-400/30 hover:bg-gray-850 transition-all">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <Icon size={18} className="text-zinc-100" />
-                                    <p className="text-white font-medium text-sm">{label}</p>
-                                    <ChevronRight size={14} className="ml-auto text-gray-600 group-hover:text-zinc-100 transition-colors" />
-                                </div>
-                                <p className="text-gray-500 text-xs pl-7">{desc}</p>
+                {/* Staff Quick Hub (1 Col) */}
+                <div className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Reception Check-In</CardTitle>
+                            <CardDescription>Register walk-in customers and capture anniversaries</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                                Enter customer contact, DOB, marriage anniversary & items purchased. The system automatically prepares an exclusive <strong>15% VIP discount email</strong>!
+                            </p>
+                            <button
+                                onClick={() => setModalOpen(true)}
+                                className="w-full py-2.5 px-4 rounded-xl bg-white text-zinc-950 hover:bg-zinc-200 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                            >
+                                <Plus size={14} />
+                                <span>Add In-Store Customer</span>
+                            </button>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Staff Portal Permissions</CardTitle>
+                            <CardDescription>Role and access level constraints</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2.5 text-xs">
+                            <div className="flex items-center justify-between text-zinc-300">
+                                <span>View Orders &amp; Addresses:</span>
+                                <span className="text-emerald-400 font-semibold">Enabled</span>
                             </div>
-                        </Link>
-                    ))}
+                            <div className="flex items-center justify-between text-zinc-300">
+                                <span>Browse Catalog Stock:</span>
+                                <span className="text-emerald-400 font-semibold">Enabled</span>
+                            </div>
+                            <div className="flex items-center justify-between text-zinc-300">
+                                <span>Add Product / Change Images:</span>
+                                <span className="text-zinc-500 font-semibold">Disabled (Admin Only)</span>
+                            </div>
+                            <div className="flex items-center justify-between text-zinc-300">
+                                <span>Reception Guest Check-In:</span>
+                                <span className="text-emerald-400 font-semibold">Enabled</span>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
 
-            {/* Recently Updated Products Table */}
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
-                <div className="p-5 border-b border-gray-800 flex items-center justify-between">
-                    <div>
-                        <h2 className="text-white font-semibold text-sm">Recently Updated Products</h2>
-                        <p className="text-gray-500 text-xs mt-0.5">Products with recent modifications or price updates</p>
-                    </div>
-                    <Link
-                        href="/staff/products"
-                        className="text-xs text-zinc-300 hover:text-white flex items-center gap-1 font-medium transition-colors"
-                    >
-                        View All
-                        <ChevronRight size={12} />
-                    </Link>
-                </div>
-
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wider font-medium">
-                                <th className="text-left px-5 py-3.5">Product</th>
-                                <th className="text-left px-5 py-3.5">Tag</th>
-                                <th className="text-left px-5 py-3.5">Price</th>
-                                <th className="text-left px-5 py-3.5">Status</th>
-                                <th className="text-right px-5 py-3.5">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentlyUpdated.map(product => (
-                                <tr key={product.id} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
-                                    <td className="px-5 py-3.5">
-                                        <div className="flex items-center gap-3">
-                                            {product.image_url ? (
-                                                <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-                                                    <Image src={product.image_url} alt={product.name} fill className="object-cover" sizes="36px" />
-                                                </div>
-                                            ) : (
-                                                <div className="w-9 h-9 rounded-lg bg-gray-800 flex items-center justify-center text-gray-600 text-[10px]">
-                                                    No img
-                                                </div>
-                                            )}
-                                            <div>
-                                                <p className="text-white font-medium text-xs sm:text-sm">{product.name}</p>
-                                                <p className="text-gray-500 text-[11px] truncate max-w-44">/{product.slug}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <span className="text-xs text-gray-400">{product.tag || 'Standard'}</span>
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        {product.price ? (
-                                            <span className="font-bold text-white text-xs sm:text-sm">₹{product.price}</span>
-                                        ) : (
-                                            <span className="text-xs text-gray-500 italic">No price</span>
-                                        )}
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <span className={`inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium ${
-                                            product.is_visible ? 'bg-green-500/10 text-green-400' : 'bg-gray-700 text-gray-400'
-                                        }`}>
-                                            {product.is_visible ? 'Live' : 'Hidden'}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-right">
-                                        <Link
-                                            href={`/staff/products`}
-                                            className="text-gray-500 hover:text-zinc-100 transition-colors p-1.5 hover:bg-zinc-200/10 rounded-lg inline-flex"
-                                        >
-                                            <Edit2 size={14} />
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Check-In Modal */}
+            <AddCustomerModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onCustomerAdded={() => loadData()}
+            />
         </div>
     );
 }

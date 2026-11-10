@@ -30,6 +30,7 @@ import {
     Tag,
     ExternalLink
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/admin/ui/theme-toggle';
 
 interface NavItem {
     href: string;
@@ -293,7 +294,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                     {!collapsed && (
                         <div className="mt-3 pt-2 border-t border-white/[0.04] text-[10px] text-zinc-500 text-center">
-                            Designed with OrbynAdmin &middot;{' '}
+                            Designed by{' '}
+                            <span className="text-zinc-300 font-semibold">Aditya Choudhury</span> &middot;{' '}
                             <span className="text-zinc-400 font-semibold">New Eco Roses</span>
                         </div>
                     )}
@@ -345,6 +347,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                             <span>Store Live</span>
                         </div>
+
+                        {/* Dark / Light Mode Switch */}
+                        <ThemeToggle />
 
                         {/* View Storefront CTA */}
                         <Link

@@ -118,31 +118,37 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
 }
 
 function StatCard({
-    label, value, sub, icon: Icon, gradient, loading, isCustomValue = false,
+    label, value, sub, icon: Icon, loading, isCustomValue = false,
 }: {
     label: string; value: number | undefined; sub?: string;
-    icon: React.ElementType; gradient: string; loading: boolean;
+    icon: React.ElementType; gradient?: string; loading: boolean;
     isCustomValue?: boolean;
 }) {
     return (
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-3`}>
-                <Icon size={18} className="text-white" />
+        <div className="bg-[#12141c]/90 border border-white/[0.08] hover:border-zinc-700/80 rounded-2xl p-5 backdrop-blur-md transition-all duration-200 group">
+            <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{label}</span>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-zinc-800 border border-zinc-700/60 text-zinc-100 flex-shrink-0 transition-transform group-hover:scale-105">
+                    <Icon size={16} />
+                </div>
             </div>
-            <p className="text-3xl font-bold text-white mb-1">
-                {loading ? (
-                    <span className="w-14 h-7 bg-gray-800 rounded animate-pulse inline-block" />
-                ) : isCustomValue ? sub : fmt(value)}
-            </p>
-            <p className="text-gray-400 text-xs">{label}</p>
-            {!isCustomValue && sub && <p className="text-gray-600 text-[10px] mt-0.5">{sub}</p>}
+            <div className="flex items-baseline justify-between gap-2">
+                <span className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight tabular-nums">
+                    {loading ? (
+                        <span className="w-16 h-7 bg-zinc-800/80 rounded-md animate-pulse inline-block" />
+                    ) : isCustomValue ? sub : fmt(value)}
+                </span>
+                {!isCustomValue && sub && (
+                    <span className="text-xs text-zinc-400 font-medium tabular-nums">{sub}</span>
+                )}
+            </div>
         </div>
     );
 }
 
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
     return (
-        <div className={`bg-gray-900 border border-gray-800 rounded-2xl p-5 ${className}`}>
+        <div className={`bg-[#0f1118]/90 border border-white/[0.08] hover:border-zinc-700/60 rounded-2xl p-5 backdrop-blur-md transition-all ${className}`}>
             {children}
         </div>
     );
@@ -341,7 +347,7 @@ export default function AnalyticsPage() {
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-gray-950/95 backdrop-blur-md border border-gray-800 rounded-xl p-3.5 shadow-2xl">
+                <div className="bg-[#12141c] backdrop-blur-md border border-zinc-700/80 rounded-xl p-3.5 shadow-2xl">
                     <p className="text-gray-400 text-xs font-semibold mb-2">{trafficXLabel(label)}</p>
                     <div className="space-y-1.5">
                         {payload.map((p: any) => (
@@ -364,7 +370,7 @@ export default function AnalyticsPage() {
         if (active && payload && payload.length) {
             const formattedDate = new Date(label).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
             return (
-                <div className="bg-gray-950/95 backdrop-blur-md border border-gray-800 rounded-xl p-3.5 shadow-2xl">
+                <div className="bg-[#12141c] backdrop-blur-md border border-zinc-700/80 rounded-xl p-3.5 shadow-2xl">
                     <p className="text-gray-400 text-xs font-semibold mb-2">{formattedDate}</p>
                     <div className="flex items-center gap-4 justify-between">
                         <div className="flex items-center gap-2">
@@ -383,7 +389,7 @@ export default function AnalyticsPage() {
         if (active && payload && payload.length) {
             const isVisitor = payload[0].name === 'Visitors';
             return (
-                <div className="bg-gray-950/95 backdrop-blur-md border border-gray-800 rounded-xl p-3 shadow-2xl">
+                <div className="bg-[#12141c] backdrop-blur-md border border-zinc-700/80 rounded-xl p-3 shadow-2xl">
                     <p className="text-gray-400 text-xs font-semibold mb-1.5">{fmtHour(Number(label))}</p>
                     <div className="flex items-center gap-3 justify-between">
                         <div className="flex items-center gap-1.5">
@@ -1098,7 +1104,7 @@ export default function AnalyticsPage() {
             {/* Footer note */}
             <div className="text-center">
                 <p className="text-gray-700 text-xs">
-                    Analytics powered by Supabase · Events stored securely · No third-party tracking
+                    Analytics powered by Supabase · Designed by Aditya Choudhury · New Eco Roses
                 </p>
             </div>
         </div>

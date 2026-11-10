@@ -1,16 +1,22 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import {
     Search,
-    Edit2,
+    Package,
+    Eye,
+    RefreshCw,
+    Shield,
+    CheckCircle2,
+    XCircle,
+    Info,
     X,
-    AlertCircle,
-    Check,
-    RefreshCw
+    Layers
 } from 'lucide-react';
-import { StaffPermissions } from '@/lib/staff-auth';
+import { PageHeader } from '@/components/admin/ui/page-header';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/admin/ui/card';
+import { Badge } from '@/components/admin/ui/badge';
 
 interface ProductItem {
     id: string;
@@ -30,668 +36,356 @@ interface ProductItem {
     updated_at: string;
 }
 
-const ALL_TAGS = ['Standard', 'New Arrival', 'Best Seller', 'Trending', 'Featured', 'Sale', 'Limited Edition'];
-
-function Modal({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
-    if (!open) return null;
-    return (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-            <div className="bg-gray-900 rounded-2xl border border-gray-800 w-full max-w-xl max-h-[90vh] overflow-y-auto">
-                <div className="p-6">{children}</div>
-            </div>
-            <div className="fixed inset-0 -z-10" onClick={onClose} />
-        </div>
-    );
-}
-
 export default function StaffProductsPage() {
     const [products, setProducts] = useState<ProductItem[]>([]);
-    const [permissions, setPermissions] = useState<StaffPermissions | null>(null);
     const [loading, setLoading] = useState(true);
-
-    // Filters matching Admin
     const [search, setSearch] = useState('');
-    const [filterTag, setFilterTag] = useState('All');
-    const [filterVisible, setFilterVisible] = useState('All');
+    const [filterCollection, setFilterCollection] = useState('All');
+    const [filterStock, setFilterStock] = useState<'all' | 'in-stock' | 'out-of-stock'>('all');
+    const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
-    // Inline price editing
-    const [inlineEditingId, setInlineEditingId] = useState<string | null>(null);
-    const [inlinePriceVal, setInlinePriceVal] = useState<string>('');
-    const [inlineOriginalPriceVal, setInlineOriginalPriceVal] = useState<string>('');
-
-    // Modal edit state
-    const [modalOpen, setModalOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
-    const [formName, setFormName] = useState('');
-    const [formDescription, setFormDescription] = useState('');
-    const [formPrice, setFormPrice] = useState<string>('');
-    const [formOriginalPrice, setFormOriginalPrice] = useState<string>('');
-    const [formStock, setFormStock] = useState<number>(10);
-    const [formIsVisible, setFormIsVisible] = useState(true);
-    const [formIsFeatured, setFormIsFeatured] = useState(false);
-    const [formTag, setFormTag] = useState('Standard');
-
-    const [saving, setSaving] = useState(false);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-    const showSuccess = (msg: string) => {
-        setSuccessMessage(msg);
-        setTimeout(() => setSuccessMessage(null), 3500);
-    };
-
-    // Load products
-    const loadProducts = useCallback(async () => {
+    const loadProducts = async () => {
         setLoading(true);
         try {
-            const authRes = await fetch('/api/staff/auth');
-            if (authRes.ok) {
-                const authData = await authRes.json();
-                setPermissions(authData.staff?.permissions || null);
-            }
-
             const res = await fetch('/api/staff/products');
             if (res.ok) {
                 const data = await res.json();
                 setProducts(data.products || []);
             }
         } catch (err) {
-            console.error('Error loading products:', err);
+            console.error('Error loading products for staff:', err);
         } finally {
             setLoading(false);
         }
-    }, []);
+    };
 
     useEffect(() => {
         loadProducts();
-    }, [loadProducts]);
+    }, []);
 
-    // Quick toggle visibility
-    const toggleVisibility = async (p: ProductItem) => {
-        const newVisible = !p.is_visible;
-        setProducts(prev => prev.map(item => item.id === p.id ? { ...item, is_visible: newVisible } : item));
+    // Unique collection list
+    const collections = useMemo(() => {
+        const set = new Set<string>();
+        products.forEach(p => {
+            if (p.collection_name) set.add(p.collection_name);
+        });
+        return Array.from(set);
+    }, [products]);
 
-        try {
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    is_visible: newVisible,
-                }),
-            });
-            if (res.ok) {
-                showSuccess(`"${p.name}" is now ${newVisible ? 'Visible' : 'Hidden'}.`);
-            } else {
-                const data = await res.json();
-                setErrorMessage(data.error || 'Failed to update visibility');
-                loadProducts();
-            }
-        } catch {
-            loadProducts();
-        }
-    };
-
-    // Quick toggle stock
-    const toggleStock = async (p: ProductItem) => {
-        const newStock = p.stock > 0 ? 0 : 10;
-        setProducts(prev => prev.map(item => item.id === p.id ? { ...item, stock: newStock } : item));
-
-        try {
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    stock: newStock,
-                }),
-            });
-            if (res.ok) {
-                showSuccess(`"${p.name}" marked ${newStock > 0 ? 'In Stock' : 'Out of Stock'}.`);
-            } else {
-                loadProducts();
-            }
-        } catch {
-            loadProducts();
-        }
-    };
-
-    // Inline price save
-    const handleSaveInlinePrice = async (p: ProductItem) => {
-        const numPrice = inlinePriceVal ? Number(inlinePriceVal) : null;
-        const numOrig = inlineOriginalPriceVal ? Number(inlineOriginalPriceVal) : (numPrice ? Math.round(numPrice * 1.15) : null);
-
-        setProducts(prev => prev.map(item => item.id === p.id ? { ...item, price: numPrice, original_price: numOrig } : item));
-        setInlineEditingId(null);
-
-        try {
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    price: numPrice,
-                    original_price: numOrig,
-                }),
-            });
-            if (res.ok) {
-                showSuccess(numPrice ? `Price for "${p.name}" set to ₹${numPrice} — live on site!` : `Price removed for "${p.name}"`);
-            } else {
-                const data = await res.json();
-                setErrorMessage(data.error || 'Failed to update price');
-                loadProducts();
-            }
-        } catch {
-            loadProducts();
-        }
-    };
-
-    // Open edit modal
-    const openEdit = (p: ProductItem) => {
-        setEditingProduct(p);
-        setFormName(p.name);
-        setFormDescription(p.description || '');
-        setFormPrice(p.price ? String(p.price) : '');
-        setFormOriginalPrice(p.original_price ? String(p.original_price) : '');
-        setFormStock(p.stock ?? 10);
-        setFormIsVisible(Boolean(p.is_visible));
-        setFormIsFeatured(Boolean(p.is_featured));
-        setFormTag(p.tag || 'Standard');
-        setErrorMessage(null);
-        setModalOpen(true);
-    };
-
-    // Save full edits
-    const handleSaveModal = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!editingProduct) return;
-
-        setSaving(true);
-        setErrorMessage(null);
-
-        try {
-            const payload: any = {
-                productId: editingProduct.id,
-                slug: editingProduct.slug,
-                name: formName,
-                description: formDescription,
-                price: formPrice ? Number(formPrice) : null,
-                original_price: formOriginalPrice ? Number(formOriginalPrice) : null,
-                stock: Number(formStock),
-                is_visible: formIsVisible,
-                is_featured: formIsFeatured,
-                tag: formTag,
-            };
-
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                setErrorMessage(data.error || 'Failed to save product');
-                setSaving(false);
-                return;
-            }
-
-            showSuccess(`Product "${formName}" updated successfully!`);
-            setModalOpen(false);
-            setEditingProduct(null);
-            loadProducts();
-        } catch (err: any) {
-            setErrorMessage(err.message || 'Network error');
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    // Filtered products
+    // Filter products
     const filtered = useMemo(() => {
         return products.filter(p => {
-            const matchSearch =
-                !search ||
+            const matchesSearch =
                 p.name.toLowerCase().includes(search.toLowerCase()) ||
-                p.slug.toLowerCase().includes(search.toLowerCase()) ||
-                (p.collection_name && p.collection_name.toLowerCase().includes(search.toLowerCase()));
+                (p.collection_name && p.collection_name.toLowerCase().includes(search.toLowerCase())) ||
+                (p.tag && p.tag.toLowerCase().includes(search.toLowerCase()));
 
-            const matchTag = filterTag === 'All' || p.tag === filterTag;
-            const matchVisible = filterVisible === 'All' || (filterVisible === 'Visible' ? p.is_visible : !p.is_visible);
+            const matchesCollection = filterCollection === 'All' || p.collection_name === filterCollection;
+            const matchesStock =
+                filterStock === 'all' ||
+                (filterStock === 'in-stock' && p.stock > 0) ||
+                (filterStock === 'out-of-stock' && p.stock <= 0);
 
-            return matchSearch && matchTag && matchVisible;
+            return matchesSearch && matchesCollection && matchesStock;
         });
-    }, [products, search, filterTag, filterVisible]);
+    }, [products, search, filterCollection, filterStock]);
 
     return (
-        <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-white">Products</h1>
-                    <p className="text-gray-400 text-sm mt-0.5">{products.length} total products</p>
+        <div className="space-y-6">
+            <PageHeader
+                title="Product Catalog & Stock"
+                description="Browse active blooms, check stock levels and view arrangement pricing (View-Only)"
+                tag="Staff View"
+            >
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-400">
+                    <Shield size={13} className="text-zinc-500" />
+                    <span>Catalog Modification Locked for Staff</span>
                 </div>
+
                 <button
                     onClick={loadProducts}
-                    className="flex items-center gap-2 bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                    disabled={loading}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
                 >
-                    <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-                    Refresh
+                    <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
+                    <span>Refresh</span>
                 </button>
-            </div>
+            </PageHeader>
 
-            {/* Alerts */}
-            {successMessage && (
-                <div className="bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
-                    <Check size={16} /> {successMessage}
-                </div>
-            )}
-            {errorMessage && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
-                    <AlertCircle size={16} /> {errorMessage}
-                </div>
-            )}
-
-            {/* Filters matching Admin */}
-            <div className="flex flex-wrap gap-3 mb-6">
-                <div className="relative flex-1 min-w-48">
-                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                    <input
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                        placeholder="Search products..."
-                        className="w-full bg-gray-900 border border-gray-800 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors placeholder:text-gray-600"
-                    />
-                </div>
-                <select
-                    value={filterTag}
-                    onChange={e => setFilterTag(e.target.value)}
-                    className="bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors cursor-pointer"
-                >
-                    <option value="All">All Tags</option>
-                    {ALL_TAGS.map(t => (
-                        <option key={t} value={t}>{t}</option>
-                    ))}
-                </select>
-                <select
-                    value={filterVisible}
-                    onChange={e => setFilterVisible(e.target.value)}
-                    className="bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors cursor-pointer"
-                >
-                    <option value="All">All Visibility</option>
-                    <option value="Visible">Visible</option>
-                    <option value="Hidden">Hidden</option>
-                </select>
-            </div>
-
-            {/* Table matching Admin structure */}
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wider font-medium">
-                                <th className="text-left px-5 py-4">Product</th>
-                                <th className="text-left px-5 py-4">Collection</th>
-                                <th className="text-left px-5 py-4">Tag</th>
-                                <th className="text-left px-5 py-4">Price</th>
-                                <th className="text-left px-5 py-4">Stock</th>
-                                <th className="text-left px-5 py-4">Visible</th>
-                                <th className="text-right px-5 py-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                Array.from({ length: 6 }).map((_, i) => (
-                                    <tr key={i} className="border-b border-gray-800/50">
-                                        <td colSpan={7} className="px-5 py-4">
-                                            <div className="h-5 bg-gray-800/60 rounded animate-pulse" />
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : filtered.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="text-center text-gray-500 py-12">
-                                        No products found
-                                    </td>
-                                </tr>
-                            ) : (
-                                filtered.map(product => (
-                                    <tr
-                                        key={product.id}
-                                        className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors"
-                                    >
-                                        {/* Product */}
-                                        <td className="px-5 py-4">
-                                            <div className="flex items-center gap-3">
-                                                {product.image_url ? (
-                                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-                                                        <Image
-                                                            src={product.image_url}
-                                                            alt={product.name}
-                                                            fill
-                                                            className="object-cover"
-                                                            sizes="40px"
-                                                        />
-                                                    </div>
-                                                ) : (
-                                                    <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-gray-600 text-[10px] flex-shrink-0">
-                                                        No img
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <p className="text-white font-medium">{product.name}</p>
-                                                    <p className="text-gray-500 text-xs truncate max-w-48">/{product.slug}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        {/* Collection */}
-                                        <td className="px-5 py-4 text-gray-400">
-                                            {product.collection_name || 'General'}
-                                        </td>
-
-                                        {/* Tag */}
-                                        <td className="px-5 py-4">
-                                            <span
-                                                className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${
-                                                    product.tag === 'Best Seller'
-                                                        ? 'bg-zinc-800 text-zinc-300 border border-zinc-700'
-                                                        : product.tag === 'New Arrival'
-                                                        ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                                        : product.tag === 'Trending'
-                                                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                        : product.tag === 'Featured'
-                                                        ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                                                        : product.tag === 'Sale'
-                                                        ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                                        : product.tag === 'Limited Edition'
-                                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                        : 'bg-gray-800 text-gray-400'
-                                                }`}
-                                            >
-                                                {product.tag || 'Standard'}
-                                            </span>
-                                        </td>
-
-                                        {/* Price — click to edit inline */}
-                                        <td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
-                                            {inlineEditingId === product.id ? (
-                                                <div className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                                                    <input
-                                                        type="number"
-                                                        autoFocus
-                                                        placeholder="Price ₹"
-                                                        value={inlinePriceVal}
-                                                        onChange={e => setInlinePriceVal(e.target.value)}
-                                                        onKeyDown={e => {
-                                                            if (e.key === 'Enter') handleSaveInlinePrice(product);
-                                                            if (e.key === 'Escape') setInlineEditingId(null);
-                                                        }}
-                                                        className="w-24 bg-gray-800 border border-zinc-400 text-white rounded-lg px-2 py-1 text-xs focus:outline-none"
-                                                    />
-                                                    <button
-                                                        onClick={() => handleSaveInlinePrice(product)}
-                                                        className="px-2 py-1 bg-zinc-100 hover:bg-white text-zinc-900 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                                                        title="Save price"
-                                                    >
-                                                        ✓
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setInlineEditingId(null)}
-                                                        className="px-1.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs transition-colors cursor-pointer"
-                                                        title="Cancel"
-                                                    >
-                                                        ✕
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <button
-                                                    onClick={() => {
-                                                        setInlineEditingId(product.id);
-                                                        setInlinePriceVal(product.price ? String(product.price) : '');
-                                                        setInlineOriginalPriceVal(product.original_price ? String(product.original_price) : '');
-                                                    }}
-                                                    className="text-left group/price hover:bg-gray-800/60 rounded-lg px-2 py-1 transition-colors cursor-pointer"
-                                                    title="Click to edit price"
-                                                >
-                                                    {product.price ? (
-                                                        <div className="flex items-baseline gap-1.5">
-                                                            <span className="font-bold text-white text-sm">₹{product.price}</span>
-                                                            {product.original_price && product.original_price > product.price && (
-                                                                <span className="text-xs text-gray-500 line-through">₹{product.original_price}</span>
-                                                            )}
-                                                            <span className="text-[10px] text-zinc-400 opacity-0 group-hover/price:opacity-100 transition-opacity ml-1">Edit</span>
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-xs text-emerald-400 hover:underline font-medium">
-                                                            + Set price
-                                                        </span>
-                                                    )}
-                                                </button>
-                                            )}
-                                        </td>
-
-                                        {/* Stock */}
-                                        <td className="px-5 py-4">
-                                            <button
-                                                onClick={() => toggleStock(product)}
-                                                className={`text-xs px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
-                                                    product.stock > 0
-                                                        ? 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:bg-zinc-700'
-                                                        : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
-                                                }`}
-                                                title="Click to toggle In / Out of stock"
-                                            >
-                                                {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
-                                            </button>
-                                        </td>
-
-                                        {/* Visible — clean toggle switch matching Admin */}
-                                        <td className="px-5 py-4">
-                                            <button
-                                                onClick={() => toggleVisibility(product)}
-                                                className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${
-                                                    product.is_visible ? 'bg-green-500' : 'bg-gray-700'
-                                                }`}
-                                                title={product.is_visible ? 'Visible — click to hide' : 'Hidden — click to publish'}
-                                            >
-                                                <span
-                                                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
-                                                        product.is_visible ? 'left-[22px]' : 'left-0.5'
-                                                    }`}
-                                                />
-                                            </button>
-                                        </td>
-
-                                        {/* Actions */}
-                                        <td className="px-5 py-4 text-right">
-                                            <button
-                                                onClick={() => openEdit(product)}
-                                                className="text-gray-500 hover:text-zinc-100 transition-colors p-1.5 hover:bg-zinc-200/10 rounded-lg cursor-pointer"
-                                                title="Edit product"
-                                            >
-                                                <Edit2 size={15} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {/* Edit Product Modal matching Admin Modal */}
-            <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 className="text-white text-lg font-bold">Edit Product</h2>
-                        <p className="text-xs text-gray-500 font-mono mt-0.5">/{editingProduct?.slug}</p>
-                    </div>
-                    <button onClick={() => setModalOpen(false)} className="text-gray-500 hover:text-white p-1 cursor-pointer">
-                        <X size={18} />
-                    </button>
-                </div>
-
-                {errorMessage && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
-                        <AlertCircle size={14} /> {errorMessage}
-                    </div>
-                )}
-
-                <form onSubmit={handleSaveModal} className="space-y-4">
-                    {/* Price Section */}
-                    <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-800 space-y-3">
-                        <span className="text-xs font-bold uppercase tracking-wider text-white block">
-                            Product Pricing (₹) — Live Sync
-                        </span>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div>
-                                <label className="text-gray-400 text-xs block mb-1">Selling Price (₹)</label>
-                                <input
-                                    type="number"
-                                    placeholder="e.g. 1499"
-                                    value={formPrice}
-                                    onChange={e => setFormPrice(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-zinc-400"
-                                />
+            {/* Quick Stat Highlights */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                    { label: 'Total Catalog Products', value: loading ? '—' : products.length, icon: Package },
+                    { label: 'In Stock Items', value: loading ? '—' : products.filter(p => p.stock > 0).length, icon: CheckCircle2 },
+                    { label: 'Out of Stock Items', value: loading ? '—' : products.filter(p => p.stock <= 0).length, icon: XCircle },
+                    { label: 'Collections', value: loading ? '—' : collections.length, icon: Layers },
+                ].map(item => (
+                    <Card key={item.label}>
+                        <CardContent className="flex items-center gap-4 py-5">
+                            <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center border border-zinc-700 flex-shrink-0">
+                                <item.icon size={18} className="text-zinc-200" />
                             </div>
                             <div>
-                                <label className="text-gray-400 text-xs block mb-1">Original Price (₹)</label>
-                                <input
-                                    type="number"
-                                    placeholder="e.g. 1799"
-                                    value={formOriginalPrice}
-                                    onChange={e => setFormOriginalPrice(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-zinc-400"
-                                />
+                                <p className="text-xs text-zinc-400 font-medium">{item.label}</p>
+                                <p className="text-2xl font-bold text-white tabular-nums">{item.value}</p>
                             </div>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
 
-                    {/* Product Name */}
+            {/* Catalog Browser Card */}
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
                     <div>
-                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">
-                            Product Title
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            value={formName}
-                            onChange={e => setFormName(e.target.value)}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors"
-                        />
+                        <CardTitle>Catalog Products List</CardTitle>
+                        <CardDescription>
+                            Showing {filtered.length} of {products.length} arrangements
+                        </CardDescription>
                     </div>
 
-                    {/* Description */}
-                    <div>
-                        <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">
-                            Description
-                        </label>
-                        <textarea
-                            rows={3}
-                            value={formDescription}
-                            onChange={e => setFormDescription(e.target.value)}
-                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors resize-none"
-                        />
-                    </div>
-
-                    {/* Tag & Stock Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">
-                                Tag / Badge
-                            </label>
-                            <select
-                                value={formTag}
-                                onChange={e => setFormTag(e.target.value)}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-zinc-400 cursor-pointer"
-                            >
-                                {ALL_TAGS.map(t => (
-                                    <option key={t} value={t}>{t}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="text-gray-400 text-xs uppercase tracking-wider font-medium block mb-1.5">
-                                Stock Count
-                            </label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {/* Search */}
+                        <div className="relative">
+                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                             <input
-                                type="number"
-                                value={formStock}
-                                onChange={e => setFormStock(Number(e.target.value))}
-                                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-zinc-400"
+                                type="text"
+                                placeholder="Search products, collections..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                                className="pl-9 pr-4 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 w-56"
                             />
                         </div>
-                    </div>
 
-                    {/* Visibility & Homepage Featured Toggles */}
-                    <div className="p-3 bg-gray-800/40 rounded-xl border border-gray-800 flex items-center justify-between">
+                        {/* Collection Filter */}
+                        <select
+                            value={filterCollection}
+                            onChange={e => setFilterCollection(e.target.value)}
+                            className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-zinc-200 focus:outline-none focus:border-zinc-500"
+                        >
+                            <option value="All">All Collections</option>
+                            {collections.map(col => (
+                                <option key={col} value={col}>{col}</option>
+                            ))}
+                        </select>
+
+                        {/* Stock filter tabs */}
+                        <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 p-1 rounded-xl text-xs">
+                            {(['all', 'in-stock', 'out-of-stock'] as const).map(s => (
+                                <button
+                                    key={s}
+                                    onClick={() => setFilterStock(s)}
+                                    className={`px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                                        filterStock === s
+                                            ? 'bg-white text-zinc-950'
+                                            : 'text-zinc-400 hover:text-white'
+                                    }`}
+                                >
+                                    {s === 'all' ? 'All' : s === 'in-stock' ? 'In Stock' : 'Out'}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </CardHeader>
+
+                <CardContent className="px-0 py-0">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr className="border-b border-white/[0.06] bg-white/[0.01] text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
+                                    <th className="py-3 px-5">Arrangement</th>
+                                    <th className="py-3 px-4">Collection</th>
+                                    <th className="py-3 px-4">Tag</th>
+                                    <th className="py-3 px-4 text-center">Stock</th>
+                                    <th className="py-3 px-4 text-right">Price</th>
+                                    <th className="py-3 px-4 text-center">Store Status</th>
+                                    <th className="py-3 px-5 text-center">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/[0.04]">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={7} className="py-12 text-center text-zinc-500">
+                                            Loading catalog...
+                                        </td>
+                                    </tr>
+                                ) : filtered.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="py-12 text-center text-zinc-500">
+                                            No products found matching &ldquo;{search}&rdquo;.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filtered.map(p => (
+                                        <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
+                                            {/* Thumbnail & Name */}
+                                            <td className="py-3 px-5">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700/60 flex-shrink-0">
+                                                        {p.image_url ? (
+                                                            <Image
+                                                                src={p.image_url}
+                                                                alt={p.name}
+                                                                fill
+                                                                className="object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                                                <Package size={16} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0 max-w-xs">
+                                                        <p className="font-semibold text-zinc-200 truncate">{p.name}</p>
+                                                        <p className="text-[10px] text-zinc-500 font-mono truncate">{p.slug}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            {/* Collection */}
+                                            <td className="py-3 px-4 text-zinc-400">
+                                                {p.collection_name || '—'}
+                                            </td>
+
+                                            {/* Tag */}
+                                            <td className="py-3 px-4">
+                                                {p.tag ? (
+                                                    <Badge variant="secondary">{p.tag}</Badge>
+                                                ) : (
+                                                    <span className="text-zinc-600">—</span>
+                                                )}
+                                            </td>
+
+                                            {/* Stock */}
+                                            <td className="py-3 px-4 text-center">
+                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold tabular-nums ${
+                                                    p.stock > 5
+                                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                        : p.stock > 0
+                                                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                                }`}>
+                                                    {p.stock} units
+                                                </span>
+                                            </td>
+
+                                            {/* Price */}
+                                            <td className="py-3 px-4 text-right">
+                                                <div className="font-bold text-white tabular-nums">
+                                                    {p.price ? `₹${p.price.toLocaleString('en-IN')}` : '₹0'}
+                                                </div>
+                                                {p.original_price && p.original_price > (p.price || 0) && (
+                                                    <span className="text-[10px] text-zinc-500 line-through tabular-nums">
+                                                        ₹{p.original_price.toLocaleString('en-IN')}
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            {/* Visibility */}
+                                            <td className="py-3 px-4 text-center">
+                                                <Badge variant={p.is_visible ? 'success' : 'secondary'}>
+                                                    {p.is_visible ? 'Active Online' : 'Hidden'}
+                                                </Badge>
+                                            </td>
+
+                                            {/* View Info */}
+                                            <td className="py-3 px-5 text-center">
+                                                <button
+                                                    onClick={() => setSelectedProduct(p)}
+                                                    className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                                                    title="View Arrangement Details"
+                                                >
+                                                    <Info size={15} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Product Details Drawer / Modal (Read-Only) */}
+            {selectedProduct && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-150"
+                    onClick={() => setSelectedProduct(null)}
+                >
+                    <div
+                        className="relative w-full max-w-lg bg-[#12141c] border border-white/[0.12] rounded-3xl p-6 shadow-2xl space-y-4"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                            <div>
+                                <h3 className="text-base font-bold text-white">{selectedProduct.name}</h3>
+                                <p className="text-xs text-zinc-400">{selectedProduct.collection_name}</p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedProduct(null)}
+                                className="text-zinc-400 hover:text-white p-1 rounded-lg"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* Image & Price */}
+                        <div className="flex items-center gap-4">
+                            <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-zinc-800 border border-zinc-700 flex-shrink-0">
+                                {selectedProduct.image_url ? (
+                                    <Image
+                                        src={selectedProduct.image_url}
+                                        alt={selectedProduct.name}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                        <Package size={20} />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xl font-extrabold text-white tabular-nums">
+                                    ₹{(selectedProduct.price || 0).toLocaleString('en-IN')}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant={selectedProduct.stock > 0 ? 'success' : 'destructive'}>
+                                        {selectedProduct.stock > 0 ? `${selectedProduct.stock} In Stock` : 'Out of Stock'}
+                                    </Badge>
+                                    {selectedProduct.tag && (
+                                        <Badge variant="secondary">{selectedProduct.tag}</Badge>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Description */}
                         <div>
-                            <p className="text-white text-xs font-semibold">Live on Website</p>
-                            <p className="text-gray-500 text-[11px]">Make this product visible to visitors</p>
+                            <p className="text-xs font-semibold text-zinc-300 mb-1">Arrangement Description</p>
+                            <p className="text-xs text-zinc-400 leading-relaxed bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
+                                {selectedProduct.description || 'No description added for this product.'}
+                            </p>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => setFormIsVisible(!formIsVisible)}
-                            className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${
-                                formIsVisible ? 'bg-green-500' : 'bg-gray-700'
-                            }`}
-                        >
-                            <span
-                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
-                                    formIsVisible ? 'left-[22px]' : 'left-0.5'
-                                }`}
-                            />
-                        </button>
-                    </div>
 
-                    <div className="p-3 bg-gray-800/40 rounded-xl border border-gray-800 flex items-center justify-between">
-                        <div>
-                            <p className="text-white text-xs font-semibold">Feature on Homepage</p>
-                            <p className="text-gray-500 text-[11px]">Display in Homepage Featured Collection</p>
+                        {/* Permissions notice */}
+                        <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-400 flex items-center gap-2">
+                            <Shield size={14} className="text-zinc-500 flex-shrink-0" />
+                            <span>Staff View Only: Product creation, price adjustments, and image uploads require Administrator privileges.</span>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => setFormIsFeatured(!formIsFeatured)}
-                            className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${
-                                formIsFeatured ? 'bg-purple-600' : 'bg-gray-700'
-                            }`}
-                        >
-                            <span
-                                className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
-                                    formIsFeatured ? 'left-[22px]' : 'left-0.5'
-                                }`}
-                            />
-                        </button>
-                    </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-800">
-                        <button
-                            type="button"
-                            onClick={() => setModalOpen(false)}
-                            className="bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium px-4 py-2.5 rounded-xl text-sm transition-colors cursor-pointer"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="bg-zinc-100 hover:bg-white text-zinc-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors cursor-pointer disabled:opacity-60"
-                        >
-                            {saving ? 'Saving...' : 'Save Changes'}
-                        </button>
+                        <div className="pt-2 flex justify-end">
+                            <button
+                                onClick={() => setSelectedProduct(null)}
+                                className="px-4 py-2 bg-white text-zinc-950 font-bold text-xs rounded-xl hover:bg-zinc-200 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
-                </form>
-            </Modal>
+                </div>
+            )}
         </div>
     );
 }
