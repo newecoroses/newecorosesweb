@@ -410,7 +410,14 @@ export default function StaffProductsPage() {
                                                     <div className="flex items-center gap-3.5">
                                                         <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-zinc-800 border border-zinc-700/60 flex-shrink-0">
                                                             {p.image_url ? (
-                                                                <Image src={p.image_url} alt={p.name} fill className="object-cover" />
+                                                                <img
+                                                                    src={p.image_url}
+                                                                    alt={p.name}
+                                                                    className="w-full h-full object-cover"
+                                                                    onError={(e) => {
+                                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                                    }}
+                                                                />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center text-zinc-600">
                                                                     <Package size={18} />
@@ -574,11 +581,13 @@ export default function StaffProductsPage() {
                                         {/* Image */}
                                         <div className="relative mx-4 h-44 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/60">
                                             {item.image_url ? (
-                                                <Image
+                                                <img
                                                     src={item.image_url}
                                                     alt={item.name}
-                                                    fill
-                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                    }}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
@@ -704,7 +713,14 @@ export default function StaffProductsPage() {
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex-shrink-0">
                                             {p.image_url ? (
-                                                <Image src={p.image_url} alt={p.name} fill className="object-cover" />
+                                                <img
+                                                    src={p.image_url}
+                                                    alt={p.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                    }}
+                                                />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
                                                     <Package size={14} />

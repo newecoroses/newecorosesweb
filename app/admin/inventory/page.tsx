@@ -148,7 +148,14 @@ export default function AdminInventoryPage() {
                                             <td className="py-3 px-5">
                                                 <div className="flex items-center gap-3">
                                                     {p.image_url ? (
-                                                        <img src={p.image_url} alt={p.name} className="w-8 h-8 rounded-lg object-cover border border-zinc-700 flex-shrink-0" />
+                                                        <img
+                                                            src={p.image_url}
+                                                            alt={p.name}
+                                                            className="w-8 h-8 rounded-lg object-cover border border-zinc-700 flex-shrink-0"
+                                                            onError={(e) => {
+                                                                (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                            }}
+                                                        />
                                                     ) : (
                                                         <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
                                                             <Package size={14} className="text-zinc-500" />

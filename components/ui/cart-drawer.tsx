@@ -126,7 +126,7 @@ export default function CartDrawer() {
                                                 className="relative w-[72px] h-[72px] rounded-lg overflow-hidden bg-gray-100 flex-shrink-0"
                                             >
                                                 <Image
-                                                    src={item.image_url}
+                                                    src={item.image_url || '/images/placeholder.webp'}
                                                     alt={item.name}
                                                     fill
                                                     className="object-cover group-hover:scale-105 transition-transform duration-300"

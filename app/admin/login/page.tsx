@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
-import Image from 'next/image';
 import Cookies from 'js-cookie';
 
 export default function AdminLogin() {
@@ -51,14 +50,23 @@ export default function AdminLogin() {
                 <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8">
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
-                        <Image
-                            src="/favicon_io/android-chrome-512x512.png"
-                            alt="New Eco Roses"
-                            width={72}
-                            height={72}
-                            className="rounded-full mb-4 shadow-lg ring-2 ring-white/10"
-                            priority
-                        />
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#151824] border border-white/10 shadow-2xl flex items-center justify-center p-1.5 mb-4 group">
+                            <img
+                                src="/favicon_io/android-chrome-512x512.png"
+                                alt="New Eco Roses Logo"
+                                width={64}
+                                height={64}
+                                className="w-full h-full object-contain rounded-xl"
+                                onError={(e) => {
+                                    const img = e.currentTarget as HTMLImageElement;
+                                    if (!img.src.includes('logo.png')) {
+                                        img.src = '/logo.png';
+                                    } else {
+                                        img.src = '/favicon_io/android-chrome-192x192.png';
+                                    }
+                                }}
+                            />
+                        </div>
                         <h1 className="text-white text-2xl font-bold">Admin Login</h1>
                         <p className="text-gray-400 text-sm mt-1">New Eco Roses Control Panel</p>
                     </div>
@@ -97,7 +105,7 @@ export default function AdminLogin() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-zinc-200 to-zinc-400 text-zinc-900 hover:from-white hover:to-zinc-200 text-gray-900 font-bold py-3 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                            className="w-full bg-gradient-to-r from-zinc-200 to-zinc-400 text-zinc-900 hover:from-white hover:to-zinc-200 font-bold py-3 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">

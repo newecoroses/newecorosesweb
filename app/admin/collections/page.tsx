@@ -104,7 +104,16 @@ export default function AdminCollectionsPage() {
                             <tr key={item.id} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
                                 <td className="px-5 py-4">
                                     <div className="flex items-center gap-3">
-                                        {item.image_url && <img src={item.image_url} alt={item.name} className="w-10 h-10 rounded-lg object-cover bg-gray-800" />}
+                                        {item.image_url && (
+                                            <img
+                                                src={item.image_url}
+                                                alt={item.name}
+                                                className="w-10 h-10 rounded-lg object-cover bg-gray-800"
+                                                onError={(e) => {
+                                                    (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                }}
+                                            />
+                                        )}
                                         <div>
                                             <p className="text-white font-medium">{item.name}</p>
                                             {item.description && <p className="text-gray-500 text-xs truncate max-w-48">{item.description}</p>}

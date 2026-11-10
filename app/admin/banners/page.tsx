@@ -82,7 +82,14 @@ export default function AdminBannersPage() {
                     <div key={item.id} className={`bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden ${!item.is_visible ? 'opacity-50' : ''}`}>
                         {item.image_url && (
                             <div className="relative h-36">
-                                <img src={item.image_url} alt={item.title ?? ''} className="w-full h-full object-cover" />
+                                <img
+                                    src={item.image_url}
+                                    alt={item.title ?? ''}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                    }}
+                                />
                                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
                                 <span className={`absolute top-3 right-3 text-xs px-2.5 py-1 rounded-full font-medium ${positionColor(item.position)}`}>{item.position}</span>
                             </div>

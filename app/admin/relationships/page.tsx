@@ -82,7 +82,14 @@ export default function AdminRelationshipsPage() {
                     <div key={item.id} className={`bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden ${!item.is_visible ? 'opacity-50' : ''}`}>
                         {item.image_url && (
                             <div className="relative h-28">
-                                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                                <img
+                                    src={item.image_url}
+                                    alt={item.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                    }}
+                                />
                             </div>
                         )}
                         <div className="p-3">

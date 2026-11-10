@@ -344,7 +344,14 @@ export default function StaffHomepagePage() {
                                             {/* Thumbnail */}
                                             <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
                                                 {p.image_url ? (
-                                                    <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />
+                                                    <img
+                                                        src={p.image_url}
+                                                        alt={p.name}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                        }}
+                                                    />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-600">No img</div>
                                                 )}
@@ -431,7 +438,16 @@ export default function StaffHomepagePage() {
                                 <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
-                                            {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />}
+                                            {p.image_url && (
+                                                <img
+                                                    src={p.image_url}
+                                                    alt={p.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                         <div className="min-w-0">
                                             <div className="text-sm font-semibold text-white truncate max-w-[180px]">{p.name}</div>
@@ -483,7 +499,16 @@ export default function StaffHomepagePage() {
                                 <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
-                                            {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />}
+                                            {p.image_url && (
+                                                <img
+                                                    src={p.image_url}
+                                                    alt={p.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                         <div className="min-w-0">
                                             <div className="text-sm font-semibold text-white truncate max-w-[180px]">{p.name}</div>
@@ -535,7 +560,16 @@ export default function StaffHomepagePage() {
                                 <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-12 h-12 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
-                                            {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="48px" />}
+                                            {p.image_url && (
+                                                <img
+                                                    src={p.image_url}
+                                                    alt={p.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                         <div className="min-w-0">
                                             <div className="text-sm font-semibold text-white truncate max-w-[180px]">{p.name}</div>
@@ -595,7 +629,16 @@ export default function StaffHomepagePage() {
                                 <div key={p.id} className="p-3 flex items-center justify-between gap-3 hover:bg-gray-800/40 rounded-xl transition-colors">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className="relative w-10 h-10 rounded-lg bg-gray-900 border border-gray-800 overflow-hidden flex-shrink-0">
-                                            {p.image_url && <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="40px" />}
+                                            {p.image_url && (
+                                                <img
+                                                    src={p.image_url}
+                                                    alt={p.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                         <div className="min-w-0">
                                             <div className="text-sm font-semibold text-white truncate max-w-xs">{p.name}</div>

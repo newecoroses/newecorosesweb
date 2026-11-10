@@ -86,13 +86,14 @@ export interface DBReviewVideo {
 }
 
 const resolveImage = (url: string | null | undefined): string => {
-    if (!url || url.startsWith('HIDDEN::')) return '';
+    if (!url || url.startsWith('HIDDEN::')) return '/images/placeholder.webp';
     return url;
 };
 
 const resolveImages = (images: string[] | null | undefined): string[] => {
-    if (!images) return [];
-    return images.filter(img => img && !img.startsWith('HIDDEN::'));
+    if (!images || images.length === 0) return ['/images/placeholder.webp'];
+    const valid = images.filter(img => img && !img.startsWith('HIDDEN::'));
+    return valid.length > 0 ? valid : ['/images/placeholder.webp'];
 };
 
 // ── Frontend Helpers ──────────────────────────────────────

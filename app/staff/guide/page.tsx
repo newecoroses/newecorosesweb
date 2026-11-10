@@ -10,20 +10,15 @@ import {
     Users,
     Clock,
     Star,
-    PlusCircle,
-    Eye,
-    EyeOff,
     CheckCircle,
     AlertTriangle,
     Mail,
-    Phone,
     ChevronDown,
     ChevronRight,
     Info,
     Zap,
     Shield,
     HeartHandshake,
-    ArrowRight,
 } from 'lucide-react';
 
 interface Section {
@@ -41,7 +36,7 @@ const SECTIONS: Section[] = [
         icon: LayoutDashboard,
         title: 'Dashboard',
         color: 'text-blue-500',
-        summary: 'Your central overview. See today\'s revenue, pending orders, quick stats, and live activity — all at a glance.',
+        summary: 'Your central overview. See today\'s revenue, pending orders, quick stats, and live activity all at a glance.',
         steps: [
             { heading: 'Stats Cards', body: 'The top row shows today\'s total revenue, number of orders, pending fulfilments, and total products. These update automatically.' },
             { heading: 'Recent Orders', body: 'Scroll down to see the latest orders placed. Click any order to view its full details.' },
@@ -51,42 +46,42 @@ const SECTIONS: Section[] = [
     {
         id: 'orders',
         icon: ShoppingBag,
-        title: 'Orders & Deliveries',
+        title: 'Orders and Deliveries',
         color: 'text-orange-500',
         summary: 'Track, manage, and update every order. You can also create new orders for walk-in or WhatsApp customers.',
         steps: [
-            { heading: 'Viewing Orders', body: 'All orders are listed with an order number (#001, #002, …), customer name, amount, and current status. The most recent orders appear at the top.' },
-            { heading: 'Filtering by Status', body: 'Click the status tabs — All, Confirmed, Processing (Out for Delivery), Delivered, Cancelled — to filter the list to what you need.' },
-            { heading: 'Updating Order Status', body: 'Click on any order card to open its detail view. Use the "Update Status" dropdown to move it from Confirmed → Out for Delivery → Delivered. Changes are saved and logged instantly.' },
+            { heading: 'Viewing Orders', body: 'All orders are listed with an order number (#001, #002, ...), customer name, amount, and current status. The most recent orders appear at the top.' },
+            { heading: 'Filtering by Status', body: 'Click the status tabs (All, Confirmed, Processing, Delivered, Cancelled) to filter the list to what you need.' },
+            { heading: 'Updating Order Status', body: 'Click on any order card to open its detail view. Use the "Update Status" dropdown to move it from Confirmed to Out for Delivery to Delivered. Changes are saved and logged instantly.' },
             { heading: 'Creating a Manual Order', body: 'Click the "Add Order" button (top right). Fill in the customer\'s name, phone, address, and select the products they ordered. This is used for walk-in customers or WhatsApp orders.' },
-            { heading: 'Order Numbering', body: 'Orders are numbered sequentially starting from #1. Every new order — whether placed online or manually — continues the sequence.' },
+            { heading: 'Order Numbering', body: 'Orders are numbered sequentially starting from #1. Every new order, whether placed online or manually, continues the sequence.' },
         ],
     },
     {
         id: 'customers',
         icon: Users,
-        title: 'Customers & Reception',
+        title: 'Customers and Reception',
         color: 'text-purple-500',
-        summary: 'Register walk-in customers, log their purchases, and send a welcome discount email — all from one place.',
+        summary: 'Register walk-in customers, log their purchases, and send a welcome discount email, all from one place.',
         steps: [
             { heading: 'Adding a Customer', body: 'Click "Add Customer". Enter the customer\'s name and phone number (required). Email, Date of Birth, and special occasions like a Wedding Anniversary are optional but useful for future greetings.' },
-            { heading: 'Logging a Purchase', body: 'In the "What did they buy?" field, start typing a product name. Matching suggestions appear from the live product catalogue — select the right one. You can also note how much they spent.' },
-            { heading: 'Welcome Email', body: 'When you save a new customer, the system is set up to automatically send them a welcome email saying "Thank you for shopping with New Eco Roses — enjoy 15% off on your next online order." (Email API keys will be added by the developer — the structure is already in place.)' },
+            { heading: 'Logging a Purchase', body: 'In the "What did they buy?" field, start typing a product name. Matching suggestions appear from the live product catalogue. Select the right one. You can also note how much they spent.' },
+            { heading: 'Welcome Email', body: 'When you save a new customer, the system is set up to automatically send them a welcome email saying "Thank you for shopping with New Eco Roses. Enjoy 15% off on your next online order." Email API keys will be added by the developer. The structure is already in place.' },
             { heading: 'Existing Customers', body: 'All registered customers appear in the table with their total visits, spend, and last order status. You can search by name, phone, or city.' },
         ],
     },
     {
         id: 'products',
         icon: Package,
-        title: 'Products & Best Picks',
+        title: 'Products and Best Picks',
         color: 'text-green-500',
-        summary: 'View all products, set prices, hide/show items on the website, and manage the 12-slot "Our Best Picks" featured section.',
+        summary: 'View all products, set prices, hide or show items on the website, and manage the 12-slot "Our Best Picks" featured section.',
         steps: [
-            { heading: 'Product List', body: 'Every product is numbered from #1 upwards. The list shows the product name, collection, current price, visibility status, and whether it\'s featured.' },
+            { heading: 'Product List', body: 'Every product is numbered from #1 upwards. The list shows the product name, collection, current price, visibility status, and whether it is featured.' },
             { heading: 'Setting a Price', body: 'Click the edit (pencil) icon on any product row. Type in the new price and save. The updated price appears instantly on the live website.' },
-            { heading: 'Hiding a Product', body: 'Toggle the "Visible" switch on a product to hide it from the website without deleting it. It stays in your system but customers can\'t see it. Toggle again to make it visible.' },
+            { heading: 'Hiding a Product', body: 'Toggle the "Visible" switch on a product to hide it from the website without deleting it. It stays in your system but customers cannot see it. Toggle again to make it visible.' },
             { heading: 'Our Best Picks (12 Slots)', body: 'Go to the "Our Best Picks" tab. You will see 12 slots. Each slot can hold one featured product. Click "Change" on any slot to search for a product and replace it. This section is shown prominently on the homepage.' },
-            { heading: 'Note on Adding Products', body: 'Staff cannot upload new products or change product images — that is handled by the Admin. You can only update prices and visibility.' },
+            { heading: 'Note on Adding Products', body: 'Staff cannot upload new products or change product images. That is handled by the Admin. You can only update prices and visibility.' },
         ],
     },
     {
@@ -94,11 +89,11 @@ const SECTIONS: Section[] = [
         icon: BarChart3,
         title: 'Analytics',
         color: 'text-cyan-500',
-        summary: 'Understand how the store is performing — traffic, enquiries, orders over time, and more.',
+        summary: 'Understand how the store is performing, including traffic, enquiries, orders over time, and more.',
         steps: [
-            { heading: 'Traffic Overview', body: 'See how many people visited the website each day. The chart shows unique visitors and page views side-by-side.' },
+            { heading: 'Traffic Overview', body: 'See how many people visited the website each day. The chart shows unique visitors and page views side by side.' },
             { heading: 'WhatsApp Enquiries', body: 'Every time a customer clicks "Enquire on WhatsApp" on a product, it is counted and shown here as a green line on the graph.' },
-            { heading: 'Revenue & Orders', body: 'Revenue and order count over time help you understand peak days and slow periods — useful for planning stock and staff.' },
+            { heading: 'Revenue and Orders', body: 'Revenue and order count over time help you understand peak days and slow periods, useful for planning stock and staff.' },
             { heading: 'Monthly Reports', body: 'Use the month selector to view data for any past month. All reports are read-only; you cannot edit analytics data.' },
         ],
     },
@@ -107,9 +102,9 @@ const SECTIONS: Section[] = [
         icon: Clock,
         title: 'Activity Log',
         color: 'text-zinc-400',
-        summary: 'A full audit trail of everything that happens — order changes, product edits, customer additions, login/logouts.',
+        summary: 'A full audit trail of everything that happens: order changes, product edits, customer additions, and logins.',
         steps: [
-            { heading: 'What is Logged', body: 'Every action is recorded: orders created or updated, prices changed, products hidden/shown, customers added, Best Picks changed, and logins/logouts.' },
+            { heading: 'What is Logged', body: 'Every action is recorded: orders created or updated, prices changed, products hidden or shown, customers added, Best Picks changed, and logins or logouts.' },
             { heading: 'Who Did What', body: 'Each entry shows the staff member\'s name, the time, and a description of what was done. This creates full accountability.' },
             { heading: 'Read-Only', body: 'The activity log cannot be edited or deleted. It is a permanent record for the owner and administrator to review.' },
         ],
@@ -117,9 +112,9 @@ const SECTIONS: Section[] = [
 ];
 
 const TIPS = [
-    { icon: Zap, text: 'Always update an order status as soon as it ships or is delivered — this keeps the dashboard accurate.' },
+    { icon: Zap, text: 'Always update an order status as soon as it ships or is delivered. This keeps the dashboard accurate.' },
     { icon: Shield, text: 'Never share your staff login credentials with anyone. Each person should have their own account.' },
-    { icon: Star, text: 'Keep the Best Picks section fresh — rotate featured products regularly to highlight seasonal or popular items.' },
+    { icon: Star, text: 'Keep the Best Picks section fresh. Rotate featured products regularly to highlight seasonal or popular items.' },
     { icon: HeartHandshake, text: 'Register every walk-in customer. Even a name and phone number helps build long-term relationships.' },
 ];
 
@@ -148,7 +143,7 @@ export default function StaffGuidePage() {
                     </div>
 
                     <p className="text-zinc-300 text-sm leading-relaxed max-w-2xl">
-                        Welcome to the <span className="text-white font-semibold">New Eco Roses Staff Portal</span>. This guide walks you through every section of the portal so you can confidently manage orders, customers, products, and more. Read through each section and reach out to the developer if something isn&apos;t working.
+                        Welcome to the <span className="text-white font-semibold">New Eco Roses Staff Portal</span>. This guide walks you through every section of the portal so you can confidently manage orders, customers, products, and more. Read through each section and reach out to the developer if something is not working.
                     </p>
 
                     <div className="mt-6 flex flex-wrap gap-3">
@@ -183,7 +178,7 @@ export default function StaffGuidePage() {
 
             {/* Section Accordions */}
             <div className="space-y-3">
-                <p className="text-xs font-bold text-zinc-500 dark:text-zinc-500 uppercase tracking-widest px-1">Portal Sections — Detailed Guide</p>
+                <p className="text-xs font-bold text-zinc-500 dark:text-zinc-500 uppercase tracking-widest px-1">Portal Sections - Detailed Guide</p>
 
                 {SECTIONS.map(section => {
                     const isOpen = expanded === section.id;
@@ -247,56 +242,29 @@ export default function StaffGuidePage() {
                 })}
             </div>
 
-            {/* What Staff Can & Cannot Do */}
+            {/* What Staff Can Do */}
             <div className="rounded-3xl bg-white dark:bg-[#0f1118] border border-zinc-200 dark:border-white/[0.07] overflow-hidden">
                 <div className="p-6 border-b border-zinc-100 dark:border-white/[0.05]">
                     <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Permissions Reference</p>
-                    <h2 className="text-base font-extrabold text-zinc-900 dark:text-white">What You Can &amp; Cannot Do</h2>
+                    <h2 className="text-base font-extrabold text-zinc-900 dark:text-white">What You Can Do</h2>
                 </div>
-                <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-zinc-100 dark:divide-white/[0.05]">
-                    {/* Can Do */}
-                    <div className="p-6 space-y-3">
-                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
-                            <CheckCircle size={12} /> Allowed
-                        </p>
-                        {[
-                            'View dashboard stats and live activity',
-                            'View, update, and create orders',
-                            'Change order status (Confirmed → Delivered)',
-                            'Add walk-in and WhatsApp customers',
-                            'Set or update product prices',
-                            'Hide or show products on the website',
-                            'Manage the 12-slot Best Picks section',
-                            'View analytics and reports',
-                            'View the full activity log',
-                        ].map((item, i) => (
-                            <div key={i} className="flex items-start gap-2.5">
-                                <CheckCircle size={13} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">{item}</span>
-                            </div>
-                        ))}
-                    </div>
-                    {/* Cannot Do */}
-                    <div className="p-6 space-y-3">
-                        <p className="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest flex items-center gap-1.5">
-                            <EyeOff size={12} /> Not Permitted
-                        </p>
-                        {[
-                            'Add new products to the catalogue',
-                            'Upload or change product images',
-                            'Delete products or orders',
-                            'Access the Admin Panel',
-                            'Manage staff accounts or permissions',
-                            'Change site-wide settings or banners',
-                            'View or change coupon codes',
-                            'Access payment or financial settings',
-                        ].map((item, i) => (
-                            <div key={i} className="flex items-start gap-2.5">
-                                <EyeOff size={13} className="text-rose-400 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">{item}</span>
-                            </div>
-                        ))}
-                    </div>
+                <div className="p-6 grid sm:grid-cols-2 gap-3">
+                    {[
+                        'View dashboard stats and live activity',
+                        'View, update, and create orders',
+                        'Change order status (Confirmed to Delivered)',
+                        'Add walk-in and WhatsApp customers',
+                        'Set or update product prices',
+                        'Hide or show products on the website',
+                        'Manage the 12-slot Best Picks section',
+                        'View analytics and reports',
+                        'View the full activity log',
+                    ].map((item, i) => (
+                        <div key={i} className="flex items-start gap-2.5">
+                            <CheckCircle size={13} className="text-emerald-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">{item}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
 
@@ -304,15 +272,15 @@ export default function StaffGuidePage() {
             <div className="rounded-3xl bg-white dark:bg-[#0f1118] border border-zinc-200 dark:border-white/[0.07] p-6 space-y-4">
                 <div>
                     <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Troubleshooting</p>
-                    <h2 className="text-base font-extrabold text-zinc-900 dark:text-white">Common Issues &amp; Fixes</h2>
+                    <h2 className="text-base font-extrabold text-zinc-900 dark:text-white">Common Issues and Fixes</h2>
                 </div>
                 <div className="space-y-3">
                     {[
-                        { q: 'The page shows a loading spinner and doesn\'t load', a: 'Try refreshing the page. If it persists, log out and log back in. This usually happens if your session expired.' },
-                        { q: 'An order status won\'t save', a: 'Check your internet connection. If the connection is fine, try refreshing and updating the status again. If it still fails, note down the order number and contact the developer.' },
-                        { q: 'A product price update isn\'t reflecting on the website', a: 'Wait up to 60 seconds — the website caches data briefly. If it still hasn\'t updated after a minute, try saving the price again.' },
-                        { q: 'The Best Picks section isn\'t showing my changes', a: 'Scroll to the bottom of the Best Picks tab and ensure you clicked "Save" after making changes. If the slot still appears wrong, contact the developer.' },
-                        { q: 'I cannot log in to the Staff Portal', a: 'Double-check your username and password — they are case-sensitive. If you have forgotten your password, ask the Admin or the developer to reset it.' },
+                        { q: 'The page shows a loading spinner and does not load', a: 'Try refreshing the page. If it persists, log out and log back in. This usually happens if your session has expired.' },
+                        { q: 'An order status will not save', a: 'Check your internet connection. If the connection is fine, try refreshing and updating the status again. If it still fails, note down the order number and contact the developer.' },
+                        { q: 'A product price update is not reflecting on the website', a: 'Wait up to 60 seconds as the website caches data briefly. If it still has not updated after a minute, try saving the price again.' },
+                        { q: 'The Best Picks section is not showing my changes', a: 'Scroll to the bottom of the Best Picks tab and ensure you clicked "Save" after making changes. If the slot still appears wrong, contact the developer.' },
+                        { q: 'I cannot log in to the Staff Portal', a: 'Double-check your username and password as they are case-sensitive. If you have forgotten your password, ask the Admin or the developer to reset it.' },
                     ].map((item, i) => (
                         <div key={i} className="flex gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15">
                             <AlertTriangle size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />
@@ -338,15 +306,17 @@ export default function StaffGuidePage() {
 
                     {/* Info */}
                     <div className="flex-1">
-                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">System Architect &amp; Lead Developer</p>
+                        <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">System Architect and Lead Developer</p>
                         <h3 className="text-xl font-extrabold text-white mb-1">Aditya Choudhury</h3>
                         <p className="text-xs text-zinc-400 leading-relaxed max-w-lg">
-                            Designed and built the entire New Eco Roses platform — from the customer-facing storefront to this staff portal. If you encounter a bug, something is broken, or you need a new feature, reach out directly.
+                            Designed and built the entire New Eco Roses platform, from the customer-facing storefront to this staff portal. If you encounter a bug, something is broken, or you need a new feature, reach out directly.
                         </p>
 
                         <div className="mt-4 flex flex-wrap gap-3">
                             <a
-                                href="mailto:aditya@newecoroses.com"
+                                href="https://mail.google.com/mail/?view=cm&to=syncwithadi@gmail.com&su=Staff%20Portal%20Support%20Request&body=Hi%20Aditya%2C%0A%0AI%20am%20reaching%20out%20regarding%20an%20issue%20with%20the%20New%20Eco%20Roses%20Staff%20Portal.%0A%0ADetails%3A"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-zinc-900 text-xs font-bold hover:bg-zinc-100 transition-colors cursor-pointer"
                             >
                                 <Mail size={13} />
@@ -354,7 +324,7 @@ export default function StaffGuidePage() {
                             </a>
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/10 text-zinc-300 text-xs font-semibold">
                                 <Shield size={13} />
-                                Authorised Support Only
+                                syncwithadi@gmail.com
                             </div>
                         </div>
                     </div>
@@ -362,7 +332,7 @@ export default function StaffGuidePage() {
 
                 {/* Footer note */}
                 <div className="relative z-10 mt-6 pt-5 border-t border-white/[0.06] text-[11px] text-zinc-600 leading-relaxed">
-                    When reporting an issue, please include: <span className="text-zinc-400">your name, the date &amp; time, the page where the issue occurred, and a brief description of what happened.</span> This helps resolve issues faster.
+                    When reporting an issue, please include: <span className="text-zinc-400">your name, the date and time, the page where the issue occurred, and a brief description of what happened.</span> This helps resolve issues faster.
                 </div>
             </div>
 

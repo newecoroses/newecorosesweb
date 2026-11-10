@@ -27,6 +27,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [pincode, setPincode] = useState('');
     const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [imgError, setImgError] = useState(false);
+
+    useEffect(() => {
+        setImgError(false);
+    }, [selectedImage, product?.id]);
     const { addItem, updateQuantity, getItemQuantity, openDrawer, openAddonModal } = useCart();
     const cartQuantity = product ? getItemQuantity(product.id) : 0;
 
@@ -232,7 +237,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         {/* Main Showcase Image */}
                         <div className="relative aspect-[4/3] sm:aspect-square w-full rounded-2xl md:rounded-3xl overflow-hidden bg-[#faf7f2] border border-gray-100 shadow-xs flex items-center justify-center group">
                             <Image
-                                src={images[selectedImage] || product.image_url}
+                                src={imgError ? '/images/placeholder.webp' : (images[selectedImage] || product.image_url || '/images/placeholder.webp')}
+                                onError={() => setImgError(true)}
                                 alt={product.name}
                                 fill
                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -546,7 +552,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         </button>
                         <div className="relative max-w-3xl max-h-[85vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                             <Image
-                                src={images[selectedImage] || product.image_url}
+                                src={imgError ? '/images/placeholder.webp' : (images[selectedImage] || product.image_url || '/images/placeholder.webp')}
+                                onError={() => setImgError(true)}
                                 alt={product.name}
                                 fill
                                 className="object-contain"

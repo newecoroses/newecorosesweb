@@ -79,7 +79,14 @@ export default function AdminFeaturedPage() {
                     <div key={item.id} className={`bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden ${!item.is_visible ? 'opacity-50' : ''}`}>
                         {item.image_url && (
                             <div className="relative aspect-[3/4]">
-                                <img src={item.image_url} alt={item.label} className="w-full h-full object-cover" />
+                                <img
+                                    src={item.image_url}
+                                    alt={item.label}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                    }}
+                                />
                                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
                                 <p className="absolute bottom-3 left-3 text-white font-semibold text-sm">{item.label}</p>
                             </div>

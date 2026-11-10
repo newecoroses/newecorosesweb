@@ -246,22 +246,6 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                 {/* Footer User Profile & Logout */}
                 <div className="p-3.5 border-t border-zinc-200 dark:border-white/[0.06] bg-zinc-50 dark:bg-[#0b0c13] space-y-2">
 
-                    {/* User Guide Button */}
-                    <Link
-                        href="/staff/guide"
-                        onClick={() => setSidebarOpen(false)}
-                        className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl bg-white dark:bg-white/[0.03] border border-zinc-200 dark:border-white/[0.06] hover:border-zinc-300 dark:hover:border-white/[0.12] transition-all group cursor-pointer"
-                    >
-                        <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center flex-shrink-0 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors">
-                            <BookOpen size={13} className="text-zinc-600 dark:text-zinc-300" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200 leading-tight">User Guide</p>
-                            <p className="text-[10px] text-zinc-400 font-medium leading-tight">How to use this portal</p>
-                        </div>
-                        <ChevronRight size={12} className="text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors flex-shrink-0" />
-                    </Link>
-
                     <div className="flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/[0.04] shadow-xs">
                         <div className="w-8 h-8 rounded-full bg-zinc-900 text-white dark:bg-gradient-to-br dark:from-zinc-600 dark:to-zinc-800 flex items-center justify-center font-extrabold text-xs flex-shrink-0 shadow-xs">
                             {staff?.name?.charAt(0).toUpperCase() || 'S'}

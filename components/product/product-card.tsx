@@ -78,6 +78,11 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
         .filter(img => !img.startsWith('HIDDEN::'));
 
     const primaryImage = allImages[0] || '/images/placeholder.webp';
+    const [imgSrc, setImgSrc] = useState(primaryImage);
+
+    useEffect(() => {
+        setImgSrc(primaryImage);
+    }, [primaryImage]);
     const hoverImage = allImages[1] ?? null;
 
     // Priority load the first 6 cards (above-the-fold)
@@ -171,13 +176,14 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 >
                     {/* Primary Image */}
                     <Image
-                        src={primaryImage}
+                        src={imgSrc}
                         alt={product.name}
                         fill
                         priority={isPriority}
                         loading={isPriority ? 'eager' : 'lazy'}
                         placeholder="blur"
                         blurDataURL={BLUR_PLACEHOLDER}
+                        onError={() => setImgSrc('/images/placeholder.webp')}
                         className={`object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${currentImageIdx === 0 ? 'opacity-100' : 'opacity-0'}`}
                         style={product.image_scale && product.image_scale !== 1 ? { transform: `scale(${product.image_scale})` } : undefined}
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

@@ -137,7 +137,7 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                                     {/* Image */}
                                     <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-gray-50 mb-2">
                                         <Image
-                                            src={item.image_url}
+                                            src={item.image_url || '/images/placeholder.webp'}
                                             alt={item.name}
                                             fill
                                             className="object-cover"

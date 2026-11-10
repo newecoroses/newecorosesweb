@@ -361,7 +361,14 @@ export default function AdminProductsPage() {
                                             <div className="flex items-center gap-3">
                                                 {product.image_url && (
                                                     <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-800 flex-shrink-0 border border-zinc-700/60">
-                                                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                                                        <img
+                                                            src={product.image_url}
+                                                            alt={product.name}
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                            }}
+                                                        />
                                                     </div>
                                                 )}
                                                 <div>
