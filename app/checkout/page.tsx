@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useMemo, Suspense, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, ShoppingBag, ArrowLeft, Tag, ChevronDown, Check } from 'lucide-react';
@@ -71,7 +70,7 @@ const inputCls =
 function CheckoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { items: cartItems, clearCart } = useCart();
+    const { items: cartItems, clearCart, removeItem } = useCart();
     const razorpayLoadedRef = useRef(false);
 
     const [mounted, setMounted] = useState(false);
@@ -699,27 +698,35 @@ function CheckoutContent() {
                                 {/* Items list */}
                                 <div className="space-y-4 mb-6">
                                     {items.map(item => (
-                                        <div key={item.id} className="flex items-center gap-4">
-                                            {/* Image with quantity bubble */}
+                                        <div key={item.id} className="flex items-center gap-4 group/item">
+                                            {/* Image with quantity bubble + remove button on hover */}
                                             <div className="relative flex-shrink-0">
-                                                <div className="w-16 h-20 bg-[#f5f5f3] rounded-lg overflow-hidden relative border border-gray-100">
-                                                    {item.image_url ? (
-                                                        <Image
-                                                            src={item.image_url}
-                                                            alt={item.name}
-                                                            fill
-                                                            className="object-cover"
-                                                            sizes="64px"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                            <ShoppingBag size={20} />
-                                                        </div>
-                                                    )}
+                                                <div className="w-16 h-20 bg-[#f5f5f3] rounded-lg overflow-hidden border border-gray-100">
+                                                    <img
+                                                        src={item.image_url || '/images/placeholder.webp'}
+                                                        alt={item.name}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            (e.currentTarget as HTMLImageElement).src = '/images/placeholder.webp';
+                                                        }}
+                                                    />
                                                 </div>
+                                                {/* Quantity bubble */}
                                                 <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#bfa81f] text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-xs">
                                                     {item.quantity}
                                                 </span>
+                                                {/* Remove button — only for cart-based checkout */}
+                                                {!isBuyNow && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeItem(item.id)}
+                                                        className="absolute -top-1.5 -left-1.5 w-5 h-5 bg-black text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-xs opacity-0 group-hover/item:opacity-100 transition-opacity cursor-pointer hover:bg-red-600"
+                                                        title="Remove item"
+                                                        aria-label={`Remove ${item.name}`}
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                )}
                                             </div>
 
                                             {/* Item Details */}
