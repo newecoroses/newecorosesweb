@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
     Lock,
@@ -12,7 +11,6 @@ import {
     Loader2,
     Eye,
     EyeOff,
-    Store,
     Shield,
     ArrowUpRight
 } from 'lucide-react';
@@ -61,32 +59,20 @@ export default function StaffLoginPage() {
             <div className="absolute top-1/3 -left-40 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Top Bar Link */}
-            <div className="w-full max-w-md flex items-center justify-between z-10 text-xs text-zinc-500">
-                <Link
-                    href="/"
-                    className="inline-flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"
-                >
-                    <Store size={13} />
-                    <span>Back to Boutique</span>
-                </Link>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-[11px] text-zinc-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>Portal v2.0</span>
-                </div>
-            </div>
-
             {/* Central Login Card */}
             <div className="w-full max-w-md relative z-10 my-auto py-6">
                 {/* Branding */}
                 <div className="text-center mb-7">
-                    <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-[#151824] border border-white/10 shadow-2xl flex items-center justify-center p-2 mb-4 mx-auto group">
-                        <Image
-                            src="/favicon_io/android-chrome-192x192.png"
-                            alt="New Eco Roses"
-                            fill
-                            className="object-cover transition-transform group-hover:scale-105"
-                            priority
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#151824] border border-white/10 shadow-2xl flex items-center justify-center p-2 mb-4 mx-auto group">
+                        <img
+                            src="/favicon_io/android-chrome-512x512.png"
+                            alt="New Eco Roses Logo"
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-contain rounded-xl transition-transform group-hover:scale-105"
+                            onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = '/favicon_io/android-chrome-192x192.png';
+                            }}
                         />
                     </div>
                     <p className="font-serif font-black text-white text-base tracking-widest uppercase">
