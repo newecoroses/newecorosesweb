@@ -8,7 +8,6 @@ import {
     RefreshCw,
     CheckCircle2,
     X,
-    Star,
     Eye,
     EyeOff,
     Plus,
@@ -300,19 +299,19 @@ export default function StaffProductsPage() {
             )}
 
             {/* Navigation — 2 Separate Buttons */}
-            <div className="flex items-center gap-3 border-b border-white/[0.08] pb-4">
+            <div className="flex items-center gap-3 border-b border-zinc-200 dark:border-white/[0.08] pb-4">
                 <button
                     onClick={() => setActiveTab('all')}
                     className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
                         activeTab === 'all'
-                            ? 'bg-white text-zinc-950 shadow-sm'
-                            : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
+                            ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-sm'
+                            : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700'
                     }`}
                 >
                     <Package size={14} />
                     <span>All Products</span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
-                        activeTab === 'all' ? 'bg-zinc-200 text-zinc-800' : 'bg-zinc-800 text-zinc-300'
+                        activeTab === 'all' ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-800' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300'
                     }`}>
                         {products.length}
                     </span>
@@ -322,14 +321,14 @@ export default function StaffProductsPage() {
                     onClick={() => setActiveTab('best-picks')}
                     className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
                         activeTab === 'best-picks'
-                            ? 'bg-amber-500 text-zinc-950 shadow-sm'
-                            : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-amber-500/40'
+                            ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-sm'
+                            : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700'
                     }`}
                 >
                     <BestPicksIcon size={14} />
                     <span>Our Best Picks</span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
-                        activeTab === 'best-picks' ? 'bg-amber-700/40 text-amber-100' : 'bg-zinc-800 text-zinc-300'
+                        activeTab === 'best-picks' ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-800' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300'
                     }`}>
                         {bestPicksProducts.length}/12
                     </span>
@@ -343,7 +342,7 @@ export default function StaffProductsPage() {
                         <div>
                             <CardTitle>Catalog Inventory &amp; Live Controls</CardTitle>
                             <CardDescription>
-                                Click any price to edit, toggle online visibility, or feature in Best Picks
+                                Click any price to edit and toggle online storefront visibility
                             </CardDescription>
                         </div>
 
@@ -376,26 +375,25 @@ export default function StaffProductsPage() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse text-xs">
                                 <thead>
-                                    <tr className="border-b border-white/[0.06] bg-white/[0.01] text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
+                                    <tr className="border-b border-zinc-200 dark:border-white/[0.06] bg-zinc-50 dark:bg-white/[0.01] text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
                                         <th className="py-4 px-5 text-center w-14">#</th>
                                         <th className="py-4 px-6">Product Bouquet</th>
                                         <th className="py-4 px-5">Collection</th>
                                         <th className="py-4 px-5 text-right">Price (Click to Edit)</th>
                                         <th className="py-4 px-5 text-center">Stock</th>
                                         <th className="py-4 px-5 text-center">Visibility on Site</th>
-                                        <th className="py-4 px-5 text-center">Best Picks</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/[0.04]">
+                                <tbody className="divide-y divide-zinc-200 dark:divide-white/[0.04]">
                                     {loading ? (
                                         <tr>
-                                            <td colSpan={7} className="py-16 text-center text-zinc-500">
+                                            <td colSpan={6} className="py-16 text-center text-zinc-500">
                                                 Loading arrangements...
                                             </td>
                                         </tr>
                                     ) : filtered.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} className="py-16 text-center text-zinc-500">
+                                            <td colSpan={6} className="py-16 text-center text-zinc-500">
                                                 No products found matching &ldquo;{search}&rdquo;.
                                             </td>
                                         </tr>
@@ -498,8 +496,8 @@ export default function StaffProductsPage() {
                                                         onClick={() => handleToggleVisibility(p)}
                                                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                                                             p.is_visible
-                                                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-rose-500/10 hover:text-rose-300 hover:border-rose-500/30'
-                                                                : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-emerald-500/15 hover:text-emerald-300 hover:border-emerald-500/30'
+                                                                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border-emerald-500/30 hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-300 hover:border-rose-500/30'
+                                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:bg-emerald-500/15 hover:text-emerald-600 dark:hover:text-emerald-300 hover:border-emerald-500/30'
                                                         }`}
                                                         title="Click to show or hide from website"
                                                     >
@@ -508,21 +506,6 @@ export default function StaffProductsPage() {
                                                         ) : (
                                                             <><EyeOff size={13} /><span>Hidden</span></>
                                                         )}
-                                                    </button>
-                                                </td>
-
-                                                {/* Best Picks Toggle */}
-                                                <td className="py-4 px-5 text-center">
-                                                    <button
-                                                        onClick={() => handleFeature(p, !p.is_featured)}
-                                                        className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                                                            p.is_featured
-                                                                ? 'bg-amber-500/15 text-amber-300 border-amber-500/30 hover:bg-rose-500/10 hover:text-rose-300 hover:border-rose-500/30'
-                                                                : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:bg-amber-500/15 hover:text-amber-300 hover:border-amber-500/30'
-                                                        }`}
-                                                    >
-                                                        <Star size={12} className={p.is_featured ? 'fill-amber-400 text-amber-400' : ''} />
-                                                        <span>{p.is_featured ? 'Featured' : '+ Feature'}</span>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -541,18 +524,18 @@ export default function StaffProductsPage() {
                     {/* Header Row */}
                     <div className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div className="w-10 h-10 rounded-2xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-950 dark:text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
                                 <BestPicksIcon size={18} />
                                 <span className="sr-only">Best Picks</span>
                             </div>
                             <div>
-                                <h2 className="text-base font-bold text-white">Our Best Picks Showcase</h2>
-                                <p className="text-xs text-zinc-400 mt-0.5">
-                                    {bestPicksProducts.length} of 12 slots filled — Click <strong className="text-zinc-300">Change</strong> to swap any arrangement, or click an empty slot to fill it
+                                <h2 className="text-base font-bold text-zinc-950 dark:text-white">Our Best Picks Showcase</h2>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                                    {bestPicksProducts.length} of 12 slots filled — Click <strong className="text-zinc-800 dark:text-zinc-200 font-semibold">Change</strong> to swap any arrangement, or click an empty slot to fill it
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-bold flex-shrink-0">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-xs font-bold flex-shrink-0 shadow-2xs">
                             <BestPicksIcon size={12} />
                             {bestPicksProducts.length}/12 Slots
                         </div>
@@ -567,11 +550,11 @@ export default function StaffProductsPage() {
                                 return (
                                     <div
                                         key={item.id}
-                                        className="relative rounded-3xl bg-[#12141c]/90 border border-white/[0.08] hover:border-zinc-700 transition-all group flex flex-col overflow-hidden shadow-sm"
+                                        className="relative rounded-3xl bg-white dark:bg-[#12141c]/90 border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-zinc-700 transition-all group flex flex-col overflow-hidden shadow-xs"
                                     >
                                         {/* Slot badge */}
                                         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-white bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-0.5 rounded-full">
                                                 Slot #{slotNumber}
                                             </span>
                                             <button
@@ -580,7 +563,7 @@ export default function StaffProductsPage() {
                                                     setReplacingItem(item);
                                                     setBestPicksSearch('');
                                                 }}
-                                                className="text-zinc-400 hover:text-white text-xs flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer border border-transparent hover:border-zinc-700"
+                                                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white text-xs flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                                                 title="Change this slot's product"
                                             >
                                                 <RefreshCcw size={12} />
@@ -589,7 +572,7 @@ export default function StaffProductsPage() {
                                         </div>
 
                                         {/* Image */}
-                                        <div className="relative mx-4 h-44 rounded-2xl overflow-hidden bg-zinc-800 border border-zinc-700/60">
+                                        <div className="relative mx-4 h-44 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/60">
                                             {item.image_url ? (
                                                 <Image
                                                     src={item.image_url}
@@ -598,7 +581,7 @@ export default function StaffProductsPage() {
                                                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                                <div className="w-full h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
                                                     <Package size={24} />
                                                 </div>
                                             )}
@@ -607,11 +590,11 @@ export default function StaffProductsPage() {
                                         {/* Info */}
                                         <div className="px-4 pb-4 pt-3 flex flex-col gap-2 flex-1">
                                             <div>
-                                                <p className="font-bold text-white text-sm line-clamp-1">{item.name}</p>
-                                                <p className="text-xs text-zinc-400 mt-0.5">{item.collection_name || 'Bouquet'}</p>
+                                                <p className="font-bold text-zinc-950 dark:text-white text-sm line-clamp-1">{item.name}</p>
+                                                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{item.collection_name || 'Bouquet'}</p>
                                             </div>
-                                            <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
-                                                <span className="text-base font-extrabold text-white tabular-nums">
+                                            <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-white/[0.06]">
+                                                <span className="text-base font-extrabold text-zinc-950 dark:text-white tabular-nums">
                                                     ₹{(item.price || 0).toLocaleString('en-IN')}
                                                 </span>
                                                 <Badge variant={item.stock > 0 ? 'success' : 'destructive'}>
@@ -632,19 +615,19 @@ export default function StaffProductsPage() {
                                         setReplacingItem(null);
                                         setBestPicksSearch('');
                                     }}
-                                    className="rounded-3xl border border-dashed border-zinc-700/80 hover:border-amber-500/50 bg-[#0f1118]/60 hover:bg-[#151824] transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-3 min-h-[260px] p-6 group"
+                                    className="rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-700/80 hover:border-zinc-950 dark:hover:border-white bg-zinc-50/50 dark:bg-[#0f1118]/60 hover:bg-zinc-100 dark:hover:bg-[#151824] transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-3 min-h-[260px] p-6 group"
                                 >
-                                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                                         Slot #{slotNumber}
                                     </span>
-                                    <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-amber-400 group-hover:scale-110 group-hover:bg-amber-500/10 group-hover:border-amber-500/30 transition-all">
+                                    <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-950 dark:group-hover:text-white group-hover:scale-110 group-hover:border-zinc-950 dark:group-hover:border-white transition-all shadow-2xs">
                                         <Plus size={20} />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-zinc-400 group-hover:text-white transition-colors">
+                                        <p className="text-xs font-bold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors">
                                             Empty Slot
                                         </p>
-                                        <p className="text-[11px] text-zinc-600 mt-0.5 group-hover:text-zinc-400 transition-colors">
+                                        <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5 group-hover:text-zinc-600 dark:group-hover:text-zinc-400 transition-colors">
                                             Click to feature an arrangement
                                         </p>
                                     </div>
@@ -662,20 +645,20 @@ export default function StaffProductsPage() {
                     onClick={() => { setPickingSlotIndex(null); setReplacingItem(null); setBestPicksSearch(''); }}
                 >
                     <div
-                        className="relative w-full max-w-lg bg-[#12141c] border border-white/[0.12] rounded-3xl shadow-2xl flex flex-col max-h-[85vh]"
+                        className="relative w-full max-w-lg bg-white dark:bg-[#12141c] text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-white/[0.12] rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Modal Header */}
-                        <div className="flex items-center justify-between p-6 pb-4 border-b border-white/[0.08]">
+                        <div className="flex items-center justify-between p-6 pb-4 border-b border-zinc-200 dark:border-white/[0.08] bg-zinc-50 dark:bg-zinc-900/50">
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400">
+                                <div className="w-9 h-9 rounded-xl bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-zinc-950 dark:text-white">
                                     <BestPicksIcon size={16} />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-white">
+                                    <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
                                         {replacingItem ? `Change Slot #${pickingSlotIndex}` : `Fill Slot #${pickingSlotIndex}`}
                                     </h3>
-                                    <p className="text-xs text-zinc-400 mt-0.5">
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                                         {replacingItem
                                             ? `Replacing "${replacingItem.name}"`
                                             : 'Choose a bouquet to feature'
@@ -685,7 +668,7 @@ export default function StaffProductsPage() {
                             </div>
                             <button
                                 onClick={() => { setPickingSlotIndex(null); setReplacingItem(null); setBestPicksSearch(''); }}
-                                className="text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+                                className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                             >
                                 <X size={18} />
                             </button>
@@ -694,14 +677,14 @@ export default function StaffProductsPage() {
                         {/* Search */}
                         <div className="px-6 py-4">
                             <div className="relative">
-                                <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
+                                <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
                                 <input
                                     autoFocus
                                     type="text"
                                     placeholder="Type to search bouquets..."
                                     value={bestPicksSearch}
                                     onChange={e => setBestPicksSearch(e.target.value)}
-                                    className="w-full pl-9 pr-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+                                    className="w-full pl-9 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500 transition-colors"
                                 />
                             </div>
                         </div>
@@ -709,35 +692,35 @@ export default function StaffProductsPage() {
                         {/* Product List */}
                         <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-2">
                             {availableForSlot.length === 0 ? (
-                                <div className="py-10 text-center text-zinc-500 text-xs">
+                                <div className="py-10 text-center text-zinc-400 dark:text-zinc-500 text-xs">
                                     {bestPicksSearch ? `No bouquets matching "${bestPicksSearch}"` : 'No bouquets available'}
                                 </div>
                             ) : availableForSlot.map(p => (
                                 <div
                                     key={p.id}
                                     onClick={() => replacingItem ? handleChangeSlot(p) : handleFeature(p, true)}
-                                    className="flex items-center justify-between p-3 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/40 transition-all cursor-pointer group"
+                                    className="flex items-center justify-between p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-950 dark:hover:border-white transition-all cursor-pointer group"
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700 flex-shrink-0">
+                                        <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex-shrink-0">
                                             {p.image_url ? (
                                                 <Image src={p.image_url} alt={p.name} fill className="object-cover" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                                <div className="w-full h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600">
                                                     <Package size={14} />
                                                 </div>
                                             )}
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="font-semibold text-white text-xs truncate">{p.name}</p>
-                                            <p className="text-[10px] text-zinc-400">{p.collection_name || 'Bouquet'}</p>
+                                            <p className="font-semibold text-zinc-950 dark:text-white text-xs truncate">{p.name}</p>
+                                            <p className="text-[10px] text-zinc-500 dark:text-zinc-400">{p.collection_name || 'Bouquet'}</p>
                                         </div>
                                     </div>
                                     <div className="text-right flex-shrink-0 ml-3">
-                                        <p className="font-bold text-white text-xs tabular-nums">
+                                        <p className="font-bold text-zinc-950 dark:text-white text-xs tabular-nums">
                                             ₹{(p.price || 0).toLocaleString('en-IN')}
                                         </p>
-                                        <span className="text-[10px] text-amber-400 font-semibold group-hover:underline">
+                                        <span className="text-[10px] text-zinc-950 dark:text-white font-bold group-hover:underline">
                                             {replacingItem ? '→ Place Here' : '+ Feature'}
                                         </span>
                                     </div>
