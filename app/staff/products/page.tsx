@@ -13,7 +13,8 @@ import {
     Plus,
     Check,
     Edit3,
-    RefreshCcw
+    RefreshCcw,
+    ExternalLink
 } from 'lucide-react';
 import { PageHeader } from '@/components/admin/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/admin/ui/card';
@@ -68,12 +69,15 @@ export default function StaffProductsPage() {
     const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
     const [newPrice, setNewPrice] = useState<string>('');
 
+    // Inline stock editor
+    const [editingStockId, setEditingStockId] = useState<string | null>(null);
+    const [newStock, setNewStock] = useState<string>('');
+
     // Best picks slot picker modal — for CHANGE (replace) and ADD (empty slot)
     const [pickingSlotIndex, setPickingSlotIndex] = useState<number | null>(null);
     const [replacingItem, setReplacingItem] = useState<ProductItem | null>(null); // item being replaced
     const [bestPicksSearch, setBestPicksSearch] = useState('');
 
-    const [savingAction, setSavingAction] = useState(false);
     const [notification, setNotification] = useState<string | null>(null);
 
     const showNotice = (msg: string) => {
@@ -147,105 +151,152 @@ export default function StaffProductsPage() {
         });
     };
 
-    // Toggle Product Visibility
-    const handleToggleVisibility = async (p: ProductItem) => {
-        setSavingAction(true);
+    // Update Product Stock — optimistic: update UI instantly, sync to server in background
+    const handleSaveStock = (p: ProductItem) => {
+        const parsed = Number(newStock);
+        if (newStock === '' || isNaN(parsed) || parsed < 0) return;
+
+        const prevStock = p.stock;
+        // 1. Instantly update UI and close editor — zero lag
+        setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, stock: parsed } : prod));
+        setEditingStockId(null);
+        showNotice(`Stock for "${p.name}" updated to ${parsed} units`);
+
+        // 2. Fire API in background — revert if it fails
+        fetch('/api/staff/products', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                productId: p.id,
+                slug: p.slug,
+                name: p.name,
+                stock: parsed,
+            }),
+        }).then(res => {
+            if (!res.ok) throw new Error('Server error');
+        }).catch(() => {
+            // Revert on failure
+            setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, stock: prevStock } : prod));
+            showNotice(`Failed to save stock for "${p.name}" — reverted.`);
+        });
+    };
+
+    // Toggle Product Visibility — 100% optimistic: updates instantly, syncs in background without lag
+    const handleToggleVisibility = (p: ProductItem) => {
         const nextState = !p.is_visible;
-        try {
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    is_visible: nextState,
-                }),
-            });
-            if (res.ok) {
-                setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_visible: nextState } : prod));
-                showNotice(`"${p.name}" is now ${nextState ? 'visible online' : 'hidden from website'}`);
-            }
-        } catch (err) {
+        const prevState = p.is_visible;
+
+        // 1. Instantly update UI — zero lag
+        setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_visible: nextState } : prod));
+        showNotice(`"${p.name}" is now ${nextState ? 'visible online' : 'hidden from website'}`);
+
+        // 2. Sync to server in background
+        fetch('/api/staff/products', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                productId: p.id,
+                slug: p.slug,
+                name: p.name,
+                is_visible: nextState,
+            }),
+        }).then(res => {
+            if (!res.ok) throw new Error('Server error');
+        }).catch(err => {
             console.error('Failed to toggle visibility:', err);
-        } finally {
-            setSavingAction(false);
-        }
+            // Revert on failure
+            setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_visible: prevState } : prod));
+            showNotice(`Failed to update visibility for "${p.name}" — reverted.`);
+        });
     };
 
-    // Feature in Best Picks
-    const handleFeature = async (p: ProductItem, featureState: boolean) => {
-        setSavingAction(true);
-        try {
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    is_featured: featureState,
-                    tag: featureState ? 'Featured' : 'Standard',
-                }),
-            });
-            if (res.ok) {
-                setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_featured: featureState, tag: featureState ? 'Featured' : 'Standard' } : prod));
-                showNotice(`"${p.name}" ${featureState ? 'featured in Our Best Picks' : 'removed from Our Best Picks'}`);
-                setPickingSlotIndex(null);
-                setReplacingItem(null);
-                setBestPicksSearch('');
-            }
-        } catch (err) {
+    // Feature in Best Picks — 100% optimistic
+    const handleFeature = (p: ProductItem, featureState: boolean) => {
+        const prevProducts = [...products];
+
+        // 1. Instantly update UI and close modal — zero lag
+        setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_featured: featureState, tag: featureState ? 'Featured' : 'Standard' } : prod));
+        showNotice(`"${p.name}" ${featureState ? 'featured in Our Best Picks' : 'removed from Our Best Picks'}`);
+        setPickingSlotIndex(null);
+        setReplacingItem(null);
+        setBestPicksSearch('');
+
+        // 2. Sync to server in background
+        fetch('/api/staff/products', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                productId: p.id,
+                slug: p.slug,
+                name: p.name,
+                is_featured: featureState,
+                tag: featureState ? 'Featured' : 'Standard',
+            }),
+        }).then(res => {
+            if (!res.ok) throw new Error('Server error');
+        }).catch(err => {
             console.error('Failed to update featured status:', err);
-        } finally {
-            setSavingAction(false);
-        }
+            setProducts(prevProducts);
+            showNotice(`Failed to update Best Picks for "${p.name}" — reverted.`);
+        });
     };
 
-    // Handle "Change" button — de-feature old item then feature new one
-    const handleChangeSlot = async (newProduct: ProductItem) => {
-        setSavingAction(true);
-        try {
-            // First remove old item if replacing
-            if (replacingItem) {
+    // Handle "Change" button — de-feature old item then feature new one (100% optimistic)
+    const handleChangeSlot = (newProduct: ProductItem) => {
+        const prevProducts = [...products];
+        const currentReplacing = replacingItem;
+
+        // 1. Instantly update UI and close modal — zero lag
+        setProducts(prev => prev.map(prod => {
+            if (currentReplacing && prod.id === currentReplacing.id) {
+                return { ...prod, is_featured: false, tag: 'Standard' };
+            }
+            if (prod.id === newProduct.id) {
+                return { ...prod, is_featured: true, tag: 'Featured' };
+            }
+            return prod;
+        }));
+        showNotice(currentReplacing
+            ? `Slot changed: "${newProduct.name}" now replaces "${currentReplacing.name}"`
+            : `"${newProduct.name}" featured in Our Best Picks`
+        );
+        setPickingSlotIndex(null);
+        setReplacingItem(null);
+        setBestPicksSearch('');
+
+        // 2. Sync to server in background
+        (async () => {
+            try {
+                if (currentReplacing) {
+                    await fetch('/api/staff/products', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            productId: currentReplacing.id,
+                            slug: currentReplacing.slug,
+                            name: currentReplacing.name,
+                            is_featured: false,
+                            tag: 'Standard',
+                        }),
+                    });
+                }
                 await fetch('/api/staff/products', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        productId: replacingItem.id,
-                        slug: replacingItem.slug,
-                        name: replacingItem.name,
-                        is_featured: false,
-                        tag: 'Standard',
+                        productId: newProduct.id,
+                        slug: newProduct.slug,
+                        name: newProduct.name,
+                        is_featured: true,
+                        tag: 'Featured',
                     }),
                 });
-                setProducts(prev => prev.map(prod => prod.id === replacingItem.id ? { ...prod, is_featured: false, tag: 'Standard' } : prod));
+            } catch (err) {
+                console.error('Failed to change slot in background:', err);
+                setProducts(prevProducts);
+                showNotice('Failed to update slot on server — reverted.');
             }
-            // Now feature new item
-            await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: newProduct.id,
-                    slug: newProduct.slug,
-                    name: newProduct.name,
-                    is_featured: true,
-                    tag: 'Featured',
-                }),
-            });
-            setProducts(prev => prev.map(prod => prod.id === newProduct.id ? { ...prod, is_featured: true, tag: 'Featured' } : prod));
-            showNotice(replacingItem
-                ? `Slot changed: "${newProduct.name}" now replaces "${replacingItem.name}"`
-                : `"${newProduct.name}" featured in Our Best Picks`
-            );
-        } catch (err) {
-            console.error('Failed to change slot:', err);
-        } finally {
-            setSavingAction(false);
-            setPickingSlotIndex(null);
-            setReplacingItem(null);
-            setBestPicksSearch('');
-        }
+        })();
     };
 
     // Filtered Products for All Tab
@@ -378,7 +429,7 @@ export default function StaffProductsPage() {
                                         <th className="py-4 px-6">Product Bouquet</th>
                                         <th className="py-4 px-5">Collection</th>
                                         <th className="py-4 px-5 text-right">Price (Click to Edit)</th>
-                                        <th className="py-4 px-5 text-center">Stock</th>
+                                        <th className="py-4 px-5 text-center">Stock (Click to Edit)</th>
                                         <th className="py-4 px-5 text-center">Visibility on Site</th>
                                     </tr>
                                 </thead>
@@ -424,7 +475,19 @@ export default function StaffProductsPage() {
                                                         </div>
                                                         <div className="min-w-0 max-w-sm">
                                                             <p className="font-semibold text-zinc-100 text-xs leading-snug">{p.name}</p>
-                                                            <p className="text-[10px] text-zinc-500 font-mono mt-0.5 truncate">{p.slug}</p>
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <span className="text-[10px] text-zinc-500 font-mono truncate">{p.slug}</span>
+                                                                <a
+                                                                    href={`/product/${p.slug}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-1 text-[10px] font-semibold text-zinc-300 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-1.5 py-0.5 rounded border border-white/10 flex-shrink-0"
+                                                                    title="View product live on website"
+                                                                >
+                                                                    <ExternalLink size={10} />
+                                                                    <span>View on site</span>
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -481,17 +544,57 @@ export default function StaffProductsPage() {
                                                     )}
                                                 </td>
 
-                                                {/* Stock */}
+                                                {/* Editable Stock */}
                                                 <td className="py-4 px-5 text-center">
-                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tabular-nums ${
-                                                        p.stock > 5
-                                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                            : p.stock > 0
-                                                            ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                                    }`}>
-                                                        {p.stock} units
-                                                    </span>
+                                                    {editingStockId === p.id ? (
+                                                        <div className="flex items-center justify-center gap-1.5">
+                                                            <input
+                                                                autoFocus
+                                                                type="number"
+                                                                min="0"
+                                                                value={newStock}
+                                                                onChange={e => setNewStock(e.target.value)}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Enter') handleSaveStock(p);
+                                                                    if (e.key === 'Escape') setEditingStockId(null);
+                                                                }}
+                                                                className="w-16 px-2 py-1 bg-zinc-900 border border-zinc-600 rounded-lg text-xs text-white text-center tabular-nums focus:outline-none"
+                                                            />
+                                                            <button
+                                                                onClick={() => handleSaveStock(p)}
+                                                                className="p-1 rounded bg-white text-zinc-950 font-bold hover:bg-zinc-200 cursor-pointer"
+                                                                title="Save Stock"
+                                                            >
+                                                                <Check size={12} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setEditingStockId(null)}
+                                                                className="p-1 text-zinc-400 hover:text-white cursor-pointer"
+                                                            >
+                                                                <X size={12} />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => {
+                                                                setEditingStockId(p.id);
+                                                                setNewStock(String(p.stock ?? 0));
+                                                            }}
+                                                            className="inline-flex items-center gap-1.5 cursor-pointer group"
+                                                            title="Click to edit stock"
+                                                        >
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tabular-nums transition-all group-hover:ring-1 group-hover:ring-white/40 ${
+                                                                p.stock > 5
+                                                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                                    : p.stock > 0
+                                                                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                                    : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                                            }`}>
+                                                                {p.stock} units
+                                                            </span>
+                                                            <Edit3 size={11} className="opacity-0 group-hover:opacity-100 text-zinc-400 transition-opacity" />
+                                                        </button>
+                                                    )}
                                                 </td>
 
                                                 {/* Visibility Toggle */}
@@ -556,23 +659,42 @@ export default function StaffProductsPage() {
                                         key={item.id}
                                         className="relative rounded-3xl bg-white dark:bg-[#12141c]/90 border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-zinc-700 transition-all group flex flex-col overflow-hidden shadow-xs"
                                     >
-                                        {/* Slot badge */}
-                                        <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-white bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-0.5 rounded-full">
+                                        {/* Slot badge & Action Buttons */}
+                                        <div className="flex items-center justify-between px-4 pt-4 pb-2 gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-white bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-0.5 rounded-full flex-shrink-0">
                                                 Slot #{slotNumber}
                                             </span>
-                                            <button
-                                                onClick={() => {
-                                                    setPickingSlotIndex(slotNumber);
-                                                    setReplacingItem(item);
-                                                    setBestPicksSearch('');
-                                                }}
-                                                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white text-xs flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-                                                title="Change this slot's product"
-                                            >
-                                                <RefreshCcw size={12} />
-                                                <span>Change</span>
-                                            </button>
+                                            <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                                                <a
+                                                    href={`/product/${item.slug}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white text-xs flex items-center gap-1 px-2 py-1 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors"
+                                                    title="View product live on website"
+                                                >
+                                                    <ExternalLink size={11} />
+                                                    <span>View</span>
+                                                </a>
+                                                <button
+                                                    onClick={() => {
+                                                        setPickingSlotIndex(slotNumber);
+                                                        setReplacingItem(item);
+                                                        setBestPicksSearch('');
+                                                    }}
+                                                    className="text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white text-xs flex items-center gap-1 px-2 py-1 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                                                    title="Change this slot's product"
+                                                >
+                                                    <RefreshCcw size={11} />
+                                                    <span>Change</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleFeature(item, false)}
+                                                    className="text-zinc-500 hover:text-rose-500 text-xs flex items-center gap-1 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-white/5 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                                    title="Remove from Best Picks"
+                                                >
+                                                    <X size={12} />
+                                                </button>
+                                            </div>
                                         </div>
 
                                         {/* Image */}

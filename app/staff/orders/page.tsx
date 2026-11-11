@@ -31,7 +31,6 @@ export default function StaffOrdersPage() {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'processing' | 'delivered' | 'cancelled'>('all');
     const [selectedOrder, setSelectedOrder] = useState<SavedOrder | null>(null);
-    const [isUpdating, setIsUpdating] = useState(false);
     const [addOrderOpen, setAddOrderOpen] = useState(false);
 
     const fetchOrders = async () => {
@@ -53,26 +52,28 @@ export default function StaffOrdersPage() {
         fetchOrders();
     }, []);
 
-    const handleUpdateStatus = async (orderId: string, newStatus: SavedOrder['status']) => {
-        setIsUpdating(true);
-        try {
-            const res = await fetch('/api/orders', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, status: newStatus }),
-            });
-            const data = await res.json();
+    const handleUpdateStatus = (orderId: string, newStatus: SavedOrder['status']) => {
+        // Optimistic update — instant UI change
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+        if (selectedOrder && selectedOrder.id === orderId) {
+            setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+        }
+
+        // Sync in background
+        fetch('/api/orders', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, status: newStatus }),
+        }).then(res => res.json()).then(data => {
             if (data.success && data.order) {
                 setOrders(prev => prev.map(o => o.id === orderId ? data.order : o));
                 if (selectedOrder && selectedOrder.id === orderId) {
                     setSelectedOrder(data.order);
                 }
             }
-        } catch (err) {
+        }).catch(err => {
             console.error('Error updating order status:', err);
-        } finally {
-            setIsUpdating(false);
-        }
+        });
     };
 
     const filtered = useMemo(() => {
@@ -426,7 +427,6 @@ export default function StaffOrdersPage() {
                             <p className="text-xs font-semibold text-zinc-300">Update Delivery Status:</p>
                             <div className="grid grid-cols-3 gap-2">
                                 <button
-                                    disabled={isUpdating}
                                     onClick={() => handleUpdateStatus(selectedOrder.id, 'confirmed')}
                                     className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                                         selectedOrder.status === 'confirmed'
@@ -437,7 +437,6 @@ export default function StaffOrdersPage() {
                                     Confirmed
                                 </button>
                                 <button
-                                    disabled={isUpdating}
                                     onClick={() => handleUpdateStatus(selectedOrder.id, 'processing')}
                                     className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                                         selectedOrder.status === 'processing'
@@ -448,7 +447,6 @@ export default function StaffOrdersPage() {
                                     In Transit
                                 </button>
                                 <button
-                                    disabled={isUpdating}
                                     onClick={() => handleUpdateStatus(selectedOrder.id, 'delivered')}
                                     className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                                         selectedOrder.status === 'delivered'
