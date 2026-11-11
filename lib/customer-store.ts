@@ -33,57 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
     globalForCustomers.nerCustomersMap = customersStore;
 }
 
-// Seed with sample initial in-store reception customers if empty
-if (customersStore.size === 0) {
-    const seedCustomers: CustomerRecord[] = [
-        {
-            id: 'cust_rec_1',
-            name: 'Priyanka Sen',
-            phone: '+91 98301 23456',
-            email: 'priyanka.sen@example.com',
-            dob: '1994-08-22',
-            specialDay: '2026-11-28',
-            specialDayType: 'Marriage Anniversary',
-            amountSpent: 2499,
-            purchasedItems: ['20 Roses Luxury Velvet Bouquet', 'Belgian Truffle Box'],
-            source: 'in-store',
-            notes: 'Prefers red and blush pink roses. Delivery in Salt Lake.',
-            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            greetingEmailStatus: {
-                sent: true,
-                queued: false,
-                couponCode: 'WELCOME15',
-                discountPercent: 15,
-                sentAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                previewSubject: 'Thank you for shopping at New Eco Roses! 🌹 Your 15% discount is inside',
-            },
-        },
-        {
-            id: 'cust_rec_2',
-            name: 'Anirban Mukherjee',
-            phone: '+91 98310 98765',
-            email: 'anirban.m@example.com',
-            dob: '1989-05-14',
-            specialDay: '2026-12-10',
-            specialDayType: 'Birthday',
-            amountSpent: 1850,
-            purchasedItems: ['Red Rose Symphony Heart Box'],
-            source: 'reception',
-            notes: 'Purchased for fiancé birthday.',
-            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-            greetingEmailStatus: {
-                sent: true,
-                queued: false,
-                couponCode: 'WELCOME15',
-                discountPercent: 15,
-                sentAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                previewSubject: 'Thank you for shopping at New Eco Roses! 🌹 Your 15% discount is inside',
-            },
-        },
-    ];
-
-    seedCustomers.forEach(c => customersStore.set(c.id, c));
-}
+// No demo seed customers — store starts empty and receives real guest check-ins & customer orders only
 
 export function getAllCustomers(): CustomerRecord[] {
     // 1. Gather all reception / in-store recorded customers
