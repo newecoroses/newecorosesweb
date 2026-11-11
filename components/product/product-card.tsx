@@ -30,11 +30,43 @@ const FALLBACK_PHONE = '919936911611';
 const BLUR_PLACEHOLDER =
     'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAIBAAAQMEAwEAAAAAAAAAAAAAAQIDBAUREiFRYf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwozNNiuqitq0rSiP2ghAA2+NQAAAAASUVORK5CYII=';
 
+// Deterministic hash from product name — same name always gets same discount %
+function nameHash(name: string): number {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    return h;
+}
+
+// Round a number UP to the nearest value that ends in 99
+function ceilTo99(n: number): number {
+    // e.g. 1250 → 1299, 1300 → 1399, 999 → 999
+    const hundreds = Math.ceil(n / 100) * 100;
+    return hundreds - 1; // 1300 - 1 = 1299
+}
+
+// Generate a "fake" original/MRP price from the actual sale price.
+// Markup is 10–40% deterministically from name, result always ends in 99.
+export function computeOriginalPrice(salePrice: number, productName: string): number {
+    if (salePrice <= 0) return 0;
+    const h = nameHash(productName || 'product');
+    // Pick markup: 10% to 40% based on name hash
+    const markupPercent = 10 + (h % 31); // 10, 11, … 40
+    const inflated = salePrice * (1 + markupPercent / 100);
+    const rounded = ceilTo99(inflated);
+    // Ensure original is always strictly greater than sale price
+    return rounded > salePrice ? rounded : ceilTo99(salePrice + 100);
+}
+
 export function getProductPriceInfo(product: { id?: string; name?: string; price?: number | null; original_price?: number | null; tag?: string }) {
     const hasPrice = typeof product.price === 'number' && product.price > 0;
     const price = hasPrice ? product.price! : 0;
-    const originalPrice = product.original_price || (hasPrice ? Math.round(price * 1.15) : 0);
-    const discountPercent = hasPrice && originalPrice > price ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+    // If DB has an explicit original_price, use it; otherwise auto-generate one that ends in 99
+    const originalPrice = (product.original_price && product.original_price > price)
+        ? product.original_price
+        : (hasPrice ? computeOriginalPrice(price, product.name || 'product') : 0);
+    const discountPercent = hasPrice && originalPrice > price
+        ? Math.round(((originalPrice - price) / originalPrice) * 100)
+        : 0;
     const rating = 5;
     const reviewCount = 80 + (((product.name?.length || 5) * 7) % 65);
     const ordersPastMonth = 450 + (((product.name?.length || 5) * 23) % 350);

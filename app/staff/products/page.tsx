@@ -122,31 +122,29 @@ export default function StaffProductsPage() {
         return slots;
     }, [bestPicksProducts]);
 
-    // Update Product Price
-    const handleSavePrice = async (p: ProductItem) => {
-        if (!newPrice || isNaN(Number(newPrice))) return;
-        setSavingAction(true);
-        try {
-            const res = await fetch('/api/staff/products', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    price: Number(newPrice),
-                }),
-            });
-            if (res.ok) {
-                setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, price: Number(newPrice) } : prod));
-                setEditingPriceId(null);
-                showNotice(`Price for "${p.name}" updated to ₹${Number(newPrice).toLocaleString('en-IN')}`);
-            }
-        } catch (err) {
-            console.error('Failed to update price:', err);
-        } finally {
-            setSavingAction(false);
-        }
+    // Update Product Price — optimistic: update UI instantly, sync to server in background
+    const handleSavePrice = (p: ProductItem) => {
+        const parsed = Number(newPrice);
+        if (!newPrice || isNaN(parsed) || parsed <= 0) return;
+
+        // 1. Instantly update UI and close editor — no waiting
+        const prevPrice = p.price;
+        setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, price: parsed } : prod));
+        setEditingPriceId(null);
+        showNotice(`Price for "${p.name}" updated to ₹${parsed.toLocaleString('en-IN')}`);
+
+        // 2. Fire API in background — revert if it fails
+        fetch('/api/staff/products', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId: p.id, slug: p.slug, name: p.name, price: parsed }),
+        }).then(res => {
+            if (!res.ok) throw new Error('Server error');
+        }).catch(() => {
+            // Revert on failure
+            setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, price: prevPrice } : prod));
+            showNotice(`Failed to save price for "${p.name}" — reverted.`);
+        });
     };
 
     // Toggle Product Visibility
@@ -455,7 +453,6 @@ export default function StaffProductsPage() {
                                                                 />
                                                             </div>
                                                             <button
-                                                                disabled={savingAction}
                                                                 onClick={() => handleSavePrice(p)}
                                                                 className="p-1 rounded bg-white text-zinc-950 font-bold hover:bg-zinc-200 cursor-pointer"
                                                                 title="Save Price"
