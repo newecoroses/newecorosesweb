@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, Check, ShieldCheck, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 
 interface OtpModalProps {
   isOpen: boolean;
@@ -22,7 +22,6 @@ export default function OtpModal({
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
-  const [codeSent, setCodeSent] = useState(false);
   const [verified, setVerified] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -31,7 +30,6 @@ export default function OtpModal({
     if (isOpen && email) {
       setOtp(['', '', '', '', '', '']);
       setError('');
-      setCodeSent(false);
       setVerified(false);
       sendOtp();
     }
@@ -61,13 +59,12 @@ export default function OtpModal({
       });
       const data = await res.json();
       if (data.success) {
-        setCodeSent(true);
         setResendCooldown(60);
       } else {
-        setError(data.error || 'Failed to send verification code');
+        setError(data.error || 'Failed to send code. Please try again.');
       }
     } catch {
-      setError('Network error while sending verification code.');
+      setError('Network error sending code.');
     } finally {
       setIsSending(false);
     }
@@ -120,7 +117,7 @@ export default function OtpModal({
         setVerified(true);
         setTimeout(() => {
           onVerified();
-        }, 500);
+        }, 400);
       } else {
         setError(data.error || 'Invalid code. Please try again.');
         setOtp(['', '', '', '', '', '']);
@@ -148,143 +145,101 @@ export default function OtpModal({
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-[460px] bg-white border border-black/[0.08] shadow-2xl rounded-[22px] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-[400px] bg-white border border-black/[0.08] shadow-2xl rounded-[18px] overflow-hidden p-6 sm:p-7 animate-in fade-in zoom-in-95 duration-150">
         
-        {/* Top Gold Accent Bar */}
-        <div className="h-1.5 w-full bg-[#bfa81f]" />
-
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#f2f2f2] hover:bg-[#e8e8e8] text-[#555] hover:text-[#111] flex items-center justify-center transition-colors cursor-pointer z-10"
+          className="absolute top-4 right-4 w-7 h-7 rounded-full text-[#666] hover:text-[#111] hover:bg-black/[0.05] flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Close"
         >
           <X size={16} />
         </button>
 
         {/* Header */}
-        <div className="p-6 sm:p-7 pb-2 text-center">
-          <div className="w-14 h-14 mx-auto mb-3.5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-            <ShieldCheck size={28} />
-          </div>
-          <span className="text-[11px] uppercase font-bold tracking-[0.14em] text-[#bfa81f]">
-            New Eco Roses Security
-          </span>
-          <h2 className="text-2xl font-bold text-[#111] tracking-tight mt-1">
-            Verify Email to Order
-          </h2>
-          <p className="text-[13.5px] text-[#555] mt-1.5 leading-relaxed">
-            We sent a 6-digit confirmation code to:
+        <div className="text-center mb-5">
+          <h3 className="text-xl font-bold text-[#111] tracking-tight">
+            Verify your email
+          </h3>
+          <p className="text-[13.5px] text-[#555] mt-1.5 leading-snug">
+            Enter the 6-digit code sent to <br />
+            <strong className="text-[#111] font-semibold">{email}</strong>
           </p>
-          <div className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f4f4f4] border border-black/[0.08] text-xs font-semibold text-[#111]">
-            <Mail size={12} className="text-[#888]" />
-            <span>{email}</span>
-          </div>
         </div>
 
-        {/* OTP Input Fields */}
-        <div className="px-6 sm:px-7 py-4">
-          <div className="flex justify-center gap-2 sm:gap-2.5 mb-2">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                ref={(el) => { inputRefs.current[index] = el; }}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                onPaste={handlePaste}
-                disabled={isLoading || isSending || verified}
-                className={`w-11 h-14 sm:w-12 sm:h-15 text-center text-2xl font-bold font-mono rounded-[12px] transition-all duration-150 outline-none ${
-                  verified
-                    ? 'border-2 border-emerald-600 bg-emerald-50 text-emerald-800'
-                    : error
-                    ? 'border-2 border-red-400 bg-red-50 text-red-700'
-                    : digit
-                    ? 'border-2 border-[#111] bg-white text-[#111] shadow-sm'
-                    : 'border border-black/[0.12] bg-[#f7f7f7] text-[#111] hover:border-black/30 focus:border-[#111] focus:bg-white focus:ring-2 focus:ring-black/10'
-                }`}
-              />
-            ))}
-          </div>
+        {/* 6 Clean Input Boxes */}
+        <div className="flex justify-center gap-2 mb-2">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={(el) => { inputRefs.current[index] = el; }}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleInputChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              onPaste={handlePaste}
+              disabled={isLoading || isSending || verified}
+              className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-bold font-mono rounded-[11px] outline-none transition-all duration-150 ${
+                verified
+                  ? 'border border-[#16a34a] bg-emerald-50 text-[#16a34a]'
+                  : error
+                  ? 'border border-red-500 bg-red-50 text-red-600'
+                  : digit
+                  ? 'border border-[#111] bg-white text-[#111]'
+                  : 'border border-black/[0.1] bg-[#f4f4f4] text-[#111] focus:bg-white focus:border-[#111] focus:ring-1 focus:ring-black/10'
+              }`}
+            />
+          ))}
+        </div>
 
-          {/* Verification Status Feedback */}
-          {verified ? (
-            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 my-2.5">
-              <Check size={15} className="stroke-[3]" />
-              <span>Email Verified! Processing order…</span>
-            </div>
-          ) : isLoading ? (
-            <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#555] my-2.5">
-              <Loader2 size={15} className="animate-spin text-[#111]" />
-              <span>Verifying code…</span>
-            </div>
-          ) : codeSent && !error ? (
-            <p className="text-center text-[12px] text-emerald-600 my-2 flex items-center justify-center gap-1 font-medium">
-              <Check size={12} />
-              Code sent — please check your inbox (or spam)
-            </p>
-          ) : null}
+        {/* Status / Error Message */}
+        {error ? (
+          <p className="text-center text-xs text-red-600 font-medium my-2">
+            {error}
+          </p>
+        ) : verified ? (
+          <p className="text-center text-xs text-emerald-600 font-semibold my-2">
+            ✓ Verified! Completing checkout…
+          </p>
+        ) : null}
 
-          {/* Error Message */}
-          {error && (
-            <p className="text-center text-xs font-semibold text-red-600 my-2">
-              {error}
-            </p>
+        {/* Action Button */}
+        <button
+          type="button"
+          onClick={() => verifyOtp(otp.join(''))}
+          disabled={!isComplete || isLoading || isSending || verified}
+          className="w-full h-[48px] bg-[#111] hover:bg-black text-white font-bold rounded-[14px] text-sm tracking-wide transition-all mt-4 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.99]"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              <span>Verifying…</span>
+            </>
+          ) : verified ? (
+            <span>Verified</span>
+          ) : (
+            <span>Verify code</span>
           )}
+        </button>
 
-          {/* Explicit Verify Button (Template st-btn style) */}
-          <button
-            type="button"
-            onClick={() => verifyOtp(otp.join(''))}
-            disabled={!isComplete || isLoading || isSending || verified}
-            className="w-full min-h-[50px] bg-[#111] hover:bg-black text-white font-bold rounded-[14px] text-[15px] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed mt-3 shadow-sm hover:shadow-md active:scale-[0.99]"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                <span>Verifying Code…</span>
-              </>
-            ) : verified ? (
-              <>
-                <Check size={18} className="stroke-[3]" />
-                <span>Email Verified!</span>
-              </>
-            ) : (
-              <>
-                <span>Verify & Proceed to Payment</span>
-                <ArrowRight size={16} />
-              </>
-            )}
-          </button>
-
-          {/* Resend Action */}
-          <div className="text-center mt-3 pt-1">
-            {resendCooldown > 0 ? (
-              <p className="text-xs text-[#888]">
-                Resend code in <span className="font-bold font-mono text-[#111]">{resendCooldown}s</span>
-              </p>
-            ) : (
-              <button
-                type="button"
-                onClick={sendOtp}
-                disabled={isSending || verified}
-                className="text-xs font-semibold text-[#111] hover:text-[#bfa81f] underline underline-offset-3 transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {isSending ? 'Sending…' : 'Resend Code'}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Footer Guarantee */}
-        <div className="p-3.5 bg-[#f7f7f7] border-t border-black/[0.06] text-center">
-          <p className="text-[11.5px] text-[#777]">
-            🔒 Verification ensures you receive tracking updates & order receipts.
-          </p>
+        {/* Resend Link */}
+        <div className="text-center mt-3.5 text-[13px] text-[#555]">
+          Didn&apos;t get the code?{' '}
+          {resendCooldown > 0 ? (
+            <span>Resend in <strong className="text-[#111] font-mono">{resendCooldown}s</strong></span>
+          ) : (
+            <button
+              type="button"
+              onClick={sendOtp}
+              disabled={isSending || verified}
+              className="text-[#111] font-semibold underline underline-offset-2 hover:text-black cursor-pointer disabled:opacity-50"
+            >
+              {isSending ? 'Sending…' : 'Resend'}
+            </button>
+          )}
         </div>
 
       </div>

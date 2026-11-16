@@ -17,7 +17,7 @@ function AddonModalMount() {
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isBarePortal = pathname?.startsWith('/admin') || pathname?.startsWith('/staff') || pathname === '/tv-marquee';
-    const isCheckout = pathname?.startsWith('/checkout') || pathname?.startsWith('/order-confirmation');
+    const isCheckout = pathname?.startsWith('/checkout') || pathname?.startsWith('/order-confirmation') || pathname?.startsWith('/track-order');
 
     if (isBarePortal) {
         return <main className="flex-grow">{children}</main>;
