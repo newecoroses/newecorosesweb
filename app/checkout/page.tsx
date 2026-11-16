@@ -235,6 +235,11 @@ function CheckoutContent() {
                     try {
                         sessionStorage.setItem('ner_last_order', JSON.stringify(order));
                         localStorage.setItem('ner_last_order', JSON.stringify(order));
+                        const histRaw = localStorage.getItem('ner_order_history');
+                        const hist = histRaw ? JSON.parse(histRaw) : [];
+                        const filtered = Array.isArray(hist) ? hist.filter((o: any) => o.orderNumber !== order.orderNumber) : [];
+                        filtered.unshift(order);
+                        localStorage.setItem('ner_order_history', JSON.stringify(filtered.slice(0, 25)));
                     } catch {}
                     try { await fetch('/api/payment/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: order.id, razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature }) }); } catch {}
                     if (!isBuyNow) clearCart();

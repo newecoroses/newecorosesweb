@@ -8,9 +8,48 @@ import { fetchWhatsappSettings } from '@/lib/supabase';
 
 const FALLBACK_PHONE = '919936911611';
 
+function cleanOrderNumber(input: string): string {
+    const raw = (input || '').trim().toUpperCase().replace(/^#/, '');
+    const digitsMatch = raw.match(/(\d{5,8})/);
+    if (digitsMatch) {
+        return `NER-${digitsMatch[1]}`;
+    }
+    return raw.replace(/\s+/g, '-');
+}
+
+function findLocalOrder(query: string) {
+    if (!query) return null;
+    const target = cleanOrderNumber(query);
+    const rawTarget = query.trim().toUpperCase();
+    try {
+        const last = sessionStorage.getItem('ner_last_order') || localStorage.getItem('ner_last_order');
+        if (last) {
+            const parsed = JSON.parse(last);
+            const pNum = cleanOrderNumber(parsed.orderNumber || parsed.id || '');
+            if (pNum === target || parsed.orderNumber === rawTarget || parsed.id === rawTarget) {
+                return parsed;
+            }
+        }
+        const hist = localStorage.getItem('ner_order_history');
+        if (hist) {
+            const list = JSON.parse(hist);
+            if (Array.isArray(list)) {
+                for (const item of list) {
+                    const itemNum = cleanOrderNumber(item.orderNumber || item.id || '');
+                    if (itemNum === target || item.orderNumber === rawTarget || item.id === rawTarget) {
+                        return item;
+                    }
+                }
+            }
+        }
+    } catch {}
+    return null;
+}
+
 function OrderConfirmationContent() {
     const searchParams = useSearchParams();
-    const orderNumber = searchParams.get('order') || '';
+    const rawOrderNumber = searchParams.get('order') || '';
+    const orderNumber = cleanOrderNumber(rawOrderNumber);
     const [order, setOrder] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [phone, setPhone] = useState(FALLBACK_PHONE);
@@ -33,24 +72,22 @@ function OrderConfirmationContent() {
         } catch {}
 
         // 1. Try reading instantly from session or local storage
-        try {
-            const cached = sessionStorage.getItem('ner_last_order') || localStorage.getItem('ner_last_order');
-            if (cached) {
-                const parsed = JSON.parse(cached);
-                if (!orderNumber || parsed.orderNumber === orderNumber || parsed.id === orderNumber) {
-                    setOrder(parsed);
-                    setLoading(false);
-                }
-            }
-        } catch {}
+        const localMatch = findLocalOrder(orderNumber || rawOrderNumber);
+        if (localMatch && Array.isArray(localMatch.items) && localMatch.items.length > 0) {
+            setOrder(localMatch);
+            setLoading(false);
+        }
 
         // 2. Fetch fresh order from API
         if (orderNumber) {
             fetch(`/api/orders?orderNumber=${encodeURIComponent(orderNumber)}`)
                 .then(r => r.json())
                 .then(data => {
-                    if (data.success && data.order) {
+                    if (data.success && data.order && Array.isArray(data.order.items) && data.order.items.length > 0) {
                         setOrder(data.order);
+                        try {
+                            localStorage.setItem('ner_last_order', JSON.stringify(data.order));
+                        } catch {}
                     }
                     setLoading(false);
                 })
@@ -58,7 +95,7 @@ function OrderConfirmationContent() {
         } else {
             setLoading(false);
         }
-    }, [orderNumber]);
+    }, [orderNumber, rawOrderNumber]);
 
     if (loading && !order) {
         return (

@@ -14,6 +14,44 @@ const STEPS = [
   { key: 'delivered', label: 'Delivered', desc: 'Delivered fresh with signature care' },
 ];
 
+function cleanOrderNumber(input: string): string {
+  const raw = (input || '').trim().toUpperCase().replace(/^#/, '');
+  const digitsMatch = raw.match(/(\d{5,8})/);
+  if (digitsMatch) {
+    return `NER-${digitsMatch[1]}`;
+  }
+  return raw.replace(/\s+/g, '-');
+}
+
+function findLocalOrder(query: string) {
+  if (!query) return null;
+  const target = cleanOrderNumber(query);
+  const rawTarget = query.trim().toUpperCase();
+  try {
+    const last = sessionStorage.getItem('ner_last_order') || localStorage.getItem('ner_last_order');
+    if (last) {
+      const parsed = JSON.parse(last);
+      const pNum = cleanOrderNumber(parsed.orderNumber || parsed.id || '');
+      if (pNum === target || parsed.orderNumber === rawTarget || parsed.id === rawTarget) {
+        return parsed;
+      }
+    }
+    const hist = localStorage.getItem('ner_order_history');
+    if (hist) {
+      const list = JSON.parse(hist);
+      if (Array.isArray(list)) {
+        for (const item of list) {
+          const itemNum = cleanOrderNumber(item.orderNumber || item.id || '');
+          if (itemNum === target || item.orderNumber === rawTarget || item.id === rawTarget) {
+            return item;
+          }
+        }
+      }
+    }
+  } catch {}
+  return null;
+}
+
 function TrackOrderContent() {
   const searchParams = useSearchParams();
   const initialOrder = searchParams.get('order') || '';
@@ -31,36 +69,38 @@ function TrackOrderContent() {
   }, []);
 
   useEffect(() => {
-    // 1. If order passed in URL, check cached order or fetch from API
     if (orderNumber) {
-      try {
-        const cached = sessionStorage.getItem('ner_last_order') || localStorage.getItem('ner_last_order');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (parsed.orderNumber === orderNumber || parsed.id === orderNumber) {
-            setOrder(parsed);
-          }
-        }
-      } catch {}
       fetchOrder(orderNumber);
     }
   }, [orderNumber]);
 
   const fetchOrder = async (no: string) => {
-    const cleanNo = no.trim().toUpperCase();
-    if (!cleanNo) return;
+    const normalizedNo = cleanOrderNumber(no);
+    if (!normalizedNo) return;
     setLoading(true);
     setSearched(true);
+
+    // 1. Immediately check local storage to avoid waiting or blank screen
+    const localMatch = findLocalOrder(normalizedNo);
+    if (localMatch && Array.isArray(localMatch.items) && localMatch.items.length > 0) {
+      setOrder(localMatch);
+    }
+
     try {
-      const res = await fetch(`/api/orders?orderNumber=${encodeURIComponent(cleanNo)}`);
+      const res = await fetch(`/api/orders?orderNumber=${encodeURIComponent(normalizedNo)}`);
       const data = await res.json();
-      if (data.success && data.order) {
+      if (data.success && data.order && Array.isArray(data.order.items) && data.order.items.length > 0) {
         setOrder(data.order);
-      } else {
+        try {
+          localStorage.setItem('ner_last_order', JSON.stringify(data.order));
+        } catch {}
+      } else if (!localMatch) {
         setOrder(null);
       }
     } catch {
-      setOrder(null);
+      if (!localMatch) {
+        setOrder(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -69,8 +109,9 @@ function TrackOrderContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchInput.trim()) {
-      setOrderNumber(searchInput.trim().toUpperCase());
-      fetchOrder(searchInput.trim().toUpperCase());
+      const normalized = cleanOrderNumber(searchInput);
+      setOrderNumber(normalized);
+      fetchOrder(normalized);
     }
   };
 

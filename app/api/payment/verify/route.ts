@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { ordersStore } from '@/lib/order-cache';
+import { findOrder, saveOrder } from '@/lib/order-cache';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
@@ -34,37 +34,36 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Update order status in in-memory store
-        if (orderId && ordersStore.has(orderId)) {
-            const order = ordersStore.get(orderId)!;
-            order.status = 'paid';
-            ordersStore.set(orderId, order);
-            if (order.orderNumber) {
-                ordersStore.set(order.orderNumber, order);
-            }
+        // Update order status in persistent store
+        if (orderId) {
+            const order = await findOrder(orderId);
+            if (order) {
+                order.status = 'paid';
+                await saveOrder(order);
 
-            // Send confirmation email with tracking button if email present
-            if (order.customer?.email) {
-                sendOrderConfirmationEmail({
-                    customerName: order.customer.name,
-                    customerEmail: order.customer.email,
-                    orderNumber: order.orderNumber,
-                    items: order.items,
-                    total: order.total,
-                    shippingAddress: order.shippingAddress,
-                    specialNote: order.specialNote,
-                    createdAt: order.createdAt,
-                }).catch(err => console.error('Error sending confirmation email after payment:', err));
+                // Send confirmation email with tracking button if email present
+                if (order.customer?.email) {
+                    sendOrderConfirmationEmail({
+                        customerName: order.customer.name,
+                        customerEmail: order.customer.email,
+                        orderNumber: order.orderNumber,
+                        items: order.items,
+                        total: order.total,
+                        shippingAddress: order.shippingAddress,
+                        specialNote: order.specialNote,
+                        createdAt: order.createdAt,
+                    }).catch(err => console.error('Error sending confirmation email after payment:', err));
+                }
             }
         }
 
         return NextResponse.json({
             success: true,
-            message: 'Payment verified successfully',
-            paymentId: razorpay_payment_id,
+            verified: true,
+            message: 'Payment verified and order updated successfully'
         });
     } catch (err: any) {
-        console.error('Payment verify error:', err);
-        return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+        console.error('Payment verification error:', err);
+        return NextResponse.json({ success: false, error: err.message || 'Payment verification failed' }, { status: 500 });
     }
 }

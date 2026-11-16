@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ordersStore, SavedOrder, getAllOrders, updateOrderStatus } from '@/lib/order-cache';
+import { SavedOrder, getAllOrders, saveOrder, findOrder, updateOrderStatus } from '@/lib/order-cache';
 import { AVAILABLE_COUPONS, calculateDiscount } from '@/lib/coupons';
 import { logStaffActivity } from '@/lib/staff-activity';
 import { sendOrderConfirmationEmail, sendStatusUpdateEmail } from '@/lib/email';
@@ -80,9 +80,8 @@ export async function POST(request: NextRequest) {
             createdAt: new Date().toISOString(),
         };
 
-        // Cache order for instant lookup
-        ordersStore.set(orderNumber, newOrder);
-        ordersStore.set(orderId, newOrder);
+        // Persist order both in memory and to Supabase DB
+        await saveOrder(newOrder);
 
         // Log staff activity if staff member created the order
         if (staffName) {
@@ -127,7 +126,7 @@ export async function GET(request: NextRequest) {
 
         // If no orderNumber specified, return all orders for the admin panel
         if (!orderNumber) {
-            const orders = getAllOrders();
+            const orders = await getAllOrders();
             return NextResponse.json({
                 success: true,
                 orders,
@@ -135,20 +134,12 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        const order = ordersStore.get(orderNumber);
+        const order = await findOrder(orderNumber);
         if (!order) {
             return NextResponse.json({
-                success: true,
-                order: {
-                    orderNumber,
-                    createdAt: new Date().toISOString(),
-                    total: 0,
-                    status: 'confirmed',
-                    paymentMethod: 'online',
-                    customer: { name: 'Customer', email: '', phone: '' },
-                    shippingAddress: { city: 'Kolkata', state: 'West Bengal' },
-                },
-            });
+                success: false,
+                error: 'Order not found',
+            }, { status: 404 });
         }
 
         return NextResponse.json({
@@ -164,48 +155,38 @@ export async function GET(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
     try {
         const body = await request.json();
-        const { orderId, status } = body;
+        const { orderIdentifier, status } = body;
 
-        if (!orderId || !status) {
-            return NextResponse.json({ success: false, error: 'Order ID and status are required' }, { status: 400 });
+        if (!orderIdentifier || !status) {
+            return NextResponse.json({ success: false, error: 'orderIdentifier and status are required' }, { status: 400 });
         }
 
-        const updated = updateOrderStatus(orderId, status);
-        if (!updated) {
+        const validStatuses = ['confirmed', 'processing', 'delivered', 'cancelled', 'paid'];
+        if (!validStatuses.includes(status)) {
+            return NextResponse.json({ success: false, error: 'Invalid status' }, { status: 400 });
+        }
+
+        const order = await updateOrderStatus(orderIdentifier, status);
+        if (!order) {
             return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
         }
 
-        try {
-            await logStaffActivity({
-                staffId: body.staffId || 'staff',
-                staffName: body.staffName || 'Staff Member',
-                action: 'Updated Order Status',
-                productId: updated.orderNumber,
-                productName: updated.customer.name,
-                details: `Order #${updated.orderNumber} status changed to "${status}"`,
-            });
-        } catch (actErr) {
-            console.error('Error logging order status activity:', actErr);
-        }
-
-        // Send status update notification email via Resend
-        if (updated.customer?.email) {
+        // Send email update when status changes
+        if (order.customer?.email && status !== 'confirmed') {
             sendStatusUpdateEmail({
-                customerName: updated.customer.name,
-                customerEmail: updated.customer.email,
-                orderNumber: updated.orderNumber,
-                items: updated.items,
-                total: updated.total,
-                shippingAddress: updated.shippingAddress,
-                specialNote: updated.specialNote,
-                createdAt: updated.createdAt,
+                customerName: order.customer.name,
+                customerEmail: order.customer.email,
+                orderNumber: order.orderNumber,
                 newStatus: status,
+                total: order.total,
+                items: order.items,
+                shippingAddress: order.shippingAddress,
             }).catch(e => console.error('Error sending status update email:', e));
         }
 
         return NextResponse.json({
             success: true,
-            order: updated,
+            order,
         });
     } catch (err: any) {
         console.error('Update order error:', err);
