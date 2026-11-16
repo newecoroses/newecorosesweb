@@ -7,6 +7,7 @@ import { Lock, ShoppingBag, ArrowLeft, Tag, ChevronDown, Check } from 'lucide-re
 import { useCart } from '@/lib/cart-context';
 import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
 import OtpModal from '@/components/checkout/otp-modal';
+import { evaluatePincode, PincodeCheckResult } from '@/lib/kolkata-pincodes';
 
 declare global {
     interface Window {
@@ -128,6 +129,9 @@ function CheckoutContent() {
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [isOtpVerified, setIsOtpVerified] = useState(false);
 
+    // Pincode serviceability state
+    const [pincodeStatus, setPincodeStatus] = useState<PincodeCheckResult | null>(null);
+
     // Form data
     const [formData, setFormData] = useState<FormData>({
         email: '',
@@ -137,9 +141,9 @@ function CheckoutContent() {
         phone: '',
         line1: '',
         line2: '',
-        city: 'Kolkata',
+        city: '',
         state: 'West Bengal',
-        postalCode: '700040',
+        postalCode: '',
         country: 'India',
         billingSame: true,
         deliveryTime: 'Standard Delivery (9 AM - 9 PM)',
@@ -214,6 +218,21 @@ function CheckoutContent() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const target = e.target as HTMLInputElement;
         const { name, value, type } = target;
+
+        if (name === 'postalCode') {
+            const cleanPin = value.replace(/\D/g, '').slice(0, 6);
+            const result = evaluatePincode(cleanPin);
+            setPincodeStatus(cleanPin.length > 0 ? result : null);
+            setFormData(prev => ({
+                ...prev,
+                postalCode: cleanPin,
+                // Auto-fill city & state when pincode is filled and belongs to Kolkata
+                city: cleanPin.length === 6 && result.city ? result.city : prev.city,
+                state: cleanPin.length === 6 && result.state ? result.state : prev.state,
+            }));
+            return;
+        }
+
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? target.checked : value,
@@ -236,6 +255,17 @@ function CheckoutContent() {
         const cleanPhone = formData.phone.replace(/\D/g, '');
         if (cleanPhone.length < 10) {
             setError('Please enter a valid 10-digit mobile number for delivery coordination.');
+            return false;
+        }
+        // Validate pincode serviceability
+        const cleanPin = formData.postalCode.replace(/\D/g, '');
+        if (cleanPin.length !== 6) {
+            setError('Please enter a valid 6-digit PIN code.');
+            return false;
+        }
+        const pinResult = evaluatePincode(cleanPin);
+        if (!pinResult.isServiceable) {
+            setError(pinResult.message);
             return false;
         }
         return true;
@@ -550,10 +580,11 @@ function CheckoutContent() {
                                         <input
                                             type="text"
                                             name="city"
-                                            placeholder="City"
+                                            placeholder="City (auto-filled)"
                                             value={formData.city}
                                             onChange={handleChange}
-                                            className={inputCls}
+                                            className={`${inputCls} ${formData.city ? 'bg-gray-50 text-gray-700' : ''}`}
+                                            readOnly={!!formData.city && formData.city === 'Kolkata'}
                                             required
                                         />
                                         <select
@@ -577,6 +608,29 @@ function CheckoutContent() {
                                             required
                                         />
                                     </div>
+
+                                    {/* Pincode serviceability badge */}
+                                    {pincodeStatus && formData.postalCode.length > 0 && (
+                                        <div className={`flex items-start gap-2 px-3.5 py-2.5 rounded-lg text-xs font-medium border mt-1 ${
+                                            pincodeStatus.status === 'serviceable'
+                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                                                : pincodeStatus.status === 'invalid'
+                                                ? 'bg-amber-50 border-amber-200 text-amber-800'
+                                                : 'bg-red-50 border-red-200 text-red-700'
+                                        }`}>
+                                            <span className="mt-0.5 flex-shrink-0">
+                                                {pincodeStatus.status === 'serviceable' ? '✅' : pincodeStatus.status === 'invalid' ? '⚠️' : '🚫'}
+                                            </span>
+                                            <span>{pincodeStatus.message}
+                                                {pincodeStatus.status === 'serviceable' && pincodeStatus.area && (
+                                                    <span className="text-emerald-600 font-semibold"> — {pincodeStatus.area}</span>
+                                                )}
+                                                {pincodeStatus.status !== 'serviceable' && (
+                                                    <span className="block mt-0.5 text-[11px] opacity-80">Currently we deliver only within 15 km of Tollygunge, Kolkata.</span>
+                                                )}
+                                            </span>
+                                        </div>
+                                    )}
 
                                     {/* Phone (clean, no suggestions / autofill) */}
                                     <div className="relative flex items-center">
@@ -622,19 +676,14 @@ function CheckoutContent() {
                                     </span>
                                 </div>
 
-                                {/* Delivery Time Slot Selector */}
-                                <div className="mt-3">
-                                    <select
-                                        name="deliveryTime"
-                                        value={formData.deliveryTime}
-                                        onChange={handleChange}
-                                        className={inputCls}
-                                    >
-                                        <option value="Standard Delivery (9 AM - 9 PM)">Standard Delivery (9 AM - 9 PM) — Free</option>
-                                        <option value="Morning Fresh Delivery (8 AM - 12 PM)">Morning Fresh Delivery (8 AM - 12 PM)</option>
-                                        <option value="Evening Celebrations (4 PM - 9 PM)">Evening Celebrations (4 PM - 9 PM)</option>
-                                        <option value="Midnight Surprise (11 PM - 12 AM)">Midnight Surprise (11:00 PM - 12:00 AM)</option>
-                                    </select>
+                                {/* Delivery Time Slot — Fixed 9 AM to 9 PM only */}
+                                <div className="mt-3 flex items-center gap-2.5 border border-[#bfa81f]/30 rounded-lg px-4 py-3 bg-amber-50/50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-[#bfa81f] flex-shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-800">Standard Delivery — 9:00 AM to 9:00 PM</p>
+                                        <p className="text-xs text-gray-500 mt-0.5">Delivered fresh in our signature luxury packaging · Free</p>
+                                    </div>
+                                    <span className="ml-auto font-bold text-[#bfa81f] uppercase tracking-wider text-xs bg-white px-2 py-0.5 rounded border border-amber-200">Free</span>
                                 </div>
                             </section>
 
