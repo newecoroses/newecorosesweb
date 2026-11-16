@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import confetti from 'canvas-confetti';
-import { Check, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Check, ShoppingBag, ArrowRight, Truck } from 'lucide-react';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import { fetchWhatsappSettings } from '@/lib/supabase';
 
@@ -200,6 +200,15 @@ function OrderConfirmationContent() {
 
                         {/* Action CTAs */}
                         <div className="space-y-2.5 pt-2">
+                            {/* Track Order Button */}
+                            <Link
+                                href={`/track-order?order=${orderNumber}`}
+                                className="w-full flex items-center justify-center gap-2 bg-[#1c1917] hover:bg-black text-amber-300 py-3.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all border border-amber-300/40"
+                            >
+                                <Truck size={18} className="text-amber-300" />
+                                <span>Track Order Status</span>
+                            </Link>
+
                             {/* WhatsApp Updates Button */}
                             <a
                                 href={whatsappUrl}

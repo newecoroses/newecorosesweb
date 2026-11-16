@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getStaffSession } from '@/lib/staff-session';
 import { logStaffActivity } from '@/lib/staff-activity';
 import { getProductPriceOverrides, setProductPriceOverride } from '@/lib/product-pricing';
+import { computeOriginalPrice } from '@/lib/pricing-utils';
 import { PRODUCTS, COLLECTIONS } from '@/lib/products';
 
 export const dynamic = 'force-dynamic';
@@ -138,7 +139,9 @@ export async function PATCH(request: Request) {
         // ── 1. Handle Price Update ──
         if (price !== undefined) {
             const numPrice = price === null || price === '' ? 0 : Number(price);
-            const numOrig = original_price ? Number(original_price) : (numPrice > 0 ? Math.round(numPrice * 1.15) : 0);
+            const numOrig = original_price
+                ? Number(original_price)
+                : (numPrice > 0 ? computeOriginalPrice(numPrice, slug || productId || name).originalPrice : 0);
             
             if (productId) {
                 await setProductPriceOverride(productId, numPrice, numOrig, session.name);

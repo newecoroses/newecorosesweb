@@ -1,5 +1,6 @@
 import { PRODUCTS, COLLECTIONS } from './products';
 import { createClient } from '@supabase/supabase-js';
+import { resolveProductPricing } from './pricing-utils';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -160,11 +161,15 @@ export function fetchProducts(): Promise<DBProduct[]> {
 
         return all.map(p => {
             const override = priceOverrides[p.id] || priceOverrides[p.slug];
-            if (override && override.price > 0) {
+            const rawPrice = override && override.price > 0 ? override.price : p.price;
+            const rawOrig = override && override.price > 0 ? (override.original_price || p.original_price) : p.original_price;
+
+            if (typeof rawPrice === 'number' && rawPrice > 0) {
+                const pricing = resolveProductPricing(rawPrice, rawOrig, p.slug || p.id || p.name);
                 return {
                     ...p,
-                    price: override.price,
-                    original_price: override.original_price || p.original_price,
+                    price: pricing.price,
+                    original_price: pricing.originalPrice,
                 };
             }
             return p;
@@ -231,9 +236,13 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
 
     if (prod) {
         const override = priceOverrides[prod.id] || priceOverrides[prod.slug];
-        if (override && override.price > 0) {
-            prod.price = override.price;
-            prod.original_price = override.original_price || prod.original_price;
+        const rawPrice = override && override.price > 0 ? override.price : prod.price;
+        const rawOrig = override && override.price > 0 ? (override.original_price || prod.original_price) : prod.original_price;
+
+        if (typeof rawPrice === 'number' && rawPrice > 0) {
+            const pricing = resolveProductPricing(rawPrice, rawOrig, prod.slug || prod.id || prod.name);
+            prod.price = pricing.price;
+            prod.original_price = pricing.originalPrice;
         }
     }
     return prod;

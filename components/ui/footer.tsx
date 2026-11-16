@@ -125,6 +125,7 @@ export default function Footer() {
                         <ul className="space-y-2.5">
                             {[
                                 { href: '/shop', label: 'All Collections' },
+                                { href: '/track-order', label: 'Track Your Order' },
                                 { href: '/shop?cat=fresh-flower', label: 'Fresh Flower' },
                                 { href: '/shop?cat=chocolate-bouquet', label: 'Chocolate Bouquet' },
                                 { href: '/shop?cat=personalized', label: 'Personalized' },

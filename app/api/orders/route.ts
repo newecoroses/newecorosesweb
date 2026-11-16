@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ordersStore, SavedOrder, getAllOrders, updateOrderStatus } from '@/lib/order-cache';
 import { AVAILABLE_COUPONS, calculateDiscount } from '@/lib/coupons';
 import { logStaffActivity } from '@/lib/staff-activity';
+import { sendOrderConfirmationEmail, sendStatusUpdateEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -95,6 +96,20 @@ export async function POST(request: NextRequest) {
             });
         }
 
+        // Send order confirmation email via Resend
+        if (newOrder.customer.email) {
+            sendOrderConfirmationEmail({
+                customerName: newOrder.customer.name,
+                customerEmail: newOrder.customer.email,
+                orderNumber: newOrder.orderNumber,
+                items: newOrder.items,
+                total: newOrder.total,
+                shippingAddress: newOrder.shippingAddress,
+                specialNote: newOrder.specialNote,
+                createdAt: newOrder.createdAt,
+            }).catch(e => console.error('Error sending order confirmation email:', e));
+        }
+
         return NextResponse.json({
             success: true,
             order: newOrder,
@@ -171,6 +186,21 @@ export async function PATCH(request: NextRequest) {
             });
         } catch (actErr) {
             console.error('Error logging order status activity:', actErr);
+        }
+
+        // Send status update notification email via Resend
+        if (updated.customer?.email) {
+            sendStatusUpdateEmail({
+                customerName: updated.customer.name,
+                customerEmail: updated.customer.email,
+                orderNumber: updated.orderNumber,
+                items: updated.items,
+                total: updated.total,
+                shippingAddress: updated.shippingAddress,
+                specialNote: updated.specialNote,
+                createdAt: updated.createdAt,
+                newStatus: status,
+            }).catch(e => console.error('Error sending status update email:', e));
         }
 
         return NextResponse.json({

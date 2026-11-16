@@ -19,6 +19,7 @@ import {
 import { PageHeader } from '@/components/admin/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/admin/ui/card';
 import { Badge } from '@/components/admin/ui/badge';
+import { resolveProductPricing } from '@/lib/pricing-utils';
 
 interface ProductItem {
     id: string;
@@ -530,17 +531,27 @@ export default function StaffProductsPage() {
                                                             </button>
                                                         </div>
                                                     ) : (
-                                                        <button
-                                                            onClick={() => {
-                                                                setEditingPriceId(p.id);
-                                                                setNewPrice(String(p.price || ''));
-                                                            }}
-                                                            className="font-bold text-white tabular-nums hover:underline hover:text-zinc-200 cursor-pointer inline-flex items-center gap-1 group"
-                                                            title="Click to change price"
-                                                        >
-                                                            <span>₹{(p.price || 0).toLocaleString('en-IN')}</span>
-                                                            <Edit3 size={11} className="opacity-0 group-hover:opacity-100 text-zinc-400" />
-                                                        </button>
+                                                        <div className="flex flex-col items-end">
+                                                            <button
+                                                                onClick={() => {
+                                                                    setEditingPriceId(p.id);
+                                                                    setNewPrice(String(p.price || ''));
+                                                                }}
+                                                                className="font-bold text-white tabular-nums hover:underline hover:text-zinc-200 cursor-pointer inline-flex items-center gap-1 group"
+                                                                title="Click to change sale price"
+                                                            >
+                                                                <span>₹{(p.price || 0).toLocaleString('en-IN')}</span>
+                                                                <Edit3 size={11} className="opacity-0 group-hover:opacity-100 text-zinc-400" />
+                                                            </button>
+                                                            {p.price && p.price > 0 ? (() => {
+                                                                const pr = resolveProductPricing(p.price, p.original_price, p.slug || p.id || p.name);
+                                                                return (
+                                                                    <span className="text-[10px] text-zinc-400 tabular-nums">
+                                                                        MRP ₹{pr.originalPrice} ({pr.discountPercent}% OFF)
+                                                                    </span>
+                                                                );
+                                                            })() : null}
+                                                        </div>
                                                     )}
                                                 </td>
 

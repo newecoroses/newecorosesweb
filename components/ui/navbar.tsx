@@ -20,7 +20,7 @@ const NAV_LINKS = [
     { href: '/', label: 'Home' },
     { href: '/shop', label: 'Shop' },
     { href: '/#categories', label: 'Collections' },
-    { href: '/#about', label: 'About' },
+    { href: '/track-order', label: 'Track Order' },
     { href: '/contact', label: 'Contact' },
 ];
 

@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './supabase-admin';
+import { computeOriginalPrice } from './pricing-utils';
 
 export interface ProductPriceRecord {
     price: number;
@@ -49,7 +50,7 @@ export async function setProductPriceOverride(
                 ...current,
                 [productKey]: {
                     price,
-                    original_price: original_price || Math.round(price * 1.15),
+                    original_price: original_price || computeOriginalPrice(price, productKey).originalPrice,
                     updated_at: new Date().toISOString(),
                     updated_by,
                 },

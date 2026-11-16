@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, ShoppingBag, ArrowLeft, Tag, ChevronDown, Check } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
+import OtpModal from '@/components/checkout/otp-modal';
 
 declare global {
     interface Window {
@@ -123,6 +124,10 @@ function CheckoutContent() {
     const [couponSuccess, setCouponSuccess] = useState('');
     const [showCouponPanel, setShowCouponPanel] = useState(false);
 
+    // OTP verification state
+    const [showOtpModal, setShowOtpModal] = useState(false);
+    const [isOtpVerified, setIsOtpVerified] = useState(false);
+
     // Form data
     const [formData, setFormData] = useState<FormData>({
         email: '',
@@ -239,7 +244,25 @@ function CheckoutContent() {
     const handlePayment = async () => {
         if (!validateForm()) return;
         setError('');
+
+        // Verify email via OTP before placing order
+        if (!isOtpVerified) {
+            setShowOtpModal(true);
+            return;
+        }
+
+        proceedWithCheckout();
+    };
+
+    const handleOtpVerified = () => {
+        setIsOtpVerified(true);
+        setShowOtpModal(false);
+        proceedWithCheckout();
+    };
+
+    const proceedWithCheckout = async () => {
         setIsLoading(true);
+        setError('');
 
         try {
             const orderResponse = await fetch('/api/orders', {
@@ -285,6 +308,25 @@ function CheckoutContent() {
             const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
 
             if (razorpayKey && typeof window !== 'undefined' && window.Razorpay) {
+                // Create Razorpay order on backend for proper signature verification
+                let razorpayOrderId: string | undefined;
+                try {
+                    const rzpOrderRes = await fetch('/api/payment/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            amount: total,
+                            currency: 'INR',
+                            receipt: order.orderNumber,
+                            notes: { orderId: order.id, orderNumber: order.orderNumber },
+                        }),
+                    });
+                    const rzpOrderData = await rzpOrderRes.json();
+                    if (rzpOrderData.success) {
+                        razorpayOrderId = rzpOrderData.order.id;
+                    }
+                } catch {}
+
                 const options = {
                     key: razorpayKey,
                     amount: total * 100,
@@ -292,6 +334,7 @@ function CheckoutContent() {
                     name: 'New Eco Roses',
                     description: `Order #${order.orderNumber}`,
                     image: '/favicon_io/android-chrome-192x192.png',
+                    ...(razorpayOrderId ? { order_id: razorpayOrderId } : {}),
                     handler: async (response: any) => {
                         try {
                             await fetch('/api/payment/verify', {
@@ -299,7 +342,9 @@ function CheckoutContent() {
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     orderId: order.id,
+                                    razorpay_order_id: response.razorpay_order_id,
                                     razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
                                 }),
                             });
                         } catch {}
@@ -916,6 +961,15 @@ function CheckoutContent() {
                     </div>
                 </div>
             </div>
+
+            {/* OTP Verification Modal */}
+            <OtpModal
+                isOpen={showOtpModal}
+                email={formData.email}
+                name={`${formData.firstName} ${formData.lastName}`.trim()}
+                onClose={() => setShowOtpModal(false)}
+                onVerified={handleOtpVerified}
+            />
         </>
     );
 }
