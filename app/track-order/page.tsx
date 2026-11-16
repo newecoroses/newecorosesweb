@@ -69,10 +69,15 @@ function TrackOrderContent() {
   }, []);
 
   useEffect(() => {
-    if (orderNumber) {
+    const param = searchParams.get('order');
+    if (param) {
+      setOrderNumber(param);
+      setSearchInput(param);
+      fetchOrder(param);
+    } else if (orderNumber) {
       fetchOrder(orderNumber);
     }
-  }, [orderNumber]);
+  }, [searchParams]);
 
   const fetchOrder = async (no: string) => {
     const normalizedNo = cleanOrderNumber(no);

@@ -115,10 +115,16 @@ export async function findOrder(orderIdentifier: string): Promise<SavedOrder | n
     try {
         const db = getDb();
         if (db) {
-            // Try normalized first (e.g. 'order:NER-387233')
+            const possibleKeys = Array.from(new Set([
+                `order:${normalized}`,
+                `order:${raw}`,
+                `order:${raw.toUpperCase()}`,
+                `order:${raw.replace(/\s+/g, '-')}`
+            ]));
+
             const { data } = await db.from('site_settings')
                 .select('value')
-                .or(`key.eq.order:${normalized},key.eq.order:${raw},key.eq.order:${raw.toUpperCase()}`)
+                .in('key', possibleKeys)
                 .limit(1)
                 .maybeSingle();
 
