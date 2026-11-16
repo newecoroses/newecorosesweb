@@ -4,8 +4,8 @@ let razorpayInstance: Razorpay | null = null;
 
 export const getRazorpay = (): Razorpay => {
   if (!razorpayInstance) {
-    const keyId = process.env.RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_live_U0rMz0vXr8YcOo';
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || '28uTrCQgjs7RqzWGSGLbOiC7';
 
     if (!keyId || !keySecret) {
       throw new Error(

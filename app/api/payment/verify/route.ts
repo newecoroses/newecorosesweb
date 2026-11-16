@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
         // If we have full Razorpay signature data, verify it properly
         if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
-            const secret = process.env.RAZORPAY_KEY_SECRET;
+            const secret = process.env.RAZORPAY_KEY_SECRET || '28uTrCQgjs7RqzWGSGLbOiC7';
             if (secret) {
                 const bodyData = razorpay_order_id + '|' + razorpay_payment_id;
                 const expectedSig = crypto

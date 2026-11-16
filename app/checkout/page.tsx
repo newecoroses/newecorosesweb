@@ -241,6 +241,27 @@ function CheckoutContent() {
         return true;
     };
 
+    const loadRazorpayScript = (): Promise<boolean> => {
+        return new Promise((resolve) => {
+            if (typeof window === 'undefined') return resolve(false);
+            if (window.Razorpay) return resolve(true);
+
+            const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+            if (existingScript) {
+                existingScript.addEventListener('load', () => resolve(true));
+                existingScript.addEventListener('error', () => resolve(false));
+                if (window.Razorpay) return resolve(true);
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.async = true;
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
     const handlePayment = async () => {
         if (!validateForm()) return;
         setError('');
@@ -265,6 +286,15 @@ function CheckoutContent() {
         setError('');
 
         try {
+            // Guarantee Razorpay SDK is loaded
+            const isLoaded = await loadRazorpayScript();
+            if (!isLoaded || typeof window === 'undefined' || !window.Razorpay) {
+                throw new Error('Unable to connect to Razorpay payment gateway. Please check your internet connection or disable ad blockers and try again.');
+            }
+
+            const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_live_U0rMz0vXr8YcOo';
+
+            // 1. Create order in backend store
             const orderResponse = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -305,70 +335,73 @@ function CheckoutContent() {
             }
 
             const order = orderData.order;
-            const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
 
-            if (razorpayKey && typeof window !== 'undefined' && window.Razorpay) {
-                // Create Razorpay order on backend for proper signature verification
-                let razorpayOrderId: string | undefined;
-                try {
-                    const rzpOrderRes = await fetch('/api/payment/create-order', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            amount: total,
-                            currency: 'INR',
-                            receipt: order.orderNumber,
-                            notes: { orderId: order.id, orderNumber: order.orderNumber },
-                        }),
-                    });
-                    const rzpOrderData = await rzpOrderRes.json();
-                    if (rzpOrderData.success) {
-                        razorpayOrderId = rzpOrderData.order.id;
-                    }
-                } catch {}
-
-                const options = {
-                    key: razorpayKey,
-                    amount: total * 100,
-                    currency: 'INR',
-                    name: 'New Eco Roses',
-                    description: `Order #${order.orderNumber}`,
-                    image: '/favicon_io/android-chrome-192x192.png',
-                    ...(razorpayOrderId ? { order_id: razorpayOrderId } : {}),
-                    handler: async (response: any) => {
-                        try {
-                            await fetch('/api/payment/verify', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    orderId: order.id,
-                                    razorpay_order_id: response.razorpay_order_id,
-                                    razorpay_payment_id: response.razorpay_payment_id,
-                                    razorpay_signature: response.razorpay_signature,
-                                }),
-                            });
-                        } catch {}
-                        if (!isBuyNow) clearCart();
-                        try { sessionStorage.removeItem('ner_buy_now'); } catch {}
-                        router.push(`/order-confirmation?order=${order.orderNumber}`);
-                    },
-                    prefill: {
-                        name: `${formData.firstName} ${formData.lastName}`.trim(),
-                        email: formData.email,
-                        contact: formData.phone,
-                    },
-                    theme: { color: '#bfa81f' },
-                    modal: {
-                        ondismiss: () => { setIsLoading(false); },
-                    },
-                };
-                const rp = new window.Razorpay(options);
-                rp.open();
-            } else {
-                if (!isBuyNow) clearCart();
-                try { sessionStorage.removeItem('ner_buy_now'); } catch {}
-                router.push(`/order-confirmation?order=${order.orderNumber}`);
+            // 2. Create Razorpay order on backend for proper signature verification
+            let razorpayOrderId: string | undefined;
+            try {
+                const rzpOrderRes = await fetch('/api/payment/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: total,
+                        currency: 'INR',
+                        receipt: order.orderNumber,
+                        notes: { orderId: order.id, orderNumber: order.orderNumber },
+                    }),
+                });
+                const rzpOrderData = await rzpOrderRes.json();
+                if (rzpOrderData.success && rzpOrderData.order?.id) {
+                    razorpayOrderId = rzpOrderData.order.id;
+                }
+            } catch (err) {
+                console.warn('Backend create-order warning:', err);
             }
+
+            // 3. Open Razorpay Checkout modal
+            const options = {
+                key: razorpayKey,
+                amount: Math.round(total * 100),
+                currency: 'INR',
+                name: 'New Eco Roses',
+                description: `Order #${order.orderNumber}`,
+                image: '/favicon_io/android-chrome-192x192.png',
+                ...(razorpayOrderId ? { order_id: razorpayOrderId } : {}),
+                handler: async (response: any) => {
+                    try {
+                        await fetch('/api/payment/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                orderId: order.id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                            }),
+                        });
+                    } catch {}
+                    if (!isBuyNow) clearCart();
+                    try { sessionStorage.removeItem('ner_buy_now'); } catch {}
+                    router.push(`/order-confirmation?order=${order.orderNumber}`);
+                },
+                prefill: {
+                    name: `${formData.firstName} ${formData.lastName}`.trim(),
+                    email: formData.email,
+                    contact: formData.phone,
+                },
+                theme: { color: '#bfa81f' },
+                modal: {
+                    ondismiss: () => {
+                        setIsLoading(false);
+                    },
+                },
+            };
+
+            const rp = new window.Razorpay(options);
+            rp.on('payment.failed', function (resp: any) {
+                setIsLoading(false);
+                setError(resp.error?.description || 'Payment failed. Please try again.');
+            });
+            rp.open();
         } catch (err: any) {
             setError(err.message || 'Something went wrong. Please try again.');
             setIsLoading(false);
