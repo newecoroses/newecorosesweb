@@ -304,7 +304,7 @@ export function buildStatusUpdateHtml(data: OrderEmailData & { newStatus: string
 }
 
 // ── Send Functions ─────────────────────────────────────────────────────────
-const FROM = process.env.RESEND_FROM_EMAIL || 'New Eco Roses <onboarding@resend.dev>';
+const FROM = process.env.RESEND_FROM_EMAIL || 'New Eco Roses <noreply@newecoroses.com>';
 
 export async function sendOtpEmail(data: OtpEmailData) {
   try {
@@ -314,6 +314,10 @@ export async function sendOtpEmail(data: OtpEmailData) {
       subject: `🔐 ${data.otp} — Your New Eco Roses Verification Code`,
       html: buildOtpEmailHtml(data),
     });
+    if (res.error) {
+      console.error('Resend sendOtpEmail error:', res.error);
+      throw new Error(res.error.message || 'Failed to send OTP email');
+    }
     return res;
   } catch (err) {
     console.error('Failed to send OTP email via Resend:', err);
@@ -331,6 +335,9 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
       subject: `🎉 Order Confirmed! #${data.orderNumber} — New Eco Roses`,
       html: buildOrderConfirmationHtml(data, siteUrl),
     });
+    if (res.error) {
+      console.error('Resend sendOrderConfirmationEmail error:', res.error);
+    }
     return res;
   } catch (err) {
     console.error('Failed to send Order Confirmation email via Resend:', err);
@@ -348,6 +355,9 @@ export async function sendStatusUpdateEmail(data: OrderEmailData & { newStatus: 
       subject: `📦 Order #${data.orderNumber} Status Update — New Eco Roses`,
       html: buildStatusUpdateHtml(data, siteUrl),
     });
+    if (res.error) {
+      console.error('Resend sendStatusUpdateEmail error:', res.error);
+    }
     return res;
   } catch (err) {
     console.error('Failed to send Status Update email via Resend:', err);
