@@ -609,27 +609,66 @@ function CheckoutContent() {
                                         />
                                     </div>
 
-                                    {/* Pincode serviceability badge */}
+                                    {/* Pincode serviceability badge — premium */}
                                     {pincodeStatus && formData.postalCode.length > 0 && (
-                                        <div className={`flex items-start gap-2 px-3.5 py-2.5 rounded-lg text-xs font-medium border mt-1 ${
-                                            pincodeStatus.status === 'serviceable'
-                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                                                : pincodeStatus.status === 'invalid'
-                                                ? 'bg-amber-50 border-amber-200 text-amber-800'
-                                                : 'bg-red-50 border-red-200 text-red-700'
-                                        }`}>
-                                            <span className="mt-0.5 flex-shrink-0">
-                                                {pincodeStatus.status === 'serviceable' ? '✅' : pincodeStatus.status === 'invalid' ? '⚠️' : '🚫'}
-                                            </span>
-                                            <span>{pincodeStatus.message}
-                                                {pincodeStatus.status === 'serviceable' && pincodeStatus.area && (
-                                                    <span className="text-emerald-600 font-semibold"> — {pincodeStatus.area}</span>
+                                        <>
+                                        {pincodeStatus.status === 'serviceable' ? (
+                                            <div className="mt-2 rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-emerald-50 px-4 py-3 shadow-sm">
+                                                <div className="flex items-center gap-2.5">
+                                                    {/* animated green dot */}
+                                                    <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+                                                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                                    </span>
+                                                    <p className="text-[13px] font-bold tracking-wide text-emerald-700 uppercase" style={{letterSpacing: '0.06em'}}>
+                                                        Delivery Available
+                                                    </p>
+                                                    {pincodeStatus.distanceKm !== undefined && (
+                                                        <span className="ml-auto text-[10px] font-semibold bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-200">
+                                                            ~{pincodeStatus.distanceKm} km
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {pincodeStatus.area && (
+                                                    <p className="mt-1.5 text-[12px] text-gray-600 font-medium pl-5">
+                                                        📍 <span className="text-gray-800">{pincodeStatus.area}</span>, Kolkata
+                                                    </p>
                                                 )}
-                                                {pincodeStatus.status !== 'serviceable' && (
-                                                    <span className="block mt-0.5 text-[11px] opacity-80">Currently we deliver only within 15 km of Tollygunge, Kolkata.</span>
+                                                <p className="mt-1 text-[11px] text-emerald-600/80 font-medium pl-5">
+                                                    Handcrafted fresh delivery · 9 AM – 9 PM · Free shipping
+                                                </p>
+                                            </div>
+                                        ) : pincodeStatus.status === 'invalid' ? (
+                                            <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3">
+                                                <div className="flex items-center gap-2">
+                                                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                                                    <p className="text-[12px] font-semibold text-amber-700">Enter a valid 6-digit PIN code</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="mt-2 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 via-white to-red-50 px-4 py-3 shadow-sm">
+                                                <div className="flex items-center gap-2.5">
+                                                    <span className="flex h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-500"></span>
+                                                    <p className="text-[13px] font-bold tracking-wide text-red-600 uppercase" style={{letterSpacing: '0.06em'}}>
+                                                        Not Serviceable
+                                                    </p>
+                                                    {pincodeStatus.distanceKm !== undefined && (
+                                                        <span className="ml-auto text-[10px] font-semibold bg-red-100 text-red-500 px-2 py-0.5 rounded-full border border-red-200">
+                                                            {pincodeStatus.distanceKm} km away
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {pincodeStatus.area && (
+                                                    <p className="mt-1.5 text-[12px] text-gray-600 font-medium pl-5">
+                                                        📍 <span className="text-gray-700">{pincodeStatus.area}</span>
+                                                    </p>
                                                 )}
-                                            </span>
-                                        </div>
+                                                <p className="mt-1 text-[11px] text-red-500/80 font-medium pl-5">
+                                                    We currently deliver within 15 km of Tollygunge, Kolkata only.
+                                                </p>
+                                            </div>
+                                        )}
+                                        </>
                                     )}
 
                                     {/* Phone (clean, no suggestions / autofill) */}
