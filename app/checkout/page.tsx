@@ -232,6 +232,10 @@ function CheckoutContent() {
                 image: '/favicon_io/android-chrome-192x192.png',
                 ...(razorpayOrderId ? { order_id: razorpayOrderId } : {}),
                 handler: async (response: any) => {
+                    try {
+                        sessionStorage.setItem('ner_last_order', JSON.stringify(order));
+                        localStorage.setItem('ner_last_order', JSON.stringify(order));
+                    } catch {}
                     try { await fetch('/api/payment/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: order.id, razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature }) }); } catch {}
                     if (!isBuyNow) clearCart();
                     try { sessionStorage.removeItem('ner_buy_now'); } catch {}

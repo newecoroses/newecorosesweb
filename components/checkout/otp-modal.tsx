@@ -106,6 +106,7 @@ export default function OtpModal({
   };
 
   const verifyOtp = async (code: string) => {
+    if (code.length !== 6) return;
     setIsLoading(true);
     setError('');
     try {
@@ -119,7 +120,7 @@ export default function OtpModal({
         setVerified(true);
         setTimeout(() => {
           onVerified();
-        }, 600);
+        }, 500);
       } else {
         setError(data.error || 'Invalid code. Please try again.');
         setOtp(['', '', '', '', '', '']);
@@ -136,52 +137,55 @@ export default function OtpModal({
 
   if (!isOpen) return null;
 
+  const isComplete = otp.every((d) => d !== '') && otp.join('').length === 6;
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md bg-white border border-gray-100 shadow-2xl rounded-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-[460px] bg-white border border-black/[0.08] shadow-2xl rounded-[22px] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Top Gold Border Bar */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-[#bfa81f] via-[#e6c845] to-[#bfa81f]" />
+        {/* Top Gold Accent Bar */}
+        <div className="h-1.5 w-full bg-[#bfa81f]" />
 
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-black flex items-center justify-center transition-colors cursor-pointer z-10"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#f2f2f2] hover:bg-[#e8e8e8] text-[#555] hover:text-[#111] flex items-center justify-center transition-colors cursor-pointer z-10"
           aria-label="Close"
         >
           <X size={16} />
         </button>
 
         {/* Header */}
-        <div className="p-6 pb-2 text-center">
-          <div className="w-14 h-14 mx-auto mb-3.5 bg-amber-50 border border-amber-200 rounded-full flex items-center justify-center text-[#bfa81f]">
+        <div className="p-6 sm:p-7 pb-2 text-center">
+          <div className="w-14 h-14 mx-auto mb-3.5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
             <ShieldCheck size={28} />
           </div>
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#bfa81f]">
+          <span className="text-[11px] uppercase font-bold tracking-[0.14em] text-[#bfa81f]">
             New Eco Roses Security
           </span>
-          <h2 className="text-xl font-serif font-bold text-gray-900 mt-1">
+          <h2 className="text-2xl font-bold text-[#111] tracking-tight mt-1">
             Verify Email to Order
           </h2>
-          <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
+          <p className="text-[13.5px] text-[#555] mt-1.5 leading-relaxed">
             We sent a 6-digit confirmation code to:
           </p>
-          <p className="text-xs font-bold text-gray-900 mt-0.5 font-mono bg-gray-50 py-1 px-3 rounded-lg inline-block border border-gray-100">
-            {email}
-          </p>
+          <div className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f4f4f4] border border-black/[0.08] text-xs font-semibold text-[#111]">
+            <Mail size={12} className="text-[#888]" />
+            <span>{email}</span>
+          </div>
         </div>
 
         {/* OTP Input Fields */}
-        <div className="px-6 py-4">
-          <div className="flex justify-center gap-2 sm:gap-2.5 mb-3">
+        <div className="px-6 sm:px-7 py-4">
+          <div className="flex justify-center gap-2 sm:gap-2.5 mb-2">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -194,14 +198,14 @@ export default function OtpModal({
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 disabled={isLoading || isSending || verified}
-                className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-bold font-mono rounded-xl border transition-all duration-200 outline-none ${
+                className={`w-11 h-14 sm:w-12 sm:h-15 text-center text-2xl font-bold font-mono rounded-[12px] transition-all duration-150 outline-none ${
                   verified
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                    ? 'border-2 border-emerald-600 bg-emerald-50 text-emerald-800'
                     : error
-                    ? 'border-red-400 bg-red-50 text-red-700'
+                    ? 'border-2 border-red-400 bg-red-50 text-red-700'
                     : digit
-                    ? 'border-[#bfa81f] ring-1 ring-[#bfa81f] bg-white text-black'
-                    : 'border-gray-200 bg-gray-50/50 hover:border-gray-300 focus:border-[#bfa81f] focus:ring-1 focus:ring-[#bfa81f]'
+                    ? 'border-2 border-[#111] bg-white text-[#111] shadow-sm'
+                    : 'border border-black/[0.12] bg-[#f7f7f7] text-[#111] hover:border-black/30 focus:border-[#111] focus:bg-white focus:ring-2 focus:ring-black/10'
                 }`}
               />
             ))}
@@ -209,41 +213,66 @@ export default function OtpModal({
 
           {/* Verification Status Feedback */}
           {verified ? (
-            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 my-2">
-              <Check size={14} className="stroke-[3]" />
+            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 my-2.5">
+              <Check size={15} className="stroke-[3]" />
               <span>Email Verified! Processing order…</span>
             </div>
           ) : isLoading ? (
-            <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-gray-500 my-2">
-              <Loader2 size={14} className="animate-spin text-[#bfa81f]" />
+            <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#555] my-2.5">
+              <Loader2 size={15} className="animate-spin text-[#111]" />
               <span>Verifying code…</span>
             </div>
           ) : codeSent && !error ? (
-            <p className="text-center text-[11px] text-emerald-600 my-2 flex items-center justify-center gap-1 font-medium">
-              <Mail size={12} />
-              Code sent — please check your inbox (and spam folder)
+            <p className="text-center text-[12px] text-emerald-600 my-2 flex items-center justify-center gap-1 font-medium">
+              <Check size={12} />
+              Code sent — please check your inbox (or spam)
             </p>
           ) : null}
 
           {/* Error Message */}
           {error && (
-            <p className="text-center text-xs font-semibold text-red-500 my-2">
+            <p className="text-center text-xs font-semibold text-red-600 my-2">
               {error}
             </p>
           )}
 
+          {/* Explicit Verify Button (Template st-btn style) */}
+          <button
+            type="button"
+            onClick={() => verifyOtp(otp.join(''))}
+            disabled={!isComplete || isLoading || isSending || verified}
+            className="w-full min-h-[50px] bg-[#111] hover:bg-black text-white font-bold rounded-[14px] text-[15px] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed mt-3 shadow-sm hover:shadow-md active:scale-[0.99]"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Verifying Code…</span>
+              </>
+            ) : verified ? (
+              <>
+                <Check size={18} className="stroke-[3]" />
+                <span>Email Verified!</span>
+              </>
+            ) : (
+              <>
+                <span>Verify & Proceed to Payment</span>
+                <ArrowRight size={16} />
+              </>
+            )}
+          </button>
+
           {/* Resend Action */}
-          <div className="text-center mt-3 pt-2">
+          <div className="text-center mt-3 pt-1">
             {resendCooldown > 0 ? (
-              <p className="text-xs text-gray-400">
-                Resend code in <span className="font-bold font-mono text-gray-700">{resendCooldown}s</span>
+              <p className="text-xs text-[#888]">
+                Resend code in <span className="font-bold font-mono text-[#111]">{resendCooldown}s</span>
               </p>
             ) : (
               <button
                 type="button"
                 onClick={sendOtp}
                 disabled={isSending || verified}
-                className="text-xs font-bold text-[#bfa81f] hover:text-[#a89216] transition-colors cursor-pointer underline underline-offset-4 disabled:opacity-50"
+                className="text-xs font-semibold text-[#111] hover:text-[#bfa81f] underline underline-offset-3 transition-colors cursor-pointer disabled:opacity-50"
               >
                 {isSending ? 'Sending…' : 'Resend Code'}
               </button>
@@ -252,8 +281,8 @@ export default function OtpModal({
         </div>
 
         {/* Footer Guarantee */}
-        <div className="p-4 bg-gray-50 border-t border-gray-100 text-center">
-          <p className="text-[11px] text-gray-400">
+        <div className="p-3.5 bg-[#f7f7f7] border-t border-black/[0.06] text-center">
+          <p className="text-[11.5px] text-[#777]">
             🔒 Verification ensures you receive tracking updates & order receipts.
           </p>
         </div>
