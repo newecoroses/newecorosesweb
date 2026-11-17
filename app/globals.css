@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
 @custom-variant dark (&:where(.dark, .dark *));
 @import "../node_modules/tailwindcss/index.css";
 
@@ -18,7 +19,7 @@
   --font-sans: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif;
   --font-accent: 'Inter', 'Poppins', ui-sans-serif, sans-serif;
-  --font-montserrat: var(--font-montserrat), 'Montserrat', sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
 }
 
 /* ===== Base ===== */
