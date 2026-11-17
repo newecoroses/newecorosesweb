@@ -17,7 +17,6 @@ import CelebrateLove from '@/components/home/celebrate-love';
 import ProductCard from '@/components/product/product-card';
 import SectionHeader from '@/components/ui/section-header';
 import WhatsAppFloat from '@/components/ui/whatsapp-float';
-import DemoProductBanner from '@/components/home/demo-product-banner';
 
 import {
   fetchProducts,
@@ -211,9 +210,6 @@ export default function Home() {
       <div className="bg-white pb-6">
         <PromoSlider />
       </div>
-
-      {/* ═══ 4.5 DEMO PAYMENT TEST PRODUCT ═══ */}
-      <DemoProductBanner />
 
       {/* ═══ 5. PRODUCT GRID — ALL PRODUCTS ═══ */}
       <section className="py-8 md:py-14 bg-white border-t border-[#f0ece4]">
