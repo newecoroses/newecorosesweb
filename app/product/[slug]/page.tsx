@@ -107,7 +107,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     if (loading) {
         return (
-            <div className="pt-[100px] sm:pt-[110px] lg:pt-[140px] pb-14 bg-white min-h-screen animate-pulse">
+            <div className="pt-[72px] sm:pt-[76px] lg:pt-[82px] pb-14 bg-white min-h-screen animate-pulse">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb skeleton */}
                     <div className="flex items-center gap-2 mb-4">
@@ -197,7 +197,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     };
 
     return (
-        <div className="pt-[100px] sm:pt-[110px] lg:pt-[140px] pb-14 bg-white min-h-screen">
+        <div className="pt-[72px] sm:pt-[76px] lg:pt-[82px] pb-14 bg-white min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* ── Breadcrumb Bar ── */}
                 <nav className="flex items-center gap-2 text-xs text-gray-500 mb-4 font-normal overflow-x-auto whitespace-nowrap py-0.5">

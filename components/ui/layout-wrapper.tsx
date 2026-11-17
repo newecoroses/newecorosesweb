@@ -18,6 +18,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const pathname = usePathname();
     const isBarePortal = pathname?.startsWith('/admin') || pathname?.startsWith('/staff') || pathname === '/tv-marquee';
     const isCheckout = pathname?.startsWith('/checkout') || pathname?.startsWith('/order-confirmation') || pathname?.startsWith('/track-order');
+    const isCart = pathname === '/cart';
 
     if (isBarePortal) {
         return <main className="flex-grow">{children}</main>;
@@ -28,12 +29,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
             <ThemeProvider />
             <ScrollRestorer />
             <AddonModalMount />
-            {!isCheckout && <Navbar />}
+            {!isCheckout && !isCart && <Navbar />}
             <main className="flex-grow w-full max-w-full overflow-x-clip">
                 {children}
             </main>
-            {!isCheckout && <Footer />}
-            {!isCheckout && <CartDrawer />}
+            {!isCheckout && !isCart && <Footer />}
+            {!isCheckout && !isCart && <CartDrawer />}
         </CartProvider>
     );
 }

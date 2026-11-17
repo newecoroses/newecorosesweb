@@ -187,7 +187,7 @@ export default function Home() {
   return (
     <>
       {/* ═══ 1. HERO BANNER CAROUSEL ═══ */}
-      <div className="pt-[84px] sm:pt-[92px] lg:pt-[130px] bg-white">
+      <div className="pt-[90px] sm:pt-[94px] lg:pt-[98px] bg-white">
         <HeroSlider />
       </div>
 

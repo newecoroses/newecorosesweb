@@ -18,6 +18,10 @@ interface FormData {
     firstName: string;
     lastName: string;
     phone: string;
+    alternatePhone: string;
+    orderingForOther: boolean;
+    recipientName: string;
+    recipientPhone: string;
     line1: string;
     line2: string;
     city: string;
@@ -108,12 +112,53 @@ function CheckoutContent() {
     const [formData, setFormData] = useState<FormData>({
         email: '', emailNews: false,
         firstName: '', lastName: '', phone: '',
+        alternatePhone: '',
+        orderingForOther: false,
+        recipientName: '',
+        recipientPhone: '',
         line1: '', line2: '',
         city: '', state: 'West Bengal', postalCode: '',
         country: 'India', billingSame: true,
-        deliveryTime: 'Standard Delivery (9 AM - 9 PM)',
+        deliveryTime: 'Standard Delivery (9:00 AM – 9:00 PM)',
         messageCard: '',
     });
+
+    const [cartOccasion, setCartOccasion] = useState<string>('');
+
+    // Delivery calculation with 8:00 PM IST cutoff
+    const deliveryInfo = useMemo(() => {
+        const now = new Date();
+        const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const ist = new Date(utcMs + (3600000 * 5.5));
+        const hour = ist.getHours();
+        const isPastCutoff = hour >= 20; // 8:00 PM cutoff
+
+        const deliveryDate = new Date(ist);
+        if (isPastCutoff) {
+            deliveryDate.setDate(deliveryDate.getDate() + 1);
+        }
+
+        const day = deliveryDate.getDate();
+        const suffix = (d: number) => {
+            if (d > 3 && d < 21) return 'th';
+            switch (d % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        };
+        const month = deliveryDate.toLocaleString('en-US', { month: 'short' });
+        const dayLabel = isPastCutoff ? 'Tomorrow' : 'Today';
+
+        return {
+            isSameDay: !isPastCutoff,
+            isPastCutoff,
+            formattedDate: `${day}${suffix(day)} ${month}`,
+            fullFormatted: `${dayLabel}, ${day}${suffix(day)} ${month}`,
+            deliverySlotText: 'Standard Delivery (9:00 AM – 9:00 PM)',
+        };
+    }, []);
 
     useEffect(() => {
         setMounted(true);
@@ -124,6 +169,35 @@ function CheckoutContent() {
             script.onload = () => { razorpayLoadedRef.current = true; };
             document.body.appendChild(script);
         }
+
+        // Pre-fill verified user session from Cart Page auth flow
+        try {
+            const storedUser = localStorage.getItem('ner_verified_user');
+            if (storedUser) {
+                const parsed = JSON.parse(storedUser);
+                if (parsed.verified && parsed.email) {
+                    setIsOtpVerified(true);
+                    const nameParts = (parsed.name || '').trim().split(' ');
+                    const fName = nameParts[0] || '';
+                    const lName = nameParts.slice(1).join(' ') || '';
+                    setFormData(prev => ({
+                        ...prev,
+                        email: prev.email || parsed.email || '',
+                        phone: prev.phone || parsed.phone || '',
+                        firstName: prev.firstName || fName,
+                        lastName: prev.lastName || lName,
+                    }));
+                }
+            }
+            const storedMsg = localStorage.getItem('ner_message_card');
+            if (storedMsg) {
+                setFormData(prev => ({ ...prev, messageCard: prev.messageCard || storedMsg }));
+            }
+            const storedOccasion = localStorage.getItem('ner_cart_occasion');
+            if (storedOccasion) {
+                setCartOccasion(storedOccasion);
+            }
+        } catch {}
     }, []);
 
     const subtotal = items.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
@@ -168,14 +242,62 @@ function CheckoutContent() {
     };
 
     const validateForm = (): boolean => {
-        if (!formData.email.trim() || !formData.firstName.trim() || !formData.phone.trim()) { setError('Please fill in your name, email and phone.'); return false; }
-        if (!formData.line1.trim() || !formData.city.trim() || !formData.postalCode.trim()) { setError('Please complete your delivery address.'); return false; }
-        if (!/^\S+@\S+\.\S+$/.test(formData.email)) { setError('Please enter a valid email address.'); return false; }
-        if (formData.phone.replace(/\D/g, '').length < 10) { setError('Please enter a valid 10-digit mobile number.'); return false; }
+        if (!formData.email.trim() || !formData.firstName.trim() || !formData.phone.trim()) {
+            setError('Please fill in your name, email and primary mobile number.');
+            return false;
+        }
+        if (!formData.line1.trim() || !formData.city.trim() || !formData.postalCode.trim()) {
+            setError('Please complete your delivery address.');
+            return false;
+        }
+        if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+            setError('Please enter a valid email address.');
+            return false;
+        }
+        const cleanPrimary = formData.phone.replace(/\D/g, '');
+        if (cleanPrimary.length < 10) {
+            setError('Please enter a valid 10-digit primary mobile number.');
+            return false;
+        }
+
+        // Alternate phone is mandatory for delivery
+        const cleanAlt = formData.alternatePhone.replace(/\D/g, '');
+        if (cleanAlt.length < 10) {
+            setError('Alternate mobile number is mandatory for delivery partner coordination.');
+            return false;
+        }
+        if (cleanAlt === cleanPrimary) {
+            setError('Alternate mobile number cannot be identical to your primary phone number.');
+            return false;
+        }
+
+        // Ordering for someone else validations
+        if (formData.orderingForOther) {
+            if (!formData.recipientName.trim()) {
+                setError('Please enter the recipient’s name for delivery.');
+                return false;
+            }
+            const cleanRecip = formData.recipientPhone.replace(/\D/g, '');
+            if (cleanRecip.length < 10) {
+                setError('Please enter a valid 10-digit phone number for the recipient.');
+                return false;
+            }
+            if (cleanAlt === cleanRecip) {
+                setError('Alternate number cannot be identical to the recipient’s phone number.');
+                return false;
+            }
+        }
+
         const cleanPin = formData.postalCode.replace(/\D/g, '');
-        if (cleanPin.length !== 6) { setError('Please enter a valid 6-digit PIN code.'); return false; }
+        if (cleanPin.length !== 6) {
+            setError('Please enter a valid 6-digit PIN code.');
+            return false;
+        }
         const pinResult = evaluatePincode(cleanPin);
-        if (!pinResult.isServiceable) { setError(pinResult.message); return false; }
+        if (!pinResult.isServiceable) {
+            setError(pinResult.message);
+            return false;
+        }
         return true;
     };
 
@@ -207,13 +329,22 @@ function CheckoutContent() {
             const isLoaded = await loadRazorpayScript();
             if (!isLoaded || !window.Razorpay) throw new Error('Unable to connect to Razorpay. Please disable ad blockers and retry.');
             const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_live_U0rMz0vXr8YcOo';
+            const specialNotesList = [
+                cartOccasion ? `Occasion: ${cartOccasion}` : '',
+                `Delivery Window: 9:00 AM – 9:00 PM (${deliveryInfo.fullFormatted})`,
+                `Primary Mobile: +91 ${formData.phone}`,
+                `Alternate Mobile (Mandatory): +91 ${formData.alternatePhone}`,
+                formData.orderingForOther ? `Recipient: ${formData.recipientName} (+91 ${formData.recipientPhone})` : '',
+                formData.messageCard ? `Message: "${formData.messageCard}"` : '',
+            ].filter(Boolean);
+
             const orderResponse = await fetch('/api/orders', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     items: items.map(i => ({ id: i.id, name: i.name, slug: i.slug, price: i.price, quantity: i.quantity, image_url: i.image_url })),
                     customer: { name: `${formData.firstName} ${formData.lastName}`.trim(), email: formData.email, phone: formData.phone },
                     shippingAddress: { line1: formData.line1, line2: formData.line2, city: formData.city, state: formData.state, postalCode: formData.postalCode, country: formData.country || 'India' },
-                    specialNote: [formData.deliveryTime ? `Slot: ${formData.deliveryTime}` : '', formData.messageCard ? `Message: "${formData.messageCard}"` : ''].filter(Boolean).join(' | '),
+                    specialNote: specialNotesList.join(' | '),
                     paymentMethod: 'online', discountCode: appliedCoupon?.code,
                 }),
             });
@@ -400,18 +531,102 @@ function CheckoutContent() {
 
                             {/* ── Contact ── */}
                             <div className="ner-cx-card">
-                                <p className="ner-cx-section-title">Contact</p>
+                                <p className="ner-cx-section-title">Contact &amp; Delivery Phone Numbers</p>
                                 <h2 className="ner-cx-section-h">Your Details</h2>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                                     <input type="email" name="email" placeholder="Email address" value={formData.email} onChange={handleChange} className={fieldCls} required autoComplete="email" />
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                                         <input type="text" name="firstName" placeholder="First name" value={formData.firstName} onChange={handleChange} className={fieldCls} required />
                                         <input type="text" name="lastName" placeholder="Last name" value={formData.lastName} onChange={handleChange} className={fieldCls} />
                                     </div>
-                                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                        <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
-                                        <input type="tel" name="phone" placeholder="10-digit mobile number" maxLength={10} value={formData.phone} onChange={handleChange} autoComplete="off" className={fieldCls} style={{ paddingLeft: 42 }} required />
+
+                                    {/* Primary Phone */}
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#444', marginBottom: 5 }}>
+                                            Primary Mobile Number <span style={{ color: '#dc2626' }}>*</span>
+                                        </label>
+                                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
+                                            <input type="tel" name="phone" placeholder="10-digit mobile number" maxLength={10} value={formData.phone} onChange={handleChange} autoComplete="off" className={fieldCls} style={{ paddingLeft: 42 }} required />
+                                        </div>
                                     </div>
+
+                                    {/* Alternate Phone (Mandatory) */}
+                                    <div>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
+                                            <label style={{ fontSize: 12, fontWeight: 700, color: '#444' }}>
+                                                Alternate Mobile Number <span style={{ color: '#dc2626' }}>* (Mandatory for Delivery)</span>
+                                            </label>
+                                        </div>
+                                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
+                                            <input type="tel" name="alternatePhone" placeholder="10-digit alternate number (different from primary)" maxLength={10} value={formData.alternatePhone} onChange={handleChange} autoComplete="off" className={fieldCls} style={{ paddingLeft: 42 }} required />
+                                        </div>
+                                        <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#666', fontWeight: 500 }}>
+                                            ⚡ Required for delivery rider coordination. Cannot be the same as your primary number.
+                                        </p>
+                                    </div>
+
+                                    {/* Ordering for someone else checkbox */}
+                                    <div style={{ padding: '12px 14px', borderRadius: 12, border: formData.orderingForOther ? '1.5px solid #bfa81f' : '1px solid rgba(17,17,17,0.1)', background: formData.orderingForOther ? '#faf8f0' : '#fcfcfc', transition: 'all 0.2s' }}>
+                                        <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
+                                            <input
+                                                type="checkbox"
+                                                name="orderingForOther"
+                                                checked={formData.orderingForOther}
+                                                onChange={handleChange}
+                                                style={{ accentColor: '#bfa81f', width: 17, height: 17, marginTop: 2, flexShrink: 0 }}
+                                            />
+                                            <div>
+                                                <span style={{ fontSize: 13.5, fontWeight: 700, color: '#111' }}>
+                                                    Ordering for someone else? (Gift Surprise)
+                                                </span>
+                                                <p style={{ margin: '2px 0 0', fontSize: 12, color: '#666', lineHeight: 1.4 }}>
+                                                    Provide the recipient&apos;s details so our delivery rider can contact them upon arrival.
+                                                </p>
+                                            </div>
+                                        </label>
+
+                                        {formData.orderingForOther && (
+                                            <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(191,168,31,0.25)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                                <div>
+                                                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#333', marginBottom: 4 }}>
+                                                        Recipient&apos;s Full Name <span style={{ color: '#dc2626' }}>*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="recipientName"
+                                                        placeholder="e.g. Priya Sharma"
+                                                        value={formData.recipientName}
+                                                        onChange={handleChange}
+                                                        className={fieldCls}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#333', marginBottom: 4 }}>
+                                                        Recipient&apos;s Mobile Number <span style={{ color: '#dc2626' }}>*</span>
+                                                    </label>
+                                                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                                        <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
+                                                        <input
+                                                            type="tel"
+                                                            name="recipientPhone"
+                                                            placeholder="10-digit recipient phone"
+                                                            maxLength={10}
+                                                            value={formData.recipientPhone}
+                                                            onChange={handleChange}
+                                                            autoComplete="off"
+                                                            className={fieldCls}
+                                                            style={{ paddingLeft: 42 }}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#555', cursor: 'pointer', paddingTop: 2 }}>
                                         <input type="checkbox" name="emailNews" checked={formData.emailNews} onChange={handleChange} style={{ accentColor: '#bfa81f', width: 15, height: 15 }} />
                                         Email me with new arrivals and exclusive offers
@@ -477,15 +692,34 @@ function CheckoutContent() {
                                 </div>
                             </div>
 
-                            {/* ── Delivery Time Slot ── */}
+                            {/* ── Delivery Schedule (Fixed 9 AM - 9 PM with 8 PM Cutoff) ── */}
                             <div className="ner-cx-card">
-                                <p className="ner-cx-section-title">Delivery Window</p>
-                                <h2 className="ner-cx-section-h">Shipping Method</h2>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6 }}>
+                                    <p className="ner-cx-section-title" style={{ margin: 0 }}>Delivery Schedule</p>
+                                    {deliveryInfo.isSameDay ? (
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#15803d', background: 'rgba(22,163,74,0.1)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(22,163,74,0.25)' }}>
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="#15803d" stroke="#15803d" strokeWidth="1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                            Same-Day Delivery
+                                        </span>
+                                    ) : (
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#854d0e', background: 'rgba(234,179,8,0.12)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(234,179,8,0.25)' }}>
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#854d0e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                            Next-Day Delivery
+                                        </span>
+                                    )}
+                                </div>
+                                <h2 className="ner-cx-section-h">9:00 AM – 9:00 PM (Fixed Window)</h2>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 12, border: '1.5px solid rgba(191,168,31,0.4)', background: 'rgba(191,168,31,0.05)' }}>
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bfa81f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#111' }}>Standard Delivery — 9:00 AM to 9:00 PM</p>
-                                        <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#555' }}>Fresh handcrafted delivery in luxury packaging</p>
+                                        <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#111' }}>
+                                            Delivery on {deliveryInfo.fullFormatted}
+                                        </p>
+                                        <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#555' }}>
+                                            {deliveryInfo.isSameDay
+                                                ? 'Order accepted before 8:00 PM cutoff · Fresh delivery anytime between 9:00 AM and 9:00 PM'
+                                                : 'Order placed after 8:00 PM cutoff · Delivered fresh tomorrow between 9:00 AM and 9:00 PM'}
+                                        </p>
                                     </div>
                                     <span style={{ fontSize: 12, fontWeight: 800, color: '#bfa81f', background: 'rgba(191,168,31,0.12)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(191,168,31,0.25)', whiteSpace: 'nowrap', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Free</span>
                                 </div>
@@ -685,9 +919,36 @@ function CheckoutContent() {
                                 {/* Order details summary */}
                                 <div style={{ marginTop: 20, paddingTop: 18, borderTop: '1px solid rgba(17,17,17,0.08)' }}>
                                     <dl className="ner-oc-dl">
-                                        <div><dt>Delivery slot</dt><dd>9:00 AM – 9:00 PM (Standard)</dd></div>
-                                        <div><dt>Delivery area</dt><dd>{pincodeStatus?.status === 'serviceable' ? `${pincodeStatus.area || ''}, Kolkata` : 'Within 15 km of Tollygunge, Kolkata'}</dd></div>
-                                        <div><dt>Payment</dt><dd>Online via Razorpay (UPI / Cards)</dd></div>
+                                        <div>
+                                            <dt>Delivery schedule</dt>
+                                            <dd>{deliveryInfo.fullFormatted} (9:00 AM – 9:00 PM)</dd>
+                                        </div>
+                                        {cartOccasion && (
+                                            <div>
+                                                <dt>Occasion</dt>
+                                                <dd style={{ textTransform: 'capitalize' }}>{cartOccasion}</dd>
+                                            </div>
+                                        )}
+                                        {formData.orderingForOther && formData.recipientName && (
+                                            <div>
+                                                <dt>Recipient</dt>
+                                                <dd>{formData.recipientName} {formData.recipientPhone ? `(+91 ${formData.recipientPhone})` : ''}</dd>
+                                            </div>
+                                        )}
+                                        {formData.alternatePhone && (
+                                            <div>
+                                                <dt>Alternate Contact</dt>
+                                                <dd>+91 {formData.alternatePhone}</dd>
+                                            </div>
+                                        )}
+                                        <div>
+                                            <dt>Delivery area</dt>
+                                            <dd>{pincodeStatus?.status === 'serviceable' ? `${pincodeStatus.area || ''}, Kolkata` : 'Within 15 km of Tollygunge, Kolkata'}</dd>
+                                        </div>
+                                        <div>
+                                            <dt>Payment</dt>
+                                            <dd>Online via Razorpay (UPI / Cards)</dd>
+                                        </div>
                                     </dl>
                                 </div>
                             </div>

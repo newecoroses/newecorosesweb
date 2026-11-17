@@ -16,6 +16,19 @@ interface MegaMenuData {
     products: DBProduct[];
 }
 
+/* ─── Helper to format category display names matching reference image ─── */
+function getCategoryDisplayName(name: string): string {
+    const lower = name.toLowerCase().trim();
+    if (lower === 'fresh flower' || lower === 'fresh flowers') return 'Flowers';
+    if (lower === 'chocolate bouquet' || lower === 'chocolate bouquets') return 'Bouquets';
+    if (lower === 'hamper' || lower === 'hampers') return 'Gift Hampers';
+    if (lower === 'cake') return 'Cakes';
+    if (lower === 'plants') return 'Plants';
+    if (lower === 'balloon bouquet' || lower === 'balloon bouquets') return 'Balloons';
+    if (lower === 'teddy and bouquet' || lower === 'teddy & bouquet') return 'Teddy Gifts';
+    return name;
+}
+
 /* ─── Tag generators from product metadata ─── */
 function generateTags(products: DBProduct[]): { label: string; link: string }[] {
     const tags: { label: string; link: string }[] = [];
@@ -45,10 +58,10 @@ function generateTags(products: DBProduct[]): { label: string; link: string }[] 
         tags.push({ label: c, link: `/shop?celebration=${encodeURIComponent(c.toLowerCase())}` });
     });
 
-    return tags.slice(0, 8);
+    return tags.slice(0, 6);
 }
 
-/* ─── Desktop Mega Dropdown Panel ─── */
+/* ─── Desktop Mega Dropdown Panel (Vertically Slim FNP Style) ─── */
 function MegaDropdownPanel({
     collection,
     allProducts,
@@ -64,59 +77,59 @@ function MegaDropdownPanel({
     const featuredProducts = productsInCollection.slice(0, 6);
     const tags = generateTags(productsInCollection);
 
-    // Find related subcollections (other collections as "related")
     const hasProducts = featuredProducts.length > 0;
     const hasTags = tags.length > 0;
     const hasBanner = !!collection.image_url;
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="absolute top-full left-0 w-full bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] rounded-b-2xl border-t border-[#f0ece4] z-50"
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+            className="absolute top-full left-0 w-full bg-white shadow-[0_14px_36px_rgba(0,0,0,0.08)] rounded-b-xl border-t border-black/[0.06] z-50 overflow-hidden"
             onMouseLeave={onClose}
         >
-            <div className="max-w-7xl mx-auto px-8 py-8">
-                <div className="flex gap-8">
+            <div className="max-w-7xl mx-auto px-6 sm:px-8 py-3.5">
+                <div className="flex items-center justify-between gap-6">
                     {/* Column 1 — Collection Details & Browse */}
-                    <div className="flex-shrink-0 w-[200px]">
-                        <h3 className="font-sans text-base text-[#1c1917] font-bold mb-4 pb-2 border-b border-gray-100">
+                    <div className="flex-shrink-0 w-[180px]">
+                        <h3 className="font-sans text-[14px] text-[#111] font-bold leading-tight">
                             {collection.name}
                         </h3>
                         {collection.description && (
-                            <p className="text-xs text-gray-500 leading-relaxed mb-4 font-normal">
+                            <p className="text-[11.5px] text-[#666] leading-snug line-clamp-2 my-1 font-normal">
                                 {collection.description}
                             </p>
                         )}
                         <Link
                             href={`/shop?cat=${collection.slug}`}
-                            className="mega-link inline-flex items-center gap-1 text-xs uppercase tracking-[0.15em] font-bold text-[#1c1917] hover:text-black transition-colors"
+                            className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider font-bold text-[#bfa81f] hover:text-[#a89216] transition-colors mt-1"
                             onClick={onClose}
                         >
-                            View All <ChevronRight size={12} />
+                            View All <ChevronRight size={11} />
                         </Link>
                     </div>
 
                     {/* Divider */}
-                    <div className="w-px bg-gray-100 flex-shrink-0" />
+                    <div className="w-px h-20 bg-black/[0.06] flex-shrink-0" />
 
-                    {/* Column 2 — Featured Products (Text Only) */}
+                    {/* Column 2 — Popular Products (Slim Grid) */}
                     {hasProducts && (
-                        <div className="flex-[2] min-w-[250px]">
-                            <h4 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-4">
+                        <div className="flex-1 min-w-[260px]">
+                            <h4 className="text-[10px] uppercase tracking-[0.14em] font-bold text-[#888] mb-1.5">
                                 Popular Picks
                             </h4>
-                            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-1">
                                 {featuredProducts.map(product => (
                                     <Link
                                         key={product.id}
                                         href={`/product/${product.slug}`}
-                                        className="group flex flex-col"
+                                        className="group flex items-center gap-1.5 py-0.5"
                                         onClick={onClose}
                                     >
-                                        <p className="text-sm font-medium text-[#1c1917] group-hover:text-black transition-colors line-clamp-2">
+                                        <span className="w-1 h-1 rounded-full bg-black/20 group-hover:bg-[#bfa81f] transition-colors flex-shrink-0" />
+                                        <p className="text-[12.5px] font-medium text-[#222] group-hover:text-[#bfa81f] transition-colors truncate">
                                             {product.name}
                                         </p>
                                     </Link>
@@ -127,21 +140,21 @@ function MegaDropdownPanel({
 
                     {/* Divider */}
                     {hasProducts && hasTags && (
-                        <div className="w-px bg-gray-100 flex-shrink-0" />
+                        <div className="w-px h-20 bg-black/[0.06] flex-shrink-0" />
                     )}
 
                     {/* Column 3 — Tags / Filtered Collections */}
                     {hasTags && (
-                        <div className="flex-shrink-0 w-[180px]">
-                            <h4 className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mb-4">
+                        <div className="flex-shrink-0 w-[150px]">
+                            <h4 className="text-[10px] uppercase tracking-[0.14em] font-bold text-[#888] mb-1.5">
                                 Quick Filters
                             </h4>
-                            <ul className="space-y-2.5">
+                            <ul className="space-y-1">
                                 {tags.map((tag, idx) => (
                                     <li key={idx}>
                                         <Link
                                             href={tag.link}
-                                            className="mega-link text-sm text-[#1c1917] hover:text-black transition-colors font-medium"
+                                            className="text-[12px] text-[#444] hover:text-[#bfa81f] transition-colors font-medium block truncate"
                                             onClick={onClose}
                                         >
                                             {tag.label}
@@ -154,27 +167,27 @@ function MegaDropdownPanel({
 
                     {/* Divider */}
                     {hasBanner && (
-                        <div className="w-px bg-[#ede4d6] flex-shrink-0" />
+                        <div className="w-px h-20 bg-black/[0.06] flex-shrink-0" />
                     )}
 
-                    {/* Right Side — Featured Banner */}
+                    {/* Right Side — Compact Slim Banner */}
                     {hasBanner && (
-                        <div className="flex-shrink-0 w-[220px]">
+                        <div className="flex-shrink-0 w-[170px]">
                             <Link
                                 href={`/shop?cat=${collection.slug}`}
-                                className="group block relative aspect-[3/4] rounded-2xl overflow-hidden"
+                                className="group block relative h-[84px] w-full rounded-xl overflow-hidden shadow-2xs border border-black/[0.08]"
                                 onClick={onClose}
                             >
                                 <Image
                                     src={collection.image_url}
                                     alt={collection.name}
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                                    sizes="220px"
+                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                    sizes="170px"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                                <div className="absolute bottom-0 left-0 p-4">
-                                    <p className="text-white font-serif text-sm">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                                <div className="absolute bottom-0 left-0 p-2.5">
+                                    <p className="text-white font-sans text-xs font-bold leading-tight drop-shadow-xs">
                                         Explore {collection.name}
                                     </p>
                                 </div>
@@ -185,16 +198,16 @@ function MegaDropdownPanel({
 
                 {/* Empty state */}
                 {!hasProducts && !hasTags && !hasBanner && (
-                    <div className="text-center py-8">
-                        <p className="text-sm text-[#8a7a5a] font-light">
-                            Explore our <span className="font-medium">{collection.name}</span> collection
+                    <div className="text-center py-4">
+                        <p className="text-xs text-[#666]">
+                            Explore our <span className="font-semibold text-[#111]">{collection.name}</span> collection
                         </p>
                         <Link
                             href={`/shop?cat=${collection.slug}`}
-                            className="inline-flex items-center gap-1 text-xs uppercase tracking-[0.15em] font-semibold text-[#5c6e4f] hover:text-[#3a3226] transition-colors mt-3"
+                            className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider font-bold text-[#bfa81f] hover:text-[#a89216] transition-colors mt-1"
                             onClick={onClose}
                         >
-                            Browse Now <ChevronRight size={12} />
+                            Browse Now <ChevronRight size={11} />
                         </Link>
                     </div>
                 )}
@@ -225,18 +238,18 @@ function MobileAccordion({
     );
 
     return (
-        <div className="border-b border-[#f0ece4]">
+        <div className="border-b border-gray-100">
             <button
                 onClick={onToggle}
-                className="w-full flex items-center justify-between py-4 px-2 text-left"
+                className="w-full flex items-center justify-between py-3 px-2 text-left"
                 aria-expanded={isOpen}
             >
-                <span className="font-sans font-bold text-base text-[#1c1917]">{collection.name}</span>
+                <span className="font-sans font-bold text-sm text-[#1c1917]">{collection.name}</span>
                 <motion.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.25 }}
+                    transition={{ duration: 0.2 }}
                 >
-                    <ChevronDown size={18} className="text-gray-400" />
+                    <ChevronDown size={16} className="text-gray-400" />
                 </motion.span>
             </button>
 
@@ -246,14 +259,14 @@ function MobileAccordion({
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
                         className="overflow-hidden"
                     >
-                        <div className="pb-4 px-2 space-y-3">
+                        <div className="pb-3 px-2 space-y-2.5">
                             {/* Browse all link */}
                             <Link
                                 href={`/shop?cat=${collection.slug}`}
-                                className="block text-sm text-[#1c1917] font-bold uppercase tracking-wider hover:text-black"
+                                className="block text-xs text-[#bfa81f] font-bold uppercase tracking-wider hover:text-[#a89216]"
                                 onClick={onClose}
                             >
                                 View All →
@@ -262,15 +275,15 @@ function MobileAccordion({
                             {/* Products */}
                             {productsInCollection.length > 0 && (
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-semibold mb-2">
+                                    <p className="text-[10px] uppercase tracking-[0.16em] text-gray-400 font-semibold mb-1.5">
                                         Popular
                                     </p>
-                                    <div className="space-y-1.5">
+                                    <div className="space-y-1">
                                         {productsInCollection.map(p => (
                                             <Link
                                                 key={p.id}
                                                 href={`/product/${p.slug}`}
-                                                className="block text-sm text-[#1c1917] hover:text-black transition-colors pl-3 border-l-2 border-gray-200"
+                                                className="block text-xs text-[#1c1917] hover:text-[#bfa81f] transition-colors pl-2.5 border-l-2 border-gray-200"
                                                 onClick={onClose}
                                             >
                                                 {p.name}
@@ -283,15 +296,15 @@ function MobileAccordion({
                             {/* Tags */}
                             {tags.length > 0 && (
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-semibold mb-2">
+                                    <p className="text-[10px] uppercase tracking-[0.16em] text-gray-400 font-semibold mb-1.5">
                                         Quick Filters
                                     </p>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-1.5">
                                         {tags.slice(0, 4).map((tag, idx) => (
                                             <Link
                                                 key={idx}
                                                 href={tag.link}
-                                                className="text-xs bg-[#faf7f2] text-[#1c1917] px-3 py-1.5 rounded-full border border-gray-200 hover:border-black transition-colors"
+                                                className="text-[11px] bg-[#faf7f2] text-[#1c1917] px-2.5 py-1 rounded-full border border-gray-200 hover:border-black transition-colors"
                                                 onClick={onClose}
                                             >
                                                 {tag.label}
@@ -367,8 +380,8 @@ export default function MegaMenu({
     /* ─── Mobile Accordion Layout ─── */
     if (isMobile) {
         return (
-            <div className="mt-6 border-t border-[#f0ece4]">
-                <p className="text-[10px] uppercase tracking-[0.25em] font-semibold text-[#8a7a5a] mt-4 mb-2 px-2">
+            <div className="mt-4 border-t border-gray-100">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 mt-3 mb-2 px-2">
                     Collections
                 </p>
                 {data.collections.map(col => (
@@ -385,47 +398,162 @@ export default function MegaMenu({
         );
     }
 
-    /* ─── Desktop Mega Menu ─── */
+    /* ─── Desktop Mega Menu (Single-Row Center Style) ─── */
+    const PRIORITY_SLUG_ORDER = [
+        'fresh-flower',
+        'chocolate-bouquet',
+        'hamper',
+        'cake',
+        'plants',
+        'personalized',
+        'decorations',
+        'teddy-and-bouquet',
+        'balloon-bouquet',
+    ];
+
+    const sortedCollections = [...data.collections].sort((a, b) => {
+        const idxA = PRIORITY_SLUG_ORDER.indexOf(a.slug);
+        const idxB = PRIORITY_SLUG_ORDER.indexOf(b.slug);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    });
+
+    const primaryCollections = sortedCollections.slice(0, 7);
+    const moreCollections = sortedCollections.slice(7);
+
     const activeColl = data.collections.find(c => c.slug === activeCollection);
 
     return (
-        <div ref={menuRef} className="relative">
-            {/* Category Navigation Bar — Seamless without box container or overlay lines */}
+        <div ref={menuRef} className="relative flex items-center justify-center">
+            {/* Category Navigation Bar — Exact Reference Design */}
             <div
-                className="flex items-center justify-between gap-1 py-0.5"
+                className="flex items-center justify-center gap-0.5 xl:gap-2 overflow-x-auto no-scrollbar"
                 role="menubar"
                 aria-label="Product categories"
             >
-                {data.collections.map(col => (
+                {/* Primary 7 Categories (Always visible on desktop) */}
+                {primaryCollections.map(col => (
                     <div
                         key={col.id}
-                        className="relative"
+                        className="relative flex-shrink-0"
                         onMouseEnter={() => handleMouseEnter(col.slug)}
                         onMouseLeave={handleMouseLeave}
                     >
                         <Link
                             href={`/shop?cat=${col.slug}`}
-                            className={`mega-nav-link inline-flex items-center gap-1 text-[0.72rem] uppercase tracking-[0.14em] font-medium px-2.5 py-1.5 transition-colors duration-300 whitespace-nowrap ${activeCollection === col.slug
-                                ? 'text-primary font-semibold'
-                                : 'text-muted hover:text-foreground'
-                                }`}
+                            className={`group inline-flex items-center gap-0.5 xl:gap-1 text-[12px] xl:text-[13px] font-semibold px-1.5 xl:px-2.5 py-1.5 transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                                activeCollection === col.slug
+                                    ? 'text-[#bfa81f]'
+                                    : 'text-[#1c1917] hover:text-[#bfa81f]'
+                            }`}
                             role="menuitem"
                             aria-haspopup="true"
                             aria-expanded={activeCollection === col.slug}
                             onKeyDown={(e) => handleKeyDown(e, col.slug)}
                             tabIndex={0}
                         >
-                            {col.name}
+                            <span>{getCategoryDisplayName(col.name)}</span>
                             <ChevronDown
                                 size={11}
-                                className={`transition-transform duration-250 ${activeCollection === col.slug ? 'rotate-180 text-primary' : 'text-muted/60'}`}
+                                className={`stroke-[2.2] transition-transform duration-200 ${
+                                    activeCollection === col.slug
+                                        ? 'rotate-180 text-[#bfa81f]'
+                                        : 'text-[#1c1917]/70 group-hover:text-[#bfa81f]'
+                                }`}
                             />
                         </Link>
                     </div>
                 ))}
+
+                {/* Additional Categories: Shown directly on 2xl screens */}
+                {moreCollections.map(col => (
+                    <div
+                        key={col.id}
+                        className="relative flex-shrink-0 hidden 2xl:block"
+                        onMouseEnter={() => handleMouseEnter(col.slug)}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        <Link
+                            href={`/shop?cat=${col.slug}`}
+                            className={`group inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-1.5 transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                                activeCollection === col.slug
+                                    ? 'text-[#bfa81f]'
+                                    : 'text-[#1c1917] hover:text-[#bfa81f]'
+                            }`}
+                            role="menuitem"
+                            aria-haspopup="true"
+                            aria-expanded={activeCollection === col.slug}
+                            onKeyDown={(e) => handleKeyDown(e, col.slug)}
+                            tabIndex={0}
+                        >
+                            <span>{getCategoryDisplayName(col.name)}</span>
+                            <ChevronDown
+                                size={11}
+                                className={`stroke-[2.2] transition-transform duration-200 ${
+                                    activeCollection === col.slug
+                                        ? 'rotate-180 text-[#bfa81f]'
+                                        : 'text-[#1c1917]/70 group-hover:text-[#bfa81f]'
+                                }`}
+                            />
+                        </Link>
+                    </div>
+                ))}
+
+                {/* 'More ∨' Dropdown on screens below 2xl */}
+                {moreCollections.length > 0 && (
+                    <div
+                        className="relative flex-shrink-0 2xl:hidden"
+                        onMouseEnter={() => handleMouseEnter('__more__')}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        <button
+                            type="button"
+                            className={`group inline-flex items-center gap-0.5 xl:gap-1 text-[12px] xl:text-[13px] font-semibold px-1.5 xl:px-2.5 py-1.5 transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                                activeCollection === '__more__'
+                                    ? 'text-[#bfa81f]'
+                                    : 'text-[#1c1917] hover:text-[#bfa81f]'
+                            }`}
+                            aria-haspopup="true"
+                            aria-expanded={activeCollection === '__more__'}
+                        >
+                            <span>More</span>
+                            <ChevronDown
+                                size={11}
+                                className={`stroke-[2.2] transition-transform duration-200 ${
+                                    activeCollection === '__more__'
+                                        ? 'rotate-180 text-[#bfa81f]'
+                                        : 'text-[#1c1917]/70 group-hover:text-[#bfa81f]'
+                                }`}
+                            />
+                        </button>
+
+                        {/* Floating More Submenu */}
+                        {activeCollection === '__more__' && (
+                            <div
+                                className="absolute top-full right-0 mt-1 w-44 bg-white border border-black/[0.08] rounded-xl shadow-xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
+                                onMouseEnter={handleDropdownEnter}
+                                onMouseLeave={handleMouseLeave}
+                            >
+                                {moreCollections.map(col => (
+                                    <Link
+                                        key={col.id}
+                                        href={`/shop?cat=${col.slug}`}
+                                        onClick={closeMenu}
+                                        className="flex items-center justify-between px-3.5 py-2 text-[12.5px] font-semibold text-[#1c1917] hover:text-[#bfa81f] hover:bg-[#faf8f0] transition-colors"
+                                    >
+                                        <span>{getCategoryDisplayName(col.name)}</span>
+                                        <ChevronRight size={13} className="text-gray-400" />
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
-            {/* Mega Dropdown Panel */}
+            {/* Mega Dropdown Panel (Vertically Slim) */}
             <AnimatePresence>
                 {activeColl && (
                     <div

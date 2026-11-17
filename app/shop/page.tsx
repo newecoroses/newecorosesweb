@@ -195,7 +195,7 @@ function ShopContent() {
 
     if (loading) {
         return (
-            <div className="pt-36 sm:pt-40 lg:pt-44 pb-16 min-h-screen bg-background">
+            <div className="pt-20 sm:pt-24 lg:pt-26 pb-16 min-h-screen bg-background">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-6">
                         <h1 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">Our Collection</h1>
@@ -212,7 +212,7 @@ function ShopContent() {
     }
 
     return (
-        <div className="pt-36 sm:pt-40 lg:pt-44 pb-16 min-h-screen bg-background">
+        <div className="pt-20 sm:pt-24 lg:pt-26 pb-16 min-h-screen bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Minimal Header */}
                 <div className="text-center mb-5 sm:mb-6">
