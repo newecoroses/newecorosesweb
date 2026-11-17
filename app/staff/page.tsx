@@ -429,8 +429,8 @@ export default function StaffDashboardPage() {
                                 <Tag size={18} />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-xs font-bold text-white truncate">1. Courier Thermal Label</p>
-                                <p className="text-[10px] text-zinc-400 truncate">4×6″ logistics barcode &amp; live QR</p>
+                                <p className="text-xs font-bold text-white truncate">1. Product Shipping Label</p>
+                                <p className="text-[10px] text-zinc-400 truncate">Clean A4 / 4×6″ label with live QR &amp; botanical lineart</p>
                             </div>
                         </button>
 
@@ -527,7 +527,7 @@ export default function StaffDashboardPage() {
                                                 <div className="flex items-center justify-center gap-1">
                                                     <button
                                                         onClick={() => generateCourierShippingLabel(o, isDirector ? (o.assignedStore ? STORE_LABELS[o.assignedStore] : 'New Eco Roses') : storeDisplayName)}
-                                                        title="Print 4×6 Courier Shipping Label (with QR Code)"
+                                                        title="Print Product Shipping Label (with QR Code)"
                                                         className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 cursor-pointer transition-colors"
                                                     >
                                                         <Tag size={12} />

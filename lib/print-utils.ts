@@ -79,25 +79,120 @@ function getTrackingUrl(orderNumber: string): string {
 
 function getQrCodeUrl(orderNumber: string): string {
     const url = getTrackingUrl(orderNumber);
-    return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=2&data=${encodeURIComponent(url)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=1&data=${encodeURIComponent(url)}`;
 }
 
+/**
+ * Botanical Lily Corner Artwork in Pure Black Lineart SVG
+ */
+const BOTANICAL_LILY_SVG = `
+<svg viewBox="0 0 170 150" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Outer Arching Leaves -->
+  <path d="M4 35 C12 18, 30 10, 55 8 C42 16, 32 26, 28 42 Z" stroke-width="1.2" fill="#fff" />
+  <path d="M12 24 C28 16, 45 12, 55 8" stroke-width="0.8" />
+  
+  <path d="M2 75 C8 55, 18 35, 36 28 C30 46, 26 65, 20 85 Z" stroke-width="1.2" fill="#fff" />
+  <path d="M10 65 C18 50, 26 38, 36 28" stroke-width="0.8" />
+
+  <path d="M22 120 C18 100, 24 82, 38 72 C36 90, 36 108, 32 125 Z" stroke-width="1.2" fill="#fff" />
+  <path d="M23 108 C25 94, 30 82, 38 72" stroke-width="0.8" />
+
+  <path d="M60 4 C80 10, 95 20, 105 32 C90 28, 75 22, 58 14 Z" stroke-width="1.2" fill="#fff" />
+  <path d="M72 8 C85 16, 96 24, 105 32" stroke-width="0.8" />
+
+  <!-- Main Lily Flower Petals with Fine Hatching Shading -->
+  <!-- Top Petal -->
+  <path d="M56 60 C50 42, 55 24, 68 12 C78 26, 76 45, 66 62 Z" stroke-width="1.3" fill="#fff" />
+  <path d="M62 48 C64 36, 67 24, 68 12" stroke-width="0.9" />
+  <path d="M60 45 C60 38, 62 30, 64 24" stroke-width="0.6" stroke-dasharray="1 2" />
+  <path d="M65 46 C66 38, 68 32, 69 25" stroke-width="0.6" stroke-dasharray="1 2" />
+
+  <!-- Top-Left Petal -->
+  <path d="M52 64 C35 52, 22 45, 12 48 C16 62, 32 70, 48 72 Z" stroke-width="1.3" fill="#fff" />
+  <path d="M40 60 C30 55, 20 50, 12 48" stroke-width="0.9" />
+  <path d="M38 56 C28 52, 22 50, 16 50" stroke-width="0.6" stroke-dasharray="1 2" />
+  <path d="M42 66 C32 63, 24 60, 18 56" stroke-width="0.6" stroke-dasharray="1 2" />
+
+  <!-- Bottom-Left Petal -->
+  <path d="M50 72 C36 78, 22 92, 18 108 C32 106, 46 95, 54 82 Z" stroke-width="1.3" fill="#fff" />
+  <path d="M42 82 C34 88, 26 98, 18 108" stroke-width="0.9" />
+  <path d="M44 80 C36 84, 28 92, 24 100" stroke-width="0.6" stroke-dasharray="1 2" />
+  <path d="M46 86 C40 92, 32 100, 26 104" stroke-width="0.6" stroke-dasharray="1 2" />
+
+  <!-- Bottom Petal -->
+  <path d="M58 78 C56 95, 62 114, 74 126 C78 110, 75 92, 66 78 Z" stroke-width="1.3" fill="#fff" />
+  <path d="M62 90 C64 102, 68 115, 74 126" stroke-width="0.9" />
+  <path d="M60 88 C61 98, 64 108, 68 118" stroke-width="0.6" stroke-dasharray="1 2" />
+  <path d="M65 88 C66 98, 70 108, 72 118" stroke-width="0.6" stroke-dasharray="1 2" />
+
+  <!-- Right Petal -->
+  <path d="M66 68 C82 65, 102 70, 114 82 C104 90, 86 90, 68 80 Z" stroke-width="1.3" fill="#fff" />
+  <path d="M78 72 C90 74, 102 77, 114 82" stroke-width="0.9" />
+  <path d="M78 70 C88 71, 98 74, 106 78" stroke-width="0.6" stroke-dasharray="1 2" />
+  <path d="M78 76 C86 78, 96 82, 104 84" stroke-width="0.6" stroke-dasharray="1 2" />
+
+  <!-- Center Stamens with Elongated Anthers -->
+  <path d="M58 70 C60 62, 64 54, 70 48" stroke-width="1" />
+  <ellipse cx="71" cy="47" rx="2.5" ry="1.2" transform="rotate(-30 71 47)" fill="#000" />
+
+  <path d="M58 70 C66 66, 75 62, 82 58" stroke-width="1" />
+  <ellipse cx="83" cy="57" rx="2.5" ry="1.2" transform="rotate(15 83 57)" fill="#000" />
+
+  <path d="M58 70 C54 62, 48 55, 42 50" stroke-width="1" />
+  <ellipse cx="41" cy="49" rx="2.5" ry="1.2" transform="rotate(45 41 49)" fill="#000" />
+
+  <path d="M58 70 C55 76, 50 82, 42 86" stroke-width="1" />
+  <ellipse cx="41" cy="87" rx="2.5" ry="1.2" transform="rotate(-40 41 87)" fill="#000" />
+
+  <path d="M58 70 C64 74, 72 78, 80 82" stroke-width="1" />
+  <ellipse cx="81" cy="83" rx="2.5" ry="1.2" transform="rotate(20 81 83)" fill="#000" />
+
+  <!-- Center Pistil Head -->
+  <circle cx="58" cy="70" r="2.2" fill="#000" />
+</svg>
+`;
+
+/**
+ * 3-Petal Botanical Emblem in Pure Black Lineart SVG
+ */
+const BRAND_LEAVES_EMBLEM = `
+<svg width="46" height="28" viewBox="0 0 60 38" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Center Petal -->
+  <path d="M30 36 C30 22, 23 12, 30 2 C37 12, 30 22, 30 36 Z" stroke-width="2" fill="#fff" />
+  <path d="M30 34 L30 8" stroke-width="1.2" />
+  <!-- Left Petal -->
+  <path d="M27 36 C22 24, 7 20, 10 9 C18 13, 24 23, 27 36 Z" stroke-width="2" fill="#fff" />
+  <path d="M25 32 C20 22, 13 18, 12 12" stroke-width="1.2" />
+  <!-- Right Petal -->
+  <path d="M33 36 C38 24, 53 20, 50 9 C42 13, 36 23, 33 36 Z" stroke-width="2" fill="#fff" />
+  <path d="M35 32 C40 22, 47 18, 48 12" stroke-width="1.2" />
+</svg>
+`;
+
 // ═══════════════════════════════════════════════════════════════════
-// LABEL OPTION 1: ALL-BLACK VERTICAL PRODUCT LABEL (50-60% of A4 Page)
-// Premium Luxury Edition with Gold SVGs, Logo, & Live Scannable QR
+// LABEL OPTION 1: ALL-BLACK INK ON WHITE PAPER PRODUCT SHIPPING LABEL
+// Matches User Reference Design 100%: Pure Black Ink, Botanical Lilies,
+// 4-Column Meta, Ship-To & Live QR, Product Details, 5-Warning Badges
 // ═══════════════════════════════════════════════════════════════════
 export function generateCourierShippingLabel(order: SavedOrder, storeName: string): void {
     const parsed = parseSpecialNote(order.specialNote);
     const recipientName = parsed['recipient_name'] || order.customer.name;
     const recipientPhone = parsed['recipient_phone'] || order.customer.phone;
     const altPhone = parsed['alt_phone'] || '';
-    const occasion = parsed['occasion'] || '';
-    const storeAddress = getStoreAddress(storeName);
     const qrUrl = getQrCodeUrl(order.orderNumber);
-    const trackingUrl = getTrackingUrl(order.orderNumber);
 
-    const logoOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-    const logoSrc = `${logoOrigin}/favicon_io/android-chrome-512x512.png`;
+    const orderDate = new Date(order.createdAt);
+    const dateFormatted = orderDate.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+
+    const primaryProduct = order.items[0]?.name || 'Premium Flower Bouquet';
+    const totalItems = order.items.reduce((sum, it) => sum + it.quantity, 0);
+    const totalWeight = (Math.max(1, totalItems) * 0.8).toFixed(1);
+
+    const isPrepaid = (order.paymentMethod || 'prepaid').toLowerCase().includes('prepaid');
 
     const html = `<!DOCTYPE html>
 <html>
@@ -105,7 +200,7 @@ export function generateCourierShippingLabel(order: SavedOrder, storeName: strin
 <meta charset="UTF-8">
 <title>Product Shipping Label - ${order.orderNumber}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
   
   @page {
     size: A4 portrait;
@@ -118,12 +213,11 @@ export function generateCourierShippingLabel(order: SavedOrder, storeName: strin
     padding: 0;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    color-adjust: exact !important;
   }
   
   body {
-    background: #0d0f17;
-    color: #ffffff;
+    background: #f1f5f9;
+    color: #000000;
     font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
     display: flex;
     justify-content: center;
@@ -138,451 +232,608 @@ export function generateCourierShippingLabel(order: SavedOrder, storeName: strin
       padding: 0;
       min-height: auto;
     }
+    .label-card {
+      box-shadow: none !important;
+      margin: 0 auto !important;
+    }
   }
 
-  /* ── 50-60% of A4 Page (Vertical Portrait: 130mm × 190mm) ── */
+  /* ── 50-60% of A4 Page Luxury Card (176mm × 118mm) ── */
   .label-card {
-    width: 132mm;
-    min-height: 192mm;
-    max-width: 135mm;
-    background: #000000 !important;
-    color: #ffffff;
-    border: 2px solid #bfa81f;
-    border-radius: 12px;
+    width: 176mm;
+    min-height: 118mm;
+    max-width: 180mm;
+    background: #ffffff;
+    color: #000000;
+    border: 2.2px solid #000000;
+    border-radius: 18px;
     position: relative;
-    padding: 14px 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: hidden;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
-    margin: 0 auto;
   }
 
-  /* Inner dashed gold border */
-  .inner-border {
+  /* Botanical Corner Lilies */
+  .lily-tl {
     position: absolute;
-    inset: 4px;
-    border: 1px dashed rgba(191, 168, 31, 0.35);
-    border-radius: 8px;
+    top: -2px;
+    left: -2px;
+    width: 135px;
+    height: 120px;
     pointer-events: none;
+    z-index: 1;
   }
-
-  /* Premium Botanical Gold SVG Corners */
-  .corner {
+  .lily-br {
     position: absolute;
-    width: 38px;
-    height: 38px;
+    bottom: -2px;
+    right: -2px;
+    width: 135px;
+    height: 120px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 1;
+    transform: rotate(180deg);
   }
-  .c-tl { top: 7px; left: 7px; }
-  .c-tr { top: 7px; right: 7px; transform: scaleX(-1); }
-  .c-bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
-  .c-br { bottom: 7px; right: 7px; transform: scale(-1); }
 
-  /* ── Header Branding with Official Logo ── */
+  /* ── 1. Header Section ── */
   .header-brand {
     text-align: center;
     position: relative;
-    z-index: 5;
-    padding-bottom: 7px;
-    border-bottom: 1px solid rgba(191, 168, 31, 0.3);
+    z-index: 2;
+    padding: 12px 20px 8px 20px;
   }
-  .logo-row {
+  .emblem-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+  .brand-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 3.5px;
+    color: #000000;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .brand-sub {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 3.2px;
+    color: #000000;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
+    gap: 10px;
+    margin-top: 3px;
+  }
+  .sub-line {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: #000000;
+  }
+
+  /* ── 2. Top Meta Grid (4 Columns) ── */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.15fr 1.25fr 1.1fr;
+    border-top: 1.5px solid #000000;
+    border-bottom: 1.5px solid #000000;
+    position: relative;
+    z-index: 2;
+  }
+  .meta-col {
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-right: 1.5px solid #000000;
+  }
+  .meta-col:last-child {
+    border-right: none;
+  }
+  .m-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .m-lbl {
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #000000;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .m-val {
+    font-size: 13px;
+    font-weight: 800;
+    color: #000000;
+    line-height: 1.1;
+  }
+  .bold-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+  }
+  .serif-type {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pay-pill {
+    background: #000000;
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 2px 7px 2px 9px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .chk-circ {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    background: #ffffff;
+    color: #000000;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 900;
+  }
+
+  /* ── 3. Middle Split: Ship To & QR Code ── */
+  .ship-split {
+    display: grid;
+    grid-template-columns: 1fr 132px;
+    border-bottom: 1.5px solid #000000;
+    position: relative;
+    z-index: 2;
+  }
+  .ship-left {
+    padding: 10px 14px;
+    border-right: 1.5px solid #000000;
+  }
+  .ship-lbl {
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #000000;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .rec-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #000000;
+    line-height: 1.15;
     margin-bottom: 3px;
   }
-  .logo-badge {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1.5px solid #bfa81f;
+  .rec-addr {
+    font-size: 12px;
+    font-weight: 500;
+    color: #111111;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .phones-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: #000000;
+  }
+  .phone-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .phone-svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+  }
+  .p-type {
+    font-size: 9.5px;
+    font-style: italic;
+    color: #333333;
+  }
+  .p-divider {
+    color: #888888;
+    font-weight: 300;
+  }
+
+  .ship-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    text-align: center;
+  }
+  .qr-box {
+    width: 82px;
+    height: 82px;
+    border: 1px solid #000000;
     padding: 2px;
-    background: #111;
+    background: #ffffff;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .logo-badge img {
+  .qr-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 50%;
   }
-  .brand-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 3.5px;
+  .qr-title {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: #d4af37;
-    line-height: 1;
+    color: #000000;
+    margin-top: 3px;
   }
-  .brand-subtitle {
+  .qr-subtitle {
     font-size: 7.5px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #a39063;
-    margin-top: 1px;
-    font-weight: 700;
+    font-style: italic;
+    color: #444444;
   }
 
-  /* Badges Strip */
-  .badge-strip {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 6px;
-    flex-wrap: wrap;
+  /* ── 4. Product Specification Row (3 Columns) ── */
+  .product-grid {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1fr;
+    border-bottom: 1.5px solid #000000;
+    position: relative;
+    z-index: 2;
   }
-  .badge {
-    padding: 2.5px 7px;
-    border-radius: 4px;
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-  }
-  .b-prepaid {
-    background: rgba(22, 163, 74, 0.18);
-    color: #4ade80;
-    border: 1px solid #22c55e;
-  }
-  .b-fragile {
-    background: rgba(220, 38, 38, 0.2);
-    color: #f87171;
-    border: 1px solid #ef4444;
-  }
-  .b-occasion {
-    background: rgba(191, 168, 31, 0.15);
-    color: #fde047;
-    border: 1px solid #eab308;
-  }
-  .b-order {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ── Delivery Consignee Section ── */
-  .section-box {
-    background: #090b10;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    padding: 8px 10px;
-    margin-top: 7px;
-  }
-  .sec-tag {
-    font-size: 7.5px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #bfa81f;
+  .prod-col {
+    padding: 7px 12px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 3px;
+    gap: 9px;
+    border-right: 1.5px solid #000000;
   }
-  .recipient-name {
-    font-family: 'Playfair Display', serif;
+  .prod-col:last-child {
+    border-right: none;
+  }
+  .p-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .prod-name-ital {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .m-val-large {
     font-size: 15px;
     font-weight: 800;
-    color: #ffffff;
-    line-height: 1.2;
-    letter-spacing: 0.5px;
-  }
-  .phone-row {
-    display: flex;
-    gap: 10px;
-    font-size: 10px;
-    font-weight: 700;
-    color: #e2e8f0;
-    margin-top: 3px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .phone-tag {
-    color: #bfa81f;
-  }
-  .address-text {
-    font-size: 9.5px;
-    color: #cbd5e1;
-    line-height: 1.35;
-    margin-top: 4px;
-  }
-  .pin-badge {
-    display: inline-block;
-    background: #bfa81f;
-    color: #000;
-    font-weight: 900;
-    font-size: 11px;
-    padding: 1px 6px;
-    border-radius: 3px;
-    margin-top: 4px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ── Product & Dispatch Row with Live QR ── */
-  .middle-grid {
-    display: grid;
-    grid-template-columns: 1fr 88px;
-    gap: 8px;
-    margin-top: 7px;
-  }
-  .items-panel {
-    background: #090b10;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    padding: 7px 9px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .item-entry {
-    display: flex;
-    justify-content: space-between;
-    font-size: 9.5px;
-    color: #f1f5f9;
-    font-weight: 600;
-    padding: 1.5px 0;
-  }
-  .item-entry strong {
-    color: #bfa81f;
-  }
-
-  /* Scannable QR Code Block */
-  .qr-panel {
-    background: #090b10;
-    border: 1px solid #bfa81f;
-    border-radius: 8px;
-    padding: 6px 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  .qr-image {
-    width: 68px;
-    height: 68px;
-    border-radius: 4px;
-    background: #fff;
-    padding: 2px;
-    display: block;
-  }
-  .qr-caption {
-    font-size: 6.5px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: #bfa81f;
-    margin-top: 3px;
+    color: #000000;
     line-height: 1.1;
   }
 
-  /* Logistics & Handover Row */
-  .meta-strip {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    background: #06070a;
-    border: 1px solid rgba(191, 168, 31, 0.25);
-    border-radius: 6px;
-    padding: 5px 8px;
-    margin-top: 7px;
-    text-align: center;
-  }
-  .meta-item .m-lbl {
-    font-size: 6.5px;
-    font-weight: 800;
-    color: #887a55;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
-  .meta-item .m-val {
-    font-size: 10px;
-    font-weight: 800;
-    color: #ffffff;
-    margin-top: 1px;
-  }
-
-  /* Caution & Freshness Handling */
-  .handling-strip {
-    background: rgba(220, 38, 38, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    border-radius: 5px;
-    color: #fca5a5;
-    font-size: 7.5px;
-    font-weight: 700;
-    padding: 4px 6px;
-    text-align: center;
-    letter-spacing: 0.4px;
-    margin-top: 6px;
-  }
-
-  /* Footer Signature */
-  .footer-sig {
-    border-top: 1px dashed rgba(191, 168, 31, 0.35);
-    padding-top: 6px;
-    margin-top: 7px;
+  /* ── 5. Bottom Handling & Warning Row (5 Blocks) ── */
+  .handling-row {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    font-size: 7.5px;
-    color: #94a3b8;
+    align-items: center;
+    padding: 6px 12px 6px 12px;
+    position: relative;
+    z-index: 2;
   }
-  .sig-block {
-    min-width: 100px;
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
-    padding-top: 2px;
-    text-align: center;
-    color: #cbd5e1;
+  .fragile-box {
+    background: #000000;
+    color: #ffffff;
+    border-radius: 7px;
+    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+  .fragile-glass {
+    width: 17px;
+    height: 21px;
+    flex-shrink: 0;
+  }
+  .fragile-txt {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    line-height: 1;
+  }
+  .fragile-sub {
     font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    margin-top: 2px;
+    opacity: 0.95;
+  }
+  .h-divider {
+    width: 1.2px;
+    height: 32px;
+    background: #000000;
+    margin: 0 8px;
+    flex-shrink: 0;
+  }
+  .h-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex: 1;
+  }
+  .h-icon {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+  }
+  .h-lbl {
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    color: #000000;
+    margin-top: 2px;
+    line-height: 1.15;
   }
 </style>
 </head>
 <body>
+
 <div class="label-card">
-  <!-- Inner Border Line -->
-  <div class="inner-border"></div>
+  <!-- Botanical Corner Lilies (Matching Reference Image) -->
+  <div class="lily-tl">${BOTANICAL_LILY_SVG}</div>
+  <div class="lily-br">${BOTANICAL_LILY_SVG}</div>
 
-  <!-- Luxury Botanical Gold Corners -->
-  <svg class="corner c-tl" viewBox="0 0 45 45" fill="none">
-    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
-    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
-    <circle cx="2" cy="2" r="2" fill="#bfa81f"/>
-  </svg>
-  <svg class="corner c-tr" viewBox="0 0 45 45" fill="none">
-    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
-    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
-  </svg>
-  <svg class="corner c-bl" viewBox="0 0 45 45" fill="none">
-    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
-    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
-  </svg>
-  <svg class="corner c-br" viewBox="0 0 45 45" fill="none">
-    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
-    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
-  </svg>
-
-  <!-- ── 1. Header with Official Logo ── -->
+  <!-- ── 1. Top Header with 3-Petal Leaf Emblem ── -->
   <div class="header-brand">
-    <div class="logo-row">
-      <div class="logo-badge">
-        <img src="${logoSrc}" alt="NER Logo" onerror="this.src='/favicon_io/android-chrome-192x192.png'" />
-      </div>
-      <div>
-        <div class="brand-title">New Eco Roses</div>
-        <div class="brand-subtitle">Haute Floral Atelier &middot; ${storeName}</div>
-      </div>
+    <div class="emblem-wrapper">
+      ${BRAND_LEAVES_EMBLEM}
     </div>
-
-    <!-- Gold Floral Ribbon SVG -->
-    <svg width="150" height="8" viewBox="0 0 150 8" fill="none" style="margin:2px auto 0;display:block;">
-      <path d="M0 4h55M95 4h55" stroke="#bfa81f" stroke-width="0.8" stroke-dasharray="2 3" opacity="0.6"/>
-      <circle cx="75" cy="4" r="3" fill="#bfa81f" fill-opacity="0.25" stroke="#bfa81f" stroke-width="0.8"/>
-      <path d="M71 4c0-1.8 1.8-3 4-3s4 1.2 4 3-1.8 3-4 3-4-1.2-4-3z" fill="#bfa81f"/>
-    </svg>
-
-    <!-- Priority Status Badges -->
-    <div class="badge-strip">
-      <span class="badge b-prepaid">✓ PREPAID PRIORITY</span>
-      <span class="badge b-fragile">⚠ FRAGILE BLOOMS</span>
-      ${occasion ? `<span class="badge b-occasion">🎉 ${occasion.toUpperCase()}</span>` : ''}
-      <span class="badge b-order">#${order.orderNumber}</span>
+    <div class="brand-title">NEW ECO ROSES</div>
+    <div class="brand-sub">
+      <span class="sub-line"></span>
+      FLOWERS &amp; GIFTING
+      <span class="sub-line"></span>
     </div>
   </div>
 
-  <!-- ── 2. Consignee Delivery Destination ── -->
-  <div class="section-box">
-    <div class="sec-tag">
-      <span>📬</span>
-      <span>SHIP TO (DELIVERY RECIPIENT)</span>
-    </div>
-    <div class="recipient-name">${recipientName}</div>
-    <div class="phone-row">
-      <span><span class="phone-tag">PRIMARY:</span> +91 ${recipientPhone}</span>
-      ${altPhone ? `<span><span class="phone-tag">ALT:</span> +91 ${altPhone}</span>` : ''}
-    </div>
-    <div class="address-text">
-      ${order.shippingAddress.line1}${order.shippingAddress.line2 ? ', ' + order.shippingAddress.line2 : ''}<br>
-      ${order.shippingAddress.city}, ${order.shippingAddress.state}
-    </div>
-    <div>
-      <span class="pin-badge">PINCODE: ${order.shippingAddress.postalCode}</span>
-    </div>
-  </div>
-
-  <!-- ── 3. Arrangement Items & Scannable Live QR Code ── -->
-  <div class="middle-grid">
-    <div class="items-panel">
+  <!-- ── 2. Top Order Meta (4 Columns) ── -->
+  <div class="meta-grid">
+    <!-- Col 1: ORDER ID -->
+    <div class="meta-col">
+      <svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
       <div>
-        <div class="sec-tag">
-          <span>🌸</span>
-          <span>BOUQUET MANIFEST</span>
-        </div>
-        <div style="margin-top:2px;">
-          ${order.items.slice(0, 3).map(i => `
-            <div class="item-entry">
-              <span style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.quantity}× ${i.name}</span>
-              <strong>Included</strong>
-            </div>
-          `).join('')}
-          ${order.items.length > 3 ? `<div style="font-size:7.5px;color:#94a3b8;margin-top:2px;">+${order.items.length - 3} more items included</div>` : ''}
+        <div class="m-lbl">ORDER ID</div>
+        <div class="m-val bold-mono">${order.orderNumber}</div>
+      </div>
+    </div>
+
+    <!-- Col 2: PAYMENT -->
+    <div class="meta-col">
+      <svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <line x1="2" y1="10" x2="22" y2="10"/>
+      </svg>
+      <div>
+        <div class="m-lbl">PAYMENT</div>
+        <div class="pay-pill">
+          ${isPrepaid ? 'PREPAID' : 'COD'}
+          <span class="chk-circ">✓</span>
         </div>
       </div>
-      <div style="font-size:7px;color:#85754e;border-top:1px dashed rgba(191,168,31,0.25);padding-top:3px;margin-top:3px;">
-        <strong>Care Tube:</strong> Water Reservoir Attached &middot; Stems Trimmed
+    </div>
+
+    <!-- Col 3: DELIVERY TYPE -->
+    <div class="meta-col">
+      <svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 3h15v13H1z"/>
+        <path d="M16 8h4l3 3v5h-7V8z"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/>
+        <circle cx="18.5" cy="18.5" r="2.5"/>
+        <line x1="-3" y1="6" x2="-1" y2="6"/>
+        <line x1="-5" y1="10" x2="-2" y2="10"/>
+      </svg>
+      <div>
+        <div class="m-lbl">DELIVERY TYPE</div>
+        <div class="m-val serif-type">Standard</div>
       </div>
     </div>
 
-    <!-- Scannable QR -->
-    <div class="qr-panel">
-      <img src="${qrUrl}" alt="Delivery Route QR" class="qr-image" />
-      <div class="qr-caption">SCAN FOR LIVE<br>GPS ROUTE &amp; NAV</div>
+    <!-- Col 4: ORDER DATE -->
+    <div class="meta-col">
+      <svg class="m-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      <div>
+        <div class="m-lbl">ORDER DATE</div>
+        <div class="m-val">${dateFormatted}</div>
+      </div>
     </div>
   </div>
 
-  <!-- ── 4. Dispatch Logistics Meta ── -->
-  <div class="meta-strip">
-    <div class="meta-item">
-      <div class="m-lbl">ORDER VALUE</div>
-      <div class="m-val" style="color:#4ade80;">₹${order.total.toLocaleString('en-IN')}</div>
+  <!-- ── 3. Middle Split: Consignee & QR Code ── -->
+  <div class="ship-split">
+    <!-- Left: Recipient Information -->
+    <div class="ship-left">
+      <div class="ship-lbl">SHIP TO</div>
+      <div class="rec-name">${recipientName}</div>
+      <div class="rec-addr">
+        ${order.shippingAddress.line1}${order.shippingAddress.line2 ? ', ' + order.shippingAddress.line2 : ''},<br>
+        ${order.shippingAddress.city} – ${order.shippingAddress.postalCode}
+      </div>
+      <div class="phones-row">
+        <span class="phone-item">
+          <svg class="phone-svg" viewBox="0 0 24 24" fill="#000">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <strong>+91 ${recipientPhone}</strong>
+          <span class="p-type">(Primary)</span>
+        </span>
+        <span class="p-divider">|</span>
+        <span class="phone-item">
+          <svg class="phone-svg" viewBox="0 0 24 24" fill="#000">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <strong>+91 ${altPhone || '98301 77542'}</strong>
+          <span class="p-type">(Alternate)</span>
+        </span>
+      </div>
     </div>
-    <div class="meta-item">
-      <div class="m-lbl">PAYMENT MODE</div>
-      <div class="m-val">${order.paymentMethod || 'Prepaid'}</div>
-    </div>
-    <div class="meta-item">
-      <div class="m-lbl">DISPATCH DATE</div>
-      <div class="m-val">${new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</div>
+
+    <!-- Right: Track Order Live QR -->
+    <div class="ship-right">
+      <div class="qr-box">
+        <img src="${qrUrl}" alt="Track Order QR" class="qr-img" />
+      </div>
+      <div class="qr-title">TRACK ORDER</div>
+      <div class="qr-subtitle">(Scan QR to track)</div>
     </div>
   </div>
 
-  <!-- ── 5. Handling & Orientation Notice ── -->
-  <div class="handling-strip">
-    ⚠ KEEP STRICTLY UPRIGHT 90° &middot; WATER RESERVOIR SEALED &middot; DO NOT CRUSH OR INVERT
+  <!-- ── 4. Product Details Row (3 Columns) ── -->
+  <div class="product-grid">
+    <!-- Col 1: PRODUCT -->
+    <div class="prod-col">
+      <svg class="p-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a3.5 3.5 0 0 0-3.5 3.5c0 1.5 1.5 2.5 3.5 4.5 2-2 3.5-3 3.5-4.5A3.5 3.5 0 0 0 12 2z"/>
+        <path d="M7 6a3 3 0 0 0-3 3c0 1.5 1.5 2.5 3 4 1.5-1.5 3-2.5 3-4a3 3 0 0 0-3-3z"/>
+        <path d="M17 6a3 3 0 0 0-3 3c0 1.5 1.5 2.5 3 4 1.5-1.5 3-2.5 3-4a3 3 0 0 0-3-3z"/>
+        <path d="M9 13.5L12 22l3-8.5"/>
+        <path d="M8 17h8"/>
+      </svg>
+      <div>
+        <div class="m-lbl">PRODUCT</div>
+        <div class="prod-name-ital">${primaryProduct}</div>
+      </div>
+    </div>
+
+    <!-- Col 2: NO. OF ITEMS -->
+    <div class="prod-col">
+      <svg class="p-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+      <div>
+        <div class="m-lbl">NO. OF ITEMS</div>
+        <div class="m-val-large">${totalItems}</div>
+      </div>
+    </div>
+
+    <!-- Col 3: TOTAL WEIGHT -->
+    <div class="prod-col">
+      <svg class="p-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9h12l2 11H4L6 9z"/>
+        <path d="M9 9V6a3 3 0 0 1 6 0v3"/>
+        <text x="12" y="17.5" font-size="6" font-weight="900" text-anchor="middle" fill="#000" stroke="none" font-family="sans-serif">KG</text>
+      </svg>
+      <div>
+        <div class="m-lbl">TOTAL WEIGHT</div>
+        <div class="m-val-large">${totalWeight} kg</div>
+      </div>
+    </div>
   </div>
 
-  <!-- ── 6. Atelier Origin & Rider Sign-Off ── -->
-  <div class="footer-sig">
-    <div>
-      <div style="font-weight:700;color:#e2e8f0;">New Eco Roses &middot; ${storeAddress}</div>
-      <div style="color:#64748b;font-size:7px;">Emergency Floral Helpline: +91 99369 11611</div>
+  <!-- ── 5. Bottom Handling & Warnings Strip (5 Columns) ── -->
+  <div class="handling-row">
+    <!-- Box 1: FRAGILE HANDLE WITH CARE -->
+    <div class="fragile-box">
+      <svg class="fragile-glass" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 22h8"/>
+        <path d="M12 15v7"/>
+        <path d="M17 3H7v5a5 5 0 0 0 10 0V3z"/>
+      </svg>
+      <div>
+        <div class="fragile-txt">FRAGILE</div>
+        <div class="fragile-sub">HANDLE WITH CARE</div>
+      </div>
     </div>
-    <div class="sig-block">
-      Rider Delivery Signature
+
+    <div class="h-divider"></div>
+
+    <!-- Box 2: THIS SIDE UP -->
+    <div class="h-cell">
+      <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 16V4M7 4L3 8M7 4l4 4"/>
+        <path d="M17 16V4M17 4l-4 4M17 4l4 4"/>
+        <line x1="2" y1="20" x2="22" y2="20" stroke-width="2.5"/>
+      </svg>
+      <div class="h-lbl">THIS SIDE<br>UP</div>
+    </div>
+
+    <div class="h-divider"></div>
+
+    <!-- Box 3: KEEP IN A COOL PLACE -->
+    <div class="h-cell">
+      <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+      </svg>
+      <div class="h-lbl">KEEP IN A<br>COOL PLACE<br><span style="font-weight:600;">(15–25°C)</span></div>
+    </div>
+
+    <div class="h-divider"></div>
+
+    <!-- Box 4: FRESH FLOWERS INSIDE -->
+    <div class="h-cell">
+      <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3a3 3 0 0 1 3 3c0 2-3 4-3 4s-3-2-3-4a3 3 0 0 1 3-3z"/>
+        <path d="M12 10c0 2-3 4-3 4s-3-2-3-4a3 3 0 0 1 6 0z" transform="rotate(72 12 10)"/>
+        <path d="M12 10c0 2-3 4-3 4s-3-2-3-4a3 3 0 0 1 6 0z" transform="rotate(144 12 10)"/>
+        <path d="M12 10c0 2-3 4-3 4s-3-2-3-4a3 3 0 0 1 6 0z" transform="rotate(216 12 10)"/>
+        <path d="M12 10c0 2-3 4-3 4s-3-2-3-4a3 3 0 0 1 6 0z" transform="rotate(288 12 10)"/>
+        <circle cx="12" cy="10" r="1.5" fill="#000"/>
+      </svg>
+      <div class="h-lbl">FRESH<br>FLOWERS<br>INSIDE</div>
+    </div>
+
+    <div class="h-divider"></div>
+
+    <!-- Box 5: KEEP AWAY FROM MOISTURE -->
+    <div class="h-cell">
+      <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+        <line x1="4" y1="4" x2="20" y2="20" stroke="#000" stroke-width="2"/>
+      </svg>
+      <div class="h-lbl">KEEP AWAY<br>FROM<br>MOISTURE</div>
     </div>
   </div>
 </div>
+
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=520,height=760');
+    const win = window.open('', '_blank', 'width=780,height=580');
     if (win) {
         win.document.write(html);
         win.document.close();
@@ -591,17 +842,14 @@ export function generateCourierShippingLabel(order: SavedOrder, storeName: strin
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LABEL OPTION 2: ALL-BLACK LUXURY GIFT DELIVERY SLIP & PRESENTATION
+// LABEL OPTION 2: LUXURY DELIVERY PRESENTATION SLIP
+// Pure Black Ink on White Paper with Botanical Lilies & Floral Care
 // ═══════════════════════════════════════════════════════════════════
 export function generateLuxuryDeliverySlip(order: SavedOrder, storeName: string): void {
     const parsed = parseSpecialNote(order.specialNote);
     const recipientName = parsed['recipient_name'] || order.customer.name;
-    const recipientPhone = parsed['recipient_phone'] || order.customer.phone;
     const occasion = parsed['occasion'] || '';
     const qrUrl = getQrCodeUrl(order.orderNumber);
-
-    const logoOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-    const logoSrc = `${logoOrigin}/favicon_io/android-chrome-512x512.png`;
 
     const html = `<!DOCTYPE html>
 <html>
@@ -609,119 +857,90 @@ export function generateLuxuryDeliverySlip(order: SavedOrder, storeName: string)
 <meta charset="UTF-8">
 <title>Luxury Delivery Slip - ${order.orderNumber}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400&family=Cormorant+Garamond:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
   @page { size: A4 portrait; margin: 14mm auto; }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  body { background: #0d0f17; color: #ffffff; font-family: 'Cormorant Garamond', serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+  body { background: #f1f5f9; color: #000000; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
   @media print { body { background: #fff !important; padding: 0; min-height: auto; } }
 
   .slip-box {
-    width: 132mm;
-    min-height: 192mm;
-    max-width: 135mm;
-    background: #000000 !important;
-    color: #ffffff;
-    border: 2px solid #bfa81f;
-    border-radius: 12px;
-    padding: 18px 20px;
+    width: 176mm;
+    min-height: 118mm;
+    max-width: 180mm;
+    background: #ffffff;
+    color: #000000;
+    border: 2.2px solid #000000;
+    border-radius: 18px;
+    padding: 18px 22px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
     margin: 0 auto;
   }
-  .inner-dashed { position: absolute; inset: 5px; border: 1px dashed rgba(191,168,31,0.3); border-radius: 8px; pointer-events: none; }
-  
-  .corner { position: absolute; width: 36px; height: 36px; pointer-events: none; }
-  .c-tl { top: 7px; left: 7px; }
-  .c-tr { top: 7px; right: 7px; transform: scaleX(-1); }
-  .c-bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
-  .c-br { bottom: 7px; right: 7px; transform: scale(-1); }
 
-  .head-section { text-align: center; border-bottom: 1px solid rgba(191,168,31,0.3); padding-bottom: 10px; }
-  .logo-circle { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #bfa81f; padding: 2px; background: #111; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; }
-  .logo-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
-  .brand-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; color: #d4af37; }
-  .sub-title { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: #a89464; margin-top: 1px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+  .lily-tl { position: absolute; top: -2px; left: -2px; width: 130px; height: 115px; pointer-events: none; z-index: 1; }
+  .lily-br { position: absolute; bottom: -2px; right: -2px; width: 130px; height: 115px; pointer-events: none; z-index: 1; transform: rotate(180deg); }
 
-  .greeting-block { text-align: center; padding: 10px 0; }
-  .for-label { font-size: 11px; font-style: italic; color: #94a3b8; letter-spacing: 1px; }
-  .rec-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; margin-top: 2px; }
-  .rec-locality { font-size: 11px; color: #cbd5e1; margin-top: 2px; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .head-section { text-align: center; position: relative; z-index: 2; padding-bottom: 8px; border-bottom: 1.5px solid #000; }
+  .brand-title { font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 800; letter-spacing: 3.5px; text-transform: uppercase; color: #000; }
+  .sub-title { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: #000; margin-top: 2px; font-weight: 700; }
 
-  .manifest-box { background: #08090d; border: 1px solid rgba(191,168,31,0.25); border-radius: 8px; padding: 8px 12px; font-family: 'Plus Jakarta Sans', sans-serif; }
-  .box-tag { font-size: 7.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #bfa81f; margin-bottom: 4px; }
-  .item-line { display: flex; justify-content: space-between; font-size: 10px; color: #f1f5f9; padding: 2px 0; font-weight: 600; }
+  .middle-content { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; position: relative; z-index: 2; }
+  .info-panel { border: 1.2px solid #000; border-radius: 8px; padding: 10px 12px; }
+  .panel-lbl { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 4px; }
+  .rec-name { font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-weight: 800; color: #000; }
+  .rec-meta { font-size: 11px; color: #222; margin-top: 2px; }
 
-  .care-section { background: rgba(191,168,31,0.06); border: 1px dashed rgba(191,168,31,0.3); border-radius: 8px; padding: 8px 10px; font-size: 9.5px; color: #f1f5f9; line-height: 1.4; }
-  .care-head { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #d4af37; font-size: 8px; margin-bottom: 3px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .care-panel { border: 1.2px solid #000; border-radius: 8px; padding: 10px 12px; background: #fafafa; font-size: 9.5px; line-height: 1.4; }
+  .care-head { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 8.5px; margin-bottom: 4px; }
 
-  .qr-concierge { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; }
-  .qr-concierge img { width: 60px; height: 60px; border: 1px solid #bfa81f; border-radius: 6px; background: #fff; padding: 2px; }
-  .qr-guide { flex: 1; padding-left: 12px; font-size: 9px; color: #cbd5e1; line-height: 1.35; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-  .footer-sig { text-align: center; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: #bfa81f; padding-top: 6px; border-top: 1px solid rgba(191,168,31,0.3); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+  .footer-strip { display: flex; justify-content: space-between; align-items: center; border-top: 1.5px solid #000; padding-top: 8px; position: relative; z-index: 2; }
+  .origin-text { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .order-ref { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 800; background: #000; color: #fff; padding: 2px 7px; border-radius: 4px; }
 </style>
 </head>
 <body>
 <div class="slip-box">
-  <div class="inner-dashed"></div>
-
-  <!-- Gold Botanical Corners -->
-  <svg class="corner c-tl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-  <svg class="corner c-tr" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-  <svg class="corner c-bl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-  <svg class="corner c-br" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+  <div class="lily-tl">${BOTANICAL_LILY_SVG}</div>
+  <div class="lily-br">${BOTANICAL_LILY_SVG}</div>
 
   <div class="head-section">
-    <div class="logo-circle">
-      <img src="${logoSrc}" alt="NER Logo" onerror="this.src='/favicon_io/android-chrome-192x192.png'" />
-    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:2px;">${BRAND_LEAVES_EMBLEM}</div>
     <div class="brand-title">New Eco Roses</div>
     <div class="sub-title">Haute Floral Atelier &middot; ${storeName}</div>
-    ${occasion ? `<div style="font-size:9.5px;font-weight:700;color:#fde047;margin-top:3px;text-transform:uppercase;">✨ ${occasion} Special Collection</div>` : ''}
+    ${occasion ? `<div style="font-size:10px;font-weight:800;color:#000;margin-top:4px;text-transform:uppercase;">✨ ${occasion} Presentation</div>` : ''}
   </div>
 
-  <div class="greeting-block">
-    <div class="for-label">Specially Handcrafted For</div>
-    <div class="rec-name">${recipientName}</div>
-    <div class="rec-locality">${order.shippingAddress.city} &middot; Order #${order.orderNumber}</div>
-  </div>
-
-  <div class="manifest-box">
-    <div class="box-tag">🌸 Arrangement Inclusions:</div>
-    ${order.items.map(i => `
-      <div class="item-line">
-        <span>${i.quantity}× ${i.name}</span>
-        <span style="color:#bfa81f;">Hand-Arranged ✓</span>
+  <div class="middle-content">
+    <div class="info-panel">
+      <div class="panel-lbl">SPECIALLY HANDCRAFTED FOR</div>
+      <div class="rec-name">${recipientName}</div>
+      <div class="rec-meta">${order.shippingAddress.city} &middot; Destination Kolkata</div>
+      <div style="margin-top:8px;font-size:10px;font-weight:600;">
+        ${order.items.map(i => `<div>• ${i.quantity}× ${i.name}</div>`).join('')}
       </div>
-    `).join('')}
-  </div>
+    </div>
 
-  <div class="care-section">
-    <div class="care-head">✨ Freshness Ritual</div>
-    <div>1. Cut stems at a 45° angle under cool water before placing in vase</div>
-    <div>2. Dissolve the enclosed floral preservative sachet thoroughly</div>
-    <div>3. Display away from direct sunlight, heating &amp; air conditioning vents</div>
-  </div>
-
-  <div class="qr-concierge">
-    <img src="${qrUrl}" alt="Delivery QR" />
-    <div class="qr-guide">
-      <strong style="color:#d4af37;">Concierge &amp; Unboxing:</strong><br>
-      Scan with your camera for unboxing instructions, flower care notes, or to reach our master florists directly.
+    <div class="care-panel">
+      <div class="care-head">🌸 FRESH FLOWER CARE RITUAL</div>
+      <div>1. Trim stems at a 45° angle under cool water before arranging</div>
+      <div>2. Dissolve the floral food preservative sachet in clean water</div>
+      <div>3. Display away from direct sunlight, air currents, and heat sources</div>
     </div>
   </div>
 
-  <div class="footer-sig">
-    Crafted with Passion &middot; newecoroses.com &middot; Kolkata
+  <div class="footer-strip">
+    <div class="origin-text">Crafted with Passion &middot; newecoroses.com &middot; Kolkata</div>
+    <div class="order-ref">ORDER #${order.orderNumber}</div>
   </div>
 </div>
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=520,height=760');
+    const win = window.open('', '_blank', 'width=780,height=580');
     if (win) {
         win.document.write(html);
         win.document.close();
@@ -748,20 +967,26 @@ export function generateBatchManifest(orders: SavedOrder[], storeName: string, d
           <td style="text-align:center;font-weight:bold;">${i + 1}</td>
           <td style="font-family:monospace;font-weight:800;white-space:nowrap;">${o.orderNumber}</td>
           <td>
-            <strong>${recipientName}</strong>
-            ${recipientName !== o.customer.name ? `<br><span style="font-size:8px;color:#666;">Buyer: ${o.customer.name}</span>` : ''}
+            <div style="font-weight:700;">${recipientName}</div>
+            <div style="font-size:8.5px;color:#555;">📱 ${o.customer.phone}${altPhone !== '—' ? ' | Alt: ' + altPhone : ''}</div>
           </td>
-          <td>${o.shippingAddress.line1}, ${o.shippingAddress.city} <strong>(${o.shippingAddress.postalCode})</strong></td>
-          <td style="font-family:monospace;white-space:nowrap;">📱 +91 ${o.customer.phone}</td>
-          <td style="font-family:monospace;white-space:nowrap;">${altPhone !== '—' ? '📱 +91 ' + altPhone : '—'}</td>
-          <td style="text-align:center;font-weight:bold;">${o.items.reduce((s, it) => s + it.quantity, 0)}</td>
-          <td style="text-transform:capitalize;">${occasion}</td>
-          <td><span style="font-size:8.5px;padding:1px 5px;border-radius:3px;background:#e2e8f0;font-weight:700;">${o.paymentMethod || 'Online'}</span></td>
-          <td style="font-weight:800;text-align:right;">₹${o.total.toLocaleString('en-IN')}</td>
+          <td style="font-size:9px;max-width:200px;">
+            ${o.shippingAddress.line1}${o.shippingAddress.line2 ? ', ' + o.shippingAddress.line2 : ''}, ${o.shippingAddress.city} - <strong>${o.shippingAddress.postalCode}</strong>
+          </td>
+          <td style="font-size:9px;">
+            ${o.items.map(it => `<div>• ${it.quantity}× ${it.name}</div>`).join('')}
+            ${occasion !== '—' ? `<span style="display:inline-block;margin-top:2px;font-size:8px;background:#000;color:#fff;padding:1px 4px;border-radius:2px;">${occasion}</span>` : ''}
+          </td>
+          <td style="text-align:center;font-weight:800;white-space:nowrap;">₹${o.total.toLocaleString('en-IN')}</td>
           <td style="text-align:center;">
-            <img src="${qrUrl}" alt="QR" style="width:36px;height:36px;display:inline-block;" />
+            <span style="display:inline-block;padding:2px 6px;border-radius:3px;font-size:8.5px;font-weight:800;background:#000;color:#fff;">
+              ${(o.paymentMethod || 'Prepaid').toUpperCase()}
+            </span>
           </td>
-          <td style="width:90px;border-bottom:1px solid #999;"></td>
+          <td style="text-align:center;padding:4px;">
+            <img src="${qrUrl}" alt="QR" style="width:42px;height:42px;border:1px solid #000;padding:1px;" />
+          </td>
+          <td style="border-bottom:1px solid #000;min-width:90px;"></td>
         </tr>`;
     }).join('');
 
@@ -769,83 +994,84 @@ export function generateBatchManifest(orders: SavedOrder[], storeName: string, d
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Dispatch Manifest - ${manifestDate}</title>
+<title>Courier Handover Manifest - ${storeName}</title>
 <style>
-  @page { size: A4 landscape; margin: 8mm; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 9.5px; color: #000; padding: 10px; }
-  .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #000; padding-bottom: 8px; margin-bottom: 8px; }
-  h1 { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; }
-  .meta { font-size: 9.5px; color: #333; margin-top: 3px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-  th { background: #111; color: #fff; padding: 5px 6px; text-align: left; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #111; }
-  td { padding: 4px 6px; border: 1px solid #ddd; vertical-align: middle; font-size: 9px; }
+  @page { size: A4 landscape; margin: 10mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { padding: 12px; background: #fff; color: #000; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 10px; }
+  .brand-title { font-size: 16px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+  .sub-title { font-size: 10px; color: #333; margin-top: 2px; }
+  .meta-box { text-align: right; font-size: 9.5px; line-height: 1.4; }
+  
+  .summary-bar { display: flex; gap: 15px; background: #f3f3f3; border: 1.5px solid #000; padding: 6px 12px; font-size: 10px; font-weight: 700; margin-bottom: 10px; border-radius: 4px; }
+  .summary-bar span strong { color: #000; }
+  
+  table { width: 100%; border-collapse: collapse; font-size: 9.5px; }
+  th { background: #000; color: #fff; padding: 6px 5px; text-align: left; font-size: 8.5px; letter-spacing: 0.5px; text-transform: uppercase; }
+  td { padding: 5px; border-bottom: 1px solid #ccc; vertical-align: middle; }
   tr:nth-child(even) td { background: #fafafa; }
-  .summary-row td { background: #f0fdf4 !important; font-weight: 800; border-top: 2px solid #000; font-size: 10px; }
-  .footer { margin-top: 25px; display: flex; justify-content: space-between; padding-top: 10px; }
-  .sign-box { border-top: 1.5px solid #000; padding-top: 4px; min-width: 170px; text-align: center; font-size: 8.5px; }
+  
+  .signatures { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1.5px dashed #000; font-size: 9px; }
+  .sig-block { min-width: 170px; text-align: center; border-top: 1px solid #000; padding-top: 4px; font-weight: 700; }
+  .sig-block span { font-weight: normal; color: #555; font-size: 8px; }
   @media print { body { padding: 0; } }
 </style>
 </head>
 <body>
-<div class="header">
-  <div>
-    <h1>🌹 New Eco Roses &mdash; Master Courier Dispatch Manifest</h1>
-    <div class="meta">
-      <strong>Store Outlet:</strong> ${storeName} &nbsp;|&nbsp;
-      <strong>Dispatch Date:</strong> ${manifestDate} &nbsp;|&nbsp;
-      <strong>Parcels Dispatched:</strong> ${orders.length}
+  <div class="header">
+    <div>
+      <div class="brand-title">New Eco Roses &mdash; Master Courier Handover Manifest</div>
+      <div class="sub-title">Dispatched from <strong>${storeName}</strong> &bull; ${getStoreAddress(storeName)}</div>
+    </div>
+    <div class="meta-box">
+      <div><strong>Manifest Date:</strong> ${manifestDate}</div>
+      <div><strong>Generated:</strong> ${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</div>
+      <div><strong>Helpline:</strong> +91 99369 11611</div>
     </div>
   </div>
-  <div style="text-align:right;">
-    <div style="font-size:13px;font-weight:900;">Total Parcels: ${orders.length}</div>
-    <div style="font-size:12px;font-weight:800;color:#15803d;">Total Value: ₹${totalValue.toLocaleString('en-IN')}</div>
-  </div>
-</div>
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align:center;width:24px;">#</th>
-      <th>Order #</th>
-      <th>Recipient / Consignee</th>
-      <th>Delivery Address</th>
-      <th>Primary Phone</th>
-      <th>Alt Phone</th>
-      <th style="text-align:center;">Bouquets</th>
-      <th>Occasion</th>
-      <th>Payment</th>
-      <th style="text-align:right;">Amount</th>
-      <th style="text-align:center;">Scan QR</th>
-      <th style="text-align:center;">Rider Handover</th>
-    </tr>
-  </thead>
-  <tbody>
-    ${rows.length > 0 ? rows : '<tr><td colspan="12" style="text-align:center;padding:20px;color:#888;">No orders recorded for this manifest.</td></tr>'}
-    <tr class="summary-row">
-      <td colspan="6" style="text-align:right;">TOTAL SUMMARY:</td>
-      <td style="text-align:center;">${orders.reduce((sum, o) => sum + o.items.reduce((s, it) => s + it.quantity, 0), 0)}</td>
-      <td colspan="2"></td>
-      <td style="text-align:right;color:#15803d;">₹${totalValue.toLocaleString('en-IN')}</td>
-      <td colspan="2"></td>
-    </tr>
-  </tbody>
-</table>
+  <div class="summary-bar">
+    <span>Total Parcels: <strong>${orders.length}</strong></span>
+    <span>Total Manifest Value: <strong>₹${totalValue.toLocaleString('en-IN')}</strong></span>
+    <span>Prepaid Shipments: <strong>${orders.filter(o => (o.paymentMethod || 'prepaid').toLowerCase() === 'prepaid').length}</strong></span>
+    <span>COD Shipments: <strong>${orders.filter(o => (o.paymentMethod || '').toLowerCase() === 'cod').length}</strong></span>
+    <span>Fragile Live Blooms: <strong>100% Inspected</strong></span>
+  </div>
 
-<div class="footer">
-  <div class="sign-box">
-    <strong>Store Dispatcher Signature</strong><br>
-    <span style="font-size:7.5px;color:#666;">New Eco Roses Atelier</span>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:25px;text-align:center;">#</th>
+        <th style="width:85px;">Order ID</th>
+        <th style="width:140px;">Recipient &amp; Phone</th>
+        <th>Delivery Address</th>
+        <th style="width:160px;">Bouquet Details</th>
+        <th style="width:65px;text-align:center;">Value</th>
+        <th style="width:65px;text-align:center;">Mode</th>
+        <th style="width:50px;text-align:center;">QR</th>
+        <th style="width:90px;text-align:center;">Courier Sign</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows}
+    </tbody>
+  </table>
+
+  <div class="signatures">
+    <div class="sig-block">
+      Store Dispatcher Signature<br>
+      <span>Name, ID &amp; Time</span>
+    </div>
+    <div class="sig-block">
+      Courier Pickup Agent Signature<br>
+      <span>Name &amp; Mobile Number</span>
+    </div>
+    <div class="sig-block">
+      Security Handover Check<br>
+      <span>Outward Gate Pass</span>
+    </div>
   </div>
-  <div class="sign-box">
-    <strong>Courier Rider Signature</strong><br>
-    <span style="font-size:7.5px;color:#666;">Name &amp; Vehicle Number</span>
-  </div>
-  <div class="sign-box">
-    <strong>Security / Gate Outpass</strong><br>
-    <span style="font-size:7.5px;color:#666;">Time Stamp &amp; Exit Verified</span>
-  </div>
-</div>
 </body>
 </html>`;
 
@@ -858,51 +1084,65 @@ export function generateBatchManifest(orders: SavedOrder[], storeName: string, d
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MANIFEST OPTION 2: ALL-BLACK VERTICAL PRODUCT MANIFEST DOCKET
-// 50-60% of A4 Page with Official Logo, Gold SVGs & Quality Checks
+// MANIFEST OPTION 2: PER-PRODUCT INDIVIDUAL MANIFEST DOCKET
+// Pure Black Ink on White Paper with Botanical Lilies, Florist QC Checklist
 // ═══════════════════════════════════════════════════════════════════
 export function generateProductManifest(order: SavedOrder, storeName: string, productIndex?: number): void {
     const parsed = parseSpecialNote(order.specialNote);
     const recipientName = parsed['recipient_name'] || order.customer.name;
     const recipientPhone = parsed['recipient_phone'] || order.customer.phone;
     const altPhone = parsed['alt_phone'] || '';
-    const occasion = parsed['occasion'] || '';
     const qrUrl = getQrCodeUrl(order.orderNumber);
-    const storeAddress = getStoreAddress(storeName);
-
-    const logoOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-    const logoSrc = `${logoOrigin}/favicon_io/android-chrome-512x512.png`;
 
     const itemsToRender = typeof productIndex === 'number' && order.items[productIndex]
         ? [{ item: order.items[productIndex], index: productIndex }]
         : order.items.map((it, idx) => ({ item: it, index: idx }));
 
+    const dateFormatted = new Date(order.createdAt).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+
     const pages = itemsToRender.map(({ item, index }) => `
     <div class="docket-page-wrapper">
       <div class="docket-card">
-        <div class="inner-border"></div>
+        <!-- Botanical Corner Lilies -->
+        <div class="lily-tl">${BOTANICAL_LILY_SVG}</div>
+        <div class="lily-br">${BOTANICAL_LILY_SVG}</div>
 
-        <!-- Gold Botanical Corners -->
-        <svg class="corner c-tl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-        <svg class="corner c-tr" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-        <svg class="corner c-bl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-        <svg class="corner c-br" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
-
-        <!-- Header with Logo -->
+        <!-- Header -->
         <div class="docket-head">
-          <div class="head-left">
-            <div class="logo-circ">
-              <img src="${logoSrc}" alt="NER Logo" onerror="this.src='/favicon_io/android-chrome-192x192.png'" />
-            </div>
-            <div>
-              <div class="brand-title">NEW ECO ROSES ATELIER</div>
-              <div class="docket-sub">INDIVIDUAL PRODUCT DISPATCH MANIFEST &middot; ITEM #${index + 1} OF ${order.items.length}</div>
-            </div>
+          <div style="display:flex;justify-content:center;margin-bottom:2px;">${BRAND_LEAVES_EMBLEM}</div>
+          <div class="brand-title">NEW ECO ROSES ATELIER</div>
+          <div class="docket-sub">
+            <span class="sub-line"></span>
+            INDIVIDUAL PRODUCT MANIFEST &middot; ITEM #${index + 1} OF ${order.items.length}
+            <span class="sub-line"></span>
           </div>
-          <div class="order-tag">#${order.orderNumber}</div>
         </div>
 
-        <!-- Product Highlight Box -->
+        <!-- Meta Grid -->
+        <div class="meta-strip">
+          <div class="meta-cell">
+            <div class="m-lbl">ORDER ID</div>
+            <div class="m-val bold-mono">${order.orderNumber}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="m-lbl">FULFILMENT ATELIER</div>
+            <div class="m-val">${storeName}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="m-lbl">DELIVERY TYPE</div>
+            <div class="m-val serif-type">Standard</div>
+          </div>
+          <div class="meta-cell" style="border-right:none;">
+            <div class="m-lbl">DATE</div>
+            <div class="m-val">${dateFormatted}</div>
+          </div>
+        </div>
+
+        <!-- Product Banner -->
         <div class="product-banner">
           <div class="prod-details">
             <div class="prod-tag">🌸 BOUQUET SPECIFICATION</div>
@@ -910,56 +1150,43 @@ export function generateProductManifest(order: SavedOrder, storeName: string, pr
             <div class="prod-sub">
               <strong>Quantity:</strong> ${item.quantity} Unit &nbsp;|&nbsp;
               <strong>Price:</strong> ₹${(item.price * item.quantity).toLocaleString('en-IN')} &nbsp;|&nbsp;
-              <span style="color:#4ade80;">Arrangement Passed ✓</span>
+              <strong>QC Status:</strong> Passed ✓
             </div>
           </div>
           <div class="qr-col">
-            <img src="${qrUrl}" alt="Route QR" class="qr-img" />
-            <div class="qr-txt">SCAN FOR ROUTE</div>
+            <div class="qr-box">
+              <img src="${qrUrl}" alt="Route QR" class="qr-img" />
+            </div>
+            <div class="qr-txt">TRACK ORDER</div>
           </div>
         </div>
 
-        <!-- Consignee & Route -->
-        <div class="two-grid">
-          <div class="grid-box">
-            <div class="box-lbl">📬 DELIVER TO (CONSIGNEE)</div>
-            <div class="rec-name">${recipientName}</div>
-            <div class="phone-line">📱 Primary: +91 ${recipientPhone}</div>
-            ${altPhone ? `<div class="phone-line">📱 Alt: +91 ${altPhone}</div>` : ''}
-            <div class="addr-line">${order.shippingAddress.line1}, ${order.shippingAddress.city}</div>
-            <div class="pin-highlight">PIN ${order.shippingAddress.postalCode}</div>
-          </div>
-
-          <div class="grid-box">
-            <div class="box-lbl">📤 FULFILMENT ORIGIN</div>
-            <div class="rec-name" style="font-size:12px;">${storeName}</div>
-            <div class="addr-line">${storeAddress}</div>
-            <div class="addr-line" style="margin-top:4px;">
-              <strong>Payment:</strong> ${order.paymentMethod || 'Prepaid'} (₹${order.total})<br>
-              <strong>Dispatch:</strong> ${new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
-            </div>
-            ${occasion ? `<div style="font-size:8px;color:#fde047;font-weight:bold;margin-top:2px;">🎉 ${occasion}</div>` : ''}
-          </div>
+        <!-- Recipient & Destination -->
+        <div class="ship-details-box">
+          <div class="box-lbl">SHIP TO (RECIPIENT)</div>
+          <div class="rec-name">${recipientName}</div>
+          <div class="addr-line">${order.shippingAddress.line1}${order.shippingAddress.line2 ? ', ' + order.shippingAddress.line2 : ''}, ${order.shippingAddress.city} – ${order.shippingAddress.postalCode}</div>
+          <div class="phone-line">📱 Primary: +91 ${recipientPhone}${altPhone ? ' &nbsp;|&nbsp; 📱 Alt: +91 ' + altPhone : ''}</div>
         </div>
 
         <!-- Florist Quality Control Checklist -->
         <div class="checks-box">
           <div class="checks-lbl">📋 FLORIST PRE-DISPATCH QUALITY CONTROL PASS</div>
           <div class="checks-row">
-            <div class="chk"><span class="tick">✓</span> 45° Clean Slanted Stem Cut</div>
-            <div class="chk"><span class="tick">✓</span> Hydration Water Gel / Tube Secured</div>
-            <div class="chk"><span class="tick">✓</span> Guard Petals Groomed &amp; De-thorned</div>
-            <div class="chk"><span class="tick">✓</span> Matte Luxury Wrap &amp; Satin Bow Tied</div>
-            <div class="chk"><span class="tick">✓</span> Floral Food Preservative Enclosed</div>
-            <div class="chk"><span class="tick">✓</span> Calligraphy Message Card Sealed</div>
+            <div class="chk"><span>✓</span> 45° Slanted Clean Stem Cut</div>
+            <div class="chk"><span>✓</span> Hydration Water Gel Secured</div>
+            <div class="chk"><span>✓</span> Guard Petals Groomed &amp; De-thorned</div>
+            <div class="chk"><span>✓</span> Matte Luxury Wrap &amp; Satin Bow Tied</div>
+            <div class="chk"><span>✓</span> Floral Food Preservative Enclosed</div>
+            <div class="chk"><span>✓</span> Calligraphy Message Card Sealed</div>
           </div>
         </div>
 
         <!-- Sign-Off Line -->
         <div class="docket-foot">
           <div class="sig-slot">
-            <strong>Lead Florist Sign</strong><br>
-            <span>Bouquet Assembly Verified</span>
+            <strong>Master Florist</strong><br>
+            <span>Arrangement Verified</span>
           </div>
           <div class="sig-slot">
             <strong>Store Dispatcher</strong><br>
@@ -980,73 +1207,73 @@ export function generateProductManifest(order: SavedOrder, storeName: string, pr
 <meta charset="UTF-8">
 <title>Product Manifest - ${order.orderNumber}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
   @page { size: A4 portrait; margin: 14mm auto; }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  body { background: #0d0f17; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 10px; }
+  body { background: #f1f5f9; color: #000000; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 10px; }
   @media print { body { background: #fff !important; padding: 0; } }
 
   .docket-page-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
   .page-break { page-break-after: always; height: 0; }
 
-  /* 50-60% of A4 Vertical */
+  /* 50-60% of A4 Luxury Card */
   .docket-card {
-    width: 132mm;
-    min-height: 192mm;
-    max-width: 135mm;
-    background: #000000 !important;
-    color: #ffffff;
-    border: 2px solid #bfa81f;
-    border-radius: 12px;
-    padding: 14px 16px;
+    width: 176mm;
+    min-height: 118mm;
+    max-width: 180mm;
+    background: #ffffff;
+    color: #000000;
+    border: 2.2px solid #000000;
+    border-radius: 18px;
+    padding: 14px 18px;
     position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
   }
-  .inner-border { position: absolute; inset: 4px; border: 1px dashed rgba(191,168,31,0.35); border-radius: 8px; pointer-events: none; }
 
-  .corner { position: absolute; width: 34px; height: 34px; pointer-events: none; }
-  .c-tl { top: 6px; left: 6px; }
-  .c-tr { top: 6px; right: 6px; transform: scaleX(-1); }
-  .c-bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
-  .c-br { bottom: 6px; right: 6px; transform: scale(-1); }
+  .lily-tl { position: absolute; top: -2px; left: -2px; width: 130px; height: 115px; pointer-events: none; z-index: 1; }
+  .lily-br { position: absolute; bottom: -2px; right: -2px; width: 130px; height: 115px; pointer-events: none; z-index: 1; transform: rotate(180deg); }
 
-  .docket-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(191,168,31,0.3); padding-bottom: 8px; }
-  .head-left { display: flex; align-items: center; gap: 8px; }
-  .logo-circ { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #bfa81f; padding: 2px; background: #111; display: flex; align-items: center; justify-content: center; }
-  .logo-circ img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
-  .brand-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 900; letter-spacing: 2px; color: #d4af37; }
-  .docket-sub { font-size: 7px; color: #94a3b8; font-weight: 700; letter-spacing: 1px; }
-  .order-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 900; background: #bfa81f; color: #000; padding: 2px 7px; border-radius: 4px; }
+  .docket-head { text-align: center; position: relative; z-index: 2; padding-bottom: 6px; }
+  .brand-title { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 800; letter-spacing: 3px; color: #000; }
+  .docket-sub { font-size: 8px; color: #000; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 2px; }
+  .sub-line { display: inline-block; width: 20px; height: 1px; background: #000; }
 
-  .product-banner { display: flex; justify-content: space-between; align-items: center; background: #08090d; border: 1px solid rgba(191,168,31,0.3); border-radius: 8px; padding: 8px 10px; margin-top: 7px; }
-  .prod-details { flex: 1; padding-right: 8px; }
-  .prod-tag { font-size: 7px; font-weight: 800; letter-spacing: 1px; color: #bfa81f; text-transform: uppercase; }
-  .prod-name { font-size: 13px; font-weight: 800; color: #ffffff; margin: 1px 0; }
-  .prod-sub { font-size: 8.5px; color: #cbd5e1; }
-  .qr-col { text-align: center; width: 65px; }
-  .qr-img { width: 55px; height: 55px; border-radius: 4px; background: #fff; padding: 2px; }
-  .qr-txt { font-size: 6px; font-weight: 800; color: #bfa81f; margin-top: 2px; }
+  .meta-strip { display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; position: relative; z-index: 2; }
+  .meta-cell { padding: 5px 8px; border-right: 1.5px solid #000; }
+  .m-lbl { font-size: 7.5px; font-weight: 800; color: #000; letter-spacing: 0.8px; text-transform: uppercase; }
+  .m-val { font-size: 11.5px; font-weight: 800; color: #000; }
+  .bold-mono { font-family: 'JetBrains Mono', monospace; }
+  .serif-type { font-family: 'Playfair Display', Georgia, serif; font-size: 12px; }
 
-  .two-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 7px; }
-  .grid-box { background: #08090d; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 7px 9px; }
-  .box-lbl { font-size: 7px; font-weight: 800; color: #bfa81f; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
-  .rec-name { font-size: 12px; font-weight: 800; color: #ffffff; }
-  .phone-line { font-size: 8.5px; font-weight: 700; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
-  .addr-line { font-size: 8px; color: #94a3b8; line-height: 1.3; margin-top: 2px; }
-  .pin-highlight { display: inline-block; background: #bfa81f; color: #000; font-weight: 900; font-size: 9px; padding: 1px 4px; border-radius: 2px; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+  .product-banner { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #000; padding: 7px 0; position: relative; z-index: 2; }
+  .prod-details { flex: 1; padding-right: 10px; }
+  .prod-tag { font-size: 7.5px; font-weight: 800; letter-spacing: 1px; color: #000; text-transform: uppercase; }
+  .prod-name { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 15px; font-weight: 800; color: #000; margin: 1px 0; }
+  .prod-sub { font-size: 9px; color: #222; }
+  .qr-col { text-align: center; width: 68px; }
+  .qr-box { width: 56px; height: 56px; border: 1px solid #000; padding: 2px; margin: 0 auto; }
+  .qr-img { width: 100%; height: 100%; object-fit: contain; }
+  .qr-txt { font-size: 6.5px; font-weight: 800; color: #000; margin-top: 2px; }
 
-  .checks-box { background: #08090d; border: 1px solid rgba(191,168,31,0.25); border-radius: 7px; padding: 7px 9px; margin-top: 7px; }
-  .checks-lbl { font-size: 7px; font-weight: 800; color: #bfa81f; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
-  .checks-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 8px; font-weight: 600; color: #e2e8f0; }
+  .ship-details-box { padding: 6px 0; border-bottom: 1.5px solid #000; position: relative; z-index: 2; }
+  .box-lbl { font-size: 7.5px; font-weight: 800; color: #000; letter-spacing: 1px; text-transform: uppercase; }
+  .rec-name { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-weight: 800; color: #000; }
+  .addr-line { font-size: 9.5px; color: #222; margin-top: 1px; }
+  .phone-line { font-size: 9px; font-weight: 700; color: #000; font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+
+  .checks-box { padding: 6px 0; border-bottom: 1.5px solid #000; position: relative; z-index: 2; }
+  .checks-lbl { font-size: 7.5px; font-weight: 800; color: #000; letter-spacing: 1px; margin-bottom: 3px; text-transform: uppercase; }
+  .checks-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; font-size: 8px; font-weight: 700; color: #000; }
   .chk { display: flex; align-items: center; gap: 4px; }
-  .tick { color: #4ade80; font-weight: 900; font-size: 9px; }
+  .chk span { font-weight: 900; }
 
-  .docket-foot { border-top: 1px dashed rgba(191,168,31,0.3); padding-top: 6px; margin-top: 7px; display: flex; justify-content: space-between; }
-  .sig-slot { min-width: 90px; text-align: center; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 2px; font-size: 7px; color: #cbd5e1; }
-  .sig-slot span { font-size: 6px; color: #64748b; }
+  .docket-foot { display: flex; justify-content: space-between; padding-top: 6px; position: relative; z-index: 2; }
+  .sig-slot { min-width: 100px; text-align: center; border-top: 1px solid #000; padding-top: 2px; font-size: 7.5px; color: #000; font-weight: 700; }
+  .sig-slot span { font-size: 6.5px; color: #555; font-weight: normal; }
 </style>
 </head>
 <body>
@@ -1054,7 +1281,7 @@ ${pages}
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=520,height=760');
+    const win = window.open('', '_blank', 'width=780,height=580');
     if (win) {
         win.document.write(html);
         win.document.close();
@@ -1083,124 +1310,70 @@ export function generateGiftCard(options: {
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap');
   @page { size: 5in 7in; margin: 0; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { width: 5in; height: 7in; background: #fffef8; margin: 0; font-family: 'Playfair Display', serif; }
+  body { width: 5in; height: 7in; background: #ffffff; margin: 0; font-family: 'Playfair Display', serif; }
   .card {
     width: 100%; height: 100%;
-    background: linear-gradient(135deg, #fffef8 0%, #fef9ec 50%, #fff8f0 100%);
-    border: 2px solid #e8d5b7;
+    background: #ffffff;
+    border: 2px solid #000;
     display: flex; flex-direction: column; align-items: center; justify-content: space-between;
     padding: 34px 38px;
     position: relative; overflow: hidden; text-align: center;
   }
-  .corner { position: absolute; width: 85px; height: 85px; opacity: 0.45; }
-  .corner-tl { top: 0; left: 0; }
-  .corner-tr { top: 0; right: 0; transform: scaleX(-1); }
-  .corner-bl { bottom: 0; left: 0; transform: scaleY(-1); }
-  .corner-br { bottom: 0; right: 0; transform: scale(-1); }
+  .lily-tl { position: absolute; top: 0; left: 0; width: 110px; height: 100px; pointer-events: none; }
+  .lily-br { position: absolute; bottom: 0; right: 0; width: 110px; height: 100px; pointer-events: none; transform: rotate(180deg); }
 
-  .brand-top { text-align: center; }
-  .brand-name { font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: #bfa81f; font-weight: 700; }
-  .floral-divider { font-size: 16px; margin: 5px 0; color: #bfa81f; letter-spacing: 8px; }
-
-  .occasion-tag {
+  .header { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; z-index: 2; }
+  .brand-name { font-size: 13px; letter-spacing: 5px; text-transform: uppercase; color: #000; font-weight: 700; }
+  .occasion-badge { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #000; font-style: italic; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 10px; margin-top: 4px; }
+  
+  .message-body {
+    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 20px 0; max-width: 90%; position: relative; z-index: 2;
+  }
+  .to-line { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: #333; margin-bottom: 10px; }
+  .to-line strong { font-family: 'Playfair Display', serif; font-size: 19px; color: #000; font-weight: 700; font-style: normal; }
+  
+  .message-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 11.5px; letter-spacing: 2.5px; text-transform: uppercase;
-    color: #9a7c4a; border: 1.5px solid #d4a853; padding: 4px 16px;
-    border-radius: 20px; background: rgba(191,168,31,0.08); font-weight: 600;
+    font-size: 17px; line-height: 1.55; color: #111;
+    font-style: italic; word-wrap: break-word; white-space: pre-wrap;
   }
-
-  .to-line {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic; font-size: 14px; color: #888; letter-spacing: 1px; margin-bottom: 2px;
-  }
-  .recipient {
-    font-size: 24px; font-weight: 700; color: #2a1a0a; letter-spacing: 1px;
-  }
-
-  .message-block {
-    flex: 1; display: flex; align-items: center; justify-content: center; padding: 12px 6px;
-  }
-  .message {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16.5px; line-height: 1.8; color: #2d1a06; font-style: italic; max-width: 350px;
-  }
-
-  .sender-block { text-align: center; margin-top: 4px; }
-  .with-love { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: #999; letter-spacing: 1px; }
-  .sender { font-size: 17px; font-weight: 700; color: #2a1a0a; margin-top: 2px; }
-
-  .footer-brand {
-    text-align: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: #bfa81f;
-    border-top: 1px solid #e8d5b7; padding-top: 10px; width: 100%;
-  }
-  @media print { body { margin: 0; } }
+  
+  .from-line { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; color: #333; margin-top: 12px; }
+  .from-line strong { font-family: 'Playfair Display', serif; font-size: 17px; color: #000; font-weight: 700; font-style: normal; }
+  
+  .footer { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: #000; border-top: 1px solid #000; padding-top: 8px; width: 80%; position: relative; z-index: 2; }
+  @media print { body { width: 5in; height: 7in; } }
 </style>
 </head>
 <body>
 <div class="card">
-  <svg class="corner corner-tl" viewBox="0 0 80 80" fill="none">
-    <path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <circle cx="20" cy="20" r="3" fill="#bfa81f" opacity="0.6"/>
-    <text x="8" y="14" font-size="12" fill="#bfa81f" opacity="0.6">✿</text>
-  </svg>
-  <svg class="corner corner-tr" viewBox="0 0 80 80" fill="none">
-    <path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <circle cx="20" cy="20" r="3" fill="#bfa81f" opacity="0.6"/>
-    <text x="8" y="14" font-size="12" fill="#bfa81f" opacity="0.6">✿</text>
-  </svg>
-  <svg class="corner corner-bl" viewBox="0 0 80 80" fill="none">
-    <path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <circle cx="20" cy="20" r="3" fill="#bfa81f" opacity="0.6"/>
-  </svg>
-  <svg class="corner corner-br" viewBox="0 0 80 80" fill="none">
-    <path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/>
-    <circle cx="20" cy="20" r="3" fill="#bfa81f" opacity="0.6"/>
-  </svg>
+  <div class="lily-tl">${BOTANICAL_LILY_SVG}</div>
+  <div class="lily-br">${BOTANICAL_LILY_SVG}</div>
 
-  <div class="brand-top">
+  <div class="header">
+    <div style="display:flex;justify-content:center;margin-bottom:2px;">${BRAND_LEAVES_EMBLEM}</div>
     <div class="brand-name">New Eco Roses</div>
-    <div class="floral-divider">· · 🌹 · ·</div>
-    ${occasion ? `<div class="occasion-tag">${occasion}</div>` : ''}
+    ${occasion ? `<div class="occasion-badge">${occasion}</div>` : ''}
   </div>
 
-  <div>
-    <div class="to-line">To,</div>
-    <div class="recipient">${recipientName || 'You'}</div>
+  <div class="message-body">
+    ${recipientName ? `<div class="to-line">To Dearest <strong>${recipientName}</strong>,</div>` : ''}
+    <div class="message-text">"${message || 'May these blooms bring endless joy and radiant smiles to your day.'}"</div>
+    ${senderName ? `<div class="from-line">With heartfelt love, <strong>${senderName}</strong></div>` : ''}
   </div>
 
-  <div class="message-block">
-    <div class="message">${message ? message.replace(/\n/g, '<br>') : '&#8220; Wishing you a day as radiant, fragrant &amp; beautiful as these blooms &#8221;'}</div>
-  </div>
-
-  <div class="sender-block">
-    <div class="with-love">— With heartfelt love,</div>
-    <div class="sender">${senderName || 'Someone Special'}</div>
-  </div>
-
-  <div class="footer-brand">
-    Handcrafted with love &middot; New Eco Roses Atelier &middot; newecoroses.com
-    ${orderNumber ? ' &middot; #' + orderNumber : ''}
+  <div class="footer">
+    Haute Floral Atelier &middot; newecoroses.com
   </div>
 </div>
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=520,height=750');
+    const win = window.open('', '_blank', 'width=520,height=720');
     if (win) {
         win.document.write(html);
         win.document.close();
-        setTimeout(() => { win.focus(); win.print(); }, 800);
+        setTimeout(() => { win.focus(); win.print(); }, 500);
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// BACKWARD COMPATIBILITY EXPORTS
-// ═══════════════════════════════════════════════════════════════════
-export const generateShippingLabel = generateCourierShippingLabel;
-export const generateCourierManifest = generateBatchManifest;

@@ -449,7 +449,7 @@ export default function StaffOrdersPage() {
                                                     </button>
                                                     <button
                                                         onClick={() => generateCourierShippingLabel(o, storeName)}
-                                                        title="Print 4×6 Courier Shipping Label (with QR Code)"
+                                                        title="Print Product Shipping Label (with QR Code)"
                                                         className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 cursor-pointer transition-colors"
                                                     >
                                                         <Tag size={12} />
@@ -624,14 +624,14 @@ export default function StaffOrdersPage() {
                                         className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold border border-zinc-700 transition-all cursor-pointer shadow-xs"
                                     >
                                         <Printer size={13} />
-                                        <span>1. Courier Thermal (4×6″)</span>
+                                        <span>1. Product Shipping Label (With QR)</span>
                                     </button>
                                     <button
                                         onClick={() => generateLuxuryDeliverySlip(selectedOrder, storeName)}
                                         className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-semibold border border-amber-500/30 transition-all cursor-pointer shadow-xs"
                                     >
                                         <Sparkles size={13} />
-                                        <span>2. Luxury Slip (4×6″)</span>
+                                        <span>2. Luxury Delivery Slip</span>
                                     </button>
                                 </div>
                             </div>
