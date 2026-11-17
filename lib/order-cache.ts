@@ -34,6 +34,9 @@ export interface SavedOrder {
     total: number;
     status: 'confirmed' | 'processing' | 'delivered' | 'cancelled' | 'paid';
     createdAt: string;
+    assignedStore?: 'tollygunge' | 'alipore' | null;
+    assignedAt?: string;
+    storeAcknowledged?: boolean;
 }
 
 // In-memory global store to survive HMR in dev and warm serverless containers
@@ -194,6 +197,35 @@ export async function updateOrderStatus(orderIdentifier: string, status: SavedOr
     if (!order) return null;
 
     order.status = status;
+    await saveOrder(order);
+    return order;
+}
+
+/**
+ * Assigns an order to a store outlet
+ */
+export async function assignOrderToStore(
+    orderIdentifier: string,
+    store: 'tollygunge' | 'alipore' | null
+): Promise<SavedOrder | null> {
+    const order = await findOrder(orderIdentifier);
+    if (!order) return null;
+
+    order.assignedStore = store;
+    order.assignedAt = store ? new Date().toISOString() : undefined;
+    order.storeAcknowledged = false;
+    await saveOrder(order);
+    return order;
+}
+
+/**
+ * Marks an order as acknowledged by the store staff
+ */
+export async function acknowledgeOrderAtStore(orderIdentifier: string): Promise<SavedOrder | null> {
+    const order = await findOrder(orderIdentifier);
+    if (!order) return null;
+
+    order.storeAcknowledged = true;
     await saveOrder(order);
     return order;
 }

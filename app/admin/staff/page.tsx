@@ -37,6 +37,10 @@ const DEFAULT_PERMISSIONS: StaffPermissions = {
     canEditStock: true,
     canManageCategories: true,
     canManageHomepage: true,
+    canAssignOrders: false,
+    canDownloadLabels: true,
+    canViewAllStores: false,
+    canManageStaff: false,
 };
 
 const PERMISSION_LABELS: Record<keyof StaffPermissions, string> = {
@@ -47,6 +51,10 @@ const PERMISSION_LABELS: Record<keyof StaffPermissions, string> = {
     canEditStock: 'Manage Stock & Availability',
     canManageCategories: 'Manage Categories',
     canManageHomepage: 'Manage Homepage & Featured',
+    canAssignOrders: 'Assign Orders to Stores',
+    canDownloadLabels: 'Download Shipping Labels',
+    canViewAllStores: 'View All Store Data',
+    canManageStaff: 'Manage Staff Accounts',
 };
 
 export default function AdminStaffPage() {

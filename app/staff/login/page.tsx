@@ -5,19 +5,52 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
     Lock,
-    User,
     ArrowRight,
     AlertCircle,
     Loader2,
     Eye,
     EyeOff,
     Shield,
-    ArrowUpRight
+    ArrowUpRight,
+    ChevronDown,
+    Store,
+    Crown,
 } from 'lucide-react';
+
+const OUTLETS = [
+    {
+        id: 'atanu',
+        label: 'Atanu Jana',
+        sublabel: 'Boutique Director',
+        icon: Crown,
+        iconColor: 'text-amber-400',
+        badge: 'Director',
+        badgeStyle: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    },
+    {
+        id: 'tollygunge',
+        label: 'Tollygunge Store',
+        sublabel: 'Outlet Staff Login',
+        icon: Store,
+        iconColor: 'text-emerald-400',
+        badge: 'Store',
+        badgeStyle: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+    },
+    {
+        id: 'alipore',
+        label: 'Alipore Store',
+        sublabel: 'Outlet Staff Login',
+        icon: Store,
+        iconColor: 'text-sky-400',
+        badge: 'Store',
+        badgeStyle: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+    },
+];
 
 export default function StaffLoginPage() {
     const router = useRouter();
-    const [username, setUsername] = useState('');
+    const [selectedOutlet, setSelectedOutlet] = useState(OUTLETS[0]);
+    const [outletDropdownOpen, setOutletDropdownOpen] = useState(false);
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -32,7 +65,7 @@ export default function StaffLoginPage() {
             const res = await fetch('/api/staff/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username: selectedOutlet.id, password }),
             });
 
             const data = await res.json();
@@ -43,7 +76,6 @@ export default function StaffLoginPage() {
                 return;
             }
 
-            // Successfully authenticated, navigate to staff dashboard
             router.push('/staff');
             router.refresh();
         } catch (err: any) {
@@ -52,9 +84,11 @@ export default function StaffLoginPage() {
         }
     };
 
+    const OutletIcon = selectedOutlet.icon;
+
     return (
         <div className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col justify-between items-center px-4 py-8 sm:py-12 relative overflow-hidden font-sans select-none">
-            {/* Ambient Background Glow matching OrbynAdmin */}
+            {/* Ambient Background Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-white/[0.04] via-transparent to-transparent blur-3xl pointer-events-none" />
             <div className="absolute top-1/3 -left-40 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
@@ -88,7 +122,6 @@ export default function StaffLoginPage() {
 
                 {/* Card Container */}
                 <div className="relative bg-[#0f1118]/95 border border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden">
-                    {/* Top edge subtle highlight line */}
                     <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
                     {error && (
@@ -99,24 +132,67 @@ export default function StaffLoginPage() {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Outlet Selector */}
                         <div>
                             <label className="text-xs font-semibold uppercase tracking-wider text-zinc-300 block mb-1.5">
-                                Staff Username
+                                Select Account
                             </label>
                             <div className="relative">
-                                <User className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                <input
-                                    type="text"
-                                    required
-                                    autoFocus
-                                    placeholder="e.g. atanu"
-                                    value={username}
-                                    onChange={e => setUsername(e.target.value)}
-                                    className="w-full bg-[#141724] border border-white/[0.08] focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400/20 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none transition-all"
-                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setOutletDropdownOpen(!outletDropdownOpen)}
+                                    className="w-full bg-[#141724] border border-white/[0.08] hover:border-zinc-500 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-all flex items-center gap-3 cursor-pointer"
+                                >
+                                    <div className={`w-7 h-7 rounded-lg bg-white/[0.05] flex items-center justify-center flex-shrink-0`}>
+                                        <OutletIcon size={15} className={selectedOutlet.iconColor} />
+                                    </div>
+                                    <div className="flex-1 text-left">
+                                        <div className="font-semibold text-white text-sm leading-none">{selectedOutlet.label}</div>
+                                        <div className="text-[11px] text-zinc-500 mt-0.5">{selectedOutlet.sublabel}</div>
+                                    </div>
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${selectedOutlet.badgeStyle}`}>
+                                        {selectedOutlet.badge}
+                                    </span>
+                                    <ChevronDown size={15} className={`text-zinc-400 transition-transform ${outletDropdownOpen ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {outletDropdownOpen && (
+                                    <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#141724] border border-white/[0.1] rounded-xl shadow-2xl z-50 overflow-hidden">
+                                        {OUTLETS.map((outlet) => {
+                                            const Icon = outlet.icon;
+                                            return (
+                                                <button
+                                                    key={outlet.id}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedOutlet(outlet);
+                                                        setOutletDropdownOpen(false);
+                                                        setPassword('');
+                                                        setError(null);
+                                                    }}
+                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/[0.04] transition-colors cursor-pointer ${
+                                                        selectedOutlet.id === outlet.id ? 'bg-white/[0.06]' : ''
+                                                    }`}
+                                                >
+                                                    <div className="w-7 h-7 rounded-lg bg-white/[0.05] flex items-center justify-center flex-shrink-0">
+                                                        <Icon size={14} className={outlet.iconColor} />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="font-semibold text-white text-sm">{outlet.label}</div>
+                                                        <div className="text-[11px] text-zinc-500">{outlet.sublabel}</div>
+                                                    </div>
+                                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${outlet.badgeStyle}`}>
+                                                        {outlet.badge}
+                                                    </span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
+                        {/* Password */}
                         <div>
                             <div className="flex items-center justify-between mb-1.5">
                                 <label className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
@@ -129,6 +205,7 @@ export default function StaffLoginPage() {
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     required
+                                    autoFocus
                                     placeholder="Enter your password"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
@@ -158,7 +235,7 @@ export default function StaffLoginPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <span>Sign In to Staff Portal</span>
+                                        <span>Sign In as {selectedOutlet.label}</span>
                                         <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                                     </>
                                 )}

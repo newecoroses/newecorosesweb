@@ -63,7 +63,8 @@ export async function POST(request: Request) {
             username: cleanUsername,
             name: String(name).trim(),
             passwordHash: hashPassword(password),
-            role: role === 'supervisor' ? 'supervisor' : 'staff',
+            role: role === 'supervisor' ? 'supervisor' : role === 'director' ? 'director' : 'staff',
+            storeId: 'director',
             isActive: true,
             permissions: {
                 ...DEFAULT_PERMISSIONS,

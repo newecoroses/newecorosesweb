@@ -9,6 +9,10 @@ export interface StaffPermissions {
     canEditStock: boolean;
     canManageCategories: boolean;
     canManageHomepage: boolean;
+    canAssignOrders: boolean;
+    canDownloadLabels: boolean;
+    canViewAllStores: boolean;
+    canManageStaff: boolean;
 }
 
 export interface StaffAccount {
@@ -16,7 +20,8 @@ export interface StaffAccount {
     username: string; // trimmed lowercase
     name: string;
     passwordHash: string; // salt:hash
-    role: 'staff' | 'supervisor';
+    role: 'staff' | 'supervisor' | 'director';
+    storeId: 'director' | 'tollygunge' | 'alipore';
     isActive: boolean;
     permissions: StaffPermissions;
     createdAt: string;
@@ -27,7 +32,8 @@ export interface StaffSessionData {
     id: string;
     username: string;
     name: string;
-    role: 'staff' | 'supervisor';
+    role: 'staff' | 'supervisor' | 'director';
+    storeId: 'director' | 'tollygunge' | 'alipore';
     permissions: StaffPermissions;
     expiresAt: number;
 }
@@ -60,6 +66,7 @@ export function createStaffToken(staff: StaffAccount, expiresInHours = 24): stri
         username: staff.username,
         name: staff.name,
         role: staff.role,
+        storeId: staff.storeId,
         permissions: staff.permissions,
         expiresAt: Date.now() + expiresInHours * 60 * 60 * 1000,
     };
@@ -141,4 +148,28 @@ export const DEFAULT_PERMISSIONS: StaffPermissions = {
     canEditStock: true,
     canManageCategories: true,
     canManageHomepage: true,
+    canAssignOrders: true,
+    canDownloadLabels: true,
+    canViewAllStores: true,
+    canManageStaff: true,
+};
+
+export const STORE_STAFF_PERMISSIONS: StaffPermissions = {
+    canEditPrices: false,
+    canEditDetails: true,
+    canEditImages: false,
+    canEditVisibility: false,
+    canEditStock: true,
+    canManageCategories: false,
+    canManageHomepage: false,
+    canAssignOrders: false,
+    canDownloadLabels: true,
+    canViewAllStores: false,
+    canManageStaff: false,
+};
+
+export const STORE_NAMES: Record<'director' | 'tollygunge' | 'alipore', string> = {
+    director: 'Boutique Director',
+    tollygunge: 'Tollygunge Store',
+    alipore: 'Alipore Store',
 };

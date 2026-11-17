@@ -8,6 +8,7 @@ import {
     verifyStaffToken,
     hashPassword,
     DEFAULT_PERMISSIONS,
+    STORE_STAFF_PERMISSIONS,
     StaffAccount,
 } from '@/lib/staff-auth';
 import { logStaffActivity } from '@/lib/staff-activity';
@@ -16,6 +17,8 @@ export const dynamic = 'force-dynamic';
 
 async function ensureDefaultStaff() {
     let accounts = await getStaffAccounts();
+    let changed = false;
+
     const hasAtanu = accounts.some(a => a.username.toLowerCase() === 'atanu');
     if (!hasAtanu) {
         const atanuAccount: StaffAccount = {
@@ -23,14 +26,66 @@ async function ensureDefaultStaff() {
             username: 'atanu',
             name: 'Atanu Jana',
             passwordHash: hashPassword('atanu123'),
-            role: 'supervisor',
+            role: 'director',
+            storeId: 'director',
             isActive: true,
             permissions: DEFAULT_PERMISSIONS,
             createdAt: new Date().toISOString(),
         };
         accounts = [atanuAccount, ...accounts];
-        await saveStaffAccounts(accounts);
+        changed = true;
+    } else {
+        // Migrate existing Atanu account to director role + storeId if missing
+        const idx = accounts.findIndex(a => a.username.toLowerCase() === 'atanu');
+        if (idx !== -1 && !accounts[idx].storeId) {
+            (accounts[idx] as any).storeId = 'director';
+            (accounts[idx] as any).role = 'director';
+            (accounts[idx] as any).permissions = {
+                ...accounts[idx].permissions,
+                canAssignOrders: true,
+                canDownloadLabels: true,
+                canViewAllStores: true,
+                canManageStaff: true,
+            };
+            changed = true;
+        }
     }
+
+    const hasTlg = accounts.some(a => a.username.toLowerCase() === 'tollygunge');
+    if (!hasTlg) {
+        const tlgAccount: StaffAccount = {
+            id: 'staff-tollygunge-store',
+            username: 'tollygunge',
+            name: 'Tollygunge Store',
+            passwordHash: hashPassword('tlg2026'),
+            role: 'staff',
+            storeId: 'tollygunge',
+            isActive: true,
+            permissions: STORE_STAFF_PERMISSIONS,
+            createdAt: new Date().toISOString(),
+        };
+        accounts = [...accounts, tlgAccount];
+        changed = true;
+    }
+
+    const hasAlipore = accounts.some(a => a.username.toLowerCase() === 'alipore');
+    if (!hasAlipore) {
+        const aliporeAccount: StaffAccount = {
+            id: 'staff-alipore-store',
+            username: 'alipore',
+            name: 'Alipore Store',
+            passwordHash: hashPassword('alp2026'),
+            role: 'staff',
+            storeId: 'alipore',
+            isActive: true,
+            permissions: STORE_STAFF_PERMISSIONS,
+            createdAt: new Date().toISOString(),
+        };
+        accounts = [...accounts, aliporeAccount];
+        changed = true;
+    }
+
+    if (changed) await saveStaffAccounts(accounts);
     return accounts;
 }
 
@@ -63,6 +118,7 @@ export async function GET() {
                 username: account.username,
                 name: account.name,
                 role: account.role,
+                storeId: (account as any).storeId || 'director',
                 permissions: account.permissions,
             },
         });
@@ -124,6 +180,7 @@ export async function POST(request: Request) {
                 username: account.username,
                 name: account.name,
                 role: account.role,
+                storeId: (account as any).storeId || 'director',
                 permissions: account.permissions,
             },
         });

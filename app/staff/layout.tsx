@@ -18,6 +18,8 @@ import {
     Search,
     ShieldCheck,
     BookOpen,
+    Store,
+    Crown,
 } from 'lucide-react';
 import { StaffPermissions } from '@/lib/staff-auth';
 import { ThemeToggle } from '@/components/admin/ui/theme-toggle';
@@ -26,7 +28,8 @@ interface StaffInfo {
     id: string;
     username: string;
     name: string;
-    role: 'staff' | 'supervisor';
+    role: 'staff' | 'supervisor' | 'director';
+    storeId?: 'director' | 'tollygunge' | 'alipore';
     permissions?: StaffPermissions;
 }
 
@@ -132,6 +135,27 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
         item.exact ? pathname === item.href : pathname.startsWith(item.href)
     );
 
+    const isDirector = staff?.role === 'director' || staff?.role === 'supervisor' || staff?.storeId === 'director';
+    const storeBadge = staff?.storeId === 'tollygunge' ? '🏪 Tollygunge' :
+                       staff?.storeId === 'alipore' ? '🏪 Alipore' : '👑 Director';
+    const storeBadgeColor = staff?.storeId === 'director' || !staff?.storeId ? 'text-amber-400 bg-amber-500/10 border-amber-500/30' :
+                            staff?.storeId === 'tollygunge' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' :
+                            'text-sky-400 bg-sky-500/10 border-sky-500/30';
+
+    // Filter nav groups: store staff sees limited nav
+    const visibleGroups = STAFF_NAV_GROUPS.map(group => {
+        if (isDirector) return group;
+        // Store staff: show Overview (Dashboard only), Operations, Workspace (Guide only)
+        if (group.group === 'Overview') {
+            return { ...group, items: group.items.filter(i => i.href === '/staff') };
+        }
+        if (group.group === 'Catalog & Merchandising') return null;
+        if (group.group === 'Workspace') {
+            return { ...group, items: group.items.filter(i => i.href === '/staff/guide') };
+        }
+        return group;
+    }).filter(Boolean) as NavGroup[];
+
     return (
         <div className="h-screen bg-slate-50 dark:bg-[#090a0f] text-zinc-900 dark:text-zinc-100 flex overflow-hidden font-sans">
             {/* Mobile backdrop */}
@@ -176,6 +200,11 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                                     Staff Portal
                                 </span>
                             </div>
+                            {staff && (
+                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold border tracking-wide mt-1 ${storeBadgeColor}`}>
+                                    {storeBadge}
+                                </span>
+                            )}
                         </div>
                     </Link>
 
@@ -189,7 +218,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 
                 {/* Navigation Items */}
                 <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5 no-scrollbar">
-                    {STAFF_NAV_GROUPS.map(group => (
+                    {visibleGroups.map(group => (
                         <div key={group.group}>
                             <p className="text-zinc-400 dark:text-zinc-500 text-[10px] uppercase tracking-widest font-bold px-3 mb-2">
                                 {group.group}
@@ -253,8 +282,10 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                         <div className="flex-1 min-w-0">
                             <p className="text-zinc-950 dark:text-white text-xs font-bold truncate">{staff?.name || 'Store Executive'}</p>
                             <p className="text-zinc-500 dark:text-zinc-400 text-[10px] font-semibold truncate tracking-wide">
-                                {staff?.name?.toLowerCase().includes('atanu') || staff?.role === 'supervisor'
+                                {staff?.role === 'director' || staff?.role === 'supervisor' || staff?.name?.toLowerCase().includes('atanu')
                                     ? 'Boutique Director'
+                                    : staff?.storeId === 'tollygunge' ? 'Tollygunge Store'
+                                    : staff?.storeId === 'alipore' ? 'Alipore Store'
                                     : 'Store Executive'}
                             </p>
                         </div>

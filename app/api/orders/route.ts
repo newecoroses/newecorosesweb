@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SavedOrder, getAllOrders, saveOrder, findOrder, updateOrderStatus } from '@/lib/order-cache';
+import { SavedOrder, getAllOrders, saveOrder, findOrder, updateOrderStatus, assignOrderToStore, acknowledgeOrderAtStore } from '@/lib/order-cache';
 import { AVAILABLE_COUPONS, calculateDiscount } from '@/lib/coupons';
 import { logStaffActivity } from '@/lib/staff-activity';
-import { sendOrderConfirmationEmail, sendStatusUpdateEmail } from '@/lib/email';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -155,9 +155,29 @@ export async function GET(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
     try {
         const body = await request.json();
-        const { orderIdentifier, status } = body;
+        const { orderIdentifier, status, assignedStore, storeAcknowledged, orderId } = body;
 
-        if (!orderIdentifier || !status) {
+        // Handle store assignment
+        if (typeof assignedStore !== 'undefined') {
+            const id = orderIdentifier || orderId;
+            if (!id) return NextResponse.json({ success: false, error: 'orderIdentifier required' }, { status: 400 });
+            const order = await assignOrderToStore(id, assignedStore);
+            if (!order) return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
+            return NextResponse.json({ success: true, order });
+        }
+
+        // Handle store acknowledgement
+        if (storeAcknowledged === true) {
+            const id = orderIdentifier || orderId;
+            if (!id) return NextResponse.json({ success: false, error: 'orderIdentifier required' }, { status: 400 });
+            const order = await acknowledgeOrderAtStore(id);
+            if (!order) return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
+            return NextResponse.json({ success: true, order });
+        }
+
+        // Handle orderId (from orders page) or orderIdentifier
+        const resolvedId = orderIdentifier || orderId;
+        if (!resolvedId || !status) {
             return NextResponse.json({ success: false, error: 'orderIdentifier and status are required' }, { status: 400 });
         }
 
@@ -166,13 +186,14 @@ export async function PATCH(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Invalid status' }, { status: 400 });
         }
 
-        const order = await updateOrderStatus(orderIdentifier, status);
+        const order = await updateOrderStatus(resolvedId, status);
         if (!order) {
             return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
         }
 
         // Send email update when status changes
         if (order.customer?.email && status !== 'confirmed') {
+            const { sendStatusUpdateEmail } = await import('@/lib/email');
             sendStatusUpdateEmail({
                 customerName: order.customer.name,
                 customerEmail: order.customer.email,

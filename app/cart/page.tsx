@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
@@ -42,66 +42,132 @@ const OCCASIONS: OccasionOption[] = [
     {
         id: 'birthday',
         label: 'Birthday',
-        emoji: '🎂',
+        emoji: '??',
         title: 'Birthday Celebration',
         suggestionIds: ['addon-truffle-cake', 'addon-birthday-topper', 'addon-card-occasion', 'addon-chocolate-combo'],
     },
     {
         id: 'anniversary',
         label: 'Anniversary',
-        emoji: '💑',
+        emoji: '??',
         title: 'Anniversary Special',
         suggestionIds: ['addon-scented-candle', 'addon-ferrero-box', 'addon-strawberry-cake', 'addon-card-occasion'],
     },
     {
         id: 'romance',
         label: 'Romance & Love',
-        emoji: '🌹',
+        emoji: '??',
         title: 'Love & Romance',
         suggestionIds: ['addon-plush-teddy', 'addon-ferrero-box', 'addon-scented-candle', 'addon-card-occasion'],
     },
     {
         id: 'wedding',
         label: 'Wedding / Engagement',
-        emoji: '💍',
+        emoji: '??',
         title: 'Wedding & Engagement',
         suggestionIds: ['addon-scented-candle', 'addon-butterscotch-cake', 'addon-card-occasion', 'addon-ferrero-box'],
     },
     {
         id: 'congratulations',
         label: 'Congratulations',
-        emoji: '🎉',
+        emoji: '??',
         title: 'Congratulations',
         suggestionIds: ['addon-butterscotch-cake', 'addon-lucky-bamboo', 'addon-chocolate-combo', 'addon-card-occasion'],
     },
     {
         id: 'get-well',
         label: 'Get Well Soon',
-        emoji: '🌻',
+        emoji: '??',
         title: 'Get Well Soon',
         suggestionIds: ['addon-lucky-bamboo', 'addon-jade-plant', 'addon-flower-food', 'addon-card-occasion'],
     },
     {
         id: 'thank-you',
         label: 'Thank You',
-        emoji: '🙏',
+        emoji: '??',
         title: 'Thank You & Gratitude',
         suggestionIds: ['addon-ferrero-box', 'addon-lucky-bamboo', 'addon-card-occasion'],
     },
     {
         id: 'housewarming',
         label: 'Housewarming',
-        emoji: '🪴',
+        emoji: '??',
         title: 'Housewarming',
         suggestionIds: ['addon-jade-plant', 'addon-lucky-bamboo', 'addon-scented-candle', 'addon-card-occasion'],
     },
     {
         id: 'just-because',
         label: 'Just Because / Surprise',
-        emoji: '✨',
+        emoji: '?',
         title: 'Special Surprise',
         suggestionIds: ['addon-chocolate-combo', 'addon-plush-teddy', 'addon-truffle-cake', 'addon-card-occasion'],
     },
+];
+
+type MessageTone = 'sweet' | 'romantic' | 'warm' | 'playful';
+
+const MESSAGE_SUGGESTIONS: Record<string, Record<MessageTone, string[]>> = {
+    birthday: {
+        sweet: ["May your birthday bloom as beautifully as these flowers! ?? Wishing you joy, laughter, and a day as magical as you are. Happy Birthday!", "Sending you a bouquet full of birthday wishes and warm hugs! ?? Hope your special day is filled with everything you love."],
+        romantic: ["On your birthday, I want you to know how deeply loved you are. ?? Every day with you is a gift — today we celebrate YOU. Happy Birthday, my love.", "You make every day feel special just by being in my life. ?? Happy Birthday — here's to another year of love and adventures together."],
+        warm: ["Wishing you a birthday that's as warm and wonderful as you are. ?? May this year bring you everything your heart desires. Happy Birthday!", "So grateful to celebrate another year of your amazing life! ?? Sending all my love and best wishes on your special day."],
+        playful: ["Happy Birthday! ?? You're not getting older — you're just getting more fabulous! Hope your day is as awesome as you are! ????", "Warning: These flowers may cause extreme happiness and uncontrollable smiling! ?? Happy Birthday — have the most epic day ever!"],
+    },
+    anniversary: {
+        sweet: ["Every year with you is a beautiful chapter in our story. ?? Happy Anniversary — here's to forever and beyond.", "These flowers are as timeless as the love we share. ?? Wishing us many more beautiful years together. Happy Anniversary!"],
+        romantic: ["From the moment I met you, my world became more beautiful. ?? Happy Anniversary, my love — you are my greatest adventure.", "Every rose in this bouquet represents a reason I love you more with each passing day. ?? Happy Anniversary!"],
+        warm: ["Happy Anniversary! ?? Celebrating the love, laughter, and beautiful memories we've built together. Here's to us!", "Another year of growing together, laughing together, and loving each other. ?? Happy Anniversary — you mean the world to me."],
+        playful: ["Happy Anniversary! ?? Still my favourite person to be weird with after all these years! Love you tons! ??", "Roses are red, violets are blue — these flowers are for you because I love only you! ?? Happy Anniversary!"],
+    },
+    romance: {
+        sweet: ["Just wanted to remind you how special you are to me. ?? These flowers carry all the love I have for you. With all my heart.", "No reason needed to say 'I love you'. ?? You make my world so much brighter just by being in it."],
+        romantic: ["You are the poetry my heart writes every single day. ?? These roses are just a small reflection of how deeply I love you.", "In a garden full of flowers, you would still be my favourite bloom. ?? Yours, forever."],
+        warm: ["Thinking of you today and always. ?? Sending these flowers with all the love and warmth I feel for you every day.", "You deserve all the beautiful things in this world. ?? Starting with these flowers and all the love I have for you."],
+        playful: ["Surprise! These flowers are as extra as my love for you! ???? Just because you're awesome and I love you tons!", "I saw these flowers and thought of you. ?? Because you're beautiful, wonderful, and I really like you a lot (understatement of the year)!"],
+    },
+    wedding: {
+        sweet: ["Wishing you both a lifetime of love, laughter, and endless joy. ?? May your journey together be as beautiful as today. Congratulations!", "May your marriage be filled with all the magic and wonder of this day. ?? Wishing you both endless happiness. Congratulations!"],
+        romantic: ["Two souls becoming one — today marks the beginning of your most beautiful story. ?? May your love grow deeper with every passing day.", "Love found its perfect home in both of you. ?? Wishing you a lifetime of romance, adventure, and unwavering love. Congratulations!"],
+        warm: ["Warmest congratulations on your wedding! ?? May your home be filled with love, your hearts with laughter, and your life with blessings.", "What a beautiful day to celebrate two beautiful people! ?? Wishing you both a lifetime of happiness. Congratulations!"],
+        playful: ["You two are officially stuck with each other — and we couldn't be happier about it! ?? Congratulations and welcome to forever!", "Love is in the air (and so are flower petals)! ?? Congratulations on your wedding — may you always make each other laugh!"],
+    },
+    congratulations: {
+        sweet: ["Your hard work and dedication have truly paid off. ?? So proud of you and everything you've achieved. Congratulations!", "Every great achievement begins with someone who dared to dream. ?? Congratulations on making yours come true!"],
+        romantic: ["Your success is a reflection of your beautiful soul and incredible spirit. ?? So incredibly proud of you. Congratulations, my love!", "Celebrating your amazing achievement with all the love in my heart. ?? You deserve every bit of this success. Congratulations!"],
+        warm: ["Congratulations! ?? Your determination and passion brought you here. We're all so proud and happy for you!", "This is YOUR moment — earned by your talent, your effort, and your beautiful heart. ?? Congratulations!"],
+        playful: ["YOU DID IT! ???? We always knew you would — now it's time to celebrate! Congratulations, superstar!", "Warning: This success may lead to even greater things! ?? Congratulations — here's to the first of many achievements!"],
+    },
+    'get-well': {
+        sweet: ["Sending you these flowers and all my healing thoughts. ?? Wishing you a quick and peaceful recovery. Take care!", "May these blooms brighten your day and remind you that you're deeply loved. ?? Get well soon!"],
+        romantic: ["Being apart from you while you're unwell is hard — these flowers carry all my love to you. ?? Get well soon, my darling.", "I'm sending all my love and warmth with these flowers. ?? Come back to full health soon — I miss you dearly."],
+        warm: ["Hope these flowers bring a little sunshine to your recovery. ?? Sending warm thoughts, healing wishes, and lots of love your way!", "Take all the rest you need — healing takes time. ?? These flowers are here to cheer you on. Get well soon!"],
+        playful: ["Get well soon! ?? The world is a better place with you healthy and happy in it! These flowers are rooting for you!", "Doctor's orders: Accept these flowers, rest lots, and get back to being your amazing self ASAP! ?? Get well soon!"],
+    },
+    'thank-you': {
+        sweet: ["These flowers are a small token of my deep gratitude. ?? Thank you so much for everything — you truly made a difference.", "Your kindness means more than words can express. ?? Thank you from the bottom of my heart."],
+        romantic: ["You are the most thoughtful person I know. ?? Thank you for everything you do — I'm so grateful to have you in my life.", "Every act of kindness you show makes my world a little brighter. ?? Thank you for being so wonderful."],
+        warm: ["Thank you for your warmth, generosity, and kindness. ?? These flowers are a small reflection of how grateful I am for you!", "Your support means everything to me. ?? Thank you so much — you are truly one in a million!"],
+        playful: ["THANK YOU! ?? You're basically a superhero and these flowers are your cape! So grateful for you! ??", "These flowers = 1% of how grateful I am (the other 99% is in my heart)! ?? Thank you so much!"],
+    },
+    housewarming: {
+        sweet: ["May your new home be filled with love, laughter, and beautiful memories. ?? Wishing you all the warmth and happiness in your new space!", "A new home is where new stories begin. ?? Wishing you joy and peace in every corner of your beautiful new home!"],
+        romantic: ["A new home, a new chapter — may it be filled with all our love and dreams. ?? Here's to building our most beautiful life together.", "Every corner of your new home will hold a piece of our hearts. ?? Wishing you endless happiness here."],
+        warm: ["Warmest wishes for your beautiful new home! ?? May it be a place of comfort, joy, and endless wonderful memories.", "May your new home always be filled with laughter, the smell of fresh flowers, and the warmth of loved ones. ?? Congratulations!"],
+        playful: ["Welcome to your new home! ?? May it be as amazing as you are (and may the Wi-Fi always be strong)! ??", "New house alert! ?? These flowers are your first official housewarming gift — may many more good things follow! Congratulations!"],
+    },
+    'just-because': {
+        sweet: ["No special occasion needed — you deserve beautiful things every day. ?? Just a little reminder of how special you are to me.", "Sometimes love needs no reason. ?? These flowers are just a small way of saying how much you mean to me."],
+        romantic: ["Just wanted you to know that I'm thinking of you today and always. ?? You make my ordinary days extraordinary. With all my love.", "You deserve to be surprised with flowers just because — because you're wonderful, because you're you. ?? Thinking of you always."],
+        warm: ["Just because you're amazing and you deserve lovely things! ?? Sending these with all my warmth and affection. Hope this makes you smile!", "Life is better with you in it. ?? These flowers are just a little thank-you for being the wonderful person you are!"],
+        playful: ["SURPRISE! ?? No reason needed — just wanted to remind you that you're awesome! ?? Hope these flowers make your day!", "These flowers arrived with a simple mission: make you smile! ?? Mission status: hopefully accomplished! Just because you're wonderful! ??"],
+    },
+};
+
+const TONES: { id: MessageTone; label: string; emoji: string }[] = [
+    { id: 'sweet', label: 'Sweet', emoji: '??' },
+    { id: 'romantic', label: 'Romantic', emoji: '??' },
+    { id: 'warm', label: 'Warm', emoji: '??' },
+    { id: 'playful', label: 'Playful', emoji: '??' },
 ];
 
 export default function CartPage() {
@@ -134,6 +200,7 @@ export default function CartPage() {
     const [messageRecipient, setMessageRecipient] = useState('');
     const [messageSender, setMessageSender] = useState('');
     const [messageSaved, setMessageSaved] = useState(false);
+    const [messageTone, setMessageTone] = useState<MessageTone | ''>('');
 
     const [isCouponOpen, setIsCouponOpen] = useState(false);
     const [couponInput, setCouponInput] = useState('');
@@ -358,7 +425,7 @@ export default function CartPage() {
 
     return (
         <div className="min-h-screen bg-[#fcfbfa] text-[#111] antialiased">
-            {/* ── TOP HEADER WITH STEPPER (Reference Image 1) ── */}
+            {/* -- TOP HEADER WITH STEPPER (Reference Image 1) -- */}
             <header className="sticky top-0 z-40 bg-white border-b border-black/[0.08] shadow-2xs">
                 <div className="max-w-[1180px] mx-auto px-4 sm:px-6 h-[64px] flex items-center justify-between">
                     {/* Brand Logo */}
@@ -395,7 +462,7 @@ export default function CartPage() {
                                         : 'bg-[#bfa81f] text-white'
                                 }`}
                             >
-                                {isVerified ? <Check size={14} className="stroke-[3]" /> : '➔'}
+                                {isVerified ? <Check size={14} className="stroke-[3]" /> : '?'}
                             </div>
                             <span
                                 className={`text-[12px] sm:text-[13px] font-bold tracking-tight whitespace-nowrap ${
@@ -443,7 +510,7 @@ export default function CartPage() {
                 </div>
             </header>
 
-            {/* ── MAIN CART CONTENT CONTAINER ── */}
+            {/* -- MAIN CART CONTENT CONTAINER -- */}
             <main className="max-w-[1180px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
                 {/* Cart Heading */}
                 <div className="mb-5 flex items-baseline gap-2.5">
@@ -477,10 +544,10 @@ export default function CartPage() {
                         </Link>
                     </div>
                 ) : (
-                    /* ── 2-Column Layout (Matches Reference Image 1) ── */
+                    /* -- 2-Column Layout (Matches Reference Image 1) -- */
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
                         
-                        {/* ── LEFT COLUMN (7 COLS): Deliver Card + Product List + Occasion + Addon Shelf ── */}
+                        {/* -- LEFT COLUMN (7 COLS): Deliver Card + Product List + Occasion + Addon Shelf -- */}
                         <div className="lg:col-span-7 space-y-4">
                             
                             {/* 1. Deliver To Card */}
@@ -583,10 +650,10 @@ export default function CartPage() {
                                                     </Link>
 
                                                     <div className="text-[15px] font-bold text-[#111] mt-1">
-                                                        ₹{price.toLocaleString('en-IN')}
+                                                        ?{price.toLocaleString('en-IN')}
                                                     </div>
 
-                                                    {/* Dropdown Qty Selector (Matches "Qty 1 ∨" in Image 1) */}
+                                                    {/* Dropdown Qty Selector (Matches "Qty 1 ?" in Image 1) */}
                                                     <div className="relative inline-block mt-2">
                                                         <button
                                                             type="button"
@@ -673,7 +740,7 @@ export default function CartPage() {
 
                                 {occasionError && (
                                     <div className="mb-3 px-3 py-2 rounded-[8px] bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5">
-                                        <span>⚠️</span>
+                                        <span>??</span>
                                         <span>Please select an occasion for your order before proceeding to checkout.</span>
                                     </div>
                                 )}
@@ -745,10 +812,10 @@ export default function CartPage() {
                                                                         {addon.name}
                                                                     </p>
                                                                     <div className="flex items-center gap-1.5 text-[11px]">
-                                                                        <span className="font-bold text-[#111]">₹{addon.price}</span>
+                                                                        <span className="font-bold text-[#111]">?{addon.price}</span>
                                                                         {addon.originalPrice && (
                                                                             <span className="text-gray-400 line-through text-[10px]">
-                                                                                ₹{addon.originalPrice}
+                                                                                ?{addon.originalPrice}
                                                                             </span>
                                                                         )}
                                                                     </div>
@@ -775,7 +842,7 @@ export default function CartPage() {
                                                                         : 'bg-[#bfa81f] hover:bg-[#a89216] text-white shadow-2xs'
                                                                 }`}
                                                             >
-                                                                {inCart ? '✓ Added' : '+ Add'}
+                                                                {inCart ? '? Added' : '+ Add'}
                                                             </button>
                                                         </div>
                                                     );
@@ -890,11 +957,11 @@ export default function CartPage() {
                                                             {/* Price */}
                                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                                 <span className="text-[13px] font-semibold text-[#111]">
-                                                                    ₹{addon.price}
+                                                                    ?{addon.price}
                                                                 </span>
                                                                 {addon.originalPrice && (
                                                                     <span className="text-[11px] text-gray-400 line-through font-normal">
-                                                                        ₹{addon.originalPrice}
+                                                                        ?{addon.originalPrice}
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -917,7 +984,7 @@ export default function CartPage() {
                             </div>
                         </div>
 
-                        {/* ── RIGHT COLUMN (5 COLS): Message Card + Coupon + nerCash + Total Bill ── */}
+                        {/* -- RIGHT COLUMN (5 COLS): Message Card + Coupon + nerCash + Total Bill -- */}
                         <div className="lg:col-span-5 space-y-3.5">
                             
                             {/* 1. Add Message Card FREE (Reference Image 1) */}
@@ -941,7 +1008,7 @@ export default function CartPage() {
                                                 </span>
                                             </div>
                                             <p className="text-[11.5px] text-[#666] font-medium leading-tight">
-                                                {messageSaved ? 'Card message added ✓' : 'Make your gift more special'}
+                                                {messageSaved ? 'Card message added ?' : 'Make your gift more special'}
                                             </p>
                                         </div>
                                     </div>
@@ -954,20 +1021,50 @@ export default function CartPage() {
                                 </button>
 
                                 {isMessageCardOpen && (
-                                    <div className="px-4 pb-4 pt-1 border-t border-black/[0.06] space-y-3 bg-[#faf9f6]/40">
-                                        {/* Occasion Chips */}
-                                        <div className="flex flex-wrap gap-1.5 pt-1">
-                                            {['Happy Birthday', 'Happy Anniversary', 'With Love', 'Congratulations'].map((chip) => (
-                                                <button
-                                                    key={chip}
-                                                    type="button"
-                                                    onClick={() => setMessageCardText(prev => prev ? `${prev} ${chip}!` : `${chip}!`)}
-                                                    className="px-2.5 py-1 rounded-[6px] border border-black/[0.12] bg-white text-[11px] font-bold text-[#444] hover:bg-gray-100 transition-colors cursor-pointer"
-                                                >
-                                                    + {chip}
-                                                </button>
-                                            ))}
-                                        </div>
+                                    <div className="px-4 pb-4 pt-2 border-t border-black/[0.06] space-y-3 bg-[#faf9f6]/40">
+
+                                        {/* Smart Suggestions — show when occasion is selected */}
+                                        {selectedOccasion && MESSAGE_SUGGESTIONS[selectedOccasion] && (
+                                            <div className="space-y-2">
+                                                <p className="text-[11px] font-bold text-[#bfa81f] flex items-center gap-1.5">
+                                                    <Sparkles size={12} />
+                                                    Message suggestions for {OCCASIONS.find(o => o.id === selectedOccasion)?.label}:
+                                                </p>
+                                                {/* Tone selector */}
+                                                <div className="flex gap-1.5 flex-wrap">
+                                                    {TONES.map(t => (
+                                                        <button
+                                                            key={t.id}
+                                                            type="button"
+                                                            onClick={() => setMessageTone(prev => prev === t.id ? '' : t.id)}
+                                                            className={`px-2.5 py-1 rounded-[8px] border text-[11px] font-bold transition-all cursor-pointer ${
+                                                                messageTone === t.id
+                                                                    ? 'bg-[#111] text-white border-[#111]'
+                                                                    : 'bg-white text-[#444] border-black/[0.12] hover:bg-gray-50'
+                                                            }`}
+                                                        >
+                                                            {t.emoji} {t.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                {/* Message chips */}
+                                                {messageTone && MESSAGE_SUGGESTIONS[selectedOccasion]?.[messageTone as MessageTone] && (
+                                                    <div className="space-y-1.5">
+                                                        {MESSAGE_SUGGESTIONS[selectedOccasion][messageTone as MessageTone].map((msg, i) => (
+                                                            <button
+                                                                key={i}
+                                                                type="button"
+                                                                onClick={() => { setMessageCardText(msg); setMessageSaved(false); }}
+                                                                className="w-full text-left px-3 py-2 rounded-[9px] border border-[#bfa81f]/30 bg-[#bfa81f]/5 hover:bg-[#bfa81f]/10 text-[11px] text-[#333] leading-relaxed transition-all cursor-pointer"
+                                                            >
+                                                                {msg}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                <div className="border-t border-black/[0.06]" />
+                                            </div>
+                                        )}
 
                                         <textarea
                                             rows={3}
@@ -1022,7 +1119,7 @@ export default function CartPage() {
                                             </div>
                                             {appliedCoupon && (
                                                 <p className="text-[11.5px] text-[#16a34a] font-bold leading-tight">
-                                                    {appliedCoupon.code} applied (-₹{discountAmount})
+                                                    {appliedCoupon.code} applied (-?{discountAmount})
                                                 </p>
                                             )}
                                         </div>
@@ -1044,7 +1141,7 @@ export default function CartPage() {
                                                         {appliedCoupon.code}
                                                     </span>
                                                     <p className="text-[11px] text-emerald-700 font-medium">
-                                                        ₹{discountAmount} saved on this order
+                                                        ?{discountAmount} saved on this order
                                                     </p>
                                                 </div>
                                                 <button
@@ -1116,10 +1213,10 @@ export default function CartPage() {
                                                     Total Bill
                                                 </span>
                                                 <span className="text-[17px] font-black text-[#111]">
-                                                    ₹{totalBill.toLocaleString('en-IN')}
+                                                    ?{totalBill.toLocaleString('en-IN')}
                                                 </span>
                                                 <span className="text-xs text-gray-400 line-through font-semibold">
-                                                    ₹{estimatedMRP.toLocaleString('en-IN')}
+                                                    ?{estimatedMRP.toLocaleString('en-IN')}
                                                 </span>
                                             </div>
                                             <p className="text-[10.5px] text-[#777] font-medium leading-none mt-0.5">
@@ -1140,7 +1237,7 @@ export default function CartPage() {
                                     <div className="pt-2 border-t border-black/[0.06] space-y-2 text-xs">
                                         <div className="flex justify-between text-[#666]">
                                             <span className="font-normal">Cart Subtotal</span>
-                                            <span className="font-bold text-[#111]">₹{subtotal.toLocaleString('en-IN')}</span>
+                                            <span className="font-bold text-[#111]">?{subtotal.toLocaleString('en-IN')}</span>
                                         </div>
                                         <div className="flex justify-between text-[#666]">
                                             <span className="font-normal">Delivery Charges</span>
@@ -1153,7 +1250,7 @@ export default function CartPage() {
                                         {discountAmount > 0 && (
                                             <div className="flex justify-between text-emerald-700 font-bold">
                                                 <span>Coupon Discount</span>
-                                                <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
+                                                <span>-?{discountAmount.toLocaleString('en-IN')}</span>
                                             </div>
                                         )}
                                     </div>
@@ -1161,9 +1258,9 @@ export default function CartPage() {
 
                                 {/* Savings Banner (Reference Image 1) */}
                                 <div className="bg-[#fef9e7] border border-[#fef08a] rounded-[10px] p-2.5 flex items-center gap-2 text-[12px] font-medium text-[#854d0e]">
-                                    <span>🎉</span>
+                                    <span>??</span>
                                     <span>
-                                        You saved ₹{(estimatedSavings + discountAmount).toLocaleString('en-IN')} on this order
+                                        You saved ?{(estimatedSavings + discountAmount).toLocaleString('en-IN')} on this order
                                     </span>
                                 </div>
 
@@ -1190,7 +1287,7 @@ export default function CartPage() {
                 )}
             </main>
 
-            {/* ── Slide-Over Login / Signup Drawer (Reference Images 2, 3, 4) ── */}
+            {/* -- Slide-Over Login / Signup Drawer (Reference Images 2, 3, 4) -- */}
             <AuthDrawer
                 isOpen={isAuthDrawerOpen}
                 onClose={() => setIsAuthDrawerOpen(false)}
@@ -1198,7 +1295,7 @@ export default function CartPage() {
                 initialEmail={verifiedUser?.email || ''}
             />
 
-            {/* ── Delivery Location Modal ── */}
+            {/* -- Delivery Location Modal -- */}
             <DeliveryLocationModal
                 isOpen={isLocationModalOpen}
                 onClose={() => setIsLocationModalOpen(false)}

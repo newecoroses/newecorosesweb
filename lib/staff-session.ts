@@ -22,6 +22,7 @@ export async function getStaffSession(): Promise<StaffSessionData | null> {
             username: account.username,
             name: account.name,
             role: account.role,
+            storeId: (account as any).storeId || 'director',
             permissions: account.permissions,
             expiresAt: session.expiresAt,
         };
