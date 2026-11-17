@@ -20,22 +20,31 @@ import {
     Download,
     Printer,
     Tag,
-    Crown,
     FileText,
     CheckSquare,
     Square,
     Gift,
+    Sparkles,
+    ChevronDown,
 } from 'lucide-react';
 import { PageHeader } from '@/components/admin/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/admin/ui/card';
 import { Badge } from '@/components/admin/ui/badge';
 import { SavedOrder } from '@/lib/order-cache';
 import { AddOrderModal } from '@/components/admin/add-order-modal';
+import {
+    parseSpecialNote,
+    generateCourierShippingLabel,
+    generateLuxuryDeliverySlip,
+    generateBatchManifest,
+    generateProductManifest,
+    generateGiftCard,
+} from '@/lib/print-utils';
 
-// ── Types ─────────────────────────────────────────────────────────
 interface StaffInfo {
     id: string; name: string; role: string;
     storeId?: 'director' | 'tollygunge' | 'alipore';
+    username?: string;
     permissions?: { canAssignOrders?: boolean; canViewAllStores?: boolean; canDownloadLabels?: boolean };
 }
 
@@ -53,17 +62,6 @@ const ASSEMBLY_CHECKLIST = [
     { id: 'luxury_bag', label: 'Luxury Carry Bag' },
 ];
 
-// ── Helpers ───────────────────────────────────────────────────────
-function parseSpecialNote(note?: string): Record<string, string> {
-    if (!note) return {};
-    const result: Record<string, string> = {};
-    note.split('|').forEach(pair => {
-        const [k, ...vParts] = pair.split(':');
-        if (k && vParts.length) result[k.trim().toLowerCase().replace(/\s+/g, '_')] = vParts.join(':').trim();
-    });
-    return result;
-}
-
 function beepAudio() {
     try {
         const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -80,125 +78,6 @@ function beepAudio() {
     } catch {}
 }
 
-function generateShippingLabel(order: SavedOrder, storeName: string) {
-    const parsed = parseSpecialNote(order.specialNote);
-    const recipientName = parsed['recipient_name'] || order.customer.name;
-    const recipientPhone = parsed['recipient_phone'] || order.customer.phone;
-    const altPhone = parsed['alt_phone'] || '';
-    const occasion = parsed['occasion'] || '';
-    const storeAddress = storeName === 'Tollygunge Store' ? '12A, Tollygunge Main Road, Kolkata - 700033'
-        : storeName === 'Alipore Store' ? '5B, Alipore Road, Kolkata - 700027'
-        : 'New Eco Roses, Kolkata, West Bengal';
-
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Label - ${order.orderNumber}</title>
-<style>@page{size:4in 6in;margin:0}*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{width:4in;height:6in;background:#fff}
-.label{width:100%;height:100%;border:2px solid #000;display:flex;flex-direction:column}
-.hdr{background:#000;color:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-size:13px;font-weight:900;letter-spacing:2px}.onum{font-size:11px;font-family:monospace}
-.badges{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid #000}
-.badge{padding:2px 8px;border:1.5px solid #000;border-radius:3px;font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
-.bp{background:#16a34a;color:#fff;border-color:#16a34a}.bf{background:#dc2626;color:#fff;border-color:#dc2626}
-.sec{padding:8px 10px;border-bottom:1px solid #ddd}
-.sl{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:#666;margin-bottom:3px}
-.sv{font-size:11px;font-weight:700;line-height:1.4}.ss{font-size:10px;color:#333;line-height:1.4}
-.split{display:flex;gap:8px}.split-l{flex:1}
-.qr{width:60px;height:60px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:7px;color:#999;text-align:center;flex-shrink:0}
-.foot{margin-top:auto;padding:6px 10px;background:#f9f9f9;border-top:1px solid #ddd;font-size:8px;color:#555;text-align:center}
-.hand{font-size:8px;color:#333;padding:4px 10px;border-bottom:1px solid #eee;font-style:italic}
-</style></head><body><div class="label">
-<div class="hdr"><span class="brand">🌹 NEW ECO ROSES</span><span class="onum">#${order.orderNumber}</span></div>
-<div class="badges">
-  <span class="badge bp">✓ PREPAID</span><span class="badge bf">⚠ FRAGILE</span><span class="badge">FLOWERS</span>
-  ${occasion ? `<span class="badge" style="background:#fef3c7;border-color:#d97706;color:#92400e;">${occasion.toUpperCase()}</span>` : ''}
-</div>
-<div class="sec"><div class="sl">📬 DELIVER TO</div><div class="split"><div class="split-l">
-  <div class="sv">${recipientName}</div>
-  <div class="ss">📱 ${recipientPhone}${altPhone ? ` / ${altPhone}` : ''}</div>
-  <div class="ss" style="margin-top:4px">${order.shippingAddress.line1}${order.shippingAddress.line2 ? ', '+order.shippingAddress.line2 : ''}<br>${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.postalCode}</div>
-</div><div class="qr">QR<br>SCAN</div></div></div>
-<div class="sec"><div class="sl">📤 FROM</div><div class="sv">New Eco Roses — ${storeName}</div><div class="ss">${storeAddress}</div><div class="ss">newecoroses.com</div></div>
-<div class="sec" style="border-bottom:none"><div style="display:flex;justify-content:space-between;align-items:center">
-  <div><div class="sl">VALUE</div><div class="sv" style="font-size:14px">₹${order.total.toLocaleString('en-IN')}</div></div>
-  <div><div class="sl">PAYMENT</div><div class="sv">${order.paymentMethod}</div></div>
-  <div><div class="sl">DATE</div><div class="sv">${new Date(order.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'})}</div></div>
-</div></div>
-<div class="hand">⚠ Handle with care · Keep upright · Keep away from heat &amp; direct sunlight</div>
-<div class="foot">Handcrafted with love · New Eco Roses · newecoroses.com<br><strong>Rider Signature: ___________________</strong></div>
-</div></body></html>`;
-    const win = window.open('', '_blank', 'width=400,height=620');
-    if (win) { win.document.write(html); win.document.close(); setTimeout(() => { win.focus(); win.print(); }, 500); }
-}
-
-function generateManifest(orders: SavedOrder[], storeName: string) {
-    const date = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-    const rows = orders.map((o, i) => {
-        const p = parseSpecialNote(o.specialNote);
-        const rec = p['recipient_name'] || o.customer.name;
-        return `<tr><td>${i+1}</td><td style="font-family:monospace;font-weight:700">${o.orderNumber}</td>
-<td>${o.customer.name}</td><td>${rec}</td>
-<td>${o.shippingAddress.line1}, ${o.shippingAddress.city}</td>
-<td style="font-family:monospace">${o.customer.phone}</td>
-<td style="font-family:monospace">${p['alt_phone']||'—'}</td>
-<td>${o.items.length}</td><td>${o.paymentMethod}</td>
-<td style="font-weight:700">₹${o.total.toLocaleString('en-IN')}</td>
-<td style="width:80px"></td></tr>`;
-    }).join('');
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Manifest</title>
-<style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:10px}
-h1{font-size:16px;margin-bottom:2px}.meta{font-size:10px;color:#555;margin-bottom:10px}
-table{width:100%;border-collapse:collapse}
-th{background:#000;color:#fff;padding:5px 6px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px}
-td{padding:5px 6px;border-bottom:1px solid #ddd;vertical-align:top}tr:nth-child(even) td{background:#f7f7f7}
-.foot{margin-top:20px;display:flex;justify-content:space-between}
-.sign{border-top:1px solid #000;padding-top:4px;min-width:160px;text-align:center;font-size:9px}
-</style></head><body>
-<h1>🌹 New Eco Roses — Courier Dispatch Manifest</h1>
-<div class="meta"><strong>Store:</strong> ${storeName} &nbsp;|&nbsp; <strong>Date:</strong> ${date} &nbsp;|&nbsp; <strong>Total:</strong> ${orders.length} orders &nbsp;|&nbsp; <strong>Value:</strong> ₹${orders.reduce((s,o)=>s+o.total,0).toLocaleString('en-IN')}</div>
-<table><thead><tr><th>#</th><th>Order #</th><th>Customer</th><th>Recipient</th><th>Address</th><th>Phone</th><th>Alt Phone</th><th>Items</th><th>Payment</th><th>Amount</th><th>Rider Sign</th></tr></thead>
-<tbody>${rows}</tbody></table>
-<div class="foot"><div class="sign">Dispatcher Name &amp; Signature</div><div class="sign">Rider Name &amp; Signature</div><div class="sign">Received By &amp; Date</div></div>
-</body></html>`;
-    const win = window.open('', '_blank', 'width=900,height=600');
-    if (win) { win.document.write(html); win.document.close(); setTimeout(() => { win.focus(); win.print(); }, 500); }
-}
-
-function generateGiftCard(order: SavedOrder) {
-    const p = parseSpecialNote(order.specialNote);
-    const recipient = p['recipient_name'] || order.customer.name;
-    const sender = p['sender_name'] || '';
-    const message = p['message'] || '';
-    const occasion = p['occasion'] || '';
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Gift Card - ${order.orderNumber}</title>
-<style>@page{size:5in 7in;margin:0}*{box-sizing:border-box;margin:0;padding:0}body{width:5in;height:7in;background:#fffef8}
-.card{width:100%;height:100%;background:linear-gradient(135deg,#fffef8 0%,#fef9ec 50%,#fff8f0 100%);border:1px solid #e8d5b7;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:32px 36px;position:relative;overflow:hidden;text-align:center}
-.corner{position:absolute;width:80px;height:80px;opacity:.35}
-.tl{top:0;left:0}.tr{top:0;right:0;transform:scaleX(-1)}.bl{bottom:0;left:0;transform:scaleY(-1)}.br{bottom:0;right:0;transform:scale(-1)}
-.brand{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#bfa81f;font-weight:700;font-family:Georgia,serif}
-.floral{font-size:16px;margin:4px 0;color:#bfa81f;letter-spacing:8px}
-.occ{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#9a7c4a;border:1px solid #d4a853;padding:3px 14px;border-radius:20px;background:rgba(191,168,31,.07);font-family:Georgia,serif}
-.to{font-style:italic;font-size:13px;color:#888;letter-spacing:1px;margin-bottom:2px;font-family:Georgia,serif}
-.rec{font-size:22px;font-weight:700;color:#2a1a0a;letter-spacing:1px;font-family:Georgia,serif}
-.msgbox{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 0}
-.msg{font-size:15px;line-height:1.8;color:#2d1a06;font-style:italic;max-width:340px;font-family:Georgia,serif}
-.wl{font-style:italic;font-size:11px;color:#999;letter-spacing:1px;font-family:Georgia,serif}
-.sndr{font-size:16px;font-weight:700;color:#2a1a0a;margin-top:2px;font-family:Georgia,serif}
-.foot{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#bfa81f;border-top:1px solid #e8d5b7;padding-top:10px;width:100%;font-family:Georgia,serif}
-</style></head><body><div class="card">
-<svg class="corner tl" viewBox="0 0 80 80" fill="none"><path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/><path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="3" fill="#bfa81f" opacity=".5"/><text x="8" y="14" font-size="12" fill="#bfa81f" opacity=".6">✿</text></svg>
-<svg class="corner tr" viewBox="0 0 80 80" fill="none"><path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/><path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="3" fill="#bfa81f" opacity=".5"/></svg>
-<svg class="corner bl" viewBox="0 0 80 80" fill="none"><path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/><path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="3" fill="#bfa81f" opacity=".5"/></svg>
-<svg class="corner br" viewBox="0 0 80 80" fill="none"><path d="M2 2 Q20 2 20 20 Q20 2 38 2" stroke="#bfa81f" stroke-width="1.5" fill="none"/><path d="M2 2 Q2 20 20 20 Q2 20 2 38" stroke="#bfa81f" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="3" fill="#bfa81f" opacity=".5"/></svg>
-<div><div class="brand">New Eco Roses</div><div class="floral">· · 🌹 · ·</div>${occasion?`<div class="occ">${occasion}</div>`:''}</div>
-<div><div class="to">To,</div><div class="rec">${recipient||'You'}</div></div>
-<div class="msgbox"><div class="msg">${message?message.replace(/\n/g,'<br>'):'&#8220; Wishing you a beautiful day filled with joy &amp; love &#8221;'}</div></div>
-<div><div class="wl">— With love,</div><div class="sndr">${sender||'Someone Special'}</div></div>
-<div class="foot">Handcrafted with love · New Eco Roses · newecoroses.com · Order #${order.orderNumber}</div>
-</div></body></html>`;
-    const win = window.open('', '_blank', 'width=500,height=720');
-    if (win) { win.document.write(html); win.document.close(); setTimeout(() => { win.focus(); win.print(); }, 800); }
-}
-
-// ── Main Component ────────────────────────────────────────────────
 export default function StaffOrdersPage() {
     const [orders, setOrders] = useState<SavedOrder[]>([]);
     const [loading, setLoading] = useState(true);
@@ -218,9 +97,9 @@ export default function StaffOrdersPage() {
         }).catch(() => {});
     }, []);
 
-    const isDirector = staff?.role === 'director' || staff?.role === 'supervisor';
+    const isDirector = staff?.role === 'director' || staff?.role === 'supervisor' || staff?.storeId === 'director' || staff?.username === 'atanu';
     const storeId = staff?.storeId;
-    const storeName = storeId ? STORE_NAMES[storeId] || 'Store' : 'All Stores';
+    const storeName = storeId ? STORE_NAMES[storeId] || 'Store Counter' : 'Boutique Director';
 
     // ── Fetch orders ──────────────────────────────────────────────
     const fetchOrders = useCallback(async () => {
@@ -246,7 +125,6 @@ export default function StaffOrdersPage() {
                 if (data.unacknowledged && data.unacknowledged.length > 0 && !alertOrder) {
                     setAlertOrder(data.unacknowledged[0]);
                     setOrders(prev => {
-                        // merge new order if not in list
                         const exists = prev.find(o => o.id === data.unacknowledged[0].id);
                         if (!exists) return [data.unacknowledged[0], ...prev];
                         return prev.map(o => o.id === data.unacknowledged[0].id ? data.unacknowledged[0] : o);
@@ -260,7 +138,7 @@ export default function StaffOrdersPage() {
         return () => clearInterval(interval);
     }, [isDirector, storeId, alertOrder]);
 
-    // ── Beep while alert is showing ───────────────────────────────
+    // ── Continuous Beep while alert is visible ────────────────────
     useEffect(() => {
         if (alertOrder) {
             beepAudio();
@@ -287,7 +165,7 @@ export default function StaffOrdersPage() {
         });
     };
 
-    // ── Assign order to store (director) ─────────────────────────
+    // ── Assign order to store (director only) ────────────────────
     const handleAssign = async (orderId: string, store: 'tollygunge' | 'alipore' | null) => {
         setOrders(prev => prev.map(o => o.id === orderId ? { ...o, assignedStore: store ?? undefined } : o));
         if (selectedOrder?.id === orderId) setSelectedOrder(prev => prev ? { ...prev, assignedStore: store ?? undefined } : null);
@@ -298,7 +176,7 @@ export default function StaffOrdersPage() {
         });
     };
 
-    // ── Status update ─────────────────────────────────────────────
+    // ── Update Order Delivery Status ──────────────────────────────
     const handleUpdateStatus = (orderId: string, newStatus: SavedOrder['status']) => {
         setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
         if (selectedOrder?.id === orderId) setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
@@ -317,7 +195,6 @@ export default function StaffOrdersPage() {
     // ── Filtered orders ───────────────────────────────────────────
     const filtered = useMemo(() => {
         return orders.filter(o => {
-            // Store staff: only see their assigned orders
             if (!isDirector && storeId && storeId !== 'director') {
                 if (o.assignedStore !== storeId) return false;
             }
@@ -346,7 +223,13 @@ export default function StaffOrdersPage() {
     };
 
     const getAssignedBadge = (order: SavedOrder) => {
-        if (!order.assignedStore) return null;
+        if (!order.assignedStore) {
+            return (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                    Unassigned
+                </span>
+            );
+        }
         const color = order.assignedStore === 'tollygunge'
             ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
             : 'bg-sky-500/10 text-sky-400 border-sky-500/30';
@@ -357,11 +240,13 @@ export default function StaffOrdersPage() {
         );
     };
 
-    const todayOrders = filtered.filter(o => {
-        const d = new Date(o.createdAt);
-        const today = new Date();
-        return d.toDateString() === today.toDateString();
-    });
+    const todayOrders = useMemo(() => {
+        return filtered.filter(o => {
+            const d = new Date(o.createdAt);
+            const today = new Date();
+            return d.toDateString() === today.toDateString();
+        });
+    }, [filtered]);
 
     return (
         <div className="space-y-6">
@@ -373,10 +258,10 @@ export default function StaffOrdersPage() {
                             <BellRing size={28} className="text-rose-400" />
                         </div>
                         <div>
-                            <p className="text-rose-400 text-xs font-bold uppercase tracking-widest mb-1">🚨 New Order Assigned</p>
+                            <p className="text-rose-400 text-xs font-bold uppercase tracking-widest mb-1">🚨 New Order Assigned to Your Store</p>
                             <h2 className="text-white text-2xl font-extrabold">Order #{alertOrder.orderNumber}</h2>
-                            <p className="text-zinc-400 text-sm mt-1">{alertOrder.customer.name} · ₹{alertOrder.total.toLocaleString('en-IN')}</p>
-                            <p className="text-zinc-500 text-xs mt-1">{alertOrder.shippingAddress.line1}, {alertOrder.shippingAddress.city}</p>
+                            <p className="text-zinc-300 text-sm mt-1">{alertOrder.customer.name} &middot; ₹{alertOrder.total.toLocaleString('en-IN')}</p>
+                            <p className="text-zinc-400 text-xs mt-1">{alertOrder.shippingAddress.line1}, {alertOrder.shippingAddress.city}</p>
                         </div>
                         <button
                             onClick={() => handleAcknowledge(alertOrder)}
@@ -384,7 +269,7 @@ export default function StaffOrdersPage() {
                         >
                             ✓ Acknowledge &amp; Start Preparing
                         </button>
-                        <p className="text-zinc-500 text-[11px]">Beeping will stop once you acknowledge</p>
+                        <p className="text-zinc-500 text-[11px]">Continuous audio alarm stops upon acknowledging</p>
                     </div>
                 </div>
             )}
@@ -392,7 +277,7 @@ export default function StaffOrdersPage() {
             {/* ── Page Header ───────────────────────────────── */}
             <PageHeader
                 title="Orders & Fulfilment"
-                description={isDirector ? 'All store bookings, assignment & dispatch control' : `${storeName} — Assigned orders & delivery management`}
+                description={isDirector ? 'All store bookings, assignment & dispatch control' : `${storeName} &mdash; Assigned orders & delivery management`}
                 tag={isDirector ? 'Director View' : storeName}
             >
                 <button
@@ -404,13 +289,14 @@ export default function StaffOrdersPage() {
                     <span>Refresh</span>
                 </button>
 
-                {/* Download Today's Manifest */}
+                {/* Batch Manifest */}
                 <button
-                    onClick={() => generateManifest(todayOrders, storeName)}
+                    onClick={() => generateBatchManifest(todayOrders.length > 0 ? todayOrders : filtered, storeName)}
                     className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold border border-zinc-600 transition-colors cursor-pointer"
+                    title="Print Master Daily Courier Manifest (A4 Landscape Handover)"
                 >
-                    <FileText size={13} />
-                    <span>Today's Manifest</span>
+                    <FileText size={13} className="text-emerald-400" />
+                    <span>Daily Batch Manifest</span>
                 </button>
 
                 <button
@@ -490,13 +376,13 @@ export default function StaffOrdersPage() {
                                 <tr className="border-b border-white/[0.06] bg-white/[0.01] text-zinc-400 uppercase text-[10px] tracking-wider font-semibold">
                                     <th className="py-4 px-4 text-center">#</th>
                                     <th className="py-4 px-5">Order #</th>
-                                    <th className="py-4 px-5">Customer & Phone</th>
+                                    <th className="py-4 px-5">Customer &amp; Phone</th>
                                     <th className="py-4 px-5">Delivery Location</th>
                                     <th className="py-4 px-5">Items</th>
                                     <th className="py-4 px-4 text-right">Amount</th>
                                     {isDirector && <th className="py-4 px-5">Assign Store</th>}
                                     <th className="py-4 px-5">Status</th>
-                                    <th className="py-4 px-5 text-center">Actions</th>
+                                    <th className="py-4 px-5 text-center">Print Suite</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/[0.04]">
@@ -555,8 +441,26 @@ export default function StaffOrdersPage() {
                                             </td>
                                             <td className="py-4 px-5 text-center">
                                                 <div className="flex items-center gap-1.5 justify-center">
-                                                    <button onClick={() => setSelectedOrder(o)} className="px-2.5 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer">Details</button>
-                                                    <button onClick={() => generateShippingLabel(o, storeName)} title="Print Label" className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 cursor-pointer transition-colors"><Printer size={12} /></button>
+                                                    <button
+                                                        onClick={() => setSelectedOrder(o)}
+                                                        className="px-2.5 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
+                                                    >
+                                                        Details
+                                                    </button>
+                                                    <button
+                                                        onClick={() => generateCourierShippingLabel(o, storeName)}
+                                                        title="Print 4×6 Courier Shipping Label (with QR Code)"
+                                                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 cursor-pointer transition-colors"
+                                                    >
+                                                        <Tag size={12} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => generateProductManifest(o, storeName)}
+                                                        title="Print Product Manifest (Per-Bouquet Docket)"
+                                                        className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-pointer transition-colors"
+                                                    >
+                                                        <FileText size={12} />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -595,7 +499,7 @@ export default function StaffOrdersPage() {
                         <div className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-2 text-xs">
                             <p className="font-bold text-zinc-200 flex items-center gap-1.5">
                                 <Phone size={13} className="text-zinc-400" />
-                                {selectedOrder.customer.name} · <span className="font-mono text-zinc-100">{selectedOrder.customer.phone}</span>
+                                {selectedOrder.customer.name} &middot; <span className="font-mono text-zinc-100">{selectedOrder.customer.phone}</span>
                             </p>
                             <p className="text-zinc-400 flex items-start gap-1.5 leading-relaxed">
                                 <MapPin size={13} className="text-zinc-500 mt-0.5 flex-shrink-0" />
@@ -608,15 +512,24 @@ export default function StaffOrdersPage() {
                             )}
                         </div>
 
-                        {/* Items */}
+                        {/* Items to Prepare */}
                         <div className="space-y-2">
-                            <p className="text-xs font-bold text-zinc-300">Items to Prepare:</p>
+                            <p className="text-xs font-bold text-zinc-300">Items to Prepare &amp; Pack:</p>
                             <div className="space-y-2">
                                 {selectedOrder.items.map((item, i) => (
                                     <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-xs">
                                         <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center font-bold text-white text-[11px]">{item.quantity}×</div>
-                                            <span className="font-semibold text-zinc-200">{item.name}</span>
+                                            <div>
+                                                <span className="font-semibold text-zinc-200 block">{item.name}</span>
+                                                <button
+                                                    onClick={() => generateProductManifest(selectedOrder, storeName, i)}
+                                                    className="text-[10px] text-emerald-400 hover:underline inline-flex items-center gap-0.5 mt-0.5 cursor-pointer"
+                                                >
+                                                    <FileText size={10} />
+                                                    <span>Print Product #{i + 1} Manifest</span>
+                                                </button>
+                                            </div>
                                         </div>
                                         <span className="font-bold text-white tabular-nums">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                                     </div>
@@ -632,7 +545,7 @@ export default function StaffOrdersPage() {
 
                         {/* Assembly Checklist */}
                         <div className="pt-2 border-t border-white/[0.08] space-y-2">
-                            <p className="text-xs font-bold text-zinc-300">🌸 Assembly Checklist</p>
+                            <p className="text-xs font-bold text-zinc-300">🌸 Floral Assembly Checklist</p>
                             <div className="grid grid-cols-2 gap-1.5">
                                 {ASSEMBLY_CHECKLIST.map(item => {
                                     const key = `${selectedOrder.id}_${item.id}`;
@@ -654,7 +567,7 @@ export default function StaffOrdersPage() {
                         {/* Store Assignment (Director only) */}
                         {isDirector && (
                             <div className="pt-2 border-t border-white/[0.08] space-y-2">
-                                <p className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5"><Store size={13} /> Assign to Store:</p>
+                                <p className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5"><Store size={13} /> Assign Store Branch:</p>
                                 <div className="flex gap-2">
                                     {[
                                         { val: null, label: 'Unassigned', color: 'bg-zinc-900 border-zinc-700 text-zinc-300' },
@@ -697,23 +610,76 @@ export default function StaffOrdersPage() {
                             </div>
                         </div>
 
-                        {/* Print Actions */}
-                        <div className="pt-2 border-t border-white/[0.08] space-y-2">
-                            <p className="text-xs font-semibold text-zinc-300">Print & Download:</p>
-                            <div className="grid grid-cols-2 gap-2">
+                        {/* ── TWO PRINT OPTIONS FOR LABEL & TWO PRINT OPTIONS FOR MANIFEST ── */}
+                        <div className="pt-3 border-t border-white/[0.08] space-y-3">
+                            {/* Shipping Label Options */}
+                            <div>
+                                <p className="text-xs font-bold text-zinc-200 flex items-center gap-1.5 mb-1.5">
+                                    <Tag size={13} className="text-amber-400" />
+                                    <span>Label Print Options (2 Formats)</span>
+                                </p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => generateCourierShippingLabel(selectedOrder, storeName)}
+                                        className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold border border-zinc-700 transition-all cursor-pointer shadow-xs"
+                                    >
+                                        <Printer size={13} />
+                                        <span>1. Courier Thermal (4×6″)</span>
+                                    </button>
+                                    <button
+                                        onClick={() => generateLuxuryDeliverySlip(selectedOrder, storeName)}
+                                        className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-semibold border border-amber-500/30 transition-all cursor-pointer shadow-xs"
+                                    >
+                                        <Sparkles size={13} />
+                                        <span>2. Luxury Slip (4×6″)</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Manifest Options */}
+                            <div>
+                                <p className="text-xs font-bold text-zinc-200 flex items-center gap-1.5 mb-1.5">
+                                    <FileText size={13} className="text-emerald-400" />
+                                    <span>Manifest Print Options (2 Formats)</span>
+                                </p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => generateProductManifest(selectedOrder, storeName)}
+                                        className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-semibold border border-emerald-500/30 transition-all cursor-pointer shadow-xs"
+                                        title="Each product gets its own dedicated floral atelier manifest"
+                                    >
+                                        <CheckSquare size={13} />
+                                        <span>1. Product Manifest (Per-Item)</span>
+                                    </button>
+                                    <button
+                                        onClick={() => generateBatchManifest(todayOrders.length > 0 ? todayOrders : filtered, storeName)}
+                                        className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold border border-zinc-700 transition-all cursor-pointer shadow-xs"
+                                        title="Batch handover manifest for delivery riders"
+                                    >
+                                        <FileText size={13} />
+                                        <span>2. Daily Batch Manifest</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Luxury Gift Card */}
+                            <div>
                                 <button
-                                    onClick={() => generateShippingLabel(selectedOrder, storeName)}
-                                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
-                                >
-                                    <Tag size={13} />
-                                    <span>Shipping Label</span>
-                                </button>
-                                <button
-                                    onClick={() => generateGiftCard(selectedOrder)}
-                                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#bfa81f]/10 hover:bg-[#bfa81f]/20 text-[#bfa81f] text-xs font-semibold border border-[#bfa81f]/30 transition-colors cursor-pointer"
+                                    onClick={() => {
+                                        const note = selectedOrder.specialNote || '';
+                                        const p = parseSpecialNote(note);
+                                        generateGiftCard({
+                                            recipientName: p['recipient_name'] || selectedOrder.customer.name,
+                                            senderName: p['sender_name'] || '',
+                                            message: p['message'] || note,
+                                            occasion: p['occasion'] || '',
+                                            orderNumber: selectedOrder.orderNumber,
+                                        });
+                                    }}
+                                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#bfa81f]/15 hover:bg-[#bfa81f]/25 text-[#bfa81f] text-xs font-bold border border-[#bfa81f]/40 transition-all cursor-pointer shadow-xs"
                                 >
                                     <Gift size={13} />
-                                    <span>Gift Card</span>
+                                    <span>Print Luxury Gift Message Card (5×7″ Calligraphy)</span>
                                 </button>
                             </div>
                         </div>

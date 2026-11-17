@@ -14,15 +14,33 @@ import {
     ArrowUpRight,
     ChevronDown,
     Store,
-    Crown,
 } from 'lucide-react';
+
+function AtanuDirectorIcon({ size = 15, className = "text-amber-400" }: { size?: number; className?: string }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M12 2l2.4 4.8 5.3.8-3.8 3.7.9 5.3L12 16.1 7.2 18.6l.9-5.3-3.8-3.7 5.3-.8L12 2z" fill="currentColor" fillOpacity="0.25" />
+            <circle cx="12" cy="12" r="2.2" fill="currentColor" />
+        </svg>
+    );
+}
 
 const OUTLETS = [
     {
         id: 'atanu',
-        label: 'Atanu Jana',
+        label: 'Atanu',
         sublabel: 'Boutique Director',
-        icon: Crown,
+        icon: AtanuDirectorIcon,
         iconColor: 'text-amber-400',
         badge: 'Director',
         badgeStyle: 'bg-amber-500/10 text-amber-400 border-amber-500/30',

@@ -50,14 +50,33 @@ interface NavGroup {
     items: NavItem[];
 }
 
+function AtanuDirectorIcon({ size = 15, className = "text-amber-400" }: { size?: number; className?: string }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M12 2l2.4 4.8 5.3.8-3.8 3.7.9 5.3L12 16.1 7.2 18.6l.9-5.3-3.8-3.7 5.3-.8L12 2z" fill="currentColor" fillOpacity="0.25" />
+            <circle cx="12" cy="12" r="2.2" fill="currentColor" />
+        </svg>
+    );
+}
+
 const OUTLET_ACCOUNTS = [
     {
         id: 'atanu',
-        name: 'Atanu Jana',
+        name: 'Atanu',
         role: 'Boutique Director',
         badge: 'Director (Both Stores)',
         storeId: 'director' as const,
-        icon: Crown,
+        icon: AtanuDirectorIcon,
         color: 'text-amber-400',
         badgeStyle: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
         defaultPin: 'atanu123',
@@ -71,7 +90,7 @@ const OUTLET_ACCOUNTS = [
         icon: Store,
         color: 'text-emerald-400',
         badgeStyle: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-        defaultPin: 'tlg2026',
+        defaultPin: 'ecorose@tolly',
     },
     {
         id: 'alipore',
@@ -82,7 +101,7 @@ const OUTLET_ACCOUNTS = [
         icon: Store,
         color: 'text-sky-400',
         badgeStyle: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
-        defaultPin: 'alp2026',
+        defaultPin: 'ecorose@alipur',
     },
 ];
 

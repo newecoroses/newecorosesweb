@@ -25,6 +25,7 @@ import {
     AlertTriangle,
     Bell,
     Check,
+    CheckSquare,
     ChevronRight,
     Sparkles
 } from 'lucide-react';
@@ -34,7 +35,14 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardAction }
 import { Badge } from '@/components/admin/ui/badge';
 import { SavedOrder } from '@/lib/order-cache';
 import { AddCustomerModal } from '@/components/admin/add-customer-modal';
-import { generateShippingLabel, generateCourierManifest, generateGiftCard } from '@/lib/print-utils';
+import {
+    generateCourierShippingLabel,
+    generateLuxuryDeliverySlip,
+    generateBatchManifest,
+    generateProductManifest,
+    generateGiftCard,
+    parseSpecialNote,
+} from '@/lib/print-utils';
 
 interface StaffInfo {
     id: string;
@@ -318,24 +326,24 @@ export default function StaffDashboardPage() {
                 </div>
             )}
 
-            {/* ── Quick Print & Manifest Download Hub ───────────── */}
+            {/* ── Quick Print & Manifest Download Hub (Two Label & Two Manifest Options) ── */}
             <Card className="bg-gradient-to-r from-zinc-900/50 via-zinc-900/80 to-zinc-900/50 border-white/[0.08]">
                 <CardHeader>
                     <div className="flex items-center justify-between flex-wrap gap-3">
                         <div>
                             <CardTitle className="text-base flex items-center gap-2">
                                 <Printer size={16} className="text-[#bfa81f]" />
-                                <span>Courier Manifest &amp; Parcel Label Center</span>
+                                <span>Courier Manifest &amp; Parcel Label Center (Dual Print Suite)</span>
                             </CardTitle>
                             <CardDescription>
-                                Instant 1-click printable manifests for courier pickups and 4×6″ shipping labels
+                                2 Manifest Options (Daily Batch Handover &amp; Per-Product Docket) &middot; 2 Label Options (Courier Thermal &amp; Luxury Slip with Scannable QR)
                             </CardDescription>
                         </div>
 
                         {/* Store filter for Director */}
                         {isDirector && (
                             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-800 border border-zinc-700 text-xs">
-                                <span className="text-[10px] text-zinc-400 font-bold px-2 uppercase">Manifest Store:</span>
+                                <span className="text-[10px] text-zinc-400 font-bold px-2 uppercase">Outlet:</span>
                                 <button
                                     onClick={() => setManifestStoreFilter('all')}
                                     className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-colors cursor-pointer ${
@@ -365,8 +373,8 @@ export default function StaffDashboardPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {/* Download Manifest */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {/* Manifest Option 1: Daily Batch Manifest */}
                         <button
                             onClick={() => {
                                 const targetOrders = manifestStoreFilter === 'all'
@@ -375,7 +383,7 @@ export default function StaffDashboardPage() {
                                 const targetName = manifestStoreFilter === 'all'
                                     ? 'All Outlets Combined'
                                     : STORE_LABELS[manifestStoreFilter];
-                                generateCourierManifest(targetOrders, targetName);
+                                generateBatchManifest(targetOrders, targetName);
                             }}
                             className="p-3.5 rounded-2xl bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 transition-all text-left flex items-center gap-3 group cursor-pointer"
                         >
@@ -383,38 +391,67 @@ export default function StaffDashboardPage() {
                                 <FileText size={18} />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-xs font-bold text-white truncate">Download Daily Manifest</p>
-                                <p className="text-[10.5px] text-zinc-400 truncate">Rider signature &amp; parcel list</p>
+                                <p className="text-xs font-bold text-white truncate">1. Daily Batch Manifest</p>
+                                <p className="text-[10px] text-zinc-400 truncate">A4 Rider handover sheet with QR</p>
                             </div>
                         </button>
 
-                        {/* Print Parcel Label */}
-                        <Link
-                            href="/staff/orders"
+                        {/* Manifest Option 2: Individual Product Manifest */}
+                        <button
+                            onClick={() => {
+                                const latestOrder = visibleOrders[0];
+                                if (latestOrder) {
+                                    generateProductManifest(latestOrder, storeDisplayName);
+                                }
+                            }}
+                            className="p-3.5 rounded-2xl bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 transition-all text-left flex items-center gap-3 group cursor-pointer"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/30 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                                <CheckSquare size={18} />
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-xs font-bold text-white truncate">2. Product Manifest Docket</p>
+                                <p className="text-[10px] text-zinc-400 truncate">Per-bouquet preparation docket</p>
+                            </div>
+                        </button>
+
+                        {/* Label Option 1: Courier Shipping Label */}
+                        <button
+                            onClick={() => {
+                                const latestOrder = visibleOrders[0];
+                                if (latestOrder) {
+                                    generateCourierShippingLabel(latestOrder, storeDisplayName);
+                                }
+                            }}
                             className="p-3.5 rounded-2xl bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 transition-all text-left flex items-center gap-3 group cursor-pointer"
                         >
                             <div className="w-10 h-10 rounded-xl bg-[#bfa81f]/10 text-[#bfa81f] border border-[#bfa81f]/30 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                                 <Tag size={18} />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-xs font-bold text-white truncate">Print Parcel Labels (4×6″)</p>
-                                <p className="text-[10.5px] text-zinc-400 truncate">Consignee, prepaid &amp; fragile tags</p>
+                                <p className="text-xs font-bold text-white truncate">1. Courier Thermal Label</p>
+                                <p className="text-[10px] text-zinc-400 truncate">4×6″ logistics barcode &amp; live QR</p>
                             </div>
-                        </Link>
+                        </button>
 
-                        {/* Print Luxury Gift Card */}
-                        <Link
-                            href="/staff/orders"
+                        {/* Label Option 2: Luxury Delivery Slip */}
+                        <button
+                            onClick={() => {
+                                const latestOrder = visibleOrders[0];
+                                if (latestOrder) {
+                                    generateLuxuryDeliverySlip(latestOrder, storeDisplayName);
+                                }
+                            }}
                             className="p-3.5 rounded-2xl bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 transition-all text-left flex items-center gap-3 group cursor-pointer"
                         >
-                            <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/30 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                                <Gift size={18} />
+                            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                                <Sparkles size={18} />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-xs font-bold text-white truncate">Luxury Gift Message Cards</p>
-                                <p className="text-[10.5px] text-zinc-400 truncate">Print 5×7″ cards with calligraphy</p>
+                                <p className="text-xs font-bold text-white truncate">2. Luxury Delivery Slip</p>
+                                <p className="text-[10px] text-zinc-400 truncate">Gold gift slip &amp; flower care</p>
                             </div>
-                        </Link>
+                        </button>
                     </div>
                 </CardContent>
             </Card>
@@ -489,25 +526,33 @@ export default function StaffDashboardPage() {
                                             <td className="py-3 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1">
                                                     <button
-                                                        onClick={() => generateShippingLabel(o, isDirector ? (o.assignedStore ? STORE_LABELS[o.assignedStore] : 'New Eco Roses') : storeDisplayName)}
-                                                        title="Print Label"
-                                                        className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 cursor-pointer"
+                                                        onClick={() => generateCourierShippingLabel(o, isDirector ? (o.assignedStore ? STORE_LABELS[o.assignedStore] : 'New Eco Roses') : storeDisplayName)}
+                                                        title="Print 4×6 Courier Shipping Label (with QR Code)"
+                                                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 cursor-pointer transition-colors"
                                                     >
                                                         <Tag size={12} />
                                                     </button>
                                                     <button
+                                                        onClick={() => generateProductManifest(o, isDirector ? (o.assignedStore ? STORE_LABELS[o.assignedStore] : 'New Eco Roses') : storeDisplayName)}
+                                                        title="Print Product Manifest Docket (Per-Item)"
+                                                        className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-pointer transition-colors"
+                                                    >
+                                                        <FileText size={12} />
+                                                    </button>
+                                                    <button
                                                         onClick={() => {
                                                             const note = o.specialNote || '';
+                                                            const p = parseSpecialNote(note);
                                                             generateGiftCard({
-                                                                recipientName: o.customer.name,
-                                                                senderName: '',
-                                                                message: note,
-                                                                occasion: '',
+                                                                recipientName: p['recipient_name'] || o.customer.name,
+                                                                senderName: p['sender_name'] || '',
+                                                                message: p['message'] || note,
+                                                                occasion: p['occasion'] || '',
                                                                 orderNumber: o.orderNumber,
                                                             });
                                                         }}
-                                                        title="Print Gift Card"
-                                                        className="p-1 rounded-lg bg-[#bfa81f]/10 hover:bg-[#bfa81f]/20 text-[#bfa81f] border border-[#bfa81f]/30 cursor-pointer"
+                                                        title="Print Luxury Gift Message Card (5×7″)"
+                                                        className="p-1.5 rounded-lg bg-[#bfa81f]/10 hover:bg-[#bfa81f]/20 text-[#bfa81f] border border-[#bfa81f]/30 cursor-pointer transition-colors"
                                                     >
                                                         <Gift size={12} />
                                                     </button>

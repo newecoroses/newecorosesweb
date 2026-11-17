@@ -19,12 +19,13 @@ async function ensureDefaultStaff() {
     let accounts = await getStaffAccounts();
     let changed = false;
 
-    const hasAtanu = accounts.some(a => a.username.toLowerCase() === 'atanu');
-    if (!hasAtanu) {
+    // 1. Atanu (Boutique Director)
+    const atanuIdx = accounts.findIndex(a => a.username.toLowerCase() === 'atanu');
+    if (atanuIdx === -1) {
         const atanuAccount: StaffAccount = {
-            id: 'staff-atanu-jana',
+            id: 'staff-atanu',
             username: 'atanu',
-            name: 'Atanu Jana',
+            name: 'Atanu',
             passwordHash: hashPassword('atanu123'),
             role: 'director',
             storeId: 'director',
@@ -35,13 +36,12 @@ async function ensureDefaultStaff() {
         accounts = [atanuAccount, ...accounts];
         changed = true;
     } else {
-        // Migrate existing Atanu account to director role + storeId if missing
-        const idx = accounts.findIndex(a => a.username.toLowerCase() === 'atanu');
-        if (idx !== -1 && !accounts[idx].storeId) {
-            (accounts[idx] as any).storeId = 'director';
-            (accounts[idx] as any).role = 'director';
-            (accounts[idx] as any).permissions = {
-                ...accounts[idx].permissions,
+        if (accounts[atanuIdx].name !== 'Atanu' || accounts[atanuIdx].storeId !== 'director') {
+            accounts[atanuIdx].name = 'Atanu';
+            accounts[atanuIdx].storeId = 'director';
+            accounts[atanuIdx].role = 'director';
+            accounts[atanuIdx].permissions = {
+                ...accounts[atanuIdx].permissions,
                 canAssignOrders: true,
                 canDownloadLabels: true,
                 canViewAllStores: true,
@@ -51,13 +51,15 @@ async function ensureDefaultStaff() {
         }
     }
 
-    const hasTlg = accounts.some(a => a.username.toLowerCase() === 'tollygunge');
-    if (!hasTlg) {
+    // 2. Tollygunge Store (Password: ecorose@tolly)
+    const tlgIdx = accounts.findIndex(a => a.username.toLowerCase() === 'tollygunge');
+    const newTlgHash = hashPassword('ecorose@tolly');
+    if (tlgIdx === -1) {
         const tlgAccount: StaffAccount = {
             id: 'staff-tollygunge-store',
             username: 'tollygunge',
             name: 'Tollygunge Store',
-            passwordHash: hashPassword('tlg2026'),
+            passwordHash: newTlgHash,
             role: 'staff',
             storeId: 'tollygunge',
             isActive: true,
@@ -66,15 +68,22 @@ async function ensureDefaultStaff() {
         };
         accounts = [...accounts, tlgAccount];
         changed = true;
+    } else {
+        if (!verifyPassword('ecorose@tolly', accounts[tlgIdx].passwordHash)) {
+            accounts[tlgIdx].passwordHash = newTlgHash;
+            changed = true;
+        }
     }
 
-    const hasAlipore = accounts.some(a => a.username.toLowerCase() === 'alipore');
-    if (!hasAlipore) {
+    // 3. Alipore Store (Password: ecorose@alipur)
+    const alpIdx = accounts.findIndex(a => a.username.toLowerCase() === 'alipore');
+    const newAlpHash = hashPassword('ecorose@alipur');
+    if (alpIdx === -1) {
         const aliporeAccount: StaffAccount = {
             id: 'staff-alipore-store',
             username: 'alipore',
             name: 'Alipore Store',
-            passwordHash: hashPassword('alp2026'),
+            passwordHash: newAlpHash,
             role: 'staff',
             storeId: 'alipore',
             isActive: true,
@@ -83,6 +92,11 @@ async function ensureDefaultStaff() {
         };
         accounts = [...accounts, aliporeAccount];
         changed = true;
+    } else {
+        if (!verifyPassword('ecorose@alipur', accounts[alpIdx].passwordHash)) {
+            accounts[alpIdx].passwordHash = newAlpHash;
+            changed = true;
+        }
     }
 
     if (changed) await saveStaffAccounts(accounts);
