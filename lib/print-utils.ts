@@ -70,7 +70,7 @@ function getStoreAddress(storeName: string): string {
     if (storeName.includes('Alipore')) {
         return '5B, Alipore Road, Kolkata - 700027';
     }
-    return 'New Eco Roses Boutique, Kolkata, West Bengal';
+    return 'New Eco Roses Atelier, Kolkata, West Bengal';
 }
 
 function getTrackingUrl(orderNumber: string): string {
@@ -79,11 +79,12 @@ function getTrackingUrl(orderNumber: string): string {
 
 function getQrCodeUrl(orderNumber: string): string {
     const url = getTrackingUrl(orderNumber);
-    return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=2&data=${encodeURIComponent(url)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=2&data=${encodeURIComponent(url)}`;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LABEL OPTION 1: Modern 4×6″ Courier Thermal Shipping Label
+// LABEL OPTION 1: ALL-BLACK VERTICAL PRODUCT LABEL (50-60% of A4 Page)
+// Premium Luxury Edition with Gold SVGs, Logo, & Live Scannable QR
 // ═══════════════════════════════════════════════════════════════════
 export function generateCourierShippingLabel(order: SavedOrder, storeName: string): void {
     const parsed = parseSpecialNote(order.specialNote);
@@ -95,135 +96,493 @@ export function generateCourierShippingLabel(order: SavedOrder, storeName: strin
     const qrUrl = getQrCodeUrl(order.orderNumber);
     const trackingUrl = getTrackingUrl(order.orderNumber);
 
+    const logoOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    const logoSrc = `${logoOrigin}/favicon_io/android-chrome-512x512.png`;
+
     const html = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Courier Label - ${order.orderNumber}</title>
+<title>Product Shipping Label - ${order.orderNumber}</title>
 <style>
-  @page { size: 4in 6in; margin: 0; }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-  body { width: 4in; height: 6in; background: #fff; color: #000; padding: 6px; }
-  .label-container { width: 100%; height: 100%; border: 2.5px solid #000; display: flex; flex-direction: column; justify-content: space-between; }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
   
-  .header { background: #000; color: #fff; padding: 7px 10px; display: flex; justify-content: space-between; align-items: center; }
-  .brand { font-size: 13px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; }
-  .order-no { font-size: 12px; font-family: monospace; font-weight: 800; }
+  @page {
+    size: A4 portrait;
+    margin: 14mm auto;
+  }
   
-  .badges-row { display: flex; gap: 4px; padding: 5px 8px; border-bottom: 1.5px solid #000; background: #f8f8f8; flex-wrap: wrap; }
-  .badge { padding: 2px 7px; border: 1.5px solid #000; border-radius: 4px; font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
-  .b-prepaid { background: #16a34a; color: #fff; border-color: #16a34a; }
-  .b-fragile { background: #dc2626; color: #fff; border-color: #dc2626; }
-  .b-occasion { background: #fef3c7; color: #92400e; border-color: #d97706; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
   
-  .consignee-section { padding: 8px 10px; border-bottom: 1.5px solid #000; }
-  .sec-title { font-size: 8px; font-weight: 900; color: #666; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 3px; }
-  .rec-name { font-size: 14px; font-weight: 900; line-height: 1.2; text-transform: uppercase; }
-  .rec-phones { font-size: 11px; font-weight: 700; margin-top: 3px; color: #111; }
-  .rec-address { font-size: 10px; line-height: 1.35; color: #222; margin-top: 4px; }
-  .pincode-highlight { font-size: 14px; font-weight: 900; background: #000; color: #fff; padding: 1px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; }
+  body {
+    background: #0d0f17;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+  }
   
-  .middle-split { display: flex; border-bottom: 1.5px solid #000; }
-  .split-left { flex: 1; padding: 7px 10px; border-right: 1.5px solid #000; font-size: 9.5px; line-height: 1.3; }
-  .split-right { width: 110px; padding: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .qr-img { width: 78px; height: 78px; border: 1px solid #000; display: block; }
-  .qr-hint { font-size: 7px; font-weight: 800; color: #000; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.1; }
-  
-  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); padding: 6px 10px; border-bottom: 1px solid #ccc; font-size: 9px; }
-  .meta-col { display: flex; flex-direction: column; }
-  .meta-val { font-size: 11px; font-weight: 800; }
-  
-  .caution-strip { background: #fee2e2; border-bottom: 1px solid #f87171; color: #991b1b; padding: 4px 8px; font-size: 7.5px; font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  .footer { padding: 6px 10px; background: #fafafa; font-size: 7.5px; color: #444; }
-  .sig-line { margin-top: 4px; font-size: 8px; font-weight: 700; display: flex; justify-content: space-between; border-top: 1px dashed #999; padding-top: 3px; }
-  @media print { body { padding: 0; } }
+  @media print {
+    body {
+      background: #ffffff !important;
+      padding: 0;
+      min-height: auto;
+    }
+  }
+
+  /* ── 50-60% of A4 Page (Vertical Portrait: 130mm × 190mm) ── */
+  .label-card {
+    width: 132mm;
+    min-height: 192mm;
+    max-width: 135mm;
+    background: #000000 !important;
+    color: #ffffff;
+    border: 2px solid #bfa81f;
+    border-radius: 12px;
+    position: relative;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+  }
+
+  /* Inner dashed gold border */
+  .inner-border {
+    position: absolute;
+    inset: 4px;
+    border: 1px dashed rgba(191, 168, 31, 0.35);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+
+  /* Premium Botanical Gold SVG Corners */
+  .corner {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .c-tl { top: 7px; left: 7px; }
+  .c-tr { top: 7px; right: 7px; transform: scaleX(-1); }
+  .c-bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
+  .c-br { bottom: 7px; right: 7px; transform: scale(-1); }
+
+  /* ── Header Branding with Official Logo ── */
+  .header-brand {
+    text-align: center;
+    position: relative;
+    z-index: 5;
+    padding-bottom: 7px;
+    border-bottom: 1px solid rgba(191, 168, 31, 0.3);
+  }
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-bottom: 3px;
+  }
+  .logo-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid #bfa81f;
+    padding: 2px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+  }
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: #d4af37;
+    line-height: 1;
+  }
+  .brand-subtitle {
+    font-size: 7.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a39063;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+
+  /* Badges Strip */
+  .badge-strip {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    padding: 2.5px 7px;
+    border-radius: 4px;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .b-prepaid {
+    background: rgba(22, 163, 74, 0.18);
+    color: #4ade80;
+    border: 1px solid #22c55e;
+  }
+  .b-fragile {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+    border: 1px solid #ef4444;
+  }
+  .b-occasion {
+    background: rgba(191, 168, 31, 0.15);
+    color: #fde047;
+    border: 1px solid #eab308;
+  }
+  .b-order {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Delivery Consignee Section ── */
+  .section-box {
+    background: #090b10;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 7px;
+  }
+  .sec-tag {
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #bfa81f;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 3px;
+  }
+  .recipient-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+  }
+  .phone-row {
+    display: flex;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-top: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .phone-tag {
+    color: #bfa81f;
+  }
+  .address-text {
+    font-size: 9.5px;
+    color: #cbd5e1;
+    line-height: 1.35;
+    margin-top: 4px;
+  }
+  .pin-badge {
+    display: inline-block;
+    background: #bfa81f;
+    color: #000;
+    font-weight: 900;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Product & Dispatch Row with Live QR ── */
+  .middle-grid {
+    display: grid;
+    grid-template-columns: 1fr 88px;
+    gap: 8px;
+    margin-top: 7px;
+  }
+  .items-panel {
+    background: #090b10;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 7px 9px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .item-entry {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    color: #f1f5f9;
+    font-weight: 600;
+    padding: 1.5px 0;
+  }
+  .item-entry strong {
+    color: #bfa81f;
+  }
+
+  /* Scannable QR Code Block */
+  .qr-panel {
+    background: #090b10;
+    border: 1px solid #bfa81f;
+    border-radius: 8px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .qr-image {
+    width: 68px;
+    height: 68px;
+    border-radius: 4px;
+    background: #fff;
+    padding: 2px;
+    display: block;
+  }
+  .qr-caption {
+    font-size: 6.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #bfa81f;
+    margin-top: 3px;
+    line-height: 1.1;
+  }
+
+  /* Logistics & Handover Row */
+  .meta-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    background: #06070a;
+    border: 1px solid rgba(191, 168, 31, 0.25);
+    border-radius: 6px;
+    padding: 5px 8px;
+    margin-top: 7px;
+    text-align: center;
+  }
+  .meta-item .m-lbl {
+    font-size: 6.5px;
+    font-weight: 800;
+    color: #887a55;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .meta-item .m-val {
+    font-size: 10px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-top: 1px;
+  }
+
+  /* Caution & Freshness Handling */
+  .handling-strip {
+    background: rgba(220, 38, 38, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 5px;
+    color: #fca5a5;
+    font-size: 7.5px;
+    font-weight: 700;
+    padding: 4px 6px;
+    text-align: center;
+    letter-spacing: 0.4px;
+    margin-top: 6px;
+  }
+
+  /* Footer Signature */
+  .footer-sig {
+    border-top: 1px dashed rgba(191, 168, 31, 0.35);
+    padding-top: 6px;
+    margin-top: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 7.5px;
+    color: #94a3b8;
+  }
+  .sig-block {
+    min-width: 100px;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    padding-top: 2px;
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 7px;
+  }
 </style>
 </head>
 <body>
-<div class="label-container">
-  <!-- Header -->
-  <div class="header">
-    <span class="brand">🌹 NEW ECO ROSES</span>
-    <span class="order-no">#${order.orderNumber}</span>
-  </div>
+<div class="label-card">
+  <!-- Inner Border Line -->
+  <div class="inner-border"></div>
 
-  <!-- Priority Badges -->
-  <div class="badges-row">
-    <span class="badge b-prepaid">✓ PREPAID COURIER</span>
-    <span class="badge b-fragile">⚠ FRAGILE FLOWERS</span>
-    <span class="badge">SAME-DAY EXPRESS</span>
-    ${occasion ? `<span class="badge b-occasion">🎉 ${occasion.toUpperCase()}</span>` : ''}
-  </div>
+  <!-- Luxury Botanical Gold Corners -->
+  <svg class="corner c-tl" viewBox="0 0 45 45" fill="none">
+    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
+    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
+    <circle cx="2" cy="2" r="2" fill="#bfa81f"/>
+  </svg>
+  <svg class="corner c-tr" viewBox="0 0 45 45" fill="none">
+    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
+    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
+  </svg>
+  <svg class="corner c-bl" viewBox="0 0 45 45" fill="none">
+    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
+    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
+  </svg>
+  <svg class="corner c-br" viewBox="0 0 45 45" fill="none">
+    <path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3" opacity="0.85"/>
+    <circle cx="18" cy="18" r="2.2" fill="#bfa81f"/>
+  </svg>
 
-  <!-- Consignee Information -->
-  <div class="consignee-section">
-    <div class="sec-title">📬 SHIP TO (DELIVERY RECIPIENT)</div>
-    <div class="rec-name">${recipientName}</div>
-    <div class="rec-phones">
-      Primary: 📱 +91 ${recipientPhone}
-      ${altPhone ? ` &nbsp;|&nbsp; Alt: 📱 +91 ${altPhone}` : ''}
+  <!-- ── 1. Header with Official Logo ── -->
+  <div class="header-brand">
+    <div class="logo-row">
+      <div class="logo-badge">
+        <img src="${logoSrc}" alt="NER Logo" onerror="this.src='/favicon_io/android-chrome-192x192.png'" />
+      </div>
+      <div>
+        <div class="brand-title">New Eco Roses</div>
+        <div class="brand-subtitle">Haute Floral Atelier &middot; ${storeName}</div>
+      </div>
     </div>
-    <div class="rec-address">
+
+    <!-- Gold Floral Ribbon SVG -->
+    <svg width="150" height="8" viewBox="0 0 150 8" fill="none" style="margin:2px auto 0;display:block;">
+      <path d="M0 4h55M95 4h55" stroke="#bfa81f" stroke-width="0.8" stroke-dasharray="2 3" opacity="0.6"/>
+      <circle cx="75" cy="4" r="3" fill="#bfa81f" fill-opacity="0.25" stroke="#bfa81f" stroke-width="0.8"/>
+      <path d="M71 4c0-1.8 1.8-3 4-3s4 1.2 4 3-1.8 3-4 3-4-1.2-4-3z" fill="#bfa81f"/>
+    </svg>
+
+    <!-- Priority Status Badges -->
+    <div class="badge-strip">
+      <span class="badge b-prepaid">✓ PREPAID PRIORITY</span>
+      <span class="badge b-fragile">⚠ FRAGILE BLOOMS</span>
+      ${occasion ? `<span class="badge b-occasion">🎉 ${occasion.toUpperCase()}</span>` : ''}
+      <span class="badge b-order">#${order.orderNumber}</span>
+    </div>
+  </div>
+
+  <!-- ── 2. Consignee Delivery Destination ── -->
+  <div class="section-box">
+    <div class="sec-tag">
+      <span>📬</span>
+      <span>SHIP TO (DELIVERY RECIPIENT)</span>
+    </div>
+    <div class="recipient-name">${recipientName}</div>
+    <div class="phone-row">
+      <span><span class="phone-tag">PRIMARY:</span> +91 ${recipientPhone}</span>
+      ${altPhone ? `<span><span class="phone-tag">ALT:</span> +91 ${altPhone}</span>` : ''}
+    </div>
+    <div class="address-text">
       ${order.shippingAddress.line1}${order.shippingAddress.line2 ? ', ' + order.shippingAddress.line2 : ''}<br>
       ${order.shippingAddress.city}, ${order.shippingAddress.state}
     </div>
     <div>
-      <span class="pincode-highlight">PIN: ${order.shippingAddress.postalCode}</span>
+      <span class="pin-badge">PINCODE: ${order.shippingAddress.postalCode}</span>
     </div>
   </div>
 
-  <!-- Shipped From & Scannable QR -->
-  <div class="middle-split">
-    <div class="split-left">
-      <div class="sec-title">📤 DISPATCHED FROM</div>
-      <div style="font-weight:800;font-size:10.5px;">${storeName}</div>
-      <div style="color:#444;font-size:9px;margin-top:2px;">${storeAddress}</div>
-      <div style="margin-top:4px;color:#222;font-size:8.5px;">
-        <strong>Care Hotline:</strong> +91 99369 11611<br>
-        <strong>Web:</strong> newecoroses.com
+  <!-- ── 3. Arrangement Items & Scannable Live QR Code ── -->
+  <div class="middle-grid">
+    <div class="items-panel">
+      <div>
+        <div class="sec-tag">
+          <span>🌸</span>
+          <span>BOUQUET MANIFEST</span>
+        </div>
+        <div style="margin-top:2px;">
+          ${order.items.slice(0, 3).map(i => `
+            <div class="item-entry">
+              <span style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.quantity}× ${i.name}</span>
+              <strong>Included</strong>
+            </div>
+          `).join('')}
+          ${order.items.length > 3 ? `<div style="font-size:7.5px;color:#94a3b8;margin-top:2px;">+${order.items.length - 3} more items included</div>` : ''}
+        </div>
+      </div>
+      <div style="font-size:7px;color:#85754e;border-top:1px dashed rgba(191,168,31,0.25);padding-top:3px;margin-top:3px;">
+        <strong>Care Tube:</strong> Water Reservoir Attached &middot; Stems Trimmed
       </div>
     </div>
-    <div class="split-right">
-      <img src="${qrUrl}" alt="Scan Delivery QR" class="qr-img" />
-      <span class="qr-hint">Scan with Camera<br>Live Route &amp; Nav</span>
+
+    <!-- Scannable QR -->
+    <div class="qr-panel">
+      <img src="${qrUrl}" alt="Delivery Route QR" class="qr-image" />
+      <div class="qr-caption">SCAN FOR LIVE<br>GPS ROUTE &amp; NAV</div>
     </div>
   </div>
 
-  <!-- Order Meta Information -->
-  <div class="meta-grid">
-    <div class="meta-col">
-      <span class="sec-title">PARCEL VALUE</span>
-      <span class="meta-val" style="color:#15803d;font-size:12px;">₹${order.total.toLocaleString('en-IN')}</span>
+  <!-- ── 4. Dispatch Logistics Meta ── -->
+  <div class="meta-strip">
+    <div class="meta-item">
+      <div class="m-lbl">ORDER VALUE</div>
+      <div class="m-val" style="color:#4ade80;">₹${order.total.toLocaleString('en-IN')}</div>
     </div>
-    <div class="meta-col">
-      <span class="sec-title">PAYMENT MODE</span>
-      <span class="meta-val">${order.paymentMethod || 'Prepaid Online'}</span>
+    <div class="meta-item">
+      <div class="m-lbl">PAYMENT MODE</div>
+      <div class="m-val">${order.paymentMethod || 'Prepaid'}</div>
     </div>
-    <div class="meta-col">
-      <span class="sec-title">ITEMS COUNT</span>
-      <span class="meta-val">${order.items.reduce((sum, i) => sum + i.quantity, 0)} Bouquet(s)</span>
+    <div class="meta-item">
+      <div class="m-lbl">DISPATCH DATE</div>
+      <div class="m-val">${new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</div>
     </div>
   </div>
 
-  <!-- Handling Notice -->
-  <div class="caution-strip">
-    ⚠ KEEP STRICTLY UPRIGHT 90° &middot; WATER RESERVOIR IN TUBE &middot; DO NOT STACK OR DROP
+  <!-- ── 5. Handling & Orientation Notice ── -->
+  <div class="handling-strip">
+    ⚠ KEEP STRICTLY UPRIGHT 90° &middot; WATER RESERVOIR SEALED &middot; DO NOT CRUSH OR INVERT
   </div>
 
-  <!-- Footer Handover -->
-  <div class="footer">
-    <div>Handcrafted by New Eco Roses Luxury Floral Atelier &middot; newecoroses.com</div>
-    <div class="sig-line">
-      <span>Rider Signature: ______________________</span>
-      <span>Date: ${new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</span>
+  <!-- ── 6. Atelier Origin & Rider Sign-Off ── -->
+  <div class="footer-sig">
+    <div>
+      <div style="font-weight:700;color:#e2e8f0;">New Eco Roses &middot; ${storeAddress}</div>
+      <div style="color:#64748b;font-size:7px;">Emergency Floral Helpline: +91 99369 11611</div>
+    </div>
+    <div class="sig-block">
+      Rider Delivery Signature
     </div>
   </div>
 </div>
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=440,height=660');
+    const win = window.open('', '_blank', 'width=520,height=760');
     if (win) {
         win.document.write(html);
         win.document.close();
@@ -232,7 +591,7 @@ export function generateCourierShippingLabel(order: SavedOrder, storeName: strin
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LABEL OPTION 2: Luxury Gift Delivery Slip & Presentation Card
+// LABEL OPTION 2: ALL-BLACK LUXURY GIFT DELIVERY SLIP & PRESENTATION
 // ═══════════════════════════════════════════════════════════════════
 export function generateLuxuryDeliverySlip(order: SavedOrder, storeName: string): void {
     const parsed = parseSpecialNote(order.specialNote);
@@ -241,98 +600,128 @@ export function generateLuxuryDeliverySlip(order: SavedOrder, storeName: string)
     const occasion = parsed['occasion'] || '';
     const qrUrl = getQrCodeUrl(order.orderNumber);
 
+    const logoOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    const logoSrc = `${logoOrigin}/favicon_io/android-chrome-512x512.png`;
+
     const html = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Luxury Delivery Slip - ${order.orderNumber}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@400;600;700&display=swap');
-  @page { size: 4in 6in; margin: 0; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { width: 4in; height: 6in; background: #faf8f5; color: #1a150e; padding: 8px; font-family: 'Cormorant Garamond', serif; }
-  .slip-box { width: 100%; height: 100%; border: 1.5px solid #d4af37; background: #fffdfa; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-  .corner-gold { position: absolute; width: 28px; height: 28px; border-color: #bfa81f; border-style: solid; }
-  .c-tl { top: 3px; left: 3px; border-width: 2px 0 0 2px; }
-  .c-tr { top: 3px; right: 3px; border-width: 2px 2px 0 0; }
-  .c-bl { bottom: 3px; left: 3px; border-width: 0 0 2px 2px; }
-  .c-br { bottom: 3px; right: 3px; border-width: 0 2px 2px 0; }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400&family=Cormorant+Garamond:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap');
+  @page { size: A4 portrait; margin: 14mm auto; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #0d0f17; color: #ffffff; font-family: 'Cormorant Garamond', serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+  @media print { body { background: #fff !important; padding: 0; min-height: auto; } }
+
+  .slip-box {
+    width: 132mm;
+    min-height: 192mm;
+    max-width: 135mm;
+    background: #000000 !important;
+    color: #ffffff;
+    border: 2px solid #bfa81f;
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+    margin: 0 auto;
+  }
+  .inner-dashed { position: absolute; inset: 5px; border: 1px dashed rgba(191,168,31,0.3); border-radius: 8px; pointer-events: none; }
   
-  .head { text-align: center; border-bottom: 1px solid #ebdcb5; padding-bottom: 8px; }
-  .brand-title { font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: #bfa81f; font-weight: 700; }
-  .sub-tag { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #88724d; margin-top: 1px; }
-  
-  .rec-block { text-align: center; padding: 8px 0; }
-  .for-label { font-size: 10px; font-style: italic; color: #777; letter-spacing: 1px; }
-  .rec-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #1c140a; line-height: 1.2; }
-  .rec-locality { font-size: 10.5px; color: #555; margin-top: 2px; }
-  
-  .items-list { background: #faf7f0; border: 1px solid #f0e6d2; border-radius: 8px; padding: 8px 10px; font-size: 10.5px; }
-  .item-row { display: flex; justify-content: space-between; font-weight: 600; padding: 2px 0; }
-  
-  .care-guide { padding: 6px 0; border-top: 1px dashed #e8d7b5; border-bottom: 1px dashed #e8d7b5; font-size: 9px; color: #443522; line-height: 1.35; }
-  .care-title { font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #96742e; font-size: 8.5px; margin-bottom: 2px; text-align: center; }
-  
-  .qr-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; }
-  .qr-code { width: 55px; height: 55px; border: 1px solid #d4af37; border-radius: 4px; }
-  .qr-text { flex: 1; padding-left: 10px; font-size: 9px; color: #5c4728; line-height: 1.3; }
-  
-  .footer-sig { text-align: center; font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase; color: #bfa81f; padding-top: 4px; border-top: 1px solid #ebdcb5; }
-  @media print { body { padding: 0; } }
+  .corner { position: absolute; width: 36px; height: 36px; pointer-events: none; }
+  .c-tl { top: 7px; left: 7px; }
+  .c-tr { top: 7px; right: 7px; transform: scaleX(-1); }
+  .c-bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
+  .c-br { bottom: 7px; right: 7px; transform: scale(-1); }
+
+  .head-section { text-align: center; border-bottom: 1px solid rgba(191,168,31,0.3); padding-bottom: 10px; }
+  .logo-circle { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #bfa81f; padding: 2px; background: #111; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; }
+  .logo-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
+  .brand-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; color: #d4af37; }
+  .sub-title { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: #a89464; margin-top: 1px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+
+  .greeting-block { text-align: center; padding: 10px 0; }
+  .for-label { font-size: 11px; font-style: italic; color: #94a3b8; letter-spacing: 1px; }
+  .rec-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; margin-top: 2px; }
+  .rec-locality { font-size: 11px; color: #cbd5e1; margin-top: 2px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .manifest-box { background: #08090d; border: 1px solid rgba(191,168,31,0.25); border-radius: 8px; padding: 8px 12px; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .box-tag { font-size: 7.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #bfa81f; margin-bottom: 4px; }
+  .item-line { display: flex; justify-content: space-between; font-size: 10px; color: #f1f5f9; padding: 2px 0; font-weight: 600; }
+
+  .care-section { background: rgba(191,168,31,0.06); border: 1px dashed rgba(191,168,31,0.3); border-radius: 8px; padding: 8px 10px; font-size: 9.5px; color: #f1f5f9; line-height: 1.4; }
+  .care-head { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #d4af37; font-size: 8px; margin-bottom: 3px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .qr-concierge { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; }
+  .qr-concierge img { width: 60px; height: 60px; border: 1px solid #bfa81f; border-radius: 6px; background: #fff; padding: 2px; }
+  .qr-guide { flex: 1; padding-left: 12px; font-size: 9px; color: #cbd5e1; line-height: 1.35; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .footer-sig { text-align: center; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: #bfa81f; padding-top: 6px; border-top: 1px solid rgba(191,168,31,0.3); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
 </style>
 </head>
 <body>
 <div class="slip-box">
-  <div class="corner-gold c-tl"></div>
-  <div class="corner-gold c-tr"></div>
-  <div class="corner-gold c-bl"></div>
-  <div class="corner-gold c-br"></div>
+  <div class="inner-dashed"></div>
 
-  <div class="head">
+  <!-- Gold Botanical Corners -->
+  <svg class="corner c-tl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+  <svg class="corner c-tr" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+  <svg class="corner c-bl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+  <svg class="corner c-br" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+
+  <div class="head-section">
+    <div class="logo-circle">
+      <img src="${logoSrc}" alt="NER Logo" onerror="this.src='/favicon_io/android-chrome-192x192.png'" />
+    </div>
     <div class="brand-title">New Eco Roses</div>
-    <div class="sub-tag">Haute Floral Atelier &middot; ${storeName}</div>
-    ${occasion ? `<div style="font-size:10px;font-weight:700;color:#96742e;margin-top:2px;text-transform:uppercase;">✨ ${occasion} Special</div>` : ''}
+    <div class="sub-title">Haute Floral Atelier &middot; ${storeName}</div>
+    ${occasion ? `<div style="font-size:9.5px;font-weight:700;color:#fde047;margin-top:3px;text-transform:uppercase;">✨ ${occasion} Special Collection</div>` : ''}
   </div>
 
-  <div class="rec-block">
+  <div class="greeting-block">
     <div class="for-label">Specially Handcrafted For</div>
     <div class="rec-name">${recipientName}</div>
-    <div class="rec-locality">${order.shippingAddress.city} &middot; #${order.orderNumber}</div>
+    <div class="rec-locality">${order.shippingAddress.city} &middot; Order #${order.orderNumber}</div>
   </div>
 
-  <div class="items-list">
-    <div style="font-size:8.5px;text-transform:uppercase;color:#8c7146;font-weight:700;margin-bottom:3px;">Arrangement Manifest:</div>
+  <div class="manifest-box">
+    <div class="box-tag">🌸 Arrangement Inclusions:</div>
     ${order.items.map(i => `
-      <div class="item-row">
+      <div class="item-line">
         <span>${i.quantity}× ${i.name}</span>
-        <span>Included</span>
+        <span style="color:#bfa81f;">Hand-Arranged ✓</span>
       </div>
     `).join('')}
   </div>
 
-  <div class="care-guide">
-    <div class="care-title">🌸 Fresh Flower Care Ritual</div>
-    <div>1. Trim stems at a 45° angle before placing in fresh cold water</div>
+  <div class="care-section">
+    <div class="care-head">✨ Freshness Ritual</div>
+    <div>1. Cut stems at a 45° angle under cool water before placing in vase</div>
     <div>2. Dissolve the enclosed floral preservative sachet thoroughly</div>
-    <div>3. Keep away from direct sunlight, air conditioning &amp; heat vents</div>
+    <div>3. Display away from direct sunlight, heating &amp; air conditioning vents</div>
   </div>
 
-  <div class="qr-row">
-    <img src="${qrUrl}" alt="Delivery QR" class="qr-code" />
-    <div class="qr-text">
-      <strong>Live Concierge &amp; Unboxing:</strong><br>
-      Scan with your phone to track flower freshness or contact our master florists directly.
+  <div class="qr-concierge">
+    <img src="${qrUrl}" alt="Delivery QR" />
+    <div class="qr-guide">
+      <strong style="color:#d4af37;">Concierge &amp; Unboxing:</strong><br>
+      Scan with your camera for unboxing instructions, flower care notes, or to reach our master florists directly.
     </div>
   </div>
 
   <div class="footer-sig">
-    With Warmest Greetings &middot; newecoroses.com
+    Crafted with Passion &middot; newecoroses.com &middot; Kolkata
   </div>
 </div>
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=440,height=660');
+    const win = window.open('', '_blank', 'width=520,height=760');
     if (win) {
         win.document.write(html);
         win.document.close();
@@ -469,7 +858,8 @@ export function generateBatchManifest(orders: SavedOrder[], storeName: string, d
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MANIFEST OPTION 2: Individual Product Manifest (Per-Bouquet Atelier Docket)
+// MANIFEST OPTION 2: ALL-BLACK VERTICAL PRODUCT MANIFEST DOCKET
+// 50-60% of A4 Page with Official Logo, Gold SVGs & Quality Checks
 // ═══════════════════════════════════════════════════════════════════
 export function generateProductManifest(order: SavedOrder, storeName: string, productIndex?: number): void {
     const parsed = parseSpecialNote(order.specialNote);
@@ -480,95 +870,105 @@ export function generateProductManifest(order: SavedOrder, storeName: string, pr
     const qrUrl = getQrCodeUrl(order.orderNumber);
     const storeAddress = getStoreAddress(storeName);
 
-    // Target specific product or all products in order
+    const logoOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    const logoSrc = `${logoOrigin}/favicon_io/android-chrome-512x512.png`;
+
     const itemsToRender = typeof productIndex === 'number' && order.items[productIndex]
         ? [{ item: order.items[productIndex], index: productIndex }]
         : order.items.map((it, idx) => ({ item: it, index: idx }));
 
     const pages = itemsToRender.map(({ item, index }) => `
-    <div class="product-docket-page">
-      <!-- Docket Header -->
-      <div class="docket-header">
-        <div>
-          <div class="brand-row">🌹 NEW ECO ROSES ATELIER</div>
-          <div class="docket-sub">INDIVIDUAL PRODUCT DISPATCH MANIFEST &middot; ITEM #${index + 1} OF ${order.items.length}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="order-badge">#${order.orderNumber}</div>
-          <div style="font-size:9px;color:#666;margin-top:2px;">Item SKU: ${item.slug || 'NER-FLORAL'}</div>
-        </div>
-      </div>
+    <div class="docket-page-wrapper">
+      <div class="docket-card">
+        <div class="inner-border"></div>
 
-      <!-- Product Showcase Block -->
-      <div class="product-highlight-box">
-        <div class="prod-left">
-          <div class="prod-tag">🌸 BOUQUET SPECIFICATION</div>
-          <div class="prod-title">${item.name}</div>
-          <div class="prod-meta">
-            <strong>Quantity:</strong> ${item.quantity} Unit &nbsp;|&nbsp;
-            <strong>Item Value:</strong> ₹${(item.price * item.quantity).toLocaleString('en-IN')} &nbsp;|&nbsp;
-            <strong>Status:</strong> Floral Pack Complete ✓
-          </div>
-        </div>
-        <div class="prod-right">
-          <img src="${qrUrl}" alt="Delivery QR" class="prod-qr" />
-          <div class="qr-lbl">SCAN FOR ROUTE</div>
-        </div>
-      </div>
+        <!-- Gold Botanical Corners -->
+        <svg class="corner c-tl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+        <svg class="corner c-tr" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+        <svg class="corner c-bl" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
+        <svg class="corner c-br" viewBox="0 0 45 45" fill="none"><path d="M2 2h38M2 2v38M2 2l16 16M9 2l12 12M2 9l12 12" stroke="#bfa81f" stroke-width="1.3"/><circle cx="18" cy="18" r="2.2" fill="#bfa81f"/></svg>
 
-      <!-- Recipient & Delivery Grid -->
-      <div class="info-grid">
-        <div class="info-cell">
-          <div class="cell-title">📬 CONSIGNEE (DELIVER TO)</div>
-          <div class="cell-main">${recipientName}</div>
-          <div class="cell-sub">
-            📱 Primary: <strong>+91 ${recipientPhone}</strong><br>
-            ${altPhone ? `📱 Alternate: <strong>+91 ${altPhone}</strong>` : ''}
+        <!-- Header with Logo -->
+        <div class="docket-head">
+          <div class="head-left">
+            <div class="logo-circ">
+              <img src="${logoSrc}" alt="NER Logo" onerror="this.src='/favicon_io/android-chrome-192x192.png'" />
+            </div>
+            <div>
+              <div class="brand-title">NEW ECO ROSES ATELIER</div>
+              <div class="docket-sub">INDIVIDUAL PRODUCT DISPATCH MANIFEST &middot; ITEM #${index + 1} OF ${order.items.length}</div>
+            </div>
           </div>
-          <div class="cell-sub" style="margin-top:4px;">
-            ${order.shippingAddress.line1}${order.shippingAddress.line2 ? ', ' + order.shippingAddress.line2 : ''}<br>
-            ${order.shippingAddress.city}, ${order.shippingAddress.state} &middot; <strong>PIN ${order.shippingAddress.postalCode}</strong>
+          <div class="order-tag">#${order.orderNumber}</div>
+        </div>
+
+        <!-- Product Highlight Box -->
+        <div class="product-banner">
+          <div class="prod-details">
+            <div class="prod-tag">🌸 BOUQUET SPECIFICATION</div>
+            <div class="prod-name">${item.name}</div>
+            <div class="prod-sub">
+              <strong>Quantity:</strong> ${item.quantity} Unit &nbsp;|&nbsp;
+              <strong>Price:</strong> ₹${(item.price * item.quantity).toLocaleString('en-IN')} &nbsp;|&nbsp;
+              <span style="color:#4ade80;">Arrangement Passed ✓</span>
+            </div>
+          </div>
+          <div class="qr-col">
+            <img src="${qrUrl}" alt="Route QR" class="qr-img" />
+            <div class="qr-txt">SCAN FOR ROUTE</div>
           </div>
         </div>
 
-        <div class="info-cell">
-          <div class="cell-title">📤 FULFILMENT ATELIER</div>
-          <div class="cell-main">${storeName}</div>
-          <div class="cell-sub">${storeAddress}</div>
-          <div class="cell-sub" style="margin-top:4px;">
-            <strong>Dispatch Date:</strong> ${new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}<br>
-            <strong>Payment Mode:</strong> ${order.paymentMethod || 'Prepaid'} (₹${order.total})
+        <!-- Consignee & Route -->
+        <div class="two-grid">
+          <div class="grid-box">
+            <div class="box-lbl">📬 DELIVER TO (CONSIGNEE)</div>
+            <div class="rec-name">${recipientName}</div>
+            <div class="phone-line">📱 Primary: +91 ${recipientPhone}</div>
+            ${altPhone ? `<div class="phone-line">📱 Alt: +91 ${altPhone}</div>` : ''}
+            <div class="addr-line">${order.shippingAddress.line1}, ${order.shippingAddress.city}</div>
+            <div class="pin-highlight">PIN ${order.shippingAddress.postalCode}</div>
           </div>
-          ${occasion ? `<div style="margin-top:4px;font-size:9.5px;color:#92400e;font-weight:bold;">🎉 Occasion: ${occasion}</div>` : ''}
-        </div>
-      </div>
 
-      <!-- Florist Inspection & Quality Checklist -->
-      <div class="checklist-section">
-        <div class="check-title">📋 FLORIST PRE-DISPATCH QUALITY CONTROL PASS</div>
-        <div class="checks-grid">
-          <div class="check-item"><span class="chk-box">✓</span> 45° Clean Slanted Stem Cut</div>
-          <div class="check-item"><span class="chk-box">✓</span> Hydration Water Gel / Tube Secured</div>
-          <div class="check-item"><span class="chk-box">✓</span> Guard Petals Groomed &amp; De-thorned</div>
-          <div class="check-item"><span class="chk-box">✓</span> Matte Luxury Wrap &amp; Satin Bow Tied</div>
-          <div class="check-item"><span class="chk-box">✓</span> Floral Care &amp; Food Sachet Enclosed</div>
-          <div class="check-item"><span class="chk-box">✓</span> Calligraphy Message Card Attached</div>
+          <div class="grid-box">
+            <div class="box-lbl">📤 FULFILMENT ORIGIN</div>
+            <div class="rec-name" style="font-size:12px;">${storeName}</div>
+            <div class="addr-line">${storeAddress}</div>
+            <div class="addr-line" style="margin-top:4px;">
+              <strong>Payment:</strong> ${order.paymentMethod || 'Prepaid'} (₹${order.total})<br>
+              <strong>Dispatch:</strong> ${new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
+            </div>
+            ${occasion ? `<div style="font-size:8px;color:#fde047;font-weight:bold;margin-top:2px;">🎉 ${occasion}</div>` : ''}
+          </div>
         </div>
-      </div>
 
-      <!-- Sign-off Footer -->
-      <div class="docket-footer">
-        <div class="sign-slot">
-          <strong>Lead Florist Sign</strong><br>
-          <span>Bouquet Arrangement Pass</span>
+        <!-- Florist Quality Control Checklist -->
+        <div class="checks-box">
+          <div class="checks-lbl">📋 FLORIST PRE-DISPATCH QUALITY CONTROL PASS</div>
+          <div class="checks-row">
+            <div class="chk"><span class="tick">✓</span> 45° Clean Slanted Stem Cut</div>
+            <div class="chk"><span class="tick">✓</span> Hydration Water Gel / Tube Secured</div>
+            <div class="chk"><span class="tick">✓</span> Guard Petals Groomed &amp; De-thorned</div>
+            <div class="chk"><span class="tick">✓</span> Matte Luxury Wrap &amp; Satin Bow Tied</div>
+            <div class="chk"><span class="tick">✓</span> Floral Food Preservative Enclosed</div>
+            <div class="chk"><span class="tick">✓</span> Calligraphy Message Card Sealed</div>
+          </div>
         </div>
-        <div class="sign-slot">
-          <strong>Store Dispatcher</strong><br>
-          <span>Quality &amp; Packing Verified</span>
-        </div>
-        <div class="sign-slot">
-          <strong>Courier Rider Pickup</strong><br>
-          <span>Received in Perfect Upright State</span>
+
+        <!-- Sign-Off Line -->
+        <div class="docket-foot">
+          <div class="sig-slot">
+            <strong>Lead Florist Sign</strong><br>
+            <span>Bouquet Assembly Verified</span>
+          </div>
+          <div class="sig-slot">
+            <strong>Store Dispatcher</strong><br>
+            <span>Quality &amp; Pack Passed</span>
+          </div>
+          <div class="sig-slot">
+            <strong>Courier Rider Pickup</strong><br>
+            <span>Received Upright &amp; Intact</span>
+          </div>
         </div>
       </div>
     </div>
@@ -580,42 +980,73 @@ export function generateProductManifest(order: SavedOrder, storeName: string, pr
 <meta charset="UTF-8">
 <title>Product Manifest - ${order.orderNumber}</title>
 <style>
-  @page { size: A4 portrait; margin: 10mm; }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; }
-  body { background: #fff; color: #000; font-size: 10px; }
-  .product-docket-page { border: 2px solid #000; padding: 16px; margin-bottom: 20px; border-radius: 4px; }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
+  @page { size: A4 portrait; margin: 14mm auto; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #0d0f17; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 10px; }
+  @media print { body { background: #fff !important; padding: 0; } }
+
+  .docket-page-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
   .page-break { page-break-after: always; height: 0; }
-  
-  .docket-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 12px; }
-  .brand-row { font-size: 14px; font-weight: 900; letter-spacing: 1px; }
-  .docket-sub { font-size: 8.5px; font-weight: 700; color: #666; margin-top: 1px; }
-  .order-badge { font-size: 14px; font-family: monospace; font-weight: 900; background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; }
-  
-  .product-highlight-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; }
-  .prod-left { flex: 1; padding-right: 14px; }
-  .prod-tag { font-size: 8.5px; font-weight: 900; color: #bfa81f; letter-spacing: 1px; text-transform: uppercase; }
-  .prod-title { font-size: 16px; font-weight: 900; color: #0f172a; margin: 2px 0; }
-  .prod-meta { font-size: 10.5px; color: #475569; margin-top: 2px; }
-  .prod-right { text-align: center; width: 85px; }
-  .prod-qr { width: 75px; height: 75px; border: 1.5px solid #000; }
-  .qr-lbl { font-size: 7px; font-weight: 900; margin-top: 2px; }
-  
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .info-cell { border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; background: #fff; }
-  .cell-title { font-size: 8.5px; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .cell-main { font-size: 13px; font-weight: 800; color: #0f172a; }
-  .cell-sub { font-size: 10px; color: #334155; line-height: 1.4; margin-top: 3px; }
-  
-  .checklist-section { border: 1.5px solid #000; border-radius: 6px; padding: 10px 12px; margin-bottom: 16px; background: #fdfdfd; }
-  .check-title { font-size: 8.5px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; color: #000; }
-  .checks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 10px; font-weight: 600; }
-  .check-item { display: flex; align-items: center; gap: 6px; }
-  .chk-box { font-size: 11px; font-weight: 900; color: #16a34a; }
-  
-  .docket-footer { display: flex; justify-content: space-between; border-top: 1.5px solid #000; padding-top: 10px; margin-top: 10px; }
-  .sign-slot { min-width: 150px; text-align: center; font-size: 8.5px; border-top: 1px dashed #666; padding-top: 4px; }
-  .sign-slot span { color: #666; font-size: 7.5px; }
-  @media print { body { padding: 0; } .product-docket-page { border-color: #000; } }
+
+  /* 50-60% of A4 Vertical */
+  .docket-card {
+    width: 132mm;
+    min-height: 192mm;
+    max-width: 135mm;
+    background: #000000 !important;
+    color: #ffffff;
+    border: 2px solid #bfa81f;
+    border-radius: 12px;
+    padding: 14px 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+  }
+  .inner-border { position: absolute; inset: 4px; border: 1px dashed rgba(191,168,31,0.35); border-radius: 8px; pointer-events: none; }
+
+  .corner { position: absolute; width: 34px; height: 34px; pointer-events: none; }
+  .c-tl { top: 6px; left: 6px; }
+  .c-tr { top: 6px; right: 6px; transform: scaleX(-1); }
+  .c-bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
+  .c-br { bottom: 6px; right: 6px; transform: scale(-1); }
+
+  .docket-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(191,168,31,0.3); padding-bottom: 8px; }
+  .head-left { display: flex; align-items: center; gap: 8px; }
+  .logo-circ { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #bfa81f; padding: 2px; background: #111; display: flex; align-items: center; justify-content: center; }
+  .logo-circ img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
+  .brand-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 900; letter-spacing: 2px; color: #d4af37; }
+  .docket-sub { font-size: 7px; color: #94a3b8; font-weight: 700; letter-spacing: 1px; }
+  .order-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 900; background: #bfa81f; color: #000; padding: 2px 7px; border-radius: 4px; }
+
+  .product-banner { display: flex; justify-content: space-between; align-items: center; background: #08090d; border: 1px solid rgba(191,168,31,0.3); border-radius: 8px; padding: 8px 10px; margin-top: 7px; }
+  .prod-details { flex: 1; padding-right: 8px; }
+  .prod-tag { font-size: 7px; font-weight: 800; letter-spacing: 1px; color: #bfa81f; text-transform: uppercase; }
+  .prod-name { font-size: 13px; font-weight: 800; color: #ffffff; margin: 1px 0; }
+  .prod-sub { font-size: 8.5px; color: #cbd5e1; }
+  .qr-col { text-align: center; width: 65px; }
+  .qr-img { width: 55px; height: 55px; border-radius: 4px; background: #fff; padding: 2px; }
+  .qr-txt { font-size: 6px; font-weight: 800; color: #bfa81f; margin-top: 2px; }
+
+  .two-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 7px; }
+  .grid-box { background: #08090d; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 7px 9px; }
+  .box-lbl { font-size: 7px; font-weight: 800; color: #bfa81f; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+  .rec-name { font-size: 12px; font-weight: 800; color: #ffffff; }
+  .phone-line { font-size: 8.5px; font-weight: 700; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+  .addr-line { font-size: 8px; color: #94a3b8; line-height: 1.3; margin-top: 2px; }
+  .pin-highlight { display: inline-block; background: #bfa81f; color: #000; font-weight: 900; font-size: 9px; padding: 1px 4px; border-radius: 2px; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+
+  .checks-box { background: #08090d; border: 1px solid rgba(191,168,31,0.25); border-radius: 7px; padding: 7px 9px; margin-top: 7px; }
+  .checks-lbl { font-size: 7px; font-weight: 800; color: #bfa81f; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+  .checks-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 8px; font-weight: 600; color: #e2e8f0; }
+  .chk { display: flex; align-items: center; gap: 4px; }
+  .tick { color: #4ade80; font-weight: 900; font-size: 9px; }
+
+  .docket-foot { border-top: 1px dashed rgba(191,168,31,0.3); padding-top: 6px; margin-top: 7px; display: flex; justify-content: space-between; }
+  .sig-slot { min-width: 90px; text-align: center; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 2px; font-size: 7px; color: #cbd5e1; }
+  .sig-slot span { font-size: 6px; color: #64748b; }
 </style>
 </head>
 <body>
@@ -623,7 +1054,7 @@ ${pages}
 </body>
 </html>`;
 
-    const win = window.open('', '_blank', 'width=850,height=700');
+    const win = window.open('', '_blank', 'width=520,height=760');
     if (win) {
         win.document.write(html);
         win.document.close();
