@@ -3,6 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/free-mode';
 
 const ROW_1 = [
     { name: 'Birthday', slug: 'birthday', image: '/images/categories/birthday.webp', link: '/shop?celebration=birthday' },
@@ -28,11 +33,22 @@ const ROW_2 = [
 
 function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number }) {
     return (
-        <div className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-mandatory md:overflow-visible overscroll-x-contain">
-            <div className="flex md:grid md:grid-cols-8 gap-3 md:gap-4 px-3 md:px-0 w-max md:w-full">
-                {items.map((item, idx) => (
+        <Swiper
+            modules={[FreeMode]}
+            spaceBetween={12}
+            slidesPerView={4.35}
+            freeMode={{ enabled: true, sticky: true }}
+            breakpoints={{
+                480: { slidesPerView: 5.2, spaceBetween: 12 },
+                640: { slidesPerView: 6.2, spaceBetween: 14 },
+                768: { slidesPerView: 8, spaceBetween: 16 },
+                1024: { slidesPerView: 8, spaceBetween: 18 },
+            }}
+            className="!px-3 md:!px-8 !pb-1"
+        >
+            {items.map((item, idx) => (
+                <SwiperSlide key={item.slug}>
                     <motion.div
-                        key={item.slug}
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: delay + idx * 0.05 }}
@@ -40,7 +56,7 @@ function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number
                     >
                         <Link
                             href={item.link}
-                            className="group snap-start flex flex-col items-center gap-2 w-[76px] md:w-full"
+                            className="group flex flex-col items-center gap-2 w-full"
                         >
                             <div className="w-[68px] h-[68px] md:w-full md:h-auto aspect-square rounded-2xl bg-[#faf7f2] border border-gray-200 flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-card group-hover:border-black/40 relative overflow-hidden">
                                 <Image
@@ -49,6 +65,7 @@ function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number
                                     fill
                                     className="object-cover rounded-2xl group-hover:scale-110 transition-transform duration-500"
                                     sizes="(max-width: 768px) 68px, 120px"
+                                    unoptimized
                                 />
                             </div>
                             <span className="text-[10px] md:text-xs font-semibold text-[#1c1917] text-center leading-tight line-clamp-2 group-hover:text-black transition-colors">
@@ -56,16 +73,16 @@ function CategoryRow({ items, delay = 0 }: { items: typeof ROW_1; delay?: number
                             </span>
                         </Link>
                     </motion.div>
-                ))}
-            </div>
-        </div>
+                </SwiperSlide>
+            ))}
+        </Swiper>
     );
 }
 
 export default function CategoryGrid() {
     return (
         <section className="py-5 md:py-10 w-full max-w-full overflow-hidden">
-            <div className="max-w-6xl mx-auto md:px-8 space-y-4 md:space-y-5">
+            <div className="max-w-6xl mx-auto space-y-4 md:space-y-5">
                 <CategoryRow items={ROW_1} delay={0} />
                 <CategoryRow items={ROW_2} delay={0.15} />
             </div>
