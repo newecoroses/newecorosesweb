@@ -235,7 +235,10 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                 <div>
                     {/* Title: Cormorant Garamond */}
                     <Link href={`/product/${product.slug}`} className="block">
-                        <h3 className="font-cormorant text-[16px] sm:text-[17px] font-semibold text-[#1c1917] group-hover:text-primary transition-colors line-clamp-1 leading-snug">
+                        <h3 
+                            style={{ fontFamily: "'Cormorant Garamond', Garamond, Georgia, serif" }} 
+                            className="font-cormorant text-[16px] sm:text-[17px] font-semibold text-[#1c1917] group-hover:text-primary transition-colors line-clamp-1 leading-snug"
+                        >
                             {product.name}
                         </h3>
                     </Link>

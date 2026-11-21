@@ -61,6 +61,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head>
+        {/* Preconnect & Google Fonts: Cormorant Garamond & DM Sans */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap"
+          rel="stylesheet"
+        />
         {/* Inline script: applies cached theme synchronously before first paint to prevent color flash */}
         <script dangerouslySetInnerHTML={{
           __html: `

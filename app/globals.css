@@ -24,11 +24,11 @@
 
 /* ===== Typography Utilities ===== */
 .font-cormorant {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Cormorant Garamond', Garamond, Georgia, serif !important;
 }
 
 .font-dm-sans {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 /* ===== Base ===== */
