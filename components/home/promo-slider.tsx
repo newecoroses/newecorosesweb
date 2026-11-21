@@ -99,7 +99,7 @@ export default function PromoSlider() {
                                         alt={promo.title}
                                         fill
                                         className="object-cover"
-                                        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 40vw"
+                                        unoptimized
                                     />
 
                                     {/* Order Now button overlay in bottom right */}
