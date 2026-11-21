@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface BannerItem {
     id: string;
@@ -16,40 +15,25 @@ interface BannerItem {
 }
 
 const ALL_BANNERS: BannerItem[] = [
-    // ── Scheduled Seasonal Event Banners (Dynamic Date Window) ──
     {
-        id: 'lakshmi-puja',
-        src: '/images/banners/hero/a-little-more-beauty-this-lakshmi-puja.webp',
-        alt: 'A Little More Beauty This Lakshmi Puja',
-        link: '/shop?celebration=lakshmi-puja',
+        id: 'beauty-in-every-bloom',
+        src: '/images/banners/hero/beauty-in-every-bloom.webp',
+        alt: 'Beauty in Every Bloom',
+        link: '/shop',
         evergreen: true,
     },
     {
-        id: 'birthday-cakes',
-        src: '/images/banners/hero/birthday-cakes.webp',
-        alt: 'Birthday Cakes & Gifts',
-        link: '/shop?celebration=birthday',
+        id: 'colour-me-happy',
+        src: '/images/banners/hero/colour-me-happy-floral-still-life.webp',
+        alt: 'Colour Me Happy Floral Still Life',
+        link: '/shop?cat=fresh-flower',
         evergreen: true,
     },
     {
-        id: 'wedding-gifts',
-        src: '/images/banners/hero/wedding-gifts.webp',
-        alt: 'Wedding Gifts',
-        link: '/shop?cat=wedding-gifts',
-        evergreen: true,
-    },
-    {
-        id: 'housewarm-gifts',
-        src: '/images/banners/hero/housewarm-gifts.webp',
-        alt: 'Housewarming Gifts',
-        link: '/shop?celebration=housewarming',
-        evergreen: true,
-    },
-    {
-        id: 'plant-gifts',
-        src: '/images/banners/hero/plant-gifts.webp',
-        alt: 'Plant Gifts',
-        link: '/shop?cat=plants',
+        id: 'naturally-beautiful-eco-roses',
+        src: '/images/banners/hero/naturally-beautiful-eco-roses.webp',
+        alt: 'Naturally Beautiful Eco Roses',
+        link: '/shop',
         evergreen: true,
     },
 ];
@@ -87,7 +71,6 @@ export default function HeroSlider() {
 
     // Safety fallback if activeBanners changes length
     const activeCurrent = current % activeBanners.length;
-    const currentBanner = activeBanners[activeCurrent] || activeBanners[0];
 
     return (
         <section className="w-full max-w-full overflow-hidden px-3 md:px-8 pt-5 md:pt-6">
