@@ -1,5 +1,5 @@
 # NEW ECO ROSES — Master Project Asset Register
-**Total Active Public Media Assets:** 865
+**Total Active Public Media Assets:** 800
 **Total Safely Archived Assets:** 39
 **Generated:** 2026-11-21
 
@@ -37,30 +37,13 @@
 | `addon-plush-teddy.jpg` | Addon Product | `/public/images/addons/addon-plush-teddy.jpg` | Yes | Addon Configuration (`lib/addons.ts`) | Active (Direct Code) |
 | `addon-scented-candle.jpg` | Addon Product | `/public/images/addons/addon-scented-candle.jpg` | Yes | Addon Configuration (`lib/addons.ts`) | Active (Direct Code) |
 | `cta-banner.webp` | CTA Banner | `/public/images/banners/cta-banner.webp` | Yes | Homepage CTA Section (`app/page.tsx`) | Active (Direct Code) |
-| `anniversary.webp` | Hero Banner | `/public/images/banners/hero/anniversary.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
 | `beauty-in-every-bloom.webp` | Hero Banner | `/public/images/banners/hero/beauty-in-every-bloom.webp` | Yes | HeroSlider (`components/home/hero-slider.tsx`) | Active (Direct Code) |
-| `birthday-cakes.webp` | Hero Banner | `/public/images/banners/hero/birthday-cakes.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
 | `colour-me-happy-floral-still-life.webp` | Hero Banner | `/public/images/banners/hero/colour-me-happy-floral-still-life.webp` | Yes | HeroSlider (`components/home/hero-slider.tsx`) | Active (Direct Code) |
-| `durga-puja-banner-1.webp` | Hero Banner | `/public/images/banners/hero/durga-puja-banner-1.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `durga-puja.webp` | Hero Banner | `/public/images/banners/hero/durga-puja.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `ganesh-chaturthi-banner-1.webp` | Hero Banner | `/public/images/banners/hero/ganesh-chaturthi-banner-1.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `ganesh-chaturthi.webp` | Hero Banner | `/public/images/banners/hero/ganesh-chaturthi.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `housewarm-gifts.webp` | Hero Banner | `/public/images/banners/hero/housewarm-gifts.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `janmastami.webp` | Hero Banner | `/public/images/banners/hero/janmastami.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
 | `naturally-beautiful-eco-roses.webp` | Hero Banner | `/public/images/banners/hero/naturally-beautiful-eco-roses.webp` | Yes | HeroSlider (`components/home/hero-slider.tsx`) | Active (Direct Code) |
-| `plant-gifts.webp` | Hero Banner | `/public/images/banners/hero/plant-gifts.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `teachers-day.webp` | Hero Banner | `/public/images/banners/hero/teachers-day.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `viswakarma-puja-banner-1.webp` | Hero Banner | `/public/images/banners/hero/viswakarma-puja-banner-1.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `viswakarma-puja.webp` | Hero Banner | `/public/images/banners/hero/viswakarma-puja.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
-| `wedding-gifts.webp` | Hero Banner | `/public/images/banners/hero/wedding-gifts.webp` | Dynamic/DB | HeroSlider (`components/home/hero-slider.tsx`) | Preserved (DB/Runtime / Static) |
 | `elegant-birthday-gifts-that-delight.webp` | Promotional Banner | `/public/images/banners/promo/elegant-birthday-gifts-that-delight.webp` | Yes | PromoSlider (`components/home/promo-slider.tsx`) | Active (Direct Code) |
 | `elegant-sage-wedding-gift-display.webp` | Promotional Banner | `/public/images/banners/promo/elegant-sage-wedding-gift-display.webp` | Yes | PromoSlider (`components/home/promo-slider.tsx`) | Active (Direct Code) |
 | `luxury-rose-collection.webp` | Promotional Banner | `/public/images/banners/promo/luxury-rose-collection.webp` | Yes | PromoSlider (`components/home/promo-slider.tsx`) | Active (Direct Code) |
 | `romantic-anniversary-gift-collection.webp` | Promotional Banner | `/public/images/banners/promo/romantic-anniversary-gift-collection.webp` | Yes | PromoSlider (`components/home/promo-slider.tsx`) | Active (Direct Code) |
-| `cake icon.webp` | Birthday Feature Icon | `/public/images/birthday gifts that wow/cake icon.webp` | Dynamic/DB | Homepage Birthday Feature / Supabase | Preserved (Homepage Feature) |
-| `chocolate bouquet.webp` | Birthday Feature Icon | `/public/images/birthday gifts that wow/chocolate bouquet.webp` | Dynamic/DB | Homepage Birthday Feature / Supabase | Preserved (Homepage Feature) |
-| `flowers new icon.webp` | Birthday Feature Icon | `/public/images/birthday gifts that wow/flowers new icon.webp` | Dynamic/DB | Homepage Birthday Feature / Supabase | Preserved (Homepage Feature) |
-| `personalised.webp` | Birthday Feature Icon | `/public/images/birthday gifts that wow/personalised.webp` | Dynamic/DB | Homepage Birthday Feature / Supabase | Preserved (Homepage Feature) |
 | `login-icon.jpg` | Cart UI Icon | `/public/images/cart/login-icon.jpg` | Yes | Cart Page (`app/cart/page.tsx`) | Active (Direct Code) |
 | `make-it-extra-special.jpg` | Cart UI Icon | `/public/images/cart/make-it-extra-special.jpg` | Yes | Cart Page (`app/cart/page.tsx`) | Active (Direct Code) |
 | `message-card-icon.jpg` | Cart UI Icon | `/public/images/cart/message-card-icon.jpg` | Yes | Cart Page (`app/cart/page.tsx`) | Active (Direct Code) |
@@ -87,12 +70,6 @@
 | `husband-appreciation.webp` | Celebration Graphic | `/public/images/celebrations/husband-appreciation.webp` | Yes | Celebrations (`lib/supabase.ts`) | Active (Direct Code) |
 | `navratri.webp` | Celebration Graphic | `/public/images/celebrations/navratri.webp` | Yes | Celebrations (`lib/supabase.ts`) | Active (Direct Code) |
 | `womens-day.webp` | Celebration Graphic | `/public/images/celebrations/womens-day.webp` | Yes | Celebrations (`lib/supabase.ts`) | Active (Direct Code) |
-| `anniversary-collection.webp` | Collection Banner | `/public/images/collection images/anniversary-collection.webp` | Dynamic/DB | Supabase Collections (`collections` table) | Preserved (Supabase DB Reference) |
-| `birthday-specials.webp` | Collection Banner | `/public/images/collection images/birthday-specials.webp` | Dynamic/DB | Supabase Collections (`collections` table) | Preserved (Supabase DB Reference) |
-| `corporate-gifting.webp` | Collection Banner | `/public/images/collection images/corporate-gifting.webp` | Dynamic/DB | Supabase Collections (`collections` table) | Preserved (Supabase DB Reference) |
-| `luxury-bouquets.webp` | Collection Banner | `/public/images/collection images/luxury-bouquets.webp` | Dynamic/DB | Supabase Collections (`collections` table) | Preserved (Supabase DB Reference) |
-| `personalized-gifts.webp` | Collection Banner | `/public/images/collection images/personalized-gifts.webp` | Dynamic/DB | Supabase Collections (`collections` table) | Preserved (Supabase DB Reference) |
-| `roses-collection.webp` | Collection Banner | `/public/images/collection images/roses-collection.webp` | Dynamic/DB | Supabase Collections (`collections` table) | Preserved (Supabase DB Reference) |
 | `balloon-bouquet.png` | Collection Icon (PNG) | `/public/images/collections/balloon-bouquet.png` | Dynamic/DB | Collection Navigator (`app/shop/page.tsx`) | Preserved (DB/Runtime / Static) |
 | `baloon.png` | Collection Icon (PNG) | `/public/images/collections/baloon.png` | Yes | Collection Navigator (`app/shop/page.tsx`) | Active (Direct Code) |
 | `cake.png` | Collection Icon (PNG) | `/public/images/collections/cake.png` | Yes | Collection Navigator (`app/shop/page.tsx`) | Active (Direct Code) |
@@ -142,14 +119,6 @@
 | `Traditional Marigold Window Decoration.webp` | Decoration Service | `/public/images/decoration/Traditional Marigold Window Decoration.webp` | Dynamic/DB | Decoration booking catalog | Preserved (DB/Runtime / Static) |
 | `Traditional Yellow Floral Puja Decoration.webp` | Decoration Service | `/public/images/decoration/Traditional Yellow Floral Puja Decoration.webp` | Dynamic/DB | Decoration booking catalog | Preserved (DB/Runtime / Static) |
 | `White Floral Doorway Decoration.webp` | Decoration Service | `/public/images/decoration/White Floral Doorway Decoration.webp` | Dynamic/DB | Decoration booking catalog | Preserved (DB/Runtime / Static) |
-| `boyfriend.webp` | Relationship Banner | `/public/images/for every relationship/boyfriend.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `forher.webp` | Relationship Banner | `/public/images/for every relationship/forher.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `forhim.webp` | Relationship Banner | `/public/images/for every relationship/forhim.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `friends.webp` | Relationship Banner | `/public/images/for every relationship/friends.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `girlfriend.webp` | Relationship Banner | `/public/images/for every relationship/girlfriend.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `husband.webp` | Relationship Banner | `/public/images/for every relationship/husband.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `kids.webp` | Relationship Banner | `/public/images/for every relationship/kids.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
-| `wife.webp` | Relationship Banner | `/public/images/for every relationship/wife.webp` | Dynamic/DB | Supabase Relationships (`relationships` table) | Preserved (Supabase DB Reference) |
 | `garden-elegance.webp` | Curated Rose Graphic | `/public/images/handpicked/garden-elegance.webp` | Yes | Handpicked Section (`app/page.tsx`) | Active (Direct Code) |
 | `ivory-dream.webp` | Curated Rose Graphic | `/public/images/handpicked/ivory-dream.webp` | Yes | Handpicked Section (`app/page.tsx`) | Active (Direct Code) |
 | `pastel-blush.webp` | Curated Rose Graphic | `/public/images/handpicked/pastel-blush.webp` | Yes | Handpicked Section (`app/page.tsx`) | Active (Direct Code) |
@@ -162,18 +131,6 @@
 | `slide-1.webp` | Landing Hero Graphic | `/public/images/landing-page/slide-1.webp` | Yes | Landing Hero (`components/home/hero.tsx`) | Active (Direct Code) |
 | `slide-2.webp` | Landing Hero Graphic | `/public/images/landing-page/slide-2.webp` | Yes | Landing Hero (`components/home/hero.tsx`) | Active (Direct Code) |
 | `slide-3.webp` | Landing Hero Graphic | `/public/images/landing-page/slide-3.webp` | Yes | Landing Hero (`components/home/hero.tsx`) | Active (Direct Code) |
-| `Elegant Birthday Gifts That Delight.webp` | Promotional Card | `/public/images/new cards/Elegant Birthday Gifts That Delight.webp` | Dynamic/DB | Supabase Banners Table | Preserved (Supabase DB Reference) |
-| `Elegant Sage Wedding Gift Display.webp` | Promotional Card | `/public/images/new cards/Elegant Sage Wedding Gift Display.webp` | Dynamic/DB | Supabase Banners Table | Preserved (Supabase DB Reference) |
-| `Luxury Rose Collection.webp` | Promotional Card | `/public/images/new cards/Luxury Rose Collection.webp` | Dynamic/DB | Supabase Banners Table | Preserved (Supabase DB Reference) |
-| `Romantic Anniversary Gift Collection.webp` | Promotional Card | `/public/images/new cards/Romantic Anniversary Gift Collection.webp` | Dynamic/DB | Supabase Banners Table | Preserved (Supabase DB Reference) |
-| `carnition icon new.webp` | General Graphic | `/public/images/new icons/carnition icon new.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `garberas icon new.webp` | General Graphic | `/public/images/new icons/garberas icon new.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `lily icon new.webp` | General Graphic | `/public/images/new icons/lily icon new.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `luxe new icon.webp` | General Graphic | `/public/images/new icons/luxe new icon.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `luxe.webp` | General Graphic | `/public/images/new icons/luxe.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `orchid icon new.webp` | General Graphic | `/public/images/new icons/orchid icon new.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `rose icon new.webp` | General Graphic | `/public/images/new icons/rose icon new.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `sunflower icon new.webp` | General Graphic | `/public/images/new icons/sunflower icon new.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
 | `balloons-chocolates-flower-hamper.jpeg` | Product Staging Image | `/public/images/new-products/balloons-chocolates-flower-hamper.jpeg` | Dynamic/DB | Supabase Products Table | Preserved (Supabase DB Reference) |
 | `custom-printed-bottle-2.jpeg` | Product Staging Image | `/public/images/new-products/custom-printed-bottle-2.jpeg` | Dynamic/DB | Supabase Products Table | Preserved (Supabase DB Reference) |
 | `custom-printed-bottle.jpeg` | Product Staging Image | `/public/images/new-products/custom-printed-bottle.jpeg` | Dynamic/DB | Supabase Products Table | Preserved (Supabase DB Reference) |
@@ -230,28 +187,6 @@
 | `roses.webp` | Curated Pick Graphic | `/public/images/picks/flowers/roses.webp` | Yes | Homepage Picks Section | Active (Direct Code) |
 | `sunflowers.webp` | Curated Pick Graphic | `/public/images/picks/flowers/sunflowers.webp` | Yes | Homepage Picks Section | Active (Direct Code) |
 | `placeholder.webp` | General Graphic | `/public/images/placeholder.webp` | Yes | Public Asset | Active (Direct Code) |
-| `blush harmony roses.webp` | General Graphic | `/public/images/product images/blush harmony roses.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `champagne-bloom-delight.webp` | General Graphic | `/public/images/product images/champagne-bloom-delight.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `corporate-appreciation-box.webp` | General Graphic | `/public/images/product images/corporate-appreciation-box.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `crimson-elegance-bouquet.webp` | General Graphic | `/public/images/product images/crimson-elegance-bouquet.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `custom-name-rose-box.webp` | General Graphic | `/public/images/product images/custom-name-rose-box.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `divine navratri bloom box.webp` | General Graphic | `/public/images/product images/divine navratri bloom box.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `eid mubarak luxe hamper.webp` | General Graphic | `/public/images/product images/eid mubarak luxe hamper.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `emerald-luxe-arrangement.webp` | General Graphic | `/public/images/product images/emerald-luxe-arrangement.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `engraved-wooden-keepsake.webp` | General Graphic | `/public/images/product images/engraved-wooden-keepsake.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `executive-floral-hamper.webp` | General Graphic | `/public/images/product images/executive-floral-hamper.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `forever-together-bouquet.webp` | General Graphic | `/public/images/product images/forever-together-bouquet.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `gentlemans luxary f=gift set.webp` | General Graphic | `/public/images/product images/gentlemans luxary f=gift set.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `golden-anniversary-bloom.webp` | General Graphic | `/public/images/product images/golden-anniversary-bloom.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `heart-shape-rose-box.webp` | General Graphic | `/public/images/product images/heart-shape-rose-box.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `holi color splash bouquet.webp` | General Graphic | `/public/images/product images/holi color splash bouquet.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `ivory-serenity-bloom.webp` | General Graphic | `/public/images/product images/ivory-serenity-bloom.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `personalized-mug-and-roses.webp` | General Graphic | `/public/images/product images/personalized-mug-and-roses.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `photo-memory-gift-set.webp` | General Graphic | `/public/images/product images/photo-memory-gift-set.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `prestige-floral-ensemble.webp` | General Graphic | `/public/images/product images/prestige-floral-ensemble.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `royal-crimson-symphony.webp` | General Graphic | `/public/images/product images/royal-crimson-symphony.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `ruby-romance-collection.webp` | General Graphic | `/public/images/product images/ruby-romance-collection.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
-| `signature-business-bloom.webp` | General Graphic | `/public/images/product images/signature-business-bloom.webp` | Dynamic/DB | Public Asset | Preserved (DB/Runtime / Static) |
 | `2-sunflower-babys-breath-big-bouquet.jpeg` | Catalog Product Image | `/public/images/products/2-sunflower-babys-breath-big-bouquet.jpeg` | Yes | Catalog (`lib/products.ts`) | Active (Direct Code) |
 | `20-piece-rose-bouquet.jpeg` | Catalog Product Image | `/public/images/products/20-piece-rose-bouquet.jpeg` | Dynamic/DB | Catalog (`lib/products.ts`) | Preserved (DB/Runtime / Static) |
 | `20-roses-bouquet.jpeg` | Catalog Product Image | `/public/images/products/20-roses-bouquet.jpeg` | Dynamic/DB | Catalog (`lib/products.ts`) | Preserved (DB/Runtime / Static) |

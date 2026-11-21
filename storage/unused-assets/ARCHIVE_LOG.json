@@ -238,5 +238,403 @@
       "dst": "unused/root-loose-images/whatsappiconforen.png",
       "size": 9450
     }
-  ]
+  ],
+  "wave2": {
+    "timestamp": "2026-11-21T22:55:34.879Z",
+    "copied": 65,
+    "failed": 0,
+    "deleted": 65,
+    "log": [
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/anniversary.webp",
+        "dst": "duplicates/banners-hero-seasonal/anniversary.webp",
+        "size": 101892
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/birthday-cakes.webp",
+        "dst": "duplicates/banners-hero-seasonal/birthday-cakes.webp",
+        "size": 108926
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/durga-puja-banner-1.webp",
+        "dst": "duplicates/banners-hero-seasonal/durga-puja-banner-1.webp",
+        "size": 236020
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/durga-puja.webp",
+        "dst": "duplicates/banners-hero-seasonal/durga-puja.webp",
+        "size": 210330
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/ganesh-chaturthi-banner-1.webp",
+        "dst": "duplicates/banners-hero-seasonal/ganesh-chaturthi-banner-1.webp",
+        "size": 122084
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/ganesh-chaturthi.webp",
+        "dst": "duplicates/banners-hero-seasonal/ganesh-chaturthi.webp",
+        "size": 166876
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/housewarm-gifts.webp",
+        "dst": "duplicates/banners-hero-seasonal/housewarm-gifts.webp",
+        "size": 107982
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/janmastami.webp",
+        "dst": "duplicates/banners-hero-seasonal/janmastami.webp",
+        "size": 149562
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/plant-gifts.webp",
+        "dst": "duplicates/banners-hero-seasonal/plant-gifts.webp",
+        "size": 117796
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/teachers-day.webp",
+        "dst": "duplicates/banners-hero-seasonal/teachers-day.webp",
+        "size": 106494
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/viswakarma-puja-banner-1.webp",
+        "dst": "duplicates/banners-hero-seasonal/viswakarma-puja-banner-1.webp",
+        "size": 163048
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/viswakarma-puja.webp",
+        "dst": "duplicates/banners-hero-seasonal/viswakarma-puja.webp",
+        "size": 177444
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/banners/hero/wedding-gifts.webp",
+        "dst": "duplicates/banners-hero-seasonal/wedding-gifts.webp",
+        "size": 123264
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/birthday gifts that wow/cake icon.webp",
+        "dst": "unused/birthday-gifts-that-wow/cake icon.webp",
+        "size": 325292
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/birthday gifts that wow/chocolate bouquet.webp",
+        "dst": "unused/birthday-gifts-that-wow/chocolate bouquet.webp",
+        "size": 360456
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/birthday gifts that wow/flowers new icon.webp",
+        "dst": "unused/birthday-gifts-that-wow/flowers new icon.webp",
+        "size": 350586
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/birthday gifts that wow/personalised.webp",
+        "dst": "unused/birthday-gifts-that-wow/personalised.webp",
+        "size": 223980
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/collection images/anniversary-collection.webp",
+        "dst": "unused/collection-images/anniversary-collection.webp",
+        "size": 201966
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/collection images/birthday-specials.webp",
+        "dst": "unused/collection-images/birthday-specials.webp",
+        "size": 236068
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/collection images/corporate-gifting.webp",
+        "dst": "unused/collection-images/corporate-gifting.webp",
+        "size": 182834
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/collection images/luxury-bouquets.webp",
+        "dst": "unused/collection-images/luxury-bouquets.webp",
+        "size": 219552
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/collection images/personalized-gifts.webp",
+        "dst": "unused/collection-images/personalized-gifts.webp",
+        "size": 189648
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/collection images/roses-collection.webp",
+        "dst": "unused/collection-images/roses-collection.webp",
+        "size": 316862
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/boyfriend.webp",
+        "dst": "unused/for-every-relationship/boyfriend.webp",
+        "size": 157610
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/forher.webp",
+        "dst": "unused/for-every-relationship/forher.webp",
+        "size": 253976
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/forhim.webp",
+        "dst": "unused/for-every-relationship/forhim.webp",
+        "size": 333682
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/friends.webp",
+        "dst": "unused/for-every-relationship/friends.webp",
+        "size": 520240
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/girlfriend.webp",
+        "dst": "unused/for-every-relationship/girlfriend.webp",
+        "size": 274834
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/husband.webp",
+        "dst": "unused/for-every-relationship/husband.webp",
+        "size": 280016
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/kids.webp",
+        "dst": "unused/for-every-relationship/kids.webp",
+        "size": 93414
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/for every relationship/wife.webp",
+        "dst": "unused/for-every-relationship/wife.webp",
+        "size": 310040
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new cards/Elegant Birthday Gifts That Delight.webp",
+        "dst": "unused/new-cards/Elegant Birthday Gifts That Delight.webp",
+        "size": 221944
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new cards/Elegant Sage Wedding Gift Display.webp",
+        "dst": "unused/new-cards/Elegant Sage Wedding Gift Display.webp",
+        "size": 253532
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new cards/Luxury Rose Collection.webp",
+        "dst": "unused/new-cards/Luxury Rose Collection.webp",
+        "size": 153980
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new cards/Romantic Anniversary Gift Collection.webp",
+        "dst": "unused/new-cards/Romantic Anniversary Gift Collection.webp",
+        "size": 226362
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/carnition icon new.webp",
+        "dst": "unused/new-icons/carnition icon new.webp",
+        "size": 106206
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/garberas icon new.webp",
+        "dst": "unused/new-icons/garberas icon new.webp",
+        "size": 93530
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/lily icon new.webp",
+        "dst": "unused/new-icons/lily icon new.webp",
+        "size": 78114
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/luxe new icon.webp",
+        "dst": "unused/new-icons/luxe new icon.webp",
+        "size": 94758
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/luxe.webp",
+        "dst": "unused/new-icons/luxe.webp",
+        "size": 94758
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/orchid icon new.webp",
+        "dst": "unused/new-icons/orchid icon new.webp",
+        "size": 90538
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/rose icon new.webp",
+        "dst": "unused/new-icons/rose icon new.webp",
+        "size": 74414
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/new icons/sunflower icon new.webp",
+        "dst": "unused/new-icons/sunflower icon new.webp",
+        "size": 92326
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/blush harmony roses.webp",
+        "dst": "unused/product-images-old/blush harmony roses.webp",
+        "size": 113210
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/champagne-bloom-delight.webp",
+        "dst": "unused/product-images-old/champagne-bloom-delight.webp",
+        "size": 621314
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/corporate-appreciation-box.webp",
+        "dst": "unused/product-images-old/corporate-appreciation-box.webp",
+        "size": 475452
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/crimson-elegance-bouquet.webp",
+        "dst": "unused/product-images-old/crimson-elegance-bouquet.webp",
+        "size": 188480
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/custom-name-rose-box.webp",
+        "dst": "unused/product-images-old/custom-name-rose-box.webp",
+        "size": 223800
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/divine navratri bloom box.webp",
+        "dst": "unused/product-images-old/divine navratri bloom box.webp",
+        "size": 150210
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/eid mubarak luxe hamper.webp",
+        "dst": "unused/product-images-old/eid mubarak luxe hamper.webp",
+        "size": 229764
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/emerald-luxe-arrangement.webp",
+        "dst": "unused/product-images-old/emerald-luxe-arrangement.webp",
+        "size": 545038
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/engraved-wooden-keepsake.webp",
+        "dst": "unused/product-images-old/engraved-wooden-keepsake.webp",
+        "size": 306090
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/executive-floral-hamper.webp",
+        "dst": "unused/product-images-old/executive-floral-hamper.webp",
+        "size": 237656
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/forever-together-bouquet.webp",
+        "dst": "unused/product-images-old/forever-together-bouquet.webp",
+        "size": 225982
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/gentlemans luxary f=gift set.webp",
+        "dst": "unused/product-images-old/gentlemans luxary f=gift set.webp",
+        "size": 277190
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/golden-anniversary-bloom.webp",
+        "dst": "unused/product-images-old/golden-anniversary-bloom.webp",
+        "size": 377276
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/heart-shape-rose-box.webp",
+        "dst": "unused/product-images-old/heart-shape-rose-box.webp",
+        "size": 338766
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/holi color splash bouquet.webp",
+        "dst": "unused/product-images-old/holi color splash bouquet.webp",
+        "size": 251684
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/ivory-serenity-bloom.webp",
+        "dst": "unused/product-images-old/ivory-serenity-bloom.webp",
+        "size": 229544
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/personalized-mug-and-roses.webp",
+        "dst": "unused/product-images-old/personalized-mug-and-roses.webp",
+        "size": 150354
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/photo-memory-gift-set.webp",
+        "dst": "unused/product-images-old/photo-memory-gift-set.webp",
+        "size": 243292
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/prestige-floral-ensemble.webp",
+        "dst": "unused/product-images-old/prestige-floral-ensemble.webp",
+        "size": 250616
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/royal-crimson-symphony.webp",
+        "dst": "unused/product-images-old/royal-crimson-symphony.webp",
+        "size": 518278
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/ruby-romance-collection.webp",
+        "dst": "unused/product-images-old/ruby-romance-collection.webp",
+        "size": 273000
+      },
+      {
+        "status": "SUCCESS",
+        "src": "images/product images/signature-business-bloom.webp",
+        "dst": "unused/product-images-old/signature-business-bloom.webp",
+        "size": 429146
+      }
+    ]
+  }
 }

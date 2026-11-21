@@ -1,0 +1,2435 @@
+{
+  "timestamp": "2026-11-21T22:54:37.883Z",
+  "tables": {
+    "banners": [
+      {
+        "id": "f1a86017-f164-4e65-8bb1-c71aa1a259bf",
+        "title": "S",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/banners/banner-1776734635290-1776734644197.jpg",
+        "position": "hero",
+        "is_visible": true
+      }
+    ],
+    "collections": [
+      {
+        "id": "6bbbb379-d50b-4707-9360-d7617dbd84ce",
+        "name": "Chocolate Bouquet",
+        "slug": "chocolate-bouquet",
+        "image_url": "/images/collections/chocolate-bouquet.webp"
+      },
+      {
+        "id": "dd72e2eb-c452-4cc6-9df2-a6b4b364aefd",
+        "name": "Teddy and Bouquet",
+        "slug": "teddy-and-bouquet",
+        "image_url": "/images/collections/teddy-and-bouquet.webp"
+      },
+      {
+        "id": "32680906-9bab-4b75-ba23-2c6212ada849",
+        "name": "Personalized",
+        "slug": "personalized",
+        "image_url": "/images/collections/personalized.webp"
+      },
+      {
+        "id": "5b6108f4-88d5-41ce-98f6-bdea62c7a502",
+        "name": "Hamper",
+        "slug": "hamper",
+        "image_url": "/images/collections/hamper.webp"
+      },
+      {
+        "id": "7ff4c96c-9ddf-483c-a700-3c60a18c1288",
+        "name": "Plants",
+        "slug": "plants",
+        "image_url": "/images/collections/plants.webp"
+      },
+      {
+        "id": "418bb49a-9211-40da-8a39-c4415066aa95",
+        "name": "Cake",
+        "slug": "cake",
+        "image_url": "/images/collections/cake.webp"
+      },
+      {
+        "id": "d17f5514-9259-4813-9fd3-4399f09eef9f",
+        "name": "Balloon Bouquet",
+        "slug": "balloon-bouquet",
+        "image_url": "/images/collections/balloon-bouquet.webp"
+      },
+      {
+        "id": "5025028b-8beb-4484-aea1-26b95109c747",
+        "name": "Fresh Flower",
+        "slug": "fresh-flower",
+        "image_url": "/images/collections/fresh-flower.webp"
+      }
+    ],
+    "celebrations": [
+      {
+        "id": "5461581c-5878-4a76-b207-fadc84ebfe98",
+        "name": "Navratri",
+        "date_label": "19TH - 27TH MAR",
+        "image_url": "/images/celebrations/navratri.webp"
+      },
+      {
+        "id": "54b91df5-97c7-4b3f-a609-d40b0ccdc482",
+        "name": "Husband Appreciation Day",
+        "date_label": "18TH APR",
+        "image_url": "/images/celebrations/husband-appreciation.webp"
+      },
+      {
+        "id": "4a2b6105-935b-4481-a0e2-8e8a36b09069",
+        "name": "Holi",
+        "date_label": "4TH MAR",
+        "image_url": "/images/celebrations/holi.webp"
+      },
+      {
+        "id": "84a84a20-e50e-40cc-a11f-6d60f5ce3889",
+        "name": "Women's Day",
+        "date_label": "8TH MAR",
+        "image_url": "/images/celebrations/womens-day.webp"
+      },
+      {
+        "id": "d2b094d8-c5f7-4366-a7bc-e59115d7a071",
+        "name": "Eid Ul Fitr",
+        "date_label": "19TH-20TH MAR",
+        "image_url": "/images/celebrations/eid.webp"
+      }
+    ],
+    "relationships": [
+      {
+        "id": "c3eceb83-87a9-4fe1-8a52-2e65109fa92f",
+        "name": "Him",
+        "slug": "him",
+        "image_url": "/images/relationships/forhim.webp"
+      },
+      {
+        "id": "585fd164-b1c6-4935-abe5-76993fa8698f",
+        "name": "Her",
+        "slug": "her",
+        "image_url": "/images/relationships/forher.webp"
+      },
+      {
+        "id": "b81a085d-81b4-4d90-8edf-532e84ca8024",
+        "name": "Kids",
+        "slug": "kids",
+        "image_url": "/images/relationships/kids.webp"
+      },
+      {
+        "id": "0063fef1-605e-46bf-9d1c-6ea3d13cfa74",
+        "name": "Friend",
+        "slug": "friend",
+        "image_url": "/images/relationships/friends.webp"
+      },
+      {
+        "id": "cbd712cd-5173-4218-9748-217a602a0e51",
+        "name": "Girlfriend",
+        "slug": "girlfriend",
+        "image_url": "/images/relationships/girlfriend.webp"
+      },
+      {
+        "id": "91dccf05-ef5e-44d6-be1a-32a92c0475b6",
+        "name": "Boyfriend",
+        "slug": "boyfriend",
+        "image_url": "/images/relationships/boyfriend.webp"
+      },
+      {
+        "id": "e8925d49-b04b-4549-9a5c-3e83bdc473fd",
+        "name": "Wife",
+        "slug": "wife",
+        "image_url": "/images/relationships/wife.webp"
+      },
+      {
+        "id": "4ba2bd30-348b-4a8c-89c5-a6a444291a74",
+        "name": "Husband",
+        "slug": "husband",
+        "image_url": "/images/relationships/husband.webp"
+      }
+    ],
+    "featured_items": [
+      {
+        "id": "7b4da7da-50ec-4662-85ea-4b7e8764fb01",
+        "label": "Red Romance",
+        "image_url": "/images/handpicked/red-romance.webp",
+        "section": "handpicked"
+      },
+      {
+        "id": "d08f0489-e25b-4046-bb81-e763eb5dadc1",
+        "label": "Pastel Blush",
+        "image_url": "/images/handpicked/pastel-blush.webp",
+        "section": "handpicked"
+      },
+      {
+        "id": "9dfc564f-e8cf-4408-a697-abe7e60d896f",
+        "label": "Garden Elegance",
+        "image_url": "/images/handpicked/garden-elegance.webp",
+        "section": "handpicked"
+      },
+      {
+        "id": "5afd76ca-896a-459a-92ca-17dc37a7d561",
+        "label": "Ivory Dream",
+        "image_url": "/images/handpicked/ivory-dream.webp",
+        "section": "handpicked"
+      }
+    ],
+    "products": [
+      {
+        "id": "6890bd6c-c999-4dd2-bede-c057c5e25ee5",
+        "name": "Pastel Celebration Flower Bouquet",
+        "slug": "pastel-celebration-flower-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333401748.webp"
+      },
+      {
+        "id": "0725043a-6e18-44d1-a51a-ec2dadc24ded",
+        "name": "Pink Lily Bouquet with Newspaper Wrap",
+        "slug": "pink-lily-bouquet-with-newspaper-wrap",
+        "image_url": "/images/products/Pink Lily Bouquet with Newspaper Wrap.webp"
+      },
+      {
+        "id": "177b3cee-89df-4c7d-9e60-a99c2ddd94cb",
+        "name": "Pink & Yellow Rose Bouquet",
+        "slug": "pink-yellow-rose-bouquet",
+        "image_url": "/images/products/Pink and Yellow Rose Bouquet.webp"
+      },
+      {
+        "id": "07155164-1e3a-4889-bd74-e178c67e1abe",
+        "name": "Peach Roses in Premium Black Wrap",
+        "slug": "peach-roses-in-premium-black-wrap",
+        "image_url": "/images/products/Peach Roses in Black Wrap.webp"
+      },
+      {
+        "id": "f6c9e7ae-ba13-4ede-95ab-2bee17d052b3",
+        "name": "Luxurious Red Rose Bouquet with Baby's Breath",
+        "slug": "luxurious-red-rose-bouquet-with-baby-s-breath",
+        "image_url": "/images/products/Luxurious Red Rose Bouquet with Baby’s Breath.webp"
+      },
+      {
+        "id": "19632c5f-6fe1-4e0b-afbf-dd8499e3863e",
+        "name": "Elegant Red & Pink Rose Bouquet",
+        "slug": "elegant-red-pink-rose-bouquet",
+        "image_url": "/images/products/Elegant Red and Pink Rose Bouquet.webp"
+      },
+      {
+        "id": "755e3146-cc12-4031-ae91-7c2147300624",
+        "name": "Pink Peony Bouquet with Lavender Ribbon",
+        "slug": "pink-peony-bouquet-with-lavender-ribbon",
+        "image_url": "/images/products/Pink Peony Bouquet with Lavender Ribbon.webp"
+      },
+      {
+        "id": "4541c110-1871-4c7f-993e-13b6e389555f",
+        "name": "Crimson Rose Garland with Pearl Loop",
+        "slug": "crimson-rose-garland-with-pearl-loop",
+        "image_url": "/images/products/Crimson Rose Garland with Pearl Loop.webp"
+      },
+      {
+        "id": "30247dbe-a488-413f-b09a-f716fafc49ac",
+        "name": "Pink Lily Deluxe Bouquet",
+        "slug": "pink-lily-deluxe-bouquet",
+        "image_url": "/images/products/Pink Lily Bouquet in Soft Sunlight.webp"
+      },
+      {
+        "id": "eb1237ec-0744-4dc9-ab86-78a1d6867435",
+        "name": "Pastel Rose Bouquet with Baby's Breath",
+        "slug": "pastel-rose-bouquet-with-baby-s-breath",
+        "image_url": "/images/products/Pastel Rose Bouquet with Baby’s Breath.webp"
+      },
+      {
+        "id": "353be5af-1e11-41dd-a63e-ca83ccde2c54",
+        "name": "Elegant White Flower Bouquet",
+        "slug": "elegant-white-flower-bouquet",
+        "image_url": "/images/products/Elegant White Flower Bouquet on Pedestal.webp"
+      },
+      {
+        "id": "6c259c38-eecb-4fd6-8c4c-d473005807c8",
+        "name": "Blush Harmony Roses",
+        "slug": "blush-harmony-roses",
+        "image_url": "/images/products/blush-harmony-roses.webp"
+      },
+      {
+        "id": "ecca3066-04a8-4efa-bfc3-443975ec074a",
+        "name": "Custom Name Rose Box",
+        "slug": "custom-name-rose-box",
+        "image_url": "/images/products/custom-name-rose-box.webp"
+      },
+      {
+        "id": "558d8cfe-9581-4b0b-9131-b3c2cf831b07",
+        "name": "Crimson Elegance Bouquet",
+        "slug": "crimson-elegance-bouquet",
+        "image_url": "/images/products/crimson-elegance-bouquet.webp"
+      },
+      {
+        "id": "01c8c89d-8b0a-454a-8a5f-f4c1d3e204a8",
+        "name": "Prestige Floral Ensemble",
+        "slug": "prestige-floral-ensemble",
+        "image_url": "/images/products/prestige-floral-ensemble.webp"
+      },
+      {
+        "id": "45e60be5-de44-4299-a17a-f7216225a6da",
+        "name": "Ivory Serenity Bloom",
+        "slug": "ivory-serenity-bloom",
+        "image_url": "/images/products/ivory-serenity-bloom.webp"
+      },
+      {
+        "id": "7d81c492-4b23-4981-a51a-20f4243116eb",
+        "name": "Royal Crimson Symphony",
+        "slug": "royal-crimson-symphony",
+        "image_url": "/images/products/royal-crimson-symphony.webp"
+      },
+      {
+        "id": "2d733bc3-3879-44a3-be51-10db07938ced",
+        "name": "Champagne Bloom Delight",
+        "slug": "champagne-bloom-delight",
+        "image_url": "/images/products/champagne-bloom-delight.webp"
+      },
+      {
+        "id": "e96b186d-6508-4c32-bce2-98ebd26eb190",
+        "name": "Emerald Luxe Arrangement",
+        "slug": "emerald-luxe-arrangement",
+        "image_url": "/images/products/emerald-luxe-arrangement.webp"
+      },
+      {
+        "id": "9e7d60fa-2f7d-48c0-b6ea-96863a0d1e5b",
+        "name": "Blush & Ivory Rose Bouquet",
+        "slug": "blush-ivory-rose-bouquet",
+        "image_url": "/images/products/blush-ivory-rose-bouquet.webp"
+      },
+      {
+        "id": "de367849-a61c-44f2-8f95-344a501933b8",
+        "name": "Blue Balloon Floral Celebration Bouquet",
+        "slug": "blue-balloon-floral-celebration-bouquet",
+        "image_url": "/images/products/blue-balloon-floral-celebration-bouquet.webp"
+      },
+      {
+        "id": "d47e87f5-c499-4163-ad25-25384b1d39f7",
+        "name": "Blue Garden Lily Bouquet",
+        "slug": "blue-garden-lily-bouquet",
+        "image_url": "/images/products/blue-garden-lily-bouquet.webp"
+      },
+      {
+        "id": "a9f0dc27-2a7f-4303-85f4-314eb6e96980",
+        "name": "Blush & Ivory Celebration Bouquet",
+        "slug": "blush-ivory-celebration-bouquet",
+        "image_url": "/images/products/blush-ivory-celebration-bouquet.webp"
+      },
+      {
+        "id": "7a871cd4-c43e-4977-993e-80c95647cf44",
+        "name": "Black Velvet Rose Bouquet",
+        "slug": "black-velvet-rose-bouquet",
+        "image_url": "/images/products/black-velvet-rose-bouquet.webp"
+      },
+      {
+        "id": "bd198f0a-e540-41b0-aeda-64daf7e73054",
+        "name": "Heart Shape Rose Box",
+        "slug": "heart-shape-rose-box",
+        "image_url": "/images/products/heart-shape-rose-box.webp"
+      },
+      {
+        "id": "0832e03d-cc50-4620-b429-551e93e39466",
+        "name": "Engraved Wooden Keepsake",
+        "slug": "engraved-wooden-keepsake",
+        "image_url": "/images/products/engraved-wooden-keepsake.webp"
+      },
+      {
+        "id": "9114bd4e-88c9-47cc-ad87-82b2fbf8092a",
+        "name": "Forever Together Bouquet",
+        "slug": "forever-together-bouquet",
+        "image_url": "/images/products/forever-together-bouquet.webp"
+      },
+      {
+        "id": "f9d540e5-2286-4506-a3df-30b835102f88",
+        "name": "Ruby Romance Collection",
+        "slug": "ruby-romance-collection",
+        "image_url": "/images/products/ruby-romance-collection.webp"
+      },
+      {
+        "id": "3b35b3d8-b165-45ad-ae75-a1783c162760",
+        "name": "Gentleman's Luxury Gift Set",
+        "slug": "gentlemans-luxury-gift-set",
+        "image_url": "/images/products/gentlemans-luxury-gift-set.webp"
+      },
+      {
+        "id": "da457407-4d47-4cfb-aee8-960350f9df2b",
+        "name": "Blush Lily & Wildflower Bouquet",
+        "slug": "blush-lily-wildflower-bouquet",
+        "image_url": "/images/products/blush-lily-wildflower-bouquet.webp"
+      },
+      {
+        "id": "73ff4134-3d01-43a7-b6bf-5ed98987a104",
+        "name": "Lily",
+        "slug": "lily",
+        "image_url": "/images/products/lily.webp"
+      },
+      {
+        "id": "64f9f18b-aefe-4640-b7a6-808126b4b9e3",
+        "name": "Signature Business Bloom",
+        "slug": "signature-business-bloom",
+        "image_url": "/images/products/signature-business-bloom.webp"
+      },
+      {
+        "id": "fed38f68-81e7-419b-b4bc-193117724e7d",
+        "name": "Daisy",
+        "slug": "daisy",
+        "image_url": "/images/products/daisy.webp"
+      },
+      {
+        "id": "2905855b-cef2-443b-a187-73779eb74839",
+        "name": "Crimson Rose Luxe Bouquet",
+        "slug": "crimson-rose-luxe-bouquet",
+        "image_url": "/images/products/crimson-rose-luxe-bouquet.webp"
+      },
+      {
+        "id": "ab7eeb98-26f7-4750-8d71-58869895b4f4",
+        "name": "Photo Memory Gift Set",
+        "slug": "photo-memory-gift-set",
+        "image_url": "/images/products/photo-memory-gift-set.webp"
+      },
+      {
+        "id": "6dce57fa-6e18-4b77-9078-77f8609e99e4",
+        "name": "Carnation",
+        "slug": "carnation",
+        "image_url": "/images/products/carnation.webp"
+      },
+      {
+        "id": "2d63eec7-fa78-4ec2-9283-5bebcdda731c",
+        "name": "Personalized Mug & Roses",
+        "slug": "personalized-mug-and-roses",
+        "image_url": "/images/products/personalized-mug-and-roses.webp"
+      },
+      {
+        "id": "6aaf53d2-fca5-46f4-a68e-d71d19b0068f",
+        "name": "Golden Anniversary Bloom",
+        "slug": "golden-anniversary-bloom",
+        "image_url": "/images/products/golden-anniversary-bloom.webp"
+      },
+      {
+        "id": "04591554-0a05-42e9-b996-bce0f6db7ca3",
+        "name": "Holi Color Splash Bouquet",
+        "slug": "holi-color-splash-bouquet",
+        "image_url": "/images/products/holi-color-splash-bouquet.webp"
+      },
+      {
+        "id": "367a23cd-5b31-4a9f-84d0-de00d521b34e",
+        "name": "Divine Navratri Bloom Box",
+        "slug": "divine-navratri-bloom-box",
+        "image_url": "/images/products/divine-navratri-bloom-box.webp"
+      },
+      {
+        "id": "3e7f28af-b7ba-49d6-8db2-b5503e718c36",
+        "name": "Chips & Chocolate Hamper",
+        "slug": "chips-chocolate-hamper",
+        "image_url": "/images/products/chips-chocolate-hamper-1.jpg"
+      },
+      {
+        "id": "cbb2411f-905d-408e-a111-de83dcd2108e",
+        "name": "Big Mix Hamper",
+        "slug": "big-mix-hamper",
+        "image_url": "/images/products/big-mix-hamper-1.jpg"
+      },
+      {
+        "id": "b01fab6e-35b3-4e1b-b42e-ba4922b1491e",
+        "name": "Printed Coffee Mug Bundle",
+        "slug": "printed-coffee-mug-bundle",
+        "image_url": "/images/products/printed-coffee-mug-bundle-1.jpg"
+      },
+      {
+        "id": "ff8b2be6-23be-4758-9556-afe3728ded79",
+        "name": "Lucky Bamboo",
+        "slug": "lucky-bamboo",
+        "image_url": "/images/products/lucky-bamboo-1.webp"
+      },
+      {
+        "id": "4c3171c9-ba53-4b88-ae43-20d2602a373a",
+        "name": "Celebrations Gift Box",
+        "slug": "celebrations-gift-box",
+        "image_url": "/images/products/celebrations-gift-box-1.jpg"
+      },
+      {
+        "id": "65070634-7b6e-4011-8a08-26fa19ed0d5d",
+        "name": "Jade Plant",
+        "slug": "jade-plant",
+        "image_url": "/images/products/jade-plant-1.webp"
+      },
+      {
+        "id": "17f3536f-8436-4fb8-9701-91f11bd820d4",
+        "name": "ZZ Plant",
+        "slug": "zz-plant",
+        "image_url": "/images/products/zz-plant-1.webp"
+      },
+      {
+        "id": "2821acc8-8241-47a4-86a8-658984ce3a42",
+        "name": "Golden Yellow Rose Bouquet",
+        "slug": "golden-yellow-rose-bouquet",
+        "image_url": "/images/products/golden-yellow-rose-bouquet.webp"
+      },
+      {
+        "id": "d9625e54-4454-4db8-9a2f-1b0bb24e3c83",
+        "name": "Golden Meadow Mixed Flower Bouquet",
+        "slug": "golden-meadow-mixed-flower-bouquet",
+        "image_url": "/images/products/golden-meadow-mixed-flower-bouquet.webp"
+      },
+      {
+        "id": "2f6fc90e-c03c-498d-a2ec-5a2f2003cf5f",
+        "name": "Premium Chocolate Gift Set",
+        "slug": "premium-chocolate-gift-set",
+        "image_url": "/images/products/premium-chocolate-gift-set-1.jpg"
+      },
+      {
+        "id": "a2005b85-f3aa-499b-b857-b9171d9b5bb3",
+        "name": "Scented Candle Gift",
+        "slug": "scented-candle-gift",
+        "image_url": "/images/products/scented-candle-gift-1.jpg"
+      },
+      {
+        "id": "6f9d0aca-6593-4fb9-a92a-e588d651b813",
+        "name": "Gerbera",
+        "slug": "gerbera",
+        "image_url": "/images/products/gerbera.webp"
+      },
+      {
+        "id": "ae2908ff-c374-4148-89cd-7dac78bd96ca",
+        "name": "Ferrero Rocher Bouquet",
+        "slug": "ferrero-rocher-bouquet",
+        "image_url": "/images/products/ferrero-rocher-bouquet-1.jpg"
+      },
+      {
+        "id": "d45b83cc-82ac-4d05-91aa-1005847cefe8",
+        "name": "Pink Chocolate Celebration Bouquet",
+        "slug": "pink-chocolate-celebration-bouquet",
+        "image_url": "/images/products/pink-chocolate-celebration-bouquet.webp"
+      },
+      {
+        "id": "44756cf0-a313-48a0-a71c-fb80e87fb5bf",
+        "name": "White Lily Elegance Bouquet",
+        "slug": "white-lily-elegance-bouquet",
+        "image_url": "/images/products/white-lily-elegance-bouquet-1.jpg"
+      },
+      {
+        "id": "89e2ab0e-e8a9-4376-89f6-d3537520cd8a",
+        "name": "Kinder Joy Surprise Bouquet",
+        "slug": "kinder-joy-surprise-bouquet",
+        "image_url": "/images/products/kinder-joy-surprise-bouquet-1.jpg"
+      },
+      {
+        "id": "4a68089b-93db-4ae5-9c67-76edb01b5bac",
+        "name": "Sunshine Yellow Rose Bouquet",
+        "slug": "sunshine-yellow-rose-bouquet",
+        "image_url": "/images/products/sunshine-yellow-rose-bouquet-1.jpg"
+      },
+      {
+        "id": "0dc7bda6-6a41-4be9-9edd-b16853b0a277",
+        "name": "Classic Gift Hamper Set",
+        "slug": "classic-gift-hamper-set",
+        "image_url": "/images/products/classic-gift-hamper-set-1.jpg"
+      },
+      {
+        "id": "a30f2c93-366f-4d72-b787-4c45f307ac27",
+        "name": "Mix Chocolate Bouquet",
+        "slug": "mix-chocolate-bouquet",
+        "image_url": "/images/products/mix-chocolate-bouquet-1.jpg"
+      },
+      {
+        "id": "b6383eea-1008-4b70-ab8d-67011fb50a90",
+        "name": "Happy Birthday Rose Bouquet",
+        "slug": "happy-birthday-rose-bouquet",
+        "image_url": "/images/products/happy-birthday-rose-bouquet-1.jpg"
+      },
+      {
+        "id": "9fa714ee-9732-4da2-97b5-b4aa60e2a947",
+        "name": "Pink Lily Blossom Bouquet",
+        "slug": "pink-lily-blossom-bouquet",
+        "image_url": "/images/products/pink-lily-blossom-bouquet.webp"
+      },
+      {
+        "id": "3d9e142f-0670-449c-85be-571d804863e3",
+        "name": "Friends Forever Rose Bouquet",
+        "slug": "friends-forever-rose-bouquet",
+        "image_url": "/images/products/friends-forever-rose-bouquet-1.jpg"
+      },
+      {
+        "id": "daeeb7d0-fc74-4cf8-8c43-7a5e820c2b1d",
+        "name": "Orchids",
+        "slug": "orchids",
+        "image_url": "/images/products/orchids-1771889205392.webp"
+      },
+      {
+        "id": "8c8061c6-3967-406d-8cfa-32c1adb6f6bd",
+        "name": "Pink Balloon Sweet Celebration Bouquet",
+        "slug": "pink-balloon-sweet-celebration-bouquet",
+        "image_url": "/images/products/pink-balloon-sweet-celebration-bouquet.webp"
+      },
+      {
+        "id": "32a8bde3-8f82-4ff0-ad2e-e47dc00f03ab",
+        "name": "Pink Rose Garden Bouquet",
+        "slug": "pink-rose-garden-bouquet",
+        "image_url": "/images/products/pink-rose-garden-bouquet.webp"
+      },
+      {
+        "id": "33895298-a748-40f5-af24-c130aa24855e",
+        "name": "Pink Lily Garden Bouquet",
+        "slug": "pink-lily-garden-bouquet",
+        "image_url": "/images/products/pink-lily-garden-bouquet.webp"
+      },
+      {
+        "id": "78509fe0-08b2-4990-9ab0-a1279f7d864e",
+        "name": "Butterscotch Cake",
+        "slug": "butterscotch-cake",
+        "image_url": "/images/products/cakes/butterscotch-cake.webp"
+      },
+      {
+        "id": "f9b4633d-9961-42fa-91b7-2361019733de",
+        "name": "Vanilla Cake",
+        "slug": "vanila-cake",
+        "image_url": "/images/products/cakes/vanila-cake.webp"
+      },
+      {
+        "id": "2e5d3254-24b7-46c4-8a62-1f5d9975fb4e",
+        "name": "Orchid Dream Bouquet",
+        "slug": "orchid-dream-bouquet",
+        "image_url": "/images/products/orchid-dream-bouquet-1.jpg"
+      },
+      {
+        "id": "bb10b0d8-0260-45ba-9b6c-2497bcd2cab2",
+        "name": "Mix Flowers",
+        "slug": "mix-flowers",
+        "image_url": "/images/products/mix-flowers.webp"
+      },
+      {
+        "id": "a54826db-4a42-4d31-b0a2-2e15477092f9",
+        "name": "Strawberry Cake",
+        "slug": "strawberry-cake",
+        "image_url": "/images/products/cakes/strawberry-cake.webp"
+      },
+      {
+        "id": "3f252721-3901-416c-bc6d-9da051f0eef8",
+        "name": "Classic Red Rose",
+        "slug": "classic-red-rose",
+        "image_url": "/images/products/classic-red-rose-mix-1.jpg"
+      },
+      {
+        "id": "a3891fcb-b250-4b86-8431-11968364f756",
+        "name": "Chocolate Cake",
+        "slug": "chocolate-cake",
+        "image_url": "/images/products/cakes/chocolate-cake.webp"
+      },
+      {
+        "id": "b0a3a199-9c5d-430d-a9ef-3899ab253914",
+        "name": "Pink Rose Celebration Gift Hamper",
+        "slug": "pink-rose-celebration-gift-hamper",
+        "image_url": "/images/products/pink-rose-celebration-gift-hamper.webp"
+      },
+      {
+        "id": "190119db-3d4a-40ee-ad9d-6a3718c10237",
+        "name": "Corporate Appreciation Box",
+        "slug": "corporate-appreciation-box",
+        "image_url": "/images/products/corporate-appreciation-box.webp"
+      },
+      {
+        "id": "9ce8f020-502e-48ba-b272-4e890541e9a9",
+        "name": "Eid Mubarak Luxe Hamper",
+        "slug": "eid-mubarak-luxe-hamper",
+        "image_url": "/images/products/eid-mubarak-luxe-hamper.webp"
+      },
+      {
+        "id": "7d431e0b-91da-4eab-93eb-96826289a28e",
+        "name": "Dairy Milk Bouquet",
+        "slug": "dairy-milk-bouquet",
+        "image_url": "/images/products/dairy-milk-silk-bouquet-1.jpg"
+      },
+      {
+        "id": "7be5ffc8-a4f5-4aef-9247-304612e8be18",
+        "name": "Peacock Style Designer Floral Arrangement",
+        "slug": "peacock-style-designer-floral-arrangement",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333055930.webp"
+      },
+      {
+        "id": "47133ea5-ae5b-47f1-b116-c41961ee52ce",
+        "name": "Executive Floral Hamper",
+        "slug": "executive-floral-hamper",
+        "image_url": "/images/products/executive-floral-hamper.webp"
+      },
+      {
+        "id": "81365ee8-ac93-4812-90ce-4de4fe73207a",
+        "name": "Roses",
+        "slug": "roses-new",
+        "image_url": "/images/products/roses.webp"
+      },
+      {
+        "id": "a3674299-3abf-48bd-9e2d-a85e85e1bfb3",
+        "name": "Premium Pink Lily Celebration Basket",
+        "slug": "premium-pink-lily-celebration-basket",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333287629.webp"
+      },
+      {
+        "id": "81376b33-f957-4124-9aff-2779532ff0bc",
+        "name": "Traditional Red Rose Hanging Garland Set",
+        "slug": "traditional-red-rose-hanging-garland-set",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333357131.webp"
+      },
+      {
+        "id": "e8e713a8-ff94-4b96-b52c-d61719aadcf4",
+        "name": "Yellow Rose Alphabet Floral Arrangement",
+        "slug": "yellow-rose-alphabet-floral-arrangement",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332874795.webp"
+      },
+      {
+        "id": "6234459b-55e2-4dbf-b1ac-3dafc3c09119",
+        "name": "Royal Orange Lily Glass Vase Arrangement",
+        "slug": "royal-orange-lily-glass-vase-arrangement",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332991106.webp"
+      },
+      {
+        "id": "c84b049a-a01f-498f-ab5b-699a1fe1c68e",
+        "name": "Wedding Rose Garland Pair",
+        "slug": "wedding-rose-garland-pair",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333023769.webp"
+      },
+      {
+        "id": "f63f540b-2868-44a0-9c18-93d32f573892",
+        "name": "Luxury Mixed Flower Hand Bouquet",
+        "slug": "luxury-mixed-flower-hand-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332818503.webp"
+      },
+      {
+        "id": "131e0b09-4f48-48ad-a7e0-435a8a7631e3",
+        "name": "pink rose garland set",
+        "slug": "pink-rose-garland-set",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176257636.jpeg"
+      },
+      {
+        "id": "d9483076-6bb0-46e0-807a-a6cc98b117d0",
+        "name": "Sunflower",
+        "slug": "sunflower",
+        "image_url": "/images/products/sunflower.webp"
+      },
+      {
+        "id": "f24b5922-2db9-42d2-b990-bbafd7a82fc1",
+        "name": "photo frame",
+        "slug": "photo-frame",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/photo-frame-1774042962802.jpeg"
+      },
+      {
+        "id": "b0b1e8ee-7613-40d5-9ae0-83d61425b91c",
+        "name": "Car decoration",
+        "slug": "car-decoration",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043071792.jpeg"
+      },
+      {
+        "id": "8b47695a-a322-4de6-b024-d093d23b0623",
+        "name": "Dear Papa Hamper",
+        "slug": "dear-papa-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043143655.jpeg"
+      },
+      {
+        "id": "969b0022-576c-4777-9fa6-ca441f2376bc",
+        "name": "Flower Hamper",
+        "slug": "flower-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043184289.jpeg"
+      },
+      {
+        "id": "2d8d8015-d25a-46de-8792-d5bf8ebb44b0",
+        "name": "Mix Birthday Hamper",
+        "slug": "mix-birthday-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/mix-birthday-hamper-1774043225981.jpeg"
+      },
+      {
+        "id": "c9bb6241-bc19-4017-adfd-7905be9e964b",
+        "name": "pink and white rose garland set",
+        "slug": "pink-and-white-rose-garland-set",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176192124.jpeg"
+      },
+      {
+        "id": "a9fd82bd-4ea6-46bf-ab01-ae28417457d1",
+        "name": "red rose bouquet",
+        "slug": "red-rose-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176216120.jpeg"
+      },
+      {
+        "id": "c0e325ef-59d0-4ebf-8464-a511bea1cedb",
+        "name": "Happy Birthday Hamper",
+        "slug": "happy-birthday-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043330073.jpeg"
+      },
+      {
+        "id": "f444cc1f-cf40-4818-96f3-9dd145edc729",
+        "name": "happy birthday hamper",
+        "slug": "happy-birthday-hamper-2",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/happy-birthday-hamper-1774043382328.jpeg"
+      },
+      {
+        "id": "29fd4e4d-045f-4a55-be5c-297751a3f1da",
+        "name": "flower decoration",
+        "slug": "flower-decoration",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/flower-decoration-1774043493416.jpeg"
+      },
+      {
+        "id": "704800db-bc34-40ad-b429-d226ba4f63e9",
+        "name": "flower hamper",
+        "slug": "flower-hamper-2",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/flower-hamper-1774043531530.jpeg"
+      },
+      {
+        "id": "f3d6481e-aeba-4a68-826c-8ec234057586",
+        "name": "flower hamper",
+        "slug": "flower-hamper-3",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/flower-hamper-1774043587461.jpeg"
+      },
+      {
+        "id": "aeefc61c-4c10-41a9-a3d6-4b3cf2137e58",
+        "name": "lily and daisy bouquet",
+        "slug": "lily-and-daisy-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176233067.jpeg"
+      },
+      {
+        "id": "82cf7a98-32fd-42a8-bfb9-714950ebe71d",
+        "name": "sunflower bouquet",
+        "slug": "sunflower-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/sunflower-bouquet-1774043266783.jpeg"
+      },
+      {
+        "id": "de6b0f67-c896-43cd-92e2-422db6830d39",
+        "name": "birthday hamper",
+        "slug": "birthday-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/birthday-hamper-1774043415933.jpeg"
+      },
+      {
+        "id": "b6eb3018-dbb7-420c-aa01-dfd94b1fe7d6",
+        "name": "mix flower bouquet",
+        "slug": "mix-flower-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043300201.jpeg"
+      },
+      {
+        "id": "d702c9b8-9936-4045-a65f-00d2f60ad875",
+        "name": "Happy birthday gift hamper",
+        "slug": "happy-birthday-gift-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176532919.jpeg"
+      },
+      {
+        "id": "0a939928-2dbc-4c82-93a9-3cd70da5b1a1",
+        "name": "20 Roses Bouquet",
+        "slug": "20-roses-bouquet",
+        "image_url": "/images/products/20-roses-bouquet.jpeg"
+      },
+      {
+        "id": "fa5d01a3-6972-409d-99ff-f4311b1ce3fc",
+        "name": "Custom Print water bottle",
+        "slug": "custom-print-water-bottle",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176293698.jpeg"
+      },
+      {
+        "id": "f71871a1-2541-4800-8830-d408a374ea73",
+        "name": "Pink lily and rose flower bouquet",
+        "slug": "pink-lily-and-rose-flower-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176458424.jpeg"
+      },
+      {
+        "id": "fcb363e1-ee3d-4b95-b55c-c4eaddce4de8",
+        "name": "20 Rupee note bouquet",
+        "slug": "20-rupee-note-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176383202.jpeg"
+      },
+      {
+        "id": "6de06a3e-5c32-4aff-830c-b09e0ee8a73c",
+        "name": "100 rupee note bouquet",
+        "slug": "100-rupee-note-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176417471.jpeg"
+      },
+      {
+        "id": "9a5c42fe-c52c-4291-ae2d-f1af7de79eff",
+        "name": "Happy birthday baloon bouquet",
+        "slug": "happy-birthday-baloon-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176514400.jpeg"
+      },
+      {
+        "id": "139eb016-309a-4a2e-9d0f-b0250cd28e52",
+        "name": "Happy Birthday mix rose hamper",
+        "slug": "happy-birthday-mix-rose-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176493971.jpeg"
+      },
+      {
+        "id": "13fead3c-118f-4d2d-a744-0d6915d3c745",
+        "name": "happy birthday big mix flower hamper",
+        "slug": "happy-birthday-big-mix-flower-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176276033.jpeg"
+      },
+      {
+        "id": "722a3857-c25c-41d6-90b6-8255150164e4",
+        "name": "mix flower bouquet",
+        "slug": "mix-flower-bouquet-2",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176547512.jpeg"
+      },
+      {
+        "id": "1afc489a-b242-4b70-81e4-5040f72c8a8c",
+        "name": "Teddy and balloon with flower hamper",
+        "slug": "teddy-and-balloon-with-flower-hamper",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176591274.jpeg"
+      },
+      {
+        "id": "3d9a9f2c-ae31-40c1-9e74-6487b9403d8b",
+        "name": "pink rose beautiful bouquet",
+        "slug": "pink-rose-beautiful-bouquet",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176364651.jpeg"
+      },
+      {
+        "id": "df09ded4-0a83-490a-b842-4ffd7c7a3b09",
+        "name": "Anniversary Beautiful Hamper",
+        "slug": "anniversary-beautiful-hamper",
+        "image_url": "/images/products/anniversary-beautiful-hamper.jpeg"
+      },
+      {
+        "id": "38753cd6-d297-48fc-92c9-a49095065ef7",
+        "name": "Happy Birthday Rose Hamper",
+        "slug": "happy-birthday-rose-hamper",
+        "image_url": "/images/products/happy-birthday-rose-hamper.jpeg"
+      },
+      {
+        "id": "14b5b0ae-36e6-4afa-b762-cc503ddad28d",
+        "name": "Mix flower bouquet",
+        "slug": "mix-flower-bouquet-3",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176572542.jpeg"
+      },
+      {
+        "id": "2371cdd1-8a66-4f73-b722-ccd742066e61",
+        "name": "Love Gift Hamper (Deluxe)",
+        "slug": "love-gift-hamper-2",
+        "image_url": "/images/products/love-gift-hamper-2.jpeg"
+      },
+      {
+        "id": "4883d8ff-c4c6-4c78-b6a5-4148cf768bc5",
+        "name": "Baby's Breath Bouquet",
+        "slug": "baby-breath-bouquet",
+        "image_url": "/images/products/baby-breath-bouquet.jpeg"
+      },
+      {
+        "id": "3bf7e988-cab1-4cc5-8e69-6f16e356c280",
+        "name": "Ferrero Rocher Chocolate Bouquet",
+        "slug": "ferrero-rocher-chocolate-bouquet",
+        "image_url": "/images/products/ferrero-rocher-chocolate-bouquet.jpeg"
+      },
+      {
+        "id": "033f8694-f8f0-4946-bcb4-fcc4f324c49a",
+        "name": "Happy Birthday Gift Box",
+        "slug": "happy-birthday-gift-box",
+        "image_url": "/images/products/happy-birthday-gift-box.jpeg"
+      },
+      {
+        "id": "c7114be4-a7c9-4424-baa7-333f01c56f24",
+        "name": "Purple Celebration Floral Basket",
+        "slug": "purple-celebration-floral-basket",
+        "image_url": "/images/products/purple-celebration-floral-basket.webp"
+      },
+      {
+        "id": "dbdf7c3e-8215-4797-8c54-5f53001e7f24",
+        "name": "Love Gift Hamper",
+        "slug": "love-gift-hamper",
+        "image_url": "/images/products/love-gift-hamper.jpeg"
+      },
+      {
+        "id": "b86e43fa-2cc4-4aef-b012-44059dc9f9a6",
+        "name": "Purple Elegance Lily Bouquet",
+        "slug": "purple-elegance-lily-bouquet",
+        "image_url": "/images/products/purple-elegance-lily-bouquet.webp"
+      },
+      {
+        "id": "acc1adaf-369c-4d6e-8dd0-30c41b44607e",
+        "name": "Lily Flower Funeral Wreath",
+        "slug": "lily-flower-funeral-wreath",
+        "image_url": "/images/products/lily-flower-funeral-wreath.jpeg"
+      },
+      {
+        "id": "67f89973-fe79-4408-8891-724a66f73ac9",
+        "name": "3 Layer Lucky Bamboo Plant",
+        "slug": "3-layer-lucky-bamboo-plant",
+        "image_url": "/images/products/lucky-bamboo-plant.jpeg"
+      },
+      {
+        "id": "812519dc-03c5-42d7-80f2-2b90dc1fc435",
+        "name": "Pink Rose and Flowers Hamper",
+        "slug": "pink-rose-and-flowers-hamper",
+        "image_url": "/images/products/pink-rose-and-flowers-hamper.jpeg"
+      },
+      {
+        "id": "32a9ee4e-09f2-496f-8d09-fa2f9973d088",
+        "name": "Red Velvet BEER Rose Bouquet",
+        "slug": "red-velvet-beer-rose-bouquet",
+        "image_url": "/images/products/red-velvet-beer-rose-bouquet.webp"
+      },
+      {
+        "id": "f8ca73c9-5c0f-4ed4-b2ce-2ec1ce2e0575",
+        "name": "Mix Beautiful Flower Bouquet",
+        "slug": "mix-beautiful-flower-bouquet",
+        "image_url": "/images/products/mix-beautiful-flower-bouquet.jpeg"
+      },
+      {
+        "id": "bf7d942e-679b-44a7-861d-3a9e900d4506",
+        "name": "Pink Lily Bouquet",
+        "slug": "pink-lily-bouquet",
+        "image_url": "/images/products/pink-lily-bouquet.jpeg"
+      },
+      {
+        "id": "13ff02b6-c326-4ecd-ba2b-1ecf9dfb0158",
+        "name": "Mix Flower Beautiful Hamper",
+        "slug": "mix-flower-beautiful-hamper",
+        "image_url": "/images/products/mix-flower-beautiful-hamper.jpeg"
+      },
+      {
+        "id": "d05f1df1-1826-4d0c-9f13-63ed78bbaa81",
+        "name": "Mix Flower Hamper",
+        "slug": "mix-flower-hamper",
+        "image_url": "/images/products/mix-flower-hamper.jpeg"
+      },
+      {
+        "id": "a9884295-f07c-4a34-a0f6-e59d26280744",
+        "name": "Mix Rose Bouquet",
+        "slug": "mix-rose-bouquet",
+        "image_url": "/images/products/mix-rose-bouquet.jpeg"
+      },
+      {
+        "id": "df840a81-be3f-4a58-aea8-cf4111869a68",
+        "name": "Pink and White Rose Bouquet",
+        "slug": "pink-and-white-rose-bouquet",
+        "image_url": "/images/products/pink-and-white-rose-bouquet.jpeg"
+      },
+      {
+        "id": "fa398b50-58c6-4bf0-b1c8-af9f2d5397c4",
+        "name": "Mix Flower Hamper with Chocolate",
+        "slug": "mix-flower-hamper-with-chocolate",
+        "image_url": "/images/products/mix-flower-hamper-with-chocolate.jpeg"
+      },
+      {
+        "id": "6f09a638-fa54-4dae-aefe-2db5653554a7",
+        "name": "Pink Rose Bouquet",
+        "slug": "pink-rose-bouquet",
+        "image_url": "/images/products/pink-rose-bouquet.jpeg"
+      },
+      {
+        "id": "d5cfa082-a7f0-4ec5-b4d7-c02d4834ca52",
+        "name": "Royal Orchid Lily Bouquet",
+        "slug": "royal-orchid-lily-bouquet",
+        "image_url": "/images/products/royal-orchid-lily-bouquet.webp"
+      },
+      {
+        "id": "2c0f82b7-ef89-4686-b540-d1c9718790f8",
+        "name": "Sunflower and Carnation Hamper",
+        "slug": "sunflower-and-carnation-hamper",
+        "image_url": "/images/products/sunflower-and-carnation-hamper.jpeg"
+      },
+      {
+        "id": "90a1713d-712c-4261-a9d4-4b08fd3e3133",
+        "name": "Teddy and Chocolate Hamper",
+        "slug": "teddy-and-chocolate-hamper",
+        "image_url": "/images/products/teddy-and-chocolate-hamper.jpeg"
+      },
+      {
+        "id": "9a379d30-aee1-4470-9349-6d8beae614dc",
+        "name": "White Lily Beautiful Hamper",
+        "slug": "white-lily-beautiful-hamper",
+        "image_url": "/images/products/white-lily-beautiful-hamper.jpeg"
+      },
+      {
+        "id": "26f7f659-70eb-44e2-bffa-f6c05c05ea9f",
+        "name": "Red Rose Bouquet (Special Edition)",
+        "slug": "red-rose-bouquet-special",
+        "image_url": "/images/products/red-rose-bouquet-special.jpeg"
+      },
+      {
+        "id": "f8c1aa81-df16-4fe1-99b0-c04e9ae9bc1b",
+        "name": "Pink Lily Bouquet (Deluxe)",
+        "slug": "pink-lily-bouquet-2",
+        "image_url": "/images/products/pink-lily-bouquet-2.jpeg"
+      },
+      {
+        "id": "f08eebe6-7e6a-451e-bcbf-d9dae4d66813",
+        "name": "Pink Rose Bouquet (Premium)",
+        "slug": "pink-rose-bouquet-2",
+        "image_url": "/images/products/pink-rose-bouquet-2.jpeg"
+      },
+      {
+        "id": "c0c98aac-6663-4475-b05e-c7475214adae",
+        "name": "Anniversary Hamper",
+        "slug": "anniversary-hamper",
+        "image_url": "/images/products/anniversary-hamper.jpeg"
+      },
+      {
+        "id": "339c9b01-b775-49e2-bd0d-7b9a1dfadaec",
+        "name": "White Lily Bouquet",
+        "slug": "white-lily-bouquet",
+        "image_url": "/images/products/white-lily-bouquet.jpeg"
+      },
+      {
+        "id": "870aab52-0a74-4ff7-8d1d-5143aca40167",
+        "name": "Red Roses Bouquet",
+        "slug": "red-roses-bouquet",
+        "image_url": "/images/products/red-roses-bouquet.jpeg"
+      },
+      {
+        "id": "d0ed205c-2465-4f36-9826-189c9a2e6ee9",
+        "name": "4 Teddy Bouquet",
+        "slug": "4-teddy-bouquet",
+        "image_url": "/images/products/4-teddy-bouquet.jpeg"
+      },
+      {
+        "id": "2036ea1e-e955-4710-8f5d-27af69048dd2",
+        "name": "Yellow Rose Hamper",
+        "slug": "yellow-rose-hamper",
+        "image_url": "/images/products/yellow-rose-hamper.jpeg"
+      },
+      {
+        "id": "f5d57f09-b0dc-4421-8066-681f590bfe3f",
+        "name": "Elegant Pink Mixed Flower Basket",
+        "slug": "elegant-pink-mixed-flower-basket",
+        "image_url": "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332957596.webp"
+      },
+      {
+        "id": "8c8f5046-6ba0-4a1b-ae1a-a0592e63776a",
+        "name": "Sunshine Balloon Floral Celebration Bouquet",
+        "slug": "sunshine-balloon-floral-celebration-bouquet",
+        "image_url": "/images/products/sunshine-balloon-floral-celebration-bouquet.webp"
+      },
+      {
+        "id": "3069cd59-38c8-466c-85f5-9a3d9580d807",
+        "name": "Ruby Blush Rose Bouquet",
+        "slug": "ruby-blush-rose-bouquet",
+        "image_url": "/images/products/ruby-blush-rose-bouquet.webp"
+      },
+      {
+        "id": "f4965a8c-2d74-42a8-ac46-53053ab1478d",
+        "name": "4 Piece Sunflower Bouquet",
+        "slug": "4-piece-sunflower-bouquet",
+        "image_url": "/images/products/4-piece-sunflower-bouquet.jpeg"
+      },
+      {
+        "id": "13b0304f-f304-4c0a-9a40-ffd06a11025f",
+        "name": "5 Piece Dairy Milk Little Hamper",
+        "slug": "5-piece-dairy-milk-little-hamper",
+        "image_url": "/images/products/5-piece-dairy-milk-little-hamper.jpeg"
+      },
+      {
+        "id": "fcce8b59-084c-45aa-a12b-6c30b89cba3a",
+        "name": "20 Piece Rose Bouquet",
+        "slug": "20-piece-rose-bouquet",
+        "image_url": "/images/products/20-piece-rose-bouquet.jpeg"
+      },
+      {
+        "id": "e067fd43-b1f5-432a-afa9-fbe901cacd15",
+        "name": "White & Blush Lily Romance Bouquet",
+        "slug": "white-blush-lily-romance-bouquet",
+        "image_url": "/images/products/white-blush-lily-romance-bouquet.webp"
+      },
+      {
+        "id": "5335a5ec-4e69-4b44-b173-074482fb5ad6",
+        "name": "2 Sunflower and Baby's Breath Big Bouquet",
+        "slug": "2-sunflower-babys-breath-big-bouquet",
+        "image_url": "/images/products/2-sunflower-babys-breath-big-bouquet.jpeg"
+      },
+      {
+        "id": "95600347-344c-44a8-a2e2-47d921721cca",
+        "name": "White & Red Rose Romance Bouquet",
+        "slug": "white-red-rose-romance-bouquet",
+        "image_url": "/images/products/white-red-rose-romance-bouquet.webp"
+      },
+      {
+        "id": "c8efdd12-8343-4e46-8ea0-db0bc98c92a4",
+        "name": "Elegant Sunflower & Rose Bouquet",
+        "slug": "elegant-sunflower-rose-bouquet",
+        "image_url": "/images/products/Elegant Sunflower and Rose Bouquet.webp"
+      },
+      {
+        "id": "78a33d75-5eaa-41cf-8500-08eedf938146",
+        "name": "Happy Birthday Cake and Flower Hamper",
+        "slug": "happy-birthday-cake-and-flower-hamper",
+        "image_url": "/images/products/happy-birthday-cake-and-flower-hamper.jpeg"
+      },
+      {
+        "id": "55b3854d-17d0-4180-b663-aa7870555be4",
+        "name": "Happy Birthday Flowers and Cake Combo",
+        "slug": "happy-birthday-flowers-and-cake-combo",
+        "image_url": "/images/products/happy-birthday-flowers-and-cake-combo.jpeg"
+      },
+      {
+        "id": "c83b1e9e-ddb3-4a97-90ad-06fdda56719a",
+        "name": "Balloon and Flower Bouquet",
+        "slug": "balloon-and-flower-bouquet",
+        "image_url": "/images/products/balloon-and-flower-bouquet.jpeg"
+      },
+      {
+        "id": "b8ace0f7-5f1b-4b5c-835e-17eec583639e",
+        "name": "Big Flower Bouquet",
+        "slug": "big-flower-bouquet",
+        "image_url": "/images/products/big-flower-bouquet-1.jpeg"
+      },
+      {
+        "id": "b55a91bb-aad6-4eeb-9771-bce924c4d0b6",
+        "name": "Birthday Chocolate Bouquet with Photo",
+        "slug": "birthday-chocolate-bouquet-with-photo",
+        "image_url": "/images/products/birthday-chocolate-bouquet-with-photo.jpeg"
+      },
+      {
+        "id": "c5d5829a-4611-4a90-82e6-d1681f383b9d",
+        "name": "Chocolates and Teddy Hamper",
+        "slug": "chocolates-and-teddy-hamper",
+        "image_url": "/images/products/chocolates-and-teddy-hamper.jpeg"
+      },
+      {
+        "id": "b33e2208-908d-4060-9687-08f2117426c4",
+        "name": "Chocolates Bouquet",
+        "slug": "chocolates-bouquet",
+        "image_url": "/images/products/chocolates-bouquet.jpeg"
+      },
+      {
+        "id": "c0e28459-b450-457f-b32a-be772951aa1a",
+        "name": "Crimson Roses in Premium Black Wrap",
+        "slug": "crimson-roses-in-premium-black-wrap",
+        "image_url": "/images/products/Crimson Roses with Black Wrap.webp"
+      },
+      {
+        "id": "fa7a94a9-5f7b-48df-a191-a52c326b07e6",
+        "name": "6 Piece Sunflower Bouquet",
+        "slug": "6-piece-sunflower-bouquet",
+        "image_url": "/images/products/6-piece-sunflower-bouquet.jpeg"
+      },
+      {
+        "id": "774707e1-7772-4707-ac59-ea37dbe161f4",
+        "name": "White Lily & Gypsophila Elegance Bouquet",
+        "slug": "white-lily-gypsophila-elegance-bouquet",
+        "image_url": "/images/products/white-lily-gypsophila-elegance-bouquet.webp"
+      },
+      {
+        "id": "c53ce970-5d0c-47d6-8831-e351994cf689",
+        "name": "Big Sunflower Bouquet",
+        "slug": "big-sunflower-bouquet",
+        "image_url": "/images/products/big-sunflower-bouquet.jpeg"
+      },
+      {
+        "id": "468be169-bfa0-43d3-bf7a-fac03231bcc4",
+        "name": "Golden Sunflower Newspaper Wrap Bouquet",
+        "slug": "golden-sunflower-newspaper-wrap-bouquet",
+        "image_url": "/images/products/Golden Sunflower Newspaper Bouquet.webp"
+      },
+      {
+        "id": "a5dd5488-3a7a-4793-b49d-58544109aa36",
+        "name": "Ferrero Rocher Chocolate Bouquet 2",
+        "slug": "ferrero-rocher-chocolate-bouquet-2",
+        "image_url": "/images/products/ferrero-rocher-chocolate-bouquet-2.jpeg"
+      },
+      {
+        "id": "3810386f-5584-4020-9eb0-8807971eef08",
+        "name": "Ferrero Rocher Hamper",
+        "slug": "ferrero-rocher-hamper",
+        "image_url": "/images/products/ferrero-rocher-hamper.jpeg"
+      },
+      {
+        "id": "3cb89445-c0bc-4cd8-ae9f-6d352f4dd90c",
+        "name": "Flower Basket Hamper",
+        "slug": "flower-basket-hamper",
+        "image_url": "/images/products/flower-basket-hamper.jpeg"
+      },
+      {
+        "id": "07daeea9-2182-42da-acd7-b64dd8e56761",
+        "name": "Funeral Flower Decoration",
+        "slug": "funeral-flower-decoration",
+        "image_url": "/images/products/funeral-flower-decoration.jpeg"
+      },
+      {
+        "id": "f974e15d-e581-41fe-a60a-e7aa6b39a452",
+        "name": "Garland Set",
+        "slug": "garland-set",
+        "image_url": "/images/products/garland-set.jpeg"
+      },
+      {
+        "id": "291bbc27-8bc1-459d-8213-8aef6f822261",
+        "name": "Gate Decoration",
+        "slug": "gate-decoration",
+        "image_url": "/images/products/gate-decoration.jpeg"
+      },
+      {
+        "id": "b3f4a7eb-2e28-4c22-b73c-3c4994481372",
+        "name": "KitKat Chocolate Bouquet",
+        "slug": "kitkat-chocolate-bouquet",
+        "image_url": "/images/products/kitkat-chocolate-bouquet.jpeg"
+      },
+      {
+        "id": "9ffa7635-2629-4098-bb99-9a70fa9a6c38",
+        "name": "Dairy Milk Chocolate Bouquet",
+        "slug": "dairy-milk-chocolate-bouquet",
+        "image_url": "/images/products/dairy-milk-chocolate-bouquet.jpeg"
+      },
+      {
+        "id": "13f56ed5-b095-47c2-aa1e-82d3ea59ab4c",
+        "name": "Black & Crimson Rose Luxe Bouquet",
+        "slug": "black-crimson-rose-luxe-bouquet",
+        "image_url": "/images/products/black-crimson-rose-luxe-bouquet.webp"
+      },
+      {
+        "id": "0871f467-2f17-4ac5-9fca-16ec18a05aa7",
+        "name": "Daughters Day Balloon Hamper",
+        "slug": "daughters-day-balloon-hamper",
+        "image_url": "/images/products/daughters-day-balloon-hamper.jpeg"
+      },
+      {
+        "id": "cd4426cc-3806-456f-a76f-8306ac45f7e2",
+        "name": "Elegant Pink Lily Luxury Bouquet",
+        "slug": "elegant-pink-lily-luxury-bouquet",
+        "image_url": "/images/products/Elegant Pink Lily Bouquet on Marble Table.webp"
+      },
+      {
+        "id": "dd8b8e85-e46c-4c1e-ae14-b9c5dc898144",
+        "name": "Lily and Sunflower Bouquet",
+        "slug": "lily-and-sunflower-bouquet",
+        "image_url": "/images/products/lily-and-sunflower-bouquet.jpeg"
+      },
+      {
+        "id": "222fe2f2-43bc-450b-ad34-41020d54764f",
+        "name": "Mix Chocolate Hamper",
+        "slug": "mix-chocolate-hamper",
+        "image_url": "/images/products/mix-chocolate-hamper.jpeg"
+      },
+      {
+        "id": "dd6a9796-8995-4d1c-8a24-da0e87129422",
+        "name": "Mix Chocolates Aesthetic Hamper",
+        "slug": "mix-chocolates-aesthetic-hamper",
+        "image_url": "/images/products/mix-chocolates-aesthetic-hamper.jpeg"
+      },
+      {
+        "id": "21f8f4c8-5b4a-44d6-a210-1a9384bf8879",
+        "name": "Mix Little Flower Bouquet",
+        "slug": "mix-little-flower-bouquet",
+        "image_url": "/images/products/mix-little-flower-bouquet.jpeg"
+      },
+      {
+        "id": "70b9d6b2-5482-42dc-8d40-0594249b0959",
+        "name": "Ivory Rose & Baby's Breath Bouquet",
+        "slug": "ivory-rose-baby-s-breath-bouquet",
+        "image_url": "/images/products/Ivory Rose and Baby’s Breath Bouquet.webp"
+      },
+      {
+        "id": "9768e102-243f-4bb4-8b3f-5443a1469c47",
+        "name": "Pink Rose Chrysanthemum and Babys Breath Bouquet",
+        "slug": "pink-rose-chrysanthemum-babys-breath-bouquet",
+        "image_url": "/images/products/pink-rose-chrysanthemum-babys-breath-bouquet-1.jpeg"
+      },
+      {
+        "id": "ebdfac38-60a9-4996-8a18-061563c879e3",
+        "name": "Pastel Lily & Rose Bouquet with Bow",
+        "slug": "pastel-lily-rose-bouquet-with-bow",
+        "image_url": "/images/products/Pastel Lily and Rose Bouquet with Bow.webp"
+      },
+      {
+        "id": "21f0a9d4-1f4b-4c45-8fb0-87a225621dc9",
+        "name": "Orchids Bouquet",
+        "slug": "orchids-bouquet",
+        "image_url": "/images/products/orchids-bouquet.jpeg"
+      },
+      {
+        "id": "39f79d79-d2fe-4d77-8cab-bbf0e7585b0c",
+        "name": "Luxurious Mixed Rose Bouquet",
+        "slug": "luxurious-mixed-rose-bouquet",
+        "image_url": "/images/products/Luxurious Mixed Rose Bouquet.webp"
+      },
+      {
+        "id": "828b5303-41c3-4b3d-8bad-15e9b4239086",
+        "name": "Lily Beautiful Bouquet",
+        "slug": "lily-beautiful-bouquet",
+        "image_url": "/images/products/lily-beautiful-bouquet.jpeg"
+      },
+      {
+        "id": "f669c846-7b5b-40ee-ae52-09fd2e8e8a87",
+        "name": "Orchids Small Bouquet",
+        "slug": "orchids-small-bouquet",
+        "image_url": "/images/products/orchids-small-bouquet.jpeg"
+      },
+      {
+        "id": "416ce845-f5d0-46cd-a8fb-a26dd872b5c8",
+        "name": "Orange Rose Garland Set",
+        "slug": "orange-rose-garland-set",
+        "image_url": "/images/products/orange-rose-garland-set.jpeg"
+      },
+      {
+        "id": "519402b3-8661-4da7-ad19-d582b01efe62",
+        "name": "Elegant Pink Rose Garland Pair",
+        "slug": "elegant-pink-rose-garland-pair",
+        "image_url": "/images/products/Elegant Pink Rose Garland Pair.webp"
+      },
+      {
+        "id": "100844f6-e83c-4f7b-bdd3-36744dc5ec79",
+        "name": "Pinterest Birthday Decoration",
+        "slug": "pinterest-birthday-decoration",
+        "image_url": "/images/products/pinterest-birthday-decoration.jpeg"
+      },
+      {
+        "id": "8a740a5b-b1c1-4c3b-8249-e7190c4ae9af",
+        "name": "Proud of You Balloon Bouquet",
+        "slug": "proud-of-you-balloon-bouquet",
+        "image_url": "/images/products/proud-of-you-balloon-bouquet.jpeg"
+      },
+      {
+        "id": "42a1a0e7-370a-465b-ae06-1c765fc72138",
+        "name": "Pink Rose and Yellow Rose Bouquet",
+        "slug": "pink-rose-and-yellow-rose-bouquet",
+        "image_url": "/images/products/pink-rose-and-yellow-rose-bouquet.jpeg"
+      },
+      {
+        "id": "84b182a6-cfeb-46fc-9644-fffb98aa90de",
+        "name": "Red Rose White Rose and Babys Breath Bouquet",
+        "slug": "red-rose-white-rose-babys-breath-bouquet",
+        "image_url": "/images/products/red-rose-white-rose-babys-breath-bouquet.jpeg"
+      },
+      {
+        "id": "aa02b951-61a5-49be-b00c-c6bfeb2d62bd",
+        "name": "Roses Ferrero Rocher and Drink Combo",
+        "slug": "roses-ferrero-rocher-drink-combo",
+        "image_url": "/images/products/roses-ferrero-rocher-drink-combo.jpeg"
+      },
+      {
+        "id": "f278daed-fba4-4056-aa30-13d7b5f69394",
+        "name": "Single Sunflower Bouquet",
+        "slug": "single-sunflower-bouquet",
+        "image_url": "/images/products/single-sunflower-bouquet.jpeg"
+      },
+      {
+        "id": "2206528e-2963-42f4-884a-e7f9e8257cd6",
+        "name": "Baby’s Breath Floral Crown",
+        "slug": "babys-breath-floral-crown",
+        "image_url": "/images/products/Baby’s Breath Floral Crown 1.webp"
+      },
+      {
+        "id": "b6b76e7f-6015-4b26-8d52-98d7d208010d",
+        "name": "Red Rose and Pink Rose Bouquet",
+        "slug": "red-rose-and-pink-rose-bouquet",
+        "image_url": "/images/products/red-rose-and-pink-rose-bouquet.jpeg"
+      },
+      {
+        "id": "af2af408-2110-42c6-aa8a-dc4d5bc7a1d3",
+        "name": "Red Rose Chrysanthemum and Babys Breath Bouquet",
+        "slug": "red-rose-chrysanthemum-babys-breath-bouquet",
+        "image_url": "/images/products/red-rose-chrysanthemum-babys-breath-bouquet.jpeg"
+      },
+      {
+        "id": "f7d8159a-eef3-44d3-90bf-f18755434baf",
+        "name": "Custom Printed Coffee Mug",
+        "slug": "custom-printed-coffee-mug",
+        "image_url": "/images/new-products/custom-printed-coffee-mug.jpeg"
+      },
+      {
+        "id": "c3080c17-6596-4778-b387-3919f101e271",
+        "name": "Strawberry Bouquet",
+        "slug": "strawberry-bouquet",
+        "image_url": "/images/products/strawberry-bouquet.jpeg"
+      },
+      {
+        "id": "20efe58f-0c6d-4952-af9c-830cd294384c",
+        "name": "Sister Golden Balloon Bouquet",
+        "slug": "sister-golden-balloon-bouquet",
+        "image_url": "/images/products/sister-golden-balloon-bouquet.jpeg"
+      },
+      {
+        "id": "acaee8f0-f53a-4979-82f0-835cc0e9b1d1",
+        "name": "Teddy and Chocolate Bouquet",
+        "slug": "teddy-and-chocolate-bouquet",
+        "image_url": "/images/products/teddy-and-chocolate-bouquet.jpeg"
+      },
+      {
+        "id": "2d50909f-939a-4aa1-83ed-a70ca9333d43",
+        "name": "Welcome Back Balloon and Flower and Chocolate Bouquet",
+        "slug": "welcome-back-balloon-flower-chocolate-bouquet",
+        "image_url": "/images/products/welcome-back-balloon-flower-chocolate-bouquet.jpeg"
+      },
+      {
+        "id": "58ca8183-6e24-4ca2-8dd7-528bcaf8c58c",
+        "name": "Balloons, Chocolates & Flower Hamper",
+        "slug": "balloons-chocolates-flower-hamper",
+        "image_url": "/images/new-products/balloons-chocolates-flower-hamper.jpeg"
+      },
+      {
+        "id": "f8cb5e32-e39e-4d8a-8af6-2662344e26a7",
+        "name": "Sunflower Beautiful Bouquet",
+        "slug": "sunflower-beautiful-bouquet",
+        "image_url": "/images/products/sunflower-beautiful-bouquet.jpeg"
+      },
+      {
+        "id": "17b97720-08f0-4af7-8251-2a293571fd50",
+        "name": "Custom Printed Bottle",
+        "slug": "custom-printed-bottle",
+        "image_url": "/images/new-products/custom-printed-bottle.jpeg"
+      },
+      {
+        "id": "e679ff86-e825-431a-a1be-3103860907ba",
+        "name": "Elegant Red Rose Garland Set",
+        "slug": "elegant-red-rose-garland-set",
+        "image_url": "/images/products/Elegant Red Rose Garland Display.webp"
+      },
+      {
+        "id": "e01b558f-ab44-405e-b575-3f7ef557dfe7",
+        "name": "Elegant Red & White Wedding Garlands",
+        "slug": "elegant-red-white-wedding-garlands",
+        "image_url": "/images/products/Elegant Red and White Wedding Garlands.webp"
+      },
+      {
+        "id": "4809bf2e-574b-4894-9dde-c0b995d7ad83",
+        "name": "Sister Gifting Balloon Hamper",
+        "slug": "sister-gifting-balloon-hamper",
+        "image_url": "/images/products/sister-gifting-balloon-hamper.jpeg"
+      },
+      {
+        "id": "a93efd22-67e4-4924-80dd-244a0afa11e4",
+        "name": "Dairy Milk Hamper with Toy",
+        "slug": "dairy-milk-hamper-toy",
+        "image_url": "/images/new-products/dairy-milk-hamper-toy.jpeg"
+      },
+      {
+        "id": "8bffce84-5c05-40cf-ae0e-3cc8dfccf49a",
+        "name": "Happy Birthday Balloon Hamper",
+        "slug": "happy-birthday-balloon-hamper",
+        "image_url": "/images/new-products/happy-birthday-balloon-hamper.jpeg"
+      },
+      {
+        "id": "0203729a-7667-4c76-b6d7-4321db2be148",
+        "name": "Elegant Red Rose Garland Pair",
+        "slug": "elegant-red-rose-garland-pair",
+        "image_url": "/images/products/Elegant Red Rose Garlands on Gold Stand.webp"
+      },
+      {
+        "id": "e0e864cc-8b5e-4f60-9e24-5ce189a462b5",
+        "name": "Mix Lily & Flowers Bouquet",
+        "slug": "mix-lily-flowers-bouquet",
+        "image_url": "/images/new-products/mix-lily-flowers-bouquet.jpeg"
+      },
+      {
+        "id": "a733c1b7-467c-4728-b1e7-da24cf1b509b",
+        "name": "Lucky Bamboo Tree",
+        "slug": "lucky-bamboo-tree",
+        "image_url": "/images/new-products/lucky-bamboo-tree.jpeg"
+      },
+      {
+        "id": "e5d7935c-aa42-48c0-9a6b-3a6069a0e314",
+        "name": "White Lily Hamper",
+        "slug": "white-lily-hamper",
+        "image_url": "/images/new-products/white-lily-hamper.jpeg"
+      },
+      {
+        "id": "b3fa0b25-d877-4fe3-b8b1-4a9214f6377e",
+        "name": "White Rose & White Lily Hamper",
+        "slug": "white-rose-white-lily-hamper",
+        "image_url": "/images/new-products/white-rose-white-lily-hamper.jpeg"
+      },
+      {
+        "id": "feaa9ac3-99eb-4af6-a3f2-b8a182548f5b",
+        "name": "Pink Rose Hamper",
+        "slug": "pink-rose-hamper",
+        "image_url": "/images/new-products/pink-rose-hamper.jpeg"
+      },
+      {
+        "id": "06bf2a5d-3489-4c6a-a84b-b7d35bebf388",
+        "name": "White Lily, Rose & Mix Flowers Bouquet",
+        "slug": "white-lily-rose-mix-bouquet",
+        "image_url": "/images/new-products/white-lily-rose-mix-bouquet.jpeg"
+      },
+      {
+        "id": "9ed15980-5538-48ec-815e-6233f08064f0",
+        "name": "Carlsberg Floral Gift Bouquet",
+        "slug": "carlsberg-floral-gift-bouquet",
+        "image_url": "/images/products/Carlsberg Floral Gift Bouquet.webp"
+      },
+      {
+        "id": "bccd149d-952a-41a9-8bc9-0474e908ae65",
+        "name": "Happy Birthday Cake & Gift Hamper",
+        "slug": "happy-birthday-cake-gift-hamper",
+        "image_url": "/images/new-products/happy-birthday-cake-gift-hamper.jpeg"
+      },
+      {
+        "id": "a3b10066-ad9f-4353-96b9-f54fbfc38fee",
+        "name": "Elegant Ganesh Puja Mandap Decoration",
+        "slug": "elegant-ganesh-puja-mandap-decoration",
+        "image_url": "/images/decoration/Elegant Ganesh Puja Mandap Decoration.webp"
+      },
+      {
+        "id": "3e428e5f-de25-4849-81f1-256ff732b5cb",
+        "name": "Elegant TV Unit Floral Decoration",
+        "slug": "elegant-tv-unit-floral-decoration",
+        "image_url": "/images/decoration/Elegant TV Unit Floral Decoration.webp"
+      },
+      {
+        "id": "51cd5a0c-caf7-414a-aa1e-9c5f7976b916",
+        "name": "Grand Marigold Floral Welcome Pathway",
+        "slug": "grand-marigold-floral-welcome-pathway",
+        "image_url": "/images/decoration/Grand Marigold Floral Welcome Pathway.webp"
+      },
+      {
+        "id": "51453753-7845-4cfe-b00e-3b1e8f35f3e9",
+        "name": "Purple & White Floral Door Decoration",
+        "slug": "purple-white-floral-door-decoration",
+        "image_url": "/images/decoration/Purple & White Floral Door Decoration.webp"
+      },
+      {
+        "id": "d911781e-1931-4162-82c9-15c4d68c7d44",
+        "name": "Elegant White Lily Bouquet in Black Wrap",
+        "slug": "elegant-white-lily-bouquet-in-black-wrap",
+        "image_url": "/images/products/Elegant White Lily Bouquet in Black Wrap.webp"
+      },
+      {
+        "id": "a72bd223-9ae6-47fa-befc-cb74d7b45f36",
+        "name": "Luxury Mixed Flower Bouquet in Lavender Vase Hamper",
+        "slug": "luxury-mixed-flower-bouquet-in-lavender-vase-hamper",
+        "image_url": "/images/products/Luxury Mixed Flower Bouquet in Lavender Vase Hamper.webp"
+      },
+      {
+        "id": "1b53fda1-331f-44d4-b8fc-263e6738fdfa",
+        "name": "Luxury Pink Rose Bouquet in Kraft Wrap",
+        "slug": "luxury-pink-rose-bouquet-in-kraft-wrap",
+        "image_url": "/images/products/Luxury Pink Rose Bouquet in Kraft Wrap.webp"
+      },
+      {
+        "id": "8bfc00e7-9314-43a8-9910-240eb5cb8929",
+        "name": "Colorful Gerbera Daisy Bouquet in Blue Premium Wrap",
+        "slug": "colorful-gerbera-daisy-bouquet-in-blue-premium-wrap",
+        "image_url": "/images/products/Colorful Gerbera Daisy Bouquet in Blue Premium Wrap.webp"
+      },
+      {
+        "id": "ddca0a63-5c6b-4a4d-b6b6-6c1cb0921f4a",
+        "name": "Plush Teddy Bear Bouquet in Pink Tulle",
+        "slug": "plush-teddy-bear-bouquet-in-pink-tulle",
+        "image_url": "/images/products/Plush Teddy Bear Bouquet in Pink Tulle.webp"
+      },
+      {
+        "id": "b3064b54-2cba-43dd-9494-a258dd1784ff",
+        "name": "Colorful Mixed Flower Basket Hamper",
+        "slug": "colorful-mixed-flower-basket-hamper",
+        "image_url": "/images/products/Colorful Mixed Flower Basket Hamper.webp"
+      },
+      {
+        "id": "88f7efe3-86e0-467c-94ad-6aa593dce104",
+        "name": "Luxury Pastel Rose Hatbox Hamper",
+        "slug": "luxury-pastel-rose-hatbox-hamper",
+        "image_url": "/images/products/Luxury Pastel Rose Hatbox Hamper.webp"
+      },
+      {
+        "id": "ffb1b317-0957-4d76-ad12-17b9425f1323",
+        "name": "Grand Ganesh Floral Backdrop Decoration",
+        "slug": "grand-ganesh-floral-backdrop-decoration",
+        "image_url": "/images/decoration/Grand Ganesh Floral Backdrop Decoration.webp"
+      },
+      {
+        "id": "0aa65a6d-d6dc-4360-bb0b-4887c661f991",
+        "name": "Elegant White Floral Wedding Backdrop",
+        "slug": "elegant-white-floral-wedding-backdrop",
+        "image_url": "/images/decoration/Elegant White Floral Wedding Backdrop.webp"
+      },
+      {
+        "id": "30cb3d52-6d61-4893-978d-1b4e2ef6f132",
+        "name": "Grand Marigold Temple Entrance Decoration",
+        "slug": "grand-marigold-temple-entrance-decoration",
+        "image_url": "/images/decoration/Grand Marigold Temple Entrance Decoration.webp"
+      },
+      {
+        "id": "cc7fc8fe-348c-45e7-9e88-86e27c16df0d",
+        "name": "Traditional Marigold Door Entrance Decoration",
+        "slug": "traditional-marigold-door-entrance-decoration",
+        "image_url": "/images/decoration/Traditional Marigold Door Entrance Decoration.webp"
+      },
+      {
+        "id": "2302eb3f-9441-4d2a-b325-ab4dd2050ad8",
+        "name": "Romantic Mint-Wrapped Rose Bouquet",
+        "slug": "romantic-mint-wrapped-rose-bouquet",
+        "image_url": "/images/products/Romantic Mint-Wrapped Rose Bouquet.webp"
+      },
+      {
+        "id": "f759af6a-1151-45ea-969f-7d527b800401",
+        "name": "Luxury Sunflower Bouquet in Black Wrap",
+        "slug": "luxury-sunflower-bouquet-in-black-wrap",
+        "image_url": "/images/products/Luxury Sunflower Bouquet in Black Wrap.webp"
+      },
+      {
+        "id": "a8d55951-67eb-4689-bab1-6a10a39dfcc8",
+        "name": "Elegant White Lily Bouquet in Kraft Wrap",
+        "slug": "elegant-white-lily-bouquet-in-kraft-wrap",
+        "image_url": "/images/products/Elegant White Lily Bouquet in Kraft Wrap.webp"
+      },
+      {
+        "id": "13c29e0e-d555-4fec-89d4-e73e97b952a3",
+        "name": "Elegant Birthday Floral Hamper with Balloon",
+        "slug": "elegant-birthday-floral-hamper-with-balloon",
+        "image_url": "/images/products/Elegant Birthday Floral Hamper with Balloon.webp"
+      },
+      {
+        "id": "fed3c890-4c69-4bcc-9530-2d6620a75156",
+        "name": "Golden 40th Birthday Floral Arrangement",
+        "slug": "golden-40th-birthday-floral-arrangement",
+        "image_url": "/images/products/Golden 40th Birthday Floral Arrangement.webp"
+      },
+      {
+        "id": "21e81064-1f7d-4b9f-970e-090157d5087e",
+        "name": "Luxury Pink & White Rose Basket Bouquet",
+        "slug": "luxury-pink-white-rose-basket-bouquet",
+        "image_url": "/images/products/Luxury Pink & White Rose Basket Bouquet.webp"
+      },
+      {
+        "id": "160b1df1-5821-4033-a946-d677f0254f5a",
+        "name": "Luxury Blue & White Ganesh Floral Decoration",
+        "slug": "luxury-blue-white-ganesh-floral-decoration",
+        "image_url": "/images/decoration/Luxury Blue & White Ganesh Floral Decoration.webp"
+      },
+      {
+        "id": "31f5293e-f3b1-4e1b-aa98-fc0a66b075a8",
+        "name": "Festive Living Room Floral Decoration",
+        "slug": "festive-living-room-floral-decoration",
+        "image_url": "/images/decoration/Festive Living Room Floral Decoration.webp"
+      },
+      {
+        "id": "03403c15-4879-4148-9cce-575396d01a20",
+        "name": "Grand Red & Green Floral Entrance Decoration",
+        "slug": "grand-red-green-floral-entrance-decoration",
+        "image_url": "/images/decoration/Grand Red & Green Floral Entrance Decoration.webp"
+      },
+      {
+        "id": "7db107fc-4b3e-46a5-896e-9f779453cde7",
+        "name": "Traditional Marigold Door Hanging Decoration",
+        "slug": "traditional-marigold-door-hanging-decoration",
+        "image_url": "/images/decoration/Traditional Marigold Door Hanging Decoration.webp"
+      },
+      {
+        "id": "b1fad8d6-0be0-483f-9eb2-782bd0023113",
+        "name": "Pink & White Lily Bouquet in Premium Wrap",
+        "slug": "pink-white-lily-bouquet-in-premium-wrap",
+        "image_url": "/images/products/Pink & White Lily Bouquet in Premium Wrap.webp"
+      },
+      {
+        "id": "1b8b369c-3539-4702-b3d8-30c84b64b79e",
+        "name": "Romantic Stargazer Lily Bouquet",
+        "slug": "romantic-stargazer-lily-bouquet",
+        "image_url": "/images/products/Romantic Stargazer Lily Bouquet.webp"
+      },
+      {
+        "id": "55833105-da93-4d75-b502-c1111611558f",
+        "name": "Golden 50th Birthday Floral Hamper",
+        "slug": "golden-50th-birthday-floral-hamper",
+        "image_url": "/images/products/Golden 50th Birthday Floral Hamper.webp"
+      },
+      {
+        "id": "f72e43c0-9b4a-4140-aac6-beae83292d5e",
+        "name": "Luxury Pink Lily & Rose Box Hamper",
+        "slug": "luxury-pink-lily-rose-box-hamper",
+        "image_url": "/images/products/Luxury Pink Lily & Rose Box Hamper.webp"
+      },
+      {
+        "id": "06a38740-f94b-487a-bbf1-57a47b958c85",
+        "name": "Premium Chocolate & Rose Gift Bouquet",
+        "slug": "premium-chocolate-rose-gift-bouquet",
+        "image_url": "/images/products/Premium Chocolate & Rose Gift Bouquet.webp"
+      },
+      {
+        "id": "9292c89f-6494-4bb5-b8cc-6fd96afbbca0",
+        "name": "Luxury Ganesh Floral Backdrop Decoration",
+        "slug": "luxury-ganesh-floral-backdrop-decoration",
+        "image_url": "/images/decoration/Luxury Ganesh Floral Backdrop Decoration.webp"
+      },
+      {
+        "id": "e43d0f34-8950-4131-95cc-af1ddbbbd23f",
+        "name": "Floral & Leafy Entrance Door Decoration",
+        "slug": "floral-leafy-entrance-door-decoration",
+        "image_url": "/images/decoration/Floral & Leafy Entrance Door Decoration.webp"
+      },
+      {
+        "id": "be47724f-39f5-4a0b-adc4-b9a4de08bac5",
+        "name": "Luxury Floral 40th Birthday Decoration",
+        "slug": "luxury-floral-40th-birthday-decoration",
+        "image_url": "/images/decoration/Luxury Floral 40th Birthday Decoration.webp"
+      },
+      {
+        "id": "3cbeffe5-85cf-4c80-8427-755ea8387222",
+        "name": "Traditional Marigold Welcome Door Decoration",
+        "slug": "traditional-marigold-welcome-door-decoration",
+        "image_url": "/images/decoration/Traditional Marigold Welcome Door Decoration.webp"
+      },
+      {
+        "id": "0876f3db-9e52-4ff8-bbdd-b3603b2db3db",
+        "name": "Elegant Black Gift Bouquet with Message Balloon",
+        "slug": "elegant-black-gift-bouquet-with-message-balloon",
+        "image_url": "/images/products/Elegant Black Gift Bouquet with Message Balloon.webp"
+      },
+      {
+        "id": "3ecc3c87-9611-48a8-b41e-1007dee7b89e",
+        "name": "Sunflower Love Butterfly Bouquet",
+        "slug": "sunflower-love-butterfly-bouquet",
+        "image_url": "/images/products/Sunflower Love Butterfly Bouquet.webp"
+      },
+      {
+        "id": "27d4e177-7af5-4621-8a00-3ca916a534aa",
+        "name": "Elegant Lily & Rose Floral Box Hamper",
+        "slug": "elegant-lily-rose-floral-box-hamper",
+        "image_url": "/images/products/Elegant Lily & Rose Floral Box Hamper.webp"
+      },
+      {
+        "id": "9061f33b-ae07-4ee6-b7e7-ad8fd4992426",
+        "name": "Grand Pink & White Floral Entrance Arch",
+        "slug": "grand-pink-white-floral-entrance-arch",
+        "image_url": "/images/products/Grand Pink & White Floral Entrance Arch.webp"
+      },
+      {
+        "id": "90da9a6b-642f-4ed4-91d7-70f65ae281d3",
+        "name": "Pink, White & Blue Ganesh Floral Decoration",
+        "slug": "pink-white-blue-ganesh-floral-decoration",
+        "image_url": "/images/decoration/pink white and blue ganesh decoration.webp"
+      },
+      {
+        "id": "a8c7e1fe-27d5-4b23-89e1-e0f1d2137ab4",
+        "name": "Floral Car Decoration",
+        "slug": "floral-car-decoration",
+        "image_url": "/images/decoration/Floral Car Decoration.webp"
+      },
+      {
+        "id": "53168c0c-f7e6-49d6-944a-96b2cce5da0d",
+        "name": "Luxury Hanging Floral Entrance Arch",
+        "slug": "luxury-hanging-floral-entrance-arch",
+        "image_url": "/images/decoration/Luxury Hanging Floral Entrance Arch.webp"
+      },
+      {
+        "id": "bc96ed6f-4832-4dbf-a0bf-b60f949d6875",
+        "name": "Traditional Marigold Window Decoration",
+        "slug": "traditional-marigold-window-decoration",
+        "image_url": "/images/decoration/Traditional Marigold Window Decoration.webp"
+      },
+      {
+        "id": "43b343f7-a9a7-4c64-af99-9695b60d28f5",
+        "name": "Luxury Pink Lily & Rose Vase Hamper",
+        "slug": "luxury-pink-lily-rose-vase-hamper",
+        "image_url": "/images/products/Luxury Pink Lily & Rose Vase Hamper.webp"
+      },
+      {
+        "id": "feaf4880-a5fc-48ad-b0fe-732984616ea6",
+        "name": "Premium White Gerbera Bouquet in Black Wrap",
+        "slug": "premium-white-gerbera-bouquet-in-black-wrap",
+        "image_url": "/images/products/Premium White Gerbera Bouquet in Black Wrap.webp"
+      },
+      {
+        "id": "ad9c9f89-cf88-4e81-87dd-5e3dd93bda0b",
+        "name": "Sunflower & Baby's Breath Bouquet",
+        "slug": "sunflower-baby-s-breath-bouquet",
+        "image_url": "/images/products/Sunflower and Baby’s Breath Bouquet.webp"
+      },
+      {
+        "id": "6aa32522-3458-4dc1-a24e-1bc305d46595",
+        "name": "Elegant Pink & White Lily Floral Hamper",
+        "slug": "elegant-pink-white-lily-floral-hamper",
+        "image_url": "/images/products/Elegant Pink & White Lily Floral Hamper.webp"
+      },
+      {
+        "id": "a74d14b8-b326-49d3-a564-05f69ed02f1a",
+        "name": "Grand Red & Yellow Floral Tower Hamper",
+        "slug": "grand-red-yellow-floral-tower-hamper",
+        "image_url": "/images/products/Grand Red & Yellow Floral Tower Hamper.webp"
+      },
+      {
+        "id": "ce8caf5b-8e93-4f0e-b00b-7e9e17eda6a7",
+        "name": "Red Rose & White Lily Table Centerpiece",
+        "slug": "red-rose-white-lily-table-centerpiece",
+        "image_url": "/images/products/Red Rose & White Lily Table Centerpiece.webp"
+      },
+      {
+        "id": "6bcdc8c1-ffdb-4ab9-a308-6cf752ddcd30",
+        "name": "Traditional Ganesh Puja Floral Backdrop",
+        "slug": "traditional-ganesh-puja-floral-backdrop",
+        "image_url": "/images/decoration/Traditional Ganesh Puja Floral Backdrop.webp"
+      },
+      {
+        "id": "3efeeda9-39ca-4aa9-93b6-ffa2092ca487",
+        "name": "Floral Entrance Arch with Marigold Drapes",
+        "slug": "floral-entrance-arch-with-marigold-drapes",
+        "image_url": "/images/decoration/Floral Entrance Arch with Marigold Drapes.webp"
+      },
+      {
+        "id": "3de12717-e3b3-40d5-9fcb-22994741989c",
+        "name": "Luxury Pink & White Floral Backdrop",
+        "slug": "luxury-pink-white-floral-backdrop",
+        "image_url": "/images/decoration/Luxury Pink & White Floral Backdrop.webp"
+      },
+      {
+        "id": "0cfd1c58-cfa4-4c3f-a4f0-46f400279e48",
+        "name": "Traditional Yellow Floral Puja Decoration",
+        "slug": "traditional-yellow-floral-puja-decoration",
+        "image_url": "/images/decoration/Traditional Yellow Floral Puja Decoration.webp"
+      },
+      {
+        "id": "6dcaad40-8b79-4c6d-b621-7a3bb7b542f7",
+        "name": "Vibrant Rose Bouquet with Baby's Breath",
+        "slug": "vibrant-rose-bouquet-with-baby-s-breath",
+        "image_url": "/images/products/Vibrant Rose Bouquet with Baby’s Breath.webp"
+      },
+      {
+        "id": "dcd63715-f550-4fc9-90d7-ec08d8fc970d",
+        "name": "Luxury Pink Lily Bouquet in Premium Kraft Wrap",
+        "slug": "luxury-pink-lily-bouquet-in-premium-kraft-wrap",
+        "image_url": "/images/products/Luxury Pink Lily Bouquet in Premium Kraft Wrap.webp"
+      },
+      {
+        "id": "bfdc3efb-bd96-47d7-af01-cff50eea5cd5",
+        "name": "Elegant Pink Lily & Orchid Floral Basket Hamper",
+        "slug": "elegant-pink-lily-orchid-floral-basket-hamper",
+        "image_url": "/images/products/Elegant Pink Lily & Orchid Floral Basket Hamper.webp"
+      },
+      {
+        "id": "5f0e8e3b-1758-4752-a52b-c0dc7f741812",
+        "name": "Luxury Blue & Yellow Floral Wreath",
+        "slug": "luxury-blue-yellow-floral-wreath",
+        "image_url": "/images/products/Luxury Blue & Yellow Floral Wreath.webp"
+      },
+      {
+        "id": "1b903113-5dc4-4e25-baa1-60092d278bc9",
+        "name": "Traditional Floral Puja Altar Decoration",
+        "slug": "traditional-floral-puja-altar-decoration",
+        "image_url": "/images/products/Traditional Floral Puja Altar Decoration.webp"
+      },
+      {
+        "id": "6181c6c8-1812-463b-8867-b896ca870c23",
+        "name": "Colorful Floral Entrance home Decoration",
+        "slug": "colorful-floral-entrance-home-decoration",
+        "image_url": "/images/decoration/Colorful Floral Entrance home Decoration.webp"
+      },
+      {
+        "id": "33938841-a790-4e59-a4df-969c4bf86f1b",
+        "name": "Floral Mandap & Home Temple Decoration",
+        "slug": "floral-mandap-home-temple-decoration",
+        "image_url": "/images/decoration/Floral Mandap & Home Temple Decoration.webp"
+      },
+      {
+        "id": "918d4cab-04e6-4b71-89b0-e4e053425559",
+        "name": "Marigold & Floral Floor Border Decoration",
+        "slug": "marigold-floral-floor-border-decoration",
+        "image_url": "/images/decoration/Marigold & Floral Floor Border Decoration.webp"
+      },
+      {
+        "id": "bd90b012-078c-43e5-b57d-4d4c4d47dd65",
+        "name": "White Floral Doorway Decoration",
+        "slug": "white-floral-doorway-decoration",
+        "image_url": "/images/decoration/White Floral Doorway Decoration.webp"
+      },
+      {
+        "id": "d5872836-0eb0-4181-98e3-3abfd5ca95f4",
+        "name": "Luxury Pink Lily Bouquet in Premium Wrap",
+        "slug": "luxury-pink-lily-bouquet-in-premium-wrap",
+        "image_url": "/images/products/Luxury Pink Lily Bouquet in Premium Wrap.webp"
+      },
+      {
+        "id": "a3ae68da-52fb-4b55-b6fb-f3f3e797993a",
+        "name": "Vivid Red Rose Bouquet in Blue Wrap",
+        "slug": "vivid-red-rose-bouquet-in-blue-wrap",
+        "image_url": "/images/products/Vivid Red Rose Bouquet in Blue Wrap.webp"
+      },
+      {
+        "id": "c4b798da-8bce-426c-901a-24c9dd780f39",
+        "name": "Blue & White Floral Vase Arrangement",
+        "slug": "blue-white-floral-vase-arrangement",
+        "image_url": "/images/products/Blue & White Floral Vase Arrangement.webp"
+      },
+      {
+        "id": "6b785eb9-8b49-47e5-a900-79c191e07d75",
+        "name": "Luxury Chocolate Gift Bouquet in Red Wrap",
+        "slug": "luxury-chocolate-gift-bouquet-in-red-wrap",
+        "image_url": "/images/products/Luxury Chocolate Gift Bouquet in Red Wrap.webp"
+      },
+      {
+        "id": "359fc8c3-5a0b-489a-bad7-ddf0e824d9da",
+        "name": "Tropical Bird of Paradise & Lily Floral Hamper",
+        "slug": "tropical-bird-of-paradise-lily-floral-hamper",
+        "image_url": "/images/products/Tropical Bird of Paradise & Lily Floral Hamper.webp"
+      },
+      {
+        "id": "4bc8bbea-6d4a-471a-a68b-847a614b3784",
+        "name": "Elegant Floral Banquet Table Decoration",
+        "slug": "elegant-floral-banquet-table-decoration",
+        "image_url": "/images/decoration/Elegant Floral Banquet Table Decoration.webp"
+      },
+      {
+        "id": "6b6fbafa-39bd-46ba-a0c1-1a168eeff9ec",
+        "name": "Floral Temple Entrance Arch Decoration",
+        "slug": "floral-temple-entrance-arch-decoration",
+        "image_url": "/images/decoration/Floral Temple Entrance Arch Decoration.webp"
+      },
+      {
+        "id": "6288e46b-56fc-4079-9be1-bec30c62afb6",
+        "name": "Marigold Floral Welcome Backdrop",
+        "slug": "marigold-floral-welcome-backdrop",
+        "image_url": "/images/decoration/Marigold Floral Welcome Backdrop.webp"
+      },
+      {
+        "id": "0bcb0c3d-93c7-4d5b-b906-813bcd3b9deb",
+        "name": "Luxury Birthday Pink Hamper",
+        "slug": "luxury-birthday-pink-hamper",
+        "image_url": "/images/products/luxury-birthday-pink-hamper.webp"
+      },
+      {
+        "id": "59459563-2d35-400c-9979-8e9bec4ebc1c",
+        "name": "Luxury Pink Lily Bouquet with Lavender Wrap",
+        "slug": "luxury-pink-lily-bouquet-with-lavender-wrap",
+        "image_url": "/images/products/Luxury Pink Lily Bouquet with Lavender Wrap.webp"
+      },
+      {
+        "id": "3331931a-7a74-48b5-bddd-7df30533e23b",
+        "name": "Elegant Pink Orchid Bouquet",
+        "slug": "elegant-pink-orchid-bouquet",
+        "image_url": "/images/products/Elegant Pink Orchid Bouquet.webp"
+      },
+      {
+        "id": "0ca5c935-0250-4b83-b8c2-c7c33e5b3d69",
+        "name": "Blue Butterfly & Yellow Rose Floral Wreath",
+        "slug": "blue-butterfly-yellow-rose-floral-wreath",
+        "image_url": "/images/products/Blue Butterfly & Yellow Rose Floral Wreath.webp"
+      },
+      {
+        "id": "cfe56d99-009e-4af8-9911-51bd9cd4ef6d",
+        "name": "Elegant White Lily & Floral Arrangement with Gold Fan",
+        "slug": "elegant-white-lily-floral-arrangement-with-gold-fan",
+        "image_url": "/images/products/Elegant White Lily & Floral Arrangement with Gold Fan.webp"
+      },
+      {
+        "id": "fa236979-48f8-44c4-a2a0-6c49f01c9bdc",
+        "name": "Luxury Floral 15th Birthday Arrangement",
+        "slug": "luxury-floral-15th-birthday-arrangement",
+        "image_url": "/images/products/Luxury Floral 15th Birthday Arrangement.webp"
+      },
+      {
+        "id": "93c36de1-7d3a-4b03-8a13-848179f7328e",
+        "name": "Luxury Pink Lily Floral Arch Arrangement",
+        "slug": "luxury-pink-lily-floral-arch-arrangement",
+        "image_url": "/images/products/Luxury Pink Lily Floral Arch Arrangement.webp"
+      },
+      {
+        "id": "e4218676-fd35-44b4-bffa-6e3ddb2599d0",
+        "name": "Tropical Bird of Paradise Floral Arrangement",
+        "slug": "tropical-bird-of-paradise-floral-arrangement",
+        "image_url": "/images/products/Tropical Bird of Paradise Floral Arrangement.webp"
+      },
+      {
+        "id": "b64c5dae-70f7-44f3-9de5-1cc88b7bee5b",
+        "name": "Elegant Floral Console Decoration",
+        "slug": "elegant-floral-console-decoration",
+        "image_url": "/images/decoration/Elegant Floral Console Decoration.webp"
+      },
+      {
+        "id": "e436c6be-8b1c-4ab6-a7c2-a3cfa6c53846",
+        "name": "Floral WELCOME Floor Decoration",
+        "slug": "floral-welcome-floor-decoration",
+        "image_url": "/images/decoration/Floral “WELCOME” Floor Decoration.webp"
+      },
+      {
+        "id": "def6c23c-ba61-4ae0-9a6c-8d98599532f0",
+        "name": "Pink & White Floral Stage Decoration",
+        "slug": "pink-white-floral-stage-decoration",
+        "image_url": "/images/decoration/Pink & White Floral Stage Decoration.webp"
+      },
+      {
+        "id": "8a4caabb-1443-4371-bf1a-3c55939ab3d2",
+        "name": "Elegant White Lily & Pink Rose Floral Box Hamper",
+        "slug": "elegant-white-lily-pink-rose-floral-box-hamper",
+        "image_url": "/images/products/Elegant White Lily & Pink Rose Floral Box Hamper.webp"
+      },
+      {
+        "id": "5a1fa74f-73e5-489f-bc78-698286e42c39",
+        "name": "Luxury Mixed Flower Basket Hamper",
+        "slug": "luxury-mixed-flower-basket-hamper",
+        "image_url": "/images/products/Luxury Mixed Flower Basket Hamper.webp"
+      },
+      {
+        "id": "31b7657c-0280-4e78-b5f4-4efbd8a3d12c",
+        "name": "White Lily & Pink Rose Glass Vase Arrangement",
+        "slug": "white-lily-pink-rose-glass-vase-arrangement",
+        "image_url": "/images/products/White Lily & Pink Rose Glass Vase Arrangement.webp"
+      },
+      {
+        "id": "42d20365-47ff-4611-ada6-c11dc8e66d82",
+        "name": "Elegant Purple & Pink Floral Door Arch",
+        "slug": "elegant-purple-pink-floral-door-arch",
+        "image_url": "/images/decoration/Elegant Purple & Pink Floral Door Arch.webp"
+      },
+      {
+        "id": "a636e429-c904-40ea-ae51-d90b9c0d3146",
+        "name": "Grand Marigold Entrance Decoration",
+        "slug": "grand-marigold-entrance-decoration",
+        "image_url": "/images/decoration/Grand Marigold Entrance Decoration.webp"
+      },
+      {
+        "id": "cc60445a-d92d-440e-9ea9-714c73f1f469",
+        "name": "Pink & White Floral Window Decoration",
+        "slug": "pink-white-floral-window-decoration",
+        "image_url": "/images/decoration/Pink & White Floral Window Decoration.webp"
+      },
+      {
+        "id": "5735c167-5004-4d7e-b3a5-f242c97f9628",
+        "name": "Blush Rose Bouquet with Baby's Breath",
+        "slug": "blush-rose-bouquet-with-baby-s-breath",
+        "image_url": "/images/products/Blush Rose Bouquet with Baby’s Breath.webp"
+      },
+      {
+        "id": "73c6a843-75ac-4694-9c48-daf648b12ea8",
+        "name": "Rose Bouquet",
+        "slug": "rose-bouquet",
+        "image_url": "/images/new-products/rose-bouquet.jpeg"
+      },
+      {
+        "id": "fe8f9350-22f3-406a-bac6-cf61c78da220",
+        "name": "5 Star Chocolate Bouquet",
+        "slug": "5-star-chocolate-bouquet",
+        "image_url": "/images/products/5-star-chocolate-bouquet.jpeg"
+      },
+      {
+        "id": "238795c1-4526-458a-bf90-2fd36a435f1a",
+        "name": "Elegant Pink Lily Bouquet with Satin Ribbon",
+        "slug": "elegant-pink-lily-bouquet-with-satin-ribbon",
+        "image_url": "/images/products/Elegant Pink Lily Bouquet with Satin Ribbon.webp"
+      },
+      {
+        "id": "6dde14a5-c0f7-43d6-8ad3-626baa0654b2",
+        "name": "Luxury Pink Orchid Bouquet in Premium Wrap",
+        "slug": "luxury-pink-orchid-bouquet-in-premium-wrap",
+        "image_url": "/images/products/Luxury Pink Orchid Bouquet in Premium Wrap.webp"
+      },
+      {
+        "id": "b09a2a3d-958f-447c-96e6-ba60e7b2141d",
+        "name": "Classic Red Rose Bouquet in Black Premium Wrap",
+        "slug": "classic-red-rose-bouquet-in-black-premium-wrap",
+        "image_url": "/images/products/Classic Red Rose Bouquet in Black Premium Wrap.webp"
+      }
+    ]
+  },
+  "allUrls": [
+    "/images/celebrations/eid.webp",
+    "/images/celebrations/holi.webp",
+    "/images/celebrations/husband-appreciation.webp",
+    "/images/celebrations/navratri.webp",
+    "/images/celebrations/womens-day.webp",
+    "/images/collections/balloon-bouquet.webp",
+    "/images/collections/cake.webp",
+    "/images/collections/chocolate-bouquet.webp",
+    "/images/collections/fresh-flower.webp",
+    "/images/collections/hamper.webp",
+    "/images/collections/personalized.webp",
+    "/images/collections/plants.webp",
+    "/images/collections/teddy-and-bouquet.webp",
+    "/images/decoration/Colorful Floral Entrance home Decoration.webp",
+    "/images/decoration/Elegant Floral Banquet Table Decoration.webp",
+    "/images/decoration/Elegant Floral Console Decoration.webp",
+    "/images/decoration/Elegant Ganesh Puja Mandap Decoration.webp",
+    "/images/decoration/Elegant Purple & Pink Floral Door Arch.webp",
+    "/images/decoration/Elegant TV Unit Floral Decoration.webp",
+    "/images/decoration/Elegant White Floral Wedding Backdrop.webp",
+    "/images/decoration/Festive Living Room Floral Decoration.webp",
+    "/images/decoration/Floral & Leafy Entrance Door Decoration.webp",
+    "/images/decoration/Floral Car Decoration.webp",
+    "/images/decoration/Floral Entrance Arch with Marigold Drapes.webp",
+    "/images/decoration/Floral Mandap & Home Temple Decoration.webp",
+    "/images/decoration/Floral Temple Entrance Arch Decoration.webp",
+    "/images/decoration/Floral “WELCOME” Floor Decoration.webp",
+    "/images/decoration/Grand Ganesh Floral Backdrop Decoration.webp",
+    "/images/decoration/Grand Marigold Entrance Decoration.webp",
+    "/images/decoration/Grand Marigold Floral Welcome Pathway.webp",
+    "/images/decoration/Grand Marigold Temple Entrance Decoration.webp",
+    "/images/decoration/Grand Red & Green Floral Entrance Decoration.webp",
+    "/images/decoration/Luxury Blue & White Ganesh Floral Decoration.webp",
+    "/images/decoration/Luxury Floral 40th Birthday Decoration.webp",
+    "/images/decoration/Luxury Ganesh Floral Backdrop Decoration.webp",
+    "/images/decoration/Luxury Hanging Floral Entrance Arch.webp",
+    "/images/decoration/Luxury Pink & White Floral Backdrop.webp",
+    "/images/decoration/Marigold & Floral Floor Border Decoration.webp",
+    "/images/decoration/Marigold Floral Welcome Backdrop.webp",
+    "/images/decoration/Pink & White Floral Stage Decoration.webp",
+    "/images/decoration/Pink & White Floral Window Decoration.webp",
+    "/images/decoration/Purple & White Floral Door Decoration.webp",
+    "/images/decoration/Traditional Ganesh Puja Floral Backdrop.webp",
+    "/images/decoration/Traditional Marigold Door Entrance Decoration.webp",
+    "/images/decoration/Traditional Marigold Door Hanging Decoration.webp",
+    "/images/decoration/Traditional Marigold Welcome Door Decoration.webp",
+    "/images/decoration/Traditional Marigold Window Decoration.webp",
+    "/images/decoration/Traditional Yellow Floral Puja Decoration.webp",
+    "/images/decoration/White Floral Doorway Decoration.webp",
+    "/images/decoration/pink white and blue ganesh decoration.webp",
+    "/images/handpicked/garden-elegance.webp",
+    "/images/handpicked/ivory-dream.webp",
+    "/images/handpicked/pastel-blush.webp",
+    "/images/handpicked/red-romance.webp",
+    "/images/new-products/balloons-chocolates-flower-hamper.jpeg",
+    "/images/new-products/custom-printed-bottle.jpeg",
+    "/images/new-products/custom-printed-coffee-mug.jpeg",
+    "/images/new-products/dairy-milk-hamper-toy.jpeg",
+    "/images/new-products/happy-birthday-balloon-hamper.jpeg",
+    "/images/new-products/happy-birthday-cake-gift-hamper.jpeg",
+    "/images/new-products/lucky-bamboo-tree.jpeg",
+    "/images/new-products/mix-lily-flowers-bouquet.jpeg",
+    "/images/new-products/pink-rose-hamper.jpeg",
+    "/images/new-products/rose-bouquet.jpeg",
+    "/images/new-products/white-lily-hamper.jpeg",
+    "/images/new-products/white-lily-rose-mix-bouquet.jpeg",
+    "/images/new-products/white-rose-white-lily-hamper.jpeg",
+    "/images/products/2-sunflower-babys-breath-big-bouquet.jpeg",
+    "/images/products/20-piece-rose-bouquet.jpeg",
+    "/images/products/20-roses-bouquet.jpeg",
+    "/images/products/4-piece-sunflower-bouquet.jpeg",
+    "/images/products/4-teddy-bouquet.jpeg",
+    "/images/products/5-piece-dairy-milk-little-hamper.jpeg",
+    "/images/products/5-star-chocolate-bouquet.jpeg",
+    "/images/products/6-piece-sunflower-bouquet.jpeg",
+    "/images/products/Baby’s Breath Floral Crown 1.webp",
+    "/images/products/Blue & White Floral Vase Arrangement.webp",
+    "/images/products/Blue Butterfly & Yellow Rose Floral Wreath.webp",
+    "/images/products/Blush Rose Bouquet with Baby’s Breath.webp",
+    "/images/products/Carlsberg Floral Gift Bouquet.webp",
+    "/images/products/Classic Red Rose Bouquet in Black Premium Wrap.webp",
+    "/images/products/Colorful Gerbera Daisy Bouquet in Blue Premium Wrap.webp",
+    "/images/products/Colorful Mixed Flower Basket Hamper.webp",
+    "/images/products/Crimson Rose Garland with Pearl Loop.webp",
+    "/images/products/Crimson Roses with Black Wrap.webp",
+    "/images/products/Elegant Birthday Floral Hamper with Balloon.webp",
+    "/images/products/Elegant Black Gift Bouquet with Message Balloon.webp",
+    "/images/products/Elegant Lily & Rose Floral Box Hamper.webp",
+    "/images/products/Elegant Pink & White Lily Floral Hamper.webp",
+    "/images/products/Elegant Pink Lily & Orchid Floral Basket Hamper.webp",
+    "/images/products/Elegant Pink Lily Bouquet on Marble Table.webp",
+    "/images/products/Elegant Pink Lily Bouquet with Satin Ribbon.webp",
+    "/images/products/Elegant Pink Orchid Bouquet.webp",
+    "/images/products/Elegant Pink Rose Garland Pair.webp",
+    "/images/products/Elegant Red Rose Garland Display.webp",
+    "/images/products/Elegant Red Rose Garlands on Gold Stand.webp",
+    "/images/products/Elegant Red and Pink Rose Bouquet.webp",
+    "/images/products/Elegant Red and White Wedding Garlands.webp",
+    "/images/products/Elegant Sunflower and Rose Bouquet.webp",
+    "/images/products/Elegant White Flower Bouquet on Pedestal.webp",
+    "/images/products/Elegant White Lily & Floral Arrangement with Gold Fan.webp",
+    "/images/products/Elegant White Lily & Pink Rose Floral Box Hamper.webp",
+    "/images/products/Elegant White Lily Bouquet in Black Wrap.webp",
+    "/images/products/Elegant White Lily Bouquet in Kraft Wrap.webp",
+    "/images/products/Golden 40th Birthday Floral Arrangement.webp",
+    "/images/products/Golden 50th Birthday Floral Hamper.webp",
+    "/images/products/Golden Sunflower Newspaper Bouquet.webp",
+    "/images/products/Grand Pink & White Floral Entrance Arch.webp",
+    "/images/products/Grand Red & Yellow Floral Tower Hamper.webp",
+    "/images/products/Ivory Rose and Baby’s Breath Bouquet.webp",
+    "/images/products/Luxurious Mixed Rose Bouquet.webp",
+    "/images/products/Luxurious Red Rose Bouquet with Baby’s Breath.webp",
+    "/images/products/Luxury Blue & Yellow Floral Wreath.webp",
+    "/images/products/Luxury Chocolate Gift Bouquet in Red Wrap.webp",
+    "/images/products/Luxury Floral 15th Birthday Arrangement.webp",
+    "/images/products/Luxury Mixed Flower Basket Hamper.webp",
+    "/images/products/Luxury Mixed Flower Bouquet in Lavender Vase Hamper.webp",
+    "/images/products/Luxury Pastel Rose Hatbox Hamper.webp",
+    "/images/products/Luxury Pink & White Rose Basket Bouquet.webp",
+    "/images/products/Luxury Pink Lily & Rose Box Hamper.webp",
+    "/images/products/Luxury Pink Lily & Rose Vase Hamper.webp",
+    "/images/products/Luxury Pink Lily Bouquet in Premium Kraft Wrap.webp",
+    "/images/products/Luxury Pink Lily Bouquet in Premium Wrap.webp",
+    "/images/products/Luxury Pink Lily Bouquet with Lavender Wrap.webp",
+    "/images/products/Luxury Pink Lily Floral Arch Arrangement.webp",
+    "/images/products/Luxury Pink Orchid Bouquet in Premium Wrap.webp",
+    "/images/products/Luxury Pink Rose Bouquet in Kraft Wrap.webp",
+    "/images/products/Luxury Sunflower Bouquet in Black Wrap.webp",
+    "/images/products/Pastel Lily and Rose Bouquet with Bow.webp",
+    "/images/products/Pastel Rose Bouquet with Baby’s Breath.webp",
+    "/images/products/Peach Roses in Black Wrap.webp",
+    "/images/products/Pink & White Lily Bouquet in Premium Wrap.webp",
+    "/images/products/Pink Lily Bouquet in Soft Sunlight.webp",
+    "/images/products/Pink Lily Bouquet with Newspaper Wrap.webp",
+    "/images/products/Pink Peony Bouquet with Lavender Ribbon.webp",
+    "/images/products/Pink and Yellow Rose Bouquet.webp",
+    "/images/products/Plush Teddy Bear Bouquet in Pink Tulle.webp",
+    "/images/products/Premium Chocolate & Rose Gift Bouquet.webp",
+    "/images/products/Premium White Gerbera Bouquet in Black Wrap.webp",
+    "/images/products/Red Rose & White Lily Table Centerpiece.webp",
+    "/images/products/Romantic Mint-Wrapped Rose Bouquet.webp",
+    "/images/products/Romantic Stargazer Lily Bouquet.webp",
+    "/images/products/Sunflower Love Butterfly Bouquet.webp",
+    "/images/products/Sunflower and Baby’s Breath Bouquet.webp",
+    "/images/products/Traditional Floral Puja Altar Decoration.webp",
+    "/images/products/Tropical Bird of Paradise & Lily Floral Hamper.webp",
+    "/images/products/Tropical Bird of Paradise Floral Arrangement.webp",
+    "/images/products/Vibrant Rose Bouquet with Baby’s Breath.webp",
+    "/images/products/Vivid Red Rose Bouquet in Blue Wrap.webp",
+    "/images/products/White Lily & Pink Rose Glass Vase Arrangement.webp",
+    "/images/products/anniversary-beautiful-hamper.jpeg",
+    "/images/products/anniversary-hamper.jpeg",
+    "/images/products/baby-breath-bouquet.jpeg",
+    "/images/products/balloon-and-flower-bouquet.jpeg",
+    "/images/products/big-flower-bouquet-1.jpeg",
+    "/images/products/big-mix-hamper-1.jpg",
+    "/images/products/big-sunflower-bouquet.jpeg",
+    "/images/products/birthday-chocolate-bouquet-with-photo.jpeg",
+    "/images/products/black-crimson-rose-luxe-bouquet.webp",
+    "/images/products/black-velvet-rose-bouquet.webp",
+    "/images/products/blue-balloon-floral-celebration-bouquet.webp",
+    "/images/products/blue-garden-lily-bouquet.webp",
+    "/images/products/blush-harmony-roses.webp",
+    "/images/products/blush-ivory-celebration-bouquet.webp",
+    "/images/products/blush-ivory-rose-bouquet.webp",
+    "/images/products/blush-lily-wildflower-bouquet.webp",
+    "/images/products/cakes/butterscotch-cake.webp",
+    "/images/products/cakes/chocolate-cake.webp",
+    "/images/products/cakes/strawberry-cake.webp",
+    "/images/products/cakes/vanila-cake.webp",
+    "/images/products/carnation.webp",
+    "/images/products/celebrations-gift-box-1.jpg",
+    "/images/products/champagne-bloom-delight.webp",
+    "/images/products/chips-chocolate-hamper-1.jpg",
+    "/images/products/chocolates-and-teddy-hamper.jpeg",
+    "/images/products/chocolates-bouquet.jpeg",
+    "/images/products/classic-gift-hamper-set-1.jpg",
+    "/images/products/classic-red-rose-mix-1.jpg",
+    "/images/products/corporate-appreciation-box.webp",
+    "/images/products/crimson-elegance-bouquet.webp",
+    "/images/products/crimson-rose-luxe-bouquet.webp",
+    "/images/products/custom-name-rose-box.webp",
+    "/images/products/dairy-milk-chocolate-bouquet.jpeg",
+    "/images/products/dairy-milk-silk-bouquet-1.jpg",
+    "/images/products/daisy.webp",
+    "/images/products/daughters-day-balloon-hamper.jpeg",
+    "/images/products/divine-navratri-bloom-box.webp",
+    "/images/products/eid-mubarak-luxe-hamper.webp",
+    "/images/products/emerald-luxe-arrangement.webp",
+    "/images/products/engraved-wooden-keepsake.webp",
+    "/images/products/executive-floral-hamper.webp",
+    "/images/products/ferrero-rocher-bouquet-1.jpg",
+    "/images/products/ferrero-rocher-chocolate-bouquet-2.jpeg",
+    "/images/products/ferrero-rocher-chocolate-bouquet.jpeg",
+    "/images/products/ferrero-rocher-hamper.jpeg",
+    "/images/products/flower-basket-hamper.jpeg",
+    "/images/products/forever-together-bouquet.webp",
+    "/images/products/friends-forever-rose-bouquet-1.jpg",
+    "/images/products/funeral-flower-decoration.jpeg",
+    "/images/products/garland-set.jpeg",
+    "/images/products/gate-decoration.jpeg",
+    "/images/products/gentlemans-luxury-gift-set.webp",
+    "/images/products/gerbera.webp",
+    "/images/products/golden-anniversary-bloom.webp",
+    "/images/products/golden-meadow-mixed-flower-bouquet.webp",
+    "/images/products/golden-yellow-rose-bouquet.webp",
+    "/images/products/happy-birthday-cake-and-flower-hamper.jpeg",
+    "/images/products/happy-birthday-flowers-and-cake-combo.jpeg",
+    "/images/products/happy-birthday-gift-box.jpeg",
+    "/images/products/happy-birthday-rose-bouquet-1.jpg",
+    "/images/products/happy-birthday-rose-hamper.jpeg",
+    "/images/products/heart-shape-rose-box.webp",
+    "/images/products/holi-color-splash-bouquet.webp",
+    "/images/products/ivory-serenity-bloom.webp",
+    "/images/products/jade-plant-1.webp",
+    "/images/products/kinder-joy-surprise-bouquet-1.jpg",
+    "/images/products/kitkat-chocolate-bouquet.jpeg",
+    "/images/products/lily-and-sunflower-bouquet.jpeg",
+    "/images/products/lily-beautiful-bouquet.jpeg",
+    "/images/products/lily-flower-funeral-wreath.jpeg",
+    "/images/products/lily.webp",
+    "/images/products/love-gift-hamper-2.jpeg",
+    "/images/products/love-gift-hamper.jpeg",
+    "/images/products/lucky-bamboo-1.webp",
+    "/images/products/lucky-bamboo-plant.jpeg",
+    "/images/products/luxury-birthday-pink-hamper.webp",
+    "/images/products/mix-beautiful-flower-bouquet.jpeg",
+    "/images/products/mix-chocolate-bouquet-1.jpg",
+    "/images/products/mix-chocolate-hamper.jpeg",
+    "/images/products/mix-chocolates-aesthetic-hamper.jpeg",
+    "/images/products/mix-flower-beautiful-hamper.jpeg",
+    "/images/products/mix-flower-hamper-with-chocolate.jpeg",
+    "/images/products/mix-flower-hamper.jpeg",
+    "/images/products/mix-flowers.webp",
+    "/images/products/mix-little-flower-bouquet.jpeg",
+    "/images/products/mix-rose-bouquet.jpeg",
+    "/images/products/orange-rose-garland-set.jpeg",
+    "/images/products/orchid-dream-bouquet-1.jpg",
+    "/images/products/orchids-1771889205392.webp",
+    "/images/products/orchids-bouquet.jpeg",
+    "/images/products/orchids-small-bouquet.jpeg",
+    "/images/products/personalized-mug-and-roses.webp",
+    "/images/products/photo-memory-gift-set.webp",
+    "/images/products/pink-and-white-rose-bouquet.jpeg",
+    "/images/products/pink-balloon-sweet-celebration-bouquet.webp",
+    "/images/products/pink-chocolate-celebration-bouquet.webp",
+    "/images/products/pink-lily-blossom-bouquet.webp",
+    "/images/products/pink-lily-bouquet-2.jpeg",
+    "/images/products/pink-lily-bouquet.jpeg",
+    "/images/products/pink-lily-garden-bouquet.webp",
+    "/images/products/pink-rose-and-flowers-hamper.jpeg",
+    "/images/products/pink-rose-and-yellow-rose-bouquet.jpeg",
+    "/images/products/pink-rose-bouquet-2.jpeg",
+    "/images/products/pink-rose-bouquet.jpeg",
+    "/images/products/pink-rose-celebration-gift-hamper.webp",
+    "/images/products/pink-rose-chrysanthemum-babys-breath-bouquet-1.jpeg",
+    "/images/products/pink-rose-garden-bouquet.webp",
+    "/images/products/pinterest-birthday-decoration.jpeg",
+    "/images/products/premium-chocolate-gift-set-1.jpg",
+    "/images/products/prestige-floral-ensemble.webp",
+    "/images/products/printed-coffee-mug-bundle-1.jpg",
+    "/images/products/proud-of-you-balloon-bouquet.jpeg",
+    "/images/products/purple-celebration-floral-basket.webp",
+    "/images/products/purple-elegance-lily-bouquet.webp",
+    "/images/products/red-rose-and-pink-rose-bouquet.jpeg",
+    "/images/products/red-rose-bouquet-special.jpeg",
+    "/images/products/red-rose-chrysanthemum-babys-breath-bouquet.jpeg",
+    "/images/products/red-rose-white-rose-babys-breath-bouquet.jpeg",
+    "/images/products/red-roses-bouquet.jpeg",
+    "/images/products/red-velvet-beer-rose-bouquet.webp",
+    "/images/products/roses-ferrero-rocher-drink-combo.jpeg",
+    "/images/products/roses.webp",
+    "/images/products/royal-crimson-symphony.webp",
+    "/images/products/royal-orchid-lily-bouquet.webp",
+    "/images/products/ruby-blush-rose-bouquet.webp",
+    "/images/products/ruby-romance-collection.webp",
+    "/images/products/scented-candle-gift-1.jpg",
+    "/images/products/signature-business-bloom.webp",
+    "/images/products/single-sunflower-bouquet.jpeg",
+    "/images/products/sister-gifting-balloon-hamper.jpeg",
+    "/images/products/sister-golden-balloon-bouquet.jpeg",
+    "/images/products/strawberry-bouquet.jpeg",
+    "/images/products/sunflower-and-carnation-hamper.jpeg",
+    "/images/products/sunflower-beautiful-bouquet.jpeg",
+    "/images/products/sunflower.webp",
+    "/images/products/sunshine-balloon-floral-celebration-bouquet.webp",
+    "/images/products/sunshine-yellow-rose-bouquet-1.jpg",
+    "/images/products/teddy-and-chocolate-bouquet.jpeg",
+    "/images/products/teddy-and-chocolate-hamper.jpeg",
+    "/images/products/welcome-back-balloon-flower-chocolate-bouquet.jpeg",
+    "/images/products/white-blush-lily-romance-bouquet.webp",
+    "/images/products/white-lily-beautiful-hamper.jpeg",
+    "/images/products/white-lily-bouquet.jpeg",
+    "/images/products/white-lily-elegance-bouquet-1.jpg",
+    "/images/products/white-lily-gypsophila-elegance-bouquet.webp",
+    "/images/products/white-red-rose-romance-bouquet.webp",
+    "/images/products/yellow-rose-hamper.jpeg",
+    "/images/products/zz-plant-1.webp",
+    "/images/relationships/boyfriend.webp",
+    "/images/relationships/forher.webp",
+    "/images/relationships/forhim.webp",
+    "/images/relationships/friends.webp",
+    "/images/relationships/girlfriend.webp",
+    "/images/relationships/husband.webp",
+    "/images/relationships/kids.webp",
+    "/images/relationships/wife.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/banners/banner-1776734635290-1776734644197.jpg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/birthday-hamper-1774043415933.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/flower-decoration-1774043493416.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/flower-hamper-1774043531530.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/flower-hamper-1774043587461.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/happy-birthday-hamper-1774043382328.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/mix-birthday-hamper-1774043225981.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/photo-frame-1774042962802.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/sunflower-bouquet-1774043266783.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332818503.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332874795.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332957596.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773332991106.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333023769.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333055930.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333287629.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333357131.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1773333401748.webp",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043071792.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043143655.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043184289.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043300201.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774043330073.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176192124.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176216120.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176233067.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176257636.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176276033.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176293698.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176364651.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176383202.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176417471.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176458424.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176493971.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176514400.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176532919.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176547512.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176572542.jpeg",
+    "https://tdttgbmoaskpmmkvjenq.supabase.co/storage/v1/object/public/images/products/unnamed-1774176591274.jpeg"
+  ]
+}
