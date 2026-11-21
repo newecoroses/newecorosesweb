@@ -29,20 +29,18 @@ interface PickItem {
     scale?: number;
 }
 
+/**
+ * ScrollRow — mirrors the promotional banner slider's mobile spacing:
+ * Full-width scroll container with `px-3 md:px-0` padding on the flex track,
+ * with `gap-3 md:gap-4` matching PromoSlider's 12px slide spacing.
+ */
 function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string }) {
     return (
-        /* 
-         * Full-bleed horizontal scroll on mobile:
-         * - Negative margin pulls the scroll container to the screen edges
-         * - Padding on the scroll container adds the visual inset back inside
-         * - This allows smooth edge-to-edge scrolling without clipping (no "white wall")
-         * - On md+ the layout switches to a flex-wrap grid so no horizontal scroll needed
-         */
         <div
-            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity md:overflow-visible overscroll-x-contain -mx-4 sm:-mx-6 md:mx-0"
+            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity md:overflow-visible overscroll-x-contain"
             style={{ WebkitOverflowScrolling: 'touch' }}
         >
-            <div className="flex md:flex-wrap gap-3.5 md:gap-4 w-max md:w-full pb-1 px-4 sm:px-6 md:px-0">
+            <div className="flex md:flex-wrap gap-3 md:gap-4 w-max md:w-full pb-1 px-3 md:px-0">
                 {items.map((item, idx) => (
                     <motion.div
                         key={item.name}
@@ -81,33 +79,38 @@ export default function FeaturedPicks() {
     return (
         <>
             {/* ── Pick Their Fav Flowers ── */}
-            <section className="py-3 md:py-6 bg-white w-full max-w-full">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    <motion.h2
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        viewport={{ once: true }}
-                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight mb-2 md:mb-3"
-                    >
-                        Pick Their Fav Flowers
-                    </motion.h2>
+            <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
+                <div className="max-w-7xl mx-auto md:px-8">
+                    {/* Heading: px-3 on mobile to perfectly match the cards and PromoSlider, md:px-0 on desktop */}
+                    <div className="px-3 md:px-0 mb-2 md:mb-3">
+                        <motion.h2
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                            viewport={{ once: true }}
+                            className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight"
+                        >
+                            Pick Their Fav Flowers
+                        </motion.h2>
+                    </div>
                     <ScrollRow items={FAV_FLOWERS} cardWidth="w-[38vw] sm:w-[32vw]" />
                 </div>
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
-            <section className="py-3 md:py-6 bg-white w-full max-w-full">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    <motion.h2
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        viewport={{ once: true }}
-                        className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight mb-2 md:mb-3"
-                    >
-                        Birthday Gifts That Wow
-                    </motion.h2>
+            <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
+                <div className="max-w-7xl mx-auto md:px-8">
+                    <div className="px-3 md:px-0 mb-2 md:mb-3">
+                        <motion.h2
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                            viewport={{ once: true }}
+                            className="font-sans text-base sm:text-lg md:text-xl text-[#1c1917] font-extrabold tracking-tight"
+                        >
+                            Birthday Gifts That Wow
+                        </motion.h2>
+                    </div>
                     <ScrollRow items={BIRTHDAY_GIFTS} cardWidth="w-[38vw] sm:w-[32vw]" />
                 </div>
             </section>
