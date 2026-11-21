@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/lib/cart-context';
 import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
@@ -44,9 +45,9 @@ const INDIAN_STATES = [
 
 /* ── Shared field class (template style) ── */
 const fieldCls = [
-    'w-full bg-[#f7f7f7] border border-black/[0.09] rounded-[11px] px-4 py-3',
-    'text-[15px] text-[#111] placeholder:text-[#888] outline-none',
-    'focus:border-[#bfa81f] focus:ring-2 focus:ring-[#bfa81f]/20 transition-all',
+    'w-full bg-[#f7f7f7] border border-black/[0.12] rounded-[11px] px-4 py-3',
+    'text-[15px] text-black placeholder:text-black/50 outline-none',
+    'focus:border-[#bfa81f] focus:ring-2 focus:ring-[#bfa81f]/20 transition-all font-medium',
 ].join(' ');
 
 function CheckoutContent() {
@@ -413,18 +414,18 @@ function CheckoutContent() {
                     --st-btn-text: #ffffff;
                     --st-bg: #ffffff;
                     --st-surface: #f4f4f4;
-                    --st-text: #111111;
-                    --st-muted: #555555;
+                    --st-text: #000000;
+                    --st-muted: #000000;
                     --st-radius: 14;
                     --st-pad: clamp(16px, 4vw, 48px);
                     font-family: 'Inter', system-ui, sans-serif;
                     font-size: 15px;
                     line-height: 1.6;
-                    color: var(--st-text);
+                    color: #000000;
                     background: var(--st-bg);
                     -webkit-font-smoothing: antialiased;
                 }
-                .ner-checkout *, .ner-checkout *::before, .ner-checkout *::after { box-sizing: border-box; }
+                .ner-checkout *, .ner-checkout *::before, .ner-checkout *::after { box-sizing: border-box; color: inherit; }
                 .ner-cx-grid {
                     display: grid;
                     grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
@@ -436,6 +437,7 @@ function CheckoutContent() {
                     border-radius: calc(var(--st-radius) * 1.3px);
                     background: var(--st-surface);
                     border: 1px solid rgba(17,17,17,0.07);
+                    color: #000000;
                 }
                 .ner-cx-sticky { position: sticky; top: 80px; }
                 .ner-wc-row {
@@ -445,6 +447,7 @@ function CheckoutContent() {
                     align-items: start;
                     padding: 14px 0;
                     border-bottom: 1px solid rgba(17,17,17,0.08);
+                    color: #000000;
                 }
                 .ner-wc-img {
                     width: 68px; height: 86px;
@@ -459,31 +462,32 @@ function CheckoutContent() {
                     display: flex; align-items: center; justify-content: center;
                     font-size: 26px;
                 }
-                .ner-wc-sum { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
-                .ner-wc-sum-row { display: flex; justify-content: space-between; gap: 14px; font-size: 14.5px; }
-                .ner-wc-sum-row span:first-child { color: var(--st-muted); }
-                .ner-wc-sum-row.is-total { padding-top: 11px; margin-top: 2px; border-top: 1px solid rgba(17,17,17,0.12); font-size: 17px; }
-                .ner-wc-sum-row.is-total span:first-child { color: var(--st-text); font-weight: 700; }
-                .ner-wc-sum-row.is-total strong { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
-                .ner-oc-dl { display: flex; flex-direction: column; gap: 13px; }
-                .ner-oc-dl dt { color: var(--st-muted); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
-                .ner-oc-dl dd { font-weight: 600; font-size: 14px; word-break: break-word; }
+                .ner-wc-sum { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; color: #000000; }
+                .ner-wc-sum-row { display: flex; justify-content: space-between; gap: 14px; font-size: 14.5px; color: #000000; }
+                .ner-wc-sum-row span:first-child { color: #000000; }
+                .ner-wc-sum-row.is-total { padding-top: 11px; margin-top: 2px; border-top: 1px solid rgba(17,17,17,0.12); font-size: 17px; color: #000000; }
+                .ner-wc-sum-row.is-total span:first-child { color: #000000; font-weight: 700; }
+                .ner-wc-sum-row.is-total strong { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; color: #000000; }
+                .ner-oc-dl { display: flex; flex-direction: column; gap: 13px; color: #000000; }
+                .ner-oc-dl dt { color: #000000; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+                .ner-oc-dl dd { font-weight: 600; font-size: 14px; word-break: break-word; color: #000000; }
                 .ner-st-btn {
                     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
                     min-height: 48px; padding: 0 24px;
                     border-radius: calc(var(--st-radius) * 1px);
                     border: 2px solid var(--st-brand);
-                    background: var(--st-brand); color: var(--st-btn-text);
+                    background: var(--st-brand); color: var(--st-btn-text) !important;
                     font: 700 15px/1 'Inter', sans-serif;
                     text-decoration: none; cursor: pointer;
                     transition: transform .15s ease, box-shadow .15s ease;
                 }
+                .ner-st-btn * { color: var(--st-btn-text) !important; }
                 .ner-st-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(191,168,31,.35); }
                 .ner-st-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-                .ner-st-btn--ghost { background: transparent; color: var(--st-text); border-color: rgba(17,17,17,0.22); }
-                .ner-st-btn--ghost:hover { box-shadow: none; border-color: var(--st-text); }
-                .ner-cx-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--st-muted); margin-bottom: 10px; }
-                .ner-cx-section-h { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: var(--st-text); margin-bottom: 14px; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+                .ner-st-btn--ghost { background: transparent; color: #000000; border-color: rgba(17,17,17,0.22); }
+                .ner-st-btn--ghost:hover { box-shadow: none; border-color: #000000; }
+                .ner-cx-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #000000; margin-bottom: 10px; }
+                .ner-cx-section-h { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: #000000; margin-bottom: 14px; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
                 .ner-pincode-ok { background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.25); border-radius: 11px; padding: 11px 14px; }
                 .ner-pincode-bad { background: #fef2f2; border: 1px solid rgba(239,68,68,0.25); border-radius: 11px; padding: 11px 14px; }
                 .ner-pincode-warn { background: #fefce8; border: 1px solid rgba(234,179,8,0.3); border-radius: 11px; padding: 11px 14px; }
@@ -499,26 +503,43 @@ function CheckoutContent() {
             `}</style>
 
             {/* ── Minimal checkout header ── */}
-            <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-black/[0.07] h-[60px] flex items-center justify-between px-6">
-                <Link href="/shop" className="flex items-center gap-1.5 text-[13px] font-semibold text-[#555] hover:text-[#111] transition-colors">
+            <header className="sticky top-0 z-50 bg-white border-b border-black/[0.08] h-[64px] flex items-center justify-between px-4 sm:px-6 shadow-2xs">
+                <Link href="/shop" className="flex items-center gap-1.5 text-[13px] font-bold text-black hover:opacity-70 transition-opacity">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
                     Back
                 </Link>
-                <Link href="/" className="flex items-center gap-2.5">
-                    <img src="/favicon_io/android-chrome-512x512.png" alt="New Eco Roses" width={32} height={32} className="w-8 h-8 rounded-lg object-contain" onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/favicon_io/android-chrome-192x192.png'; }} />
-                    <span className="text-[13px] font-black tracking-[0.14em] uppercase text-[#111] hidden sm:inline">New Eco Roses</span>
+                {/* Brand Logo: Identical aesthetic and size to Cart header */}
+                <Link href="/" className="flex items-center gap-2 group flex-shrink-0 select-none">
+                    <Image
+                        src="/favicon_io/android-chrome-512x512.png"
+                        alt="New Eco Roses Logo"
+                        width={32}
+                        height={32}
+                        priority
+                        className="rounded-full transition-transform group-hover:scale-105"
+                    />
+                    <div className="flex items-center gap-2">
+                        <span className="font-sans text-[19px] sm:text-[21px] font-black text-black tracking-tight">
+                            ner
+                        </span>
+                        <div className="h-4 w-[1.5px] bg-black/25" />
+                        <div className="flex flex-col text-[7.5px] font-extrabold tracking-[0.14em] uppercase text-black leading-none">
+                            <span>NEW</span>
+                            <span className="my-[1px]">ECO</span>
+                            <span>ROSES</span>
+                        </div>
+                    </div>
                 </Link>
                 <div className="w-14" />
             </header>
 
             {/* ── Page shell ── */}
-            <div className="ner-checkout min-h-screen bg-white">
+            <div className="ner-checkout min-h-screen bg-white text-black">
                 <div className="max-w-[1140px] mx-auto px-[var(--st-pad)] py-10">
 
                     {/* Page heading */}
                     <div className="mb-9">
-                        <p className="ner-cx-section-title">New Eco Roses</p>
-                        <h1 style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif", fontSize: 'clamp(26px,3vw,36px)', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+                        <h1 style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif", fontSize: 'clamp(26px,3vw,36px)', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1, color: '#000000' }}>
                             Secure Checkout
                         </h1>
                     </div>
@@ -543,55 +564,55 @@ function CheckoutContent() {
 
                                     {/* Primary Phone */}
                                     <div>
-                                        <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#444', marginBottom: 5 }}>
+                                        <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#000000', marginBottom: 5 }}>
                                             Primary Mobile Number <span style={{ color: '#dc2626' }}>*</span>
                                         </label>
                                         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                            <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
+                                            <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#000000', pointerEvents: 'none' }}>+91</span>
                                             <input type="tel" name="phone" placeholder="10-digit mobile number" maxLength={10} value={formData.phone} onChange={handleChange} autoComplete="off" className={fieldCls} style={{ paddingLeft: 42 }} required />
                                         </div>
                                     </div>
 
-                                    {/* Alternate Phone (Mandatory) */}
+                                    {/* Alternate Phone */}
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
-                                            <label style={{ fontSize: 12, fontWeight: 700, color: '#444' }}>
-                                                Alternate Mobile Number <span style={{ color: '#dc2626' }}>* (Mandatory for Delivery)</span>
+                                            <label style={{ fontSize: 12, fontWeight: 700, color: '#000000' }}>
+                                                Alternate Mobile Number <span style={{ color: '#dc2626' }}>*</span>
                                             </label>
                                         </div>
                                         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                            <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
+                                            <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#000000', pointerEvents: 'none' }}>+91</span>
                                             <input type="tel" name="alternatePhone" placeholder="10-digit alternate number (different from primary)" maxLength={10} value={formData.alternatePhone} onChange={handleChange} autoComplete="off" className={fieldCls} style={{ paddingLeft: 42 }} required />
                                         </div>
-                                        <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#666', fontWeight: 500 }}>
+                                        <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#000000', fontWeight: 500 }}>
                                             ⚡ Required for delivery rider coordination. Cannot be the same as your primary number.
                                         </p>
                                     </div>
 
                                     {/* Ordering for someone else checkbox */}
-                                    <div style={{ padding: '12px 14px', borderRadius: 12, border: formData.orderingForOther ? '1.5px solid #bfa81f' : '1px solid rgba(17,17,17,0.1)', background: formData.orderingForOther ? '#faf8f0' : '#fcfcfc', transition: 'all 0.2s' }}>
+                                    <div style={{ padding: '12px 14px', borderRadius: 12, border: formData.orderingForOther ? '1.5px solid #000000' : '1px solid rgba(17,17,17,0.1)', background: formData.orderingForOther ? '#fafafa' : '#fcfcfc', transition: 'all 0.2s' }}>
                                         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
                                             <input
                                                 type="checkbox"
                                                 name="orderingForOther"
                                                 checked={formData.orderingForOther}
                                                 onChange={handleChange}
-                                                style={{ accentColor: '#bfa81f', width: 17, height: 17, marginTop: 2, flexShrink: 0 }}
+                                                style={{ accentColor: '#000000', width: 17, height: 17, marginTop: 2, flexShrink: 0 }}
                                             />
                                             <div>
-                                                <span style={{ fontSize: 13.5, fontWeight: 700, color: '#111' }}>
+                                                <span style={{ fontSize: 13.5, fontWeight: 700, color: '#000000' }}>
                                                     Ordering for someone else? (Gift Surprise)
                                                 </span>
-                                                <p style={{ margin: '2px 0 0', fontSize: 12, color: '#666', lineHeight: 1.4 }}>
+                                                <p style={{ margin: '2px 0 0', fontSize: 12, color: '#000000', lineHeight: 1.4 }}>
                                                     Provide the recipient&apos;s details so our delivery rider can contact them upon arrival.
                                                 </p>
                                             </div>
                                         </label>
 
                                         {formData.orderingForOther && (
-                                            <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(191,168,31,0.25)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                            <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                                                 <div>
-                                                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#333', marginBottom: 4 }}>
+                                                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#000000', marginBottom: 4 }}>
                                                         Recipient&apos;s Full Name <span style={{ color: '#dc2626' }}>*</span>
                                                     </label>
                                                     <input
@@ -605,11 +626,11 @@ function CheckoutContent() {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#333', marginBottom: 4 }}>
+                                                    <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#000000', marginBottom: 4 }}>
                                                         Recipient&apos;s Mobile Number <span style={{ color: '#dc2626' }}>*</span>
                                                     </label>
                                                     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                                        <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#555', pointerEvents: 'none' }}>+91</span>
+                                                        <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: '#000000', pointerEvents: 'none' }}>+91</span>
                                                         <input
                                                             type="tel"
                                                             name="recipientPhone"
@@ -628,8 +649,8 @@ function CheckoutContent() {
                                         )}
                                     </div>
 
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#555', cursor: 'pointer', paddingTop: 2 }}>
-                                        <input type="checkbox" name="emailNews" checked={formData.emailNews} onChange={handleChange} style={{ accentColor: '#bfa81f', width: 15, height: 15 }} />
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#000000', cursor: 'pointer', paddingTop: 2 }}>
+                                        <input type="checkbox" name="emailNews" checked={formData.emailNews} onChange={handleChange} style={{ accentColor: '#000000', width: 15, height: 15 }} />
                                         Email me with new arrivals and exclusive offers
                                     </label>
                                 </div>
@@ -645,8 +666,8 @@ function CheckoutContent() {
 
                                     {/* City + State + PIN */}
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                                        <input type="text" name="city" placeholder="City (auto-fills)" value={formData.city} onChange={handleChange} className={fieldCls} readOnly={formData.city === 'Kolkata'} style={formData.city === 'Kolkata' ? { background: '#f0f0f0', color: '#444' } : {}} required />
-                                        <select name="state" value={formData.state} onChange={handleChange} className={fieldCls}>
+                                        <input type="text" name="city" placeholder="City (auto-fills)" value={formData.city} onChange={handleChange} className={fieldCls} readOnly={formData.city === 'Kolkata'} style={formData.city === 'Kolkata' ? { background: '#f0f0f0', color: '#000000' } : {}} required />
+                                        <select name="state" value={formData.state} onChange={handleChange} className={fieldCls} style={{ color: '#000000' }}>
                                             {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                                         </select>
                                         <input type="text" name="postalCode" placeholder="PIN code" maxLength={6} value={formData.postalCode} onChange={handleChange} className={fieldCls} required />
@@ -666,26 +687,26 @@ function CheckoutContent() {
                                                         <span style={{ position: 'relative', display: 'block', width: 10, height: 10, borderRadius: '50%', background: '#16a34a' }} />
                                                     </span>
                                                     <div style={{ flex: 1 }}>
-                                                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Delivery Available</p>
-                                                        {pincodeStatus.area && <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#374151', fontWeight: 500 }}>📍 {pincodeStatus.area}, Kolkata</p>}
-                                                        <div style={{ margin: '1px 0 0', fontSize: 11.5, color: '#16a34a', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+                                                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#000000', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Delivery Available</p>
+                                                        {pincodeStatus.area && <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#000000', fontWeight: 500 }}>📍 {pincodeStatus.area}, Kolkata</p>}
+                                                        <div style={{ margin: '1px 0 0', fontSize: 11.5, color: '#000000', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
                                                             <span>9 AM – 9 PM · Free delivery</span>
-                                                            <AnimatedDeliveryScooter className="w-4 h-3 text-emerald-600 inline" />
+                                                            <AnimatedDeliveryScooter className="w-4 h-3 text-black inline" color="#000000" boxColor="#000000" speedColor="#000000" />
                                                         </div>
                                                     </div>
                                                     {pincodeStatus.distanceKm !== undefined && (
-                                                        <span style={{ fontSize: 11, fontWeight: 700, background: 'rgba(22,163,74,0.12)', color: '#15803d', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' }}>~{pincodeStatus.distanceKm} km</span>
+                                                        <span style={{ fontSize: 11, fontWeight: 700, background: 'rgba(0,0,0,0.08)', color: '#000000', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' }}>~{pincodeStatus.distanceKm} km</span>
                                                     )}
                                                 </div>
                                             ) : pincodeStatus.status === 'invalid' ? (
-                                                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#854d0e' }}>⚠️ Enter a valid 6-digit PIN code</p>
+                                                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#000000' }}>⚠️ Enter a valid 6-digit PIN code</p>
                                             ) : (
                                                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                                                     <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', flexShrink: 0, marginTop: 3 }} />
                                                     <div>
-                                                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Not Serviceable{pincodeStatus.distanceKm !== undefined ? ` · ${pincodeStatus.distanceKm} km away` : ''}</p>
-                                                        {pincodeStatus.area && <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#374151', fontWeight: 500 }}>📍 {pincodeStatus.area}</p>}
-                                                        <p style={{ margin: '2px 0 0', fontSize: 11.5, color: '#ef4444', fontWeight: 500 }}>We deliver within 15 km of Tollygunge, Kolkata only.</p>
+                                                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#000000', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Not Serviceable{pincodeStatus.distanceKm !== undefined ? ` · ${pincodeStatus.distanceKm} km away` : ''}</p>
+                                                        {pincodeStatus.area && <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#000000', fontWeight: 500 }}>📍 {pincodeStatus.area}</p>}
+                                                        <p style={{ margin: '2px 0 0', fontSize: 11.5, color: '#000000', fontWeight: 500 }}>We deliver within 15 km of Tollygunge, Kolkata only.</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -701,31 +722,31 @@ function CheckoutContent() {
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6 }}>
                                     <p className="ner-cx-section-title" style={{ margin: 0 }}>Delivery Schedule</p>
                                     {deliveryInfo.isSameDay ? (
-                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#15803d', background: 'rgba(22,163,74,0.1)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(22,163,74,0.25)' }}>
-                                            <AnimatedDeliveryScooter className="w-4 h-3.2 text-emerald-700" />
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#000000', background: 'rgba(0,0,0,0.06)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(0,0,0,0.15)' }}>
+                                            <AnimatedDeliveryScooter className="w-4 h-3.2 text-black" color="#000000" boxColor="#000000" speedColor="#000000" />
                                             Same-Day Delivery
                                         </span>
                                     ) : (
-                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#854d0e', background: 'rgba(234,179,8,0.12)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(234,179,8,0.25)' }}>
-                                            <AnimatedDeliveryScooter className="w-4 h-3.2 text-amber-700" color="#b45309" boxColor="#d97706" speedColor="#f59e0b" />
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#000000', background: 'rgba(0,0,0,0.06)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(0,0,0,0.15)' }}>
+                                            <AnimatedDeliveryScooter className="w-4 h-3.2 text-black" color="#000000" boxColor="#000000" speedColor="#000000" />
                                             Next-Day Delivery
                                         </span>
                                     )}
                                 </div>
                                 <h2 className="ner-cx-section-h">9:00 AM – 9:00 PM (Fixed Window)</h2>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 12, border: '1.5px solid rgba(191,168,31,0.4)', background: 'rgba(191,168,31,0.05)' }}>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bfa81f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 12, border: '1.5px solid rgba(0,0,0,0.15)', background: '#fcfcfc' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#111' }}>
+                                        <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#000000' }}>
                                             Delivery on {deliveryInfo.fullFormatted}
                                         </p>
-                                        <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#555' }}>
+                                        <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#000000' }}>
                                             {deliveryInfo.isSameDay
                                                 ? 'Order accepted before 8:00 PM cutoff · Fresh delivery anytime between 9:00 AM and 9:00 PM'
                                                 : 'Order placed after 8:00 PM cutoff · Delivered fresh tomorrow between 9:00 AM and 9:00 PM'}
                                         </p>
                                     </div>
-                                    <span style={{ fontSize: 12, fontWeight: 800, color: '#bfa81f', background: 'rgba(191,168,31,0.12)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(191,168,31,0.25)', whiteSpace: 'nowrap', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Free</span>
+                                    <span style={{ fontSize: 12, fontWeight: 800, color: '#000000', background: 'rgba(0,0,0,0.06)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Free</span>
                                 </div>
                             </div>
 
@@ -733,11 +754,11 @@ function CheckoutContent() {
                             <div className="ner-cx-card">
                                 <p className="ner-cx-section-title">Payment</p>
                                 <h2 className="ner-cx-section-h">Pay Online</h2>
-                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 16px', borderRadius: 12, border: '1.5px solid rgba(191,168,31,0.4)', background: 'rgba(191,168,31,0.05)', cursor: 'default' }}>
+                                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 16px', borderRadius: 12, border: '1.5px solid rgba(0,0,0,0.15)', background: '#fcfcfc', cursor: 'default' }}>
                                     <input type="radio" checked readOnly className="mt-1" style={{ accentColor: '#bfa81f', width: 15, height: 15 }} />
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#111' }}>Razorpay — All UPI &amp; Cards</span>
+                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#000000' }}>Razorpay — All UPI &amp; Cards</span>
                                             {/* Payment badges */}
                                             <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
                                                 {[
@@ -749,25 +770,25 @@ function CheckoutContent() {
                                                 ))}
                                             </div>
                                         </div>
-                                        <p style={{ margin: '5px 0 0', fontSize: 12.5, color: '#555' }}>GPay · PhonePe · Paytm · Credit/Debit Cards · Net Banking</p>
+                                        <p style={{ margin: '5px 0 0', fontSize: 12.5, color: '#000000' }}>GPay · PhonePe · Paytm · Credit/Debit Cards · Net Banking</p>
                                         <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 8, background: 'white', border: '1px solid #eee', borderRadius: 9, padding: '8px 12px' }}>
-                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bfa81f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                            <p style={{ margin: 0, fontSize: 12, color: '#555' }}>Secured via Razorpay 256-bit SSL encryption</p>
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                            <p style={{ margin: 0, fontSize: 12, color: '#000000' }}>Secured via Razorpay 256-bit SSL encryption</p>
                                         </div>
                                     </div>
                                 </label>
 
                                 {/* Billing address */}
                                 <div style={{ marginTop: 16 }}>
-                                    <p style={{ fontSize: 13, fontWeight: 600, color: '#555', marginBottom: 8 }}>Billing address</p>
+                                    <p style={{ fontSize: 13, fontWeight: 600, color: '#000000', marginBottom: 8 }}>Billing address</p>
                                     <div style={{ border: '1px solid rgba(17,17,17,0.09)', borderRadius: 11, overflow: 'hidden' }}>
                                         {[
                                             { label: 'Same as shipping address', val: true },
                                             { label: 'Use a different billing address', val: false },
                                         ].map(({ label, val }) => (
-                                            <label key={String(val)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', cursor: 'pointer', background: formData.billingSame === val ? 'rgba(191,168,31,0.06)' : 'transparent', borderBottom: val ? '1px solid rgba(17,17,17,0.07)' : 'none' }}>
-                                                <input type="radio" name="billing" checked={formData.billingSame === val} onChange={() => setFormData(p => ({ ...p, billingSame: val }))} style={{ accentColor: '#bfa81f' }} />
-                                                <span style={{ fontSize: 14, fontWeight: 500, color: '#111' }}>{label}</span>
+                                            <label key={String(val)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', cursor: 'pointer', background: formData.billingSame === val ? 'rgba(0,0,0,0.05)' : 'transparent', borderBottom: val ? '1px solid rgba(17,17,17,0.07)' : 'none' }}>
+                                                <input type="radio" name="billing" checked={formData.billingSame === val} onChange={() => setFormData(p => ({ ...p, billingSame: val }))} style={{ accentColor: '#000000' }} />
+                                                <span style={{ fontSize: 14, fontWeight: 500, color: '#000000' }}>{label}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -792,7 +813,7 @@ function CheckoutContent() {
                             {/* Footer links */}
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 18px', paddingBottom: 16 }}>
                                 {[['Refund policy', '/terms'], ['Shipping policy', '/terms'], ['Privacy policy', '/privacy'], ['Terms of service', '/terms']].map(([label, href]) => (
-                                    <Link key={label} href={href} style={{ fontSize: 12, color: '#888', textDecoration: 'underline', textUnderlineOffset: 3 }} className="hover:text-[#555] transition-colors">{label}</Link>
+                                    <Link key={label} href={href} style={{ fontSize: 12, color: '#000000', textDecoration: 'underline', textUnderlineOffset: 3 }} className="hover:opacity-75 transition-opacity font-medium">{label}</Link>
                                 ))}
                             </div>
                         </div>
@@ -816,24 +837,24 @@ function CheckoutContent() {
                                                     : <div className="ner-wc-img-ph">🌸</div>
                                                 }
                                                 {/* Qty badge */}
-                                                <span style={{ position: 'absolute', top: -6, right: -6, width: 20, height: 20, background: '#bfa81f', color: '#fff', fontSize: 10, fontWeight: 800, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }}>
+                                                <span style={{ position: 'absolute', top: -6, right: -6, width: 20, height: 20, background: '#000000', color: '#fff', fontSize: 10, fontWeight: 800, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }}>
                                                     {item.quantity}
                                                 </span>
                                                 {/* Remove */}
                                                 {!isBuyNow && (
-                                                    <button type="button" onClick={() => removeItem(item.id)} title="Remove" style={{ position: 'absolute', top: -6, left: -6, width: 18, height: 18, background: '#111', color: '#fff', border: 'none', borderRadius: '50%', fontSize: 9, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity .15s' }}
+                                                    <button type="button" onClick={() => removeItem(item.id)} title="Remove" style={{ position: 'absolute', top: -6, left: -6, width: 18, height: 18, background: '#000000', color: '#fff', border: 'none', borderRadius: '50%', fontSize: 9, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity .15s' }}
                                                         onMouseOver={e => (e.currentTarget.style.opacity = '1')} onMouseOut={e => (e.currentTarget.style.opacity = '0')} aria-label={`Remove ${item.name}`}>✕</button>
                                                 )}
                                             </div>
                                             {/* Info */}
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
-                                                <p style={{ margin: 0, fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.35, color: '#111' }}>{item.name}</p>
-                                                <p style={{ margin: 0, fontSize: 12.5, color: '#888' }}>Fresh Handpicked Bloom</p>
-                                                <p style={{ margin: 0, fontSize: 12.5, color: '#888' }}>Qty {item.quantity}</p>
+                                                <p style={{ margin: 0, fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.35, color: '#000000' }}>{item.name}</p>
+                                                <p style={{ margin: 0, fontSize: 12.5, color: '#000000', fontWeight: 500 }}>Fresh Handpicked Bloom</p>
+                                                <p style={{ margin: 0, fontSize: 12.5, color: '#000000', fontWeight: 500 }}>Qty {item.quantity}</p>
                                             </div>
                                             {/* Price */}
                                             <div style={{ textAlign: 'right' }}>
-                                                <p style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#111', letterSpacing: '-0.02em' }}>
+                                                <p style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#000000', letterSpacing: '-0.02em' }}>
                                                     {item.price && item.price > 0 ? formatPrice(item.price * item.quantity) : 'Included'}
                                                 </p>
                                             </div>
@@ -844,14 +865,14 @@ function CheckoutContent() {
                                 {/* Coupon */}
                                 <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     {appliedCoupon ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#111', color: '#fff', borderRadius: 10, padding: '10px 14px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#000000', color: '#fff', borderRadius: 10, padding: '10px 14px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
                                                 <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#bfa81f', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                                                 </div>
                                                 <div>
                                                     <p style={{ margin: 0, fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', color: '#fff', textTransform: 'uppercase' }}>{appliedCoupon.code}</p>
-                                                    <p style={{ margin: '1px 0 0', fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{couponSuccess}</p>
+                                                    <p style={{ margin: '1px 0 0', fontSize: 11, color: '#fff' }}>{couponSuccess}</p>
                                                 </div>
                                             </div>
                                             <button type="button" onClick={handleRemoveCoupon} style={{ fontSize: 11, fontWeight: 700, color: '#e6c845', background: 'none', border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Remove</button>
@@ -862,7 +883,7 @@ function CheckoutContent() {
                                                 <input type="text" placeholder="Discount code" value={couponInput}
                                                     onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); }}
                                                     onKeyDown={e => e.key === 'Enter' && handleApplyCoupon()}
-                                                    style={{ flex: 1, background: '#f4f4f4', border: '1px solid rgba(17,17,17,0.09)', borderRadius: 11, padding: '10px 14px', fontSize: 13, fontFamily: 'monospace', fontWeight: 600, outline: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }} />
+                                                    style={{ flex: 1, background: '#f4f4f4', border: '1px solid rgba(0,0,0,0.15)', borderRadius: 11, padding: '10px 14px', fontSize: 13, fontFamily: 'monospace', fontWeight: 600, outline: 'none', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#000000' }} />
                                                 <button type="button" onClick={() => handleApplyCoupon()} disabled={!couponInput.trim()}
                                                     style={{ padding: '10px 16px', background: '#bfa81f', color: '#fff', border: 'none', borderRadius: 11, fontSize: 12, fontWeight: 700, cursor: couponInput.trim() ? 'pointer' : 'not-allowed', opacity: couponInput.trim() ? 1 : 0.5, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                                                     Apply
@@ -871,31 +892,31 @@ function CheckoutContent() {
                                             {couponError && <p style={{ margin: 0, fontSize: 12.5, color: '#dc2626', fontWeight: 600 }}>{couponError}</p>}
                                             {AVAILABLE_COUPONS.length > 0 && (
                                                 <button type="button" onClick={() => setShowCouponPanel(v => !v)}
-                                                    style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: '#888', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>
-                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bfa81f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                                                    style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: '#000000', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>
+                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                                                     {showCouponPanel ? 'Hide offers' : `See available offers (${AVAILABLE_COUPONS.length})`}
                                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: showCouponPanel ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}><path d="m6 9 6 6 6-6"/></svg>
                                                 </button>
                                             )}
                                             {showCouponPanel && (
-                                                <div style={{ border: '1px solid rgba(17,17,17,0.08)', borderRadius: 11, overflow: 'hidden' }}>
+                                                <div style={{ border: '1px solid rgba(0,0,0,0.12)', borderRadius: 11, overflow: 'hidden' }}>
                                                     {AVAILABLE_COUPONS.map(c => {
                                                         const meetsMin = !c.minOrder || subtotal >= c.minOrder;
                                                         const needed = c.minOrder ? Math.max(0, c.minOrder - subtotal) : 0;
                                                         const label = c.type === 'percent' ? `${c.value}% off${c.maxDiscount ? ` (max ₹${c.maxDiscount})` : ''}` : `₹${c.value} off`;
                                                         return (
-                                                            <div key={c.code} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderBottom: '1px solid rgba(17,17,17,0.06)', background: '#fafafa' }}>
+                                                            <div key={c.code} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderBottom: '1px solid rgba(0,0,0,0.08)', background: '#fafafa' }}>
                                                                 <div style={{ flex: 1, minWidth: 0 }}>
                                                                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                                                                        <span style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 800, background: '#bfa81f', color: '#fff', padding: '2px 7px', borderRadius: 5, letterSpacing: '0.1em' }}>{c.code}</span>
-                                                                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#111' }}>{label}</span>
+                                                                        <span style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 800, background: '#000000', color: '#fff', padding: '2px 7px', borderRadius: 5, letterSpacing: '0.1em' }}>{c.code}</span>
+                                                                        <span style={{ fontSize: 12.5, fontWeight: 700, color: '#000000' }}>{label}</span>
                                                                     </div>
-                                                                    <p style={{ margin: '2px 0 0', fontSize: 12, color: '#888' }}>{c.description}</p>
-                                                                    {!meetsMin && needed > 0 && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#b45309', fontWeight: 600 }}>Add ₹{needed.toLocaleString('en-IN')} more to unlock</p>}
-                                                                    {c.minOrder && meetsMin && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#16a34a', fontWeight: 600 }}>✓ Eligible on your order</p>}
+                                                                    <p style={{ margin: '2px 0 0', fontSize: 12, color: '#000000' }}>{c.description}</p>
+                                                                    {!meetsMin && needed > 0 && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#000000', fontWeight: 600 }}>Add ₹{needed.toLocaleString('en-IN')} more to unlock</p>}
+                                                                    {c.minOrder && meetsMin && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#000000', fontWeight: 600 }}>✓ Eligible on your order</p>}
                                                                 </div>
                                                                 <button type="button" onClick={() => handleApplyCoupon(c.code)} disabled={!meetsMin}
-                                                                    style={{ padding: '7px 12px', borderRadius: 9, fontSize: 11, fontWeight: 700, border: 'none', cursor: meetsMin ? 'pointer' : 'not-allowed', background: meetsMin ? '#bfa81f' : '#e5e5e5', color: meetsMin ? '#fff' : '#999', textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0 }}>
+                                                                    style={{ padding: '7px 12px', borderRadius: 9, fontSize: 11, fontWeight: 700, border: 'none', cursor: meetsMin ? 'pointer' : 'not-allowed', background: meetsMin ? '#bfa81f' : '#e5e5e5', color: meetsMin ? '#fff' : '#000000', textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0 }}>
                                                                     {meetsMin ? 'Apply' : 'Locked'}
                                                                 </button>
                                                             </div>
@@ -909,14 +930,14 @@ function CheckoutContent() {
 
                                 {/* Totals */}
                                 <div className="ner-wc-sum">
-                                    <div className="ner-wc-sum-row"><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></div>
+                                    <div className="ner-wc-sum-row"><span>Subtotal</span><strong style={{ color: '#000000' }}>{formatPrice(subtotal)}</strong></div>
                                     {discountAmount > 0 && appliedCoupon && (
-                                        <div className="ner-wc-sum-row"><span>Coupon <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#bfa81f' }}>{appliedCoupon.code}</span></span><strong style={{ color: '#16a34a' }}>−{formatPrice(discountAmount)}</strong></div>
+                                        <div className="ner-wc-sum-row"><span>Coupon <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#000000' }}>{appliedCoupon.code}</span></span><strong style={{ color: '#000000' }}>−{formatPrice(discountAmount)}</strong></div>
                                     )}
-                                    <div className="ner-wc-sum-row"><span>Shipping</span><strong style={{ color: '#16a34a' }}>Free</strong></div>
-                                    <div className="ner-wc-sum-row is-total"><span>Total</span><strong>{formatPrice(total)}</strong></div>
+                                    <div className="ner-wc-sum-row"><span>Shipping</span><strong style={{ color: '#000000' }}>Free</strong></div>
+                                    <div className="ner-wc-sum-row is-total"><span>Total</span><strong style={{ color: '#000000' }}>{formatPrice(total)}</strong></div>
                                     {discountAmount > 0 && (
-                                        <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#16a34a', fontWeight: 700, textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.07em' }}>You save {formatPrice(discountAmount)} 🎉</p>
+                                        <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#000000', fontWeight: 700, textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.07em' }}>You save {formatPrice(discountAmount)} 🎉</p>
                                     )}
                                 </div>
 

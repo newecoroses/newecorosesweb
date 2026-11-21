@@ -565,25 +565,24 @@ export default function CartPage() {
                         <div className="lg:col-span-7 space-y-4">
                             
                             {/* 1. Deliver To Card */}
-                            <div className="bg-white border border-[#e8e4dc] rounded-[16px] p-4 flex items-center justify-between shadow-2xs">
-                                <div className="flex items-center gap-3">
+                            <div className="bg-white border border-[#e8e4dc] rounded-[16px] p-4 flex items-center justify-between shadow-2xs gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
                                     <div className="w-9 h-9 rounded-full bg-gray-100 border border-black/[0.08] flex items-center justify-center flex-shrink-0 text-black">
                                         <MapPin size={18} className="stroke-[2.3] text-black" />
                                     </div>
-                                    <div>
+                                    <div className="min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <div className="text-[13.5px] font-semibold text-[#111] tracking-tight leading-snug">
                                                 Deliver to: {deliveryPincode}
                                             </div>
-                                            <FreeDeliveryPillButton onClick={() => setIsLocationModalOpen(true)} showScooter={false} className="hidden sm:inline-flex" />
+                                            <FreeDeliveryPillButton onClick={() => setIsLocationModalOpen(true)} showScooter={false} />
                                         </div>
-                                        <div className="text-[12px] text-[#666] font-medium leading-tight mt-0.5">
+                                        <div className="text-[12px] text-[#666] font-medium leading-tight mt-0.5 truncate">
                                             {deliveryArea}
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <FreeDeliveryPillButton onClick={() => setIsLocationModalOpen(true)} showScooter={false} className="sm:hidden" />
+                                <div className="flex items-center gap-2 flex-shrink-0">
                                     <button
                                         type="button"
                                         onClick={() => setIsLocationModalOpen(true)}
@@ -820,8 +819,16 @@ export default function CartPage() {
                                 {/* Dynamic Product Suggestions based on selected occasion */}
                                 {selectedOccasion && (
                                     <div className="mt-4 pt-3.5 border-t border-black/[0.06]">
-                                        <div className="flex items-center gap-1.5 mb-2.5">
-                                            <Sparkles size={14} className="text-[#bfa81f]" />
+                                        <div className="flex items-center gap-2 mb-2.5">
+                                            <div className="relative w-5 h-5 rounded-[5px] overflow-hidden flex-shrink-0 shadow-2xs border border-amber-200/80">
+                                                <Image
+                                                    src="/images/cart/recommended-addons-icon.jpg"
+                                                    alt="Recommended Add-ons"
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="20px"
+                                                />
+                                            </div>
                                             <p className="text-[12px] font-semibold text-[#111]">
                                                 Recommended add-ons for {OCCASIONS.find(o => o.id === selectedOccasion)?.title || 'this occasion'}:
                                             </p>
