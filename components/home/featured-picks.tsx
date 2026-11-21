@@ -3,6 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/free-mode';
 
 const FAV_FLOWERS = [
     { name: 'Roses', image: '/images/picks/flowers/roses.webp', link: '/shop?search=rose', bg: '#f5e6e0' },
@@ -29,49 +34,45 @@ interface PickItem {
     scale?: number;
 }
 
-/**
- * ScrollRow — mirrors the promotional banner slider's mobile spacing:
- * Full-width scroll container with `px-3 md:px-0` padding on the flex track,
- * with `gap-3 md:gap-4` matching PromoSlider's 12px slide spacing.
- */
-function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string }) {
+interface PickSwiperProps {
+    items: PickItem[];
+    breakpoints: Record<number, { slidesPerView: number; spaceBetween: number }>;
+}
+
+function PickSwiper({ items, breakpoints }: PickSwiperProps) {
     return (
-        <div
-            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity md:overflow-visible overscroll-x-contain"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+        <Swiper
+            modules={[FreeMode]}
+            spaceBetween={12}
+            slidesPerView={2.35}
+            freeMode={{ enabled: true, sticky: true }}
+            breakpoints={breakpoints}
+            className="!px-3 md:!px-8 !pb-1"
         >
-            <div className="flex md:flex-wrap gap-3 md:gap-4 w-max md:w-full pb-1 px-3 md:px-0">
-                {items.map((item, idx) => (
-                    <motion.div
-                        key={item.name}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.4, delay: idx * 0.06 }}
-                        viewport={{ once: true }}
-                        className={`snap-start flex-shrink-0 ${cardWidth} md:flex-1`}
-                    >
-                        <Link href={item.link} className="group block">
-                            <div
-                                className="relative aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden shadow-sm group-hover:shadow-card transition-all duration-500 group-hover:-translate-y-1"
-                                style={{ backgroundColor: item.bg }}
-                            >
-                                <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                                    sizes="(max-width: 768px) 45vw, 20vw"
-                                    style={item.scale ? { transform: `scale(${item.scale})` } : undefined}
-                                />
-                            </div>
-                            <p className="text-center font-bold text-[#1c1917] text-xs sm:text-sm mt-2 group-hover:text-black transition-colors">
-                                {item.name}
-                            </p>
-                        </Link>
-                    </motion.div>
-                ))}
-            </div>
-        </div>
+            {items.map((item) => (
+                <SwiperSlide key={item.name}>
+                    <Link href={item.link} className="group block">
+                        <div
+                            className="relative aspect-[3/4] rounded-2xl md:rounded-3xl overflow-hidden shadow-sm group-hover:shadow-card transition-all duration-500 group-hover:-translate-y-1"
+                            style={{ backgroundColor: item.bg }}
+                        >
+                            <Image
+                                src={item.image}
+                                alt={item.name}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 15vw"
+                                style={item.scale ? { transform: `scale(${item.scale})` } : undefined}
+                                unoptimized
+                            />
+                        </div>
+                        <p className="text-center font-bold text-[#1c1917] text-xs sm:text-sm mt-2 group-hover:text-black transition-colors">
+                            {item.name}
+                        </p>
+                    </Link>
+                </SwiperSlide>
+            ))}
+        </Swiper>
     );
 }
 
@@ -80,9 +81,9 @@ export default function FeaturedPicks() {
         <>
             {/* ── Pick Their Fav Flowers ── */}
             <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto md:px-8">
-                    {/* Heading: px-3 on mobile to perfectly match the cards and PromoSlider, md:px-0 on desktop */}
-                    <div className="px-3 md:px-0 mb-2 md:mb-3">
+                <div className="max-w-7xl mx-auto">
+                    {/* Header with matching left-padding to Swiper slides */}
+                    <div className="px-3 md:px-8 mb-2 md:mb-3">
                         <motion.h2
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
@@ -93,14 +94,22 @@ export default function FeaturedPicks() {
                             Pick Their Fav Flowers
                         </motion.h2>
                     </div>
-                    <ScrollRow items={FAV_FLOWERS} cardWidth="w-[38vw] sm:w-[32vw]" />
+
+                    <PickSwiper
+                        items={FAV_FLOWERS}
+                        breakpoints={{
+                            640: { slidesPerView: 3.5, spaceBetween: 14 },
+                            768: { slidesPerView: 5.2, spaceBetween: 16 },
+                            1024: { slidesPerView: 7, spaceBetween: 16 },
+                        }}
+                    />
                 </div>
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
             <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto md:px-8">
-                    <div className="px-3 md:px-0 mb-2 md:mb-3">
+                <div className="max-w-7xl mx-auto">
+                    <div className="px-3 md:px-8 mb-2 md:mb-3">
                         <motion.h2
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
@@ -111,7 +120,15 @@ export default function FeaturedPicks() {
                             Birthday Gifts That Wow
                         </motion.h2>
                     </div>
-                    <ScrollRow items={BIRTHDAY_GIFTS} cardWidth="w-[38vw] sm:w-[32vw]" />
+
+                    <PickSwiper
+                        items={BIRTHDAY_GIFTS}
+                        breakpoints={{
+                            640: { slidesPerView: 2.8, spaceBetween: 14 },
+                            768: { slidesPerView: 4, spaceBetween: 16 },
+                            1024: { slidesPerView: 4, spaceBetween: 20 },
+                        }}
+                    />
                 </div>
             </section>
         </>
