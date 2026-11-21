@@ -357,15 +357,15 @@ export default function Home() {
                   <Image
                     src={
                       {
-                        'fresh-flower': '/images/collections/Fresh Flower Bouquet Advertisement_converted.webp',
-                        'chocolate-bouquet': '/images/collections/Luxurious Chocolate Gift Bouquet_converted.webp',
-                        'teddy-and-bouquet': '/images/collections/Teddy and Rose Bouquet Gift Scene_converted.webp',
-                        'personalized': '/images/collections/Personalised Gifts in Lavender Elegance_converted.webp',
-                        'hamper': '/images/collections/Elegant Sage Hamper Gift Set_converted.webp',
-                        'plants': '/images/collections/Elegant Indoor Plant Collection_converted.webp',
-                        'cake': '/images/collections/Elegant Pastel Buttercream Cake Display_converted.webp',
+                        'fresh-flower': '/images/collections/Pastel Garden Bouquet in Ceramic Vase_converted.webp',
+                        'chocolate-bouquet': '/images/collections/Luxurious Chocolate Bouquet Still Life_converted.webp',
+                        'teddy-and-bouquet': '/images/collections/Romantic Teddy Bear and Rose Bouquet_converted.webp',
+                        'personalized': '/images/collections/Lavender Gifts and Misty Mountains_converted.webp',
+                        'hamper': '/images/collections/Elegant Sage Green Luxury Gift Hamper_converted.webp',
+                        'plants': '/images/collections/Sunlit Indoor Botanical Collection_converted.webp',
+                        'cake': '/images/collections/Elegant Blush Floral Cake Display_converted.webp',
                         'balloon-bouquet': '/images/collections/Elegant Pastel Balloon Bouquet_converted.webp',
-                        'decorations': '/images/collections/Elegant Blush and Gold Celebration Decor_converted.webp',
+                        'decorations': '/images/collections/Elegant Blush and Gold Dessert Table_converted.webp',
                       }[cat.slug] || cat.image_url
                     }
                     alt={cat.name}
@@ -373,10 +373,11 @@ export default function Home() {
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent group-hover:from-black/50 transition-all duration-500" />
-                  <div className="absolute bottom-0 left-0 p-3 sm:p-4 md:p-6">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-xs text-white text-[10px] md:text-xs font-semibold uppercase tracking-wider border border-white/20 shadow-xs group-hover:bg-black/60 transition-all duration-300">
-                      Explore <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent group-hover:from-black/45 transition-all duration-500" />
+                  <div className="absolute bottom-0 left-0 p-4 md:p-6">
+                    <h3 className="font-serif text-base md:text-xl text-white mb-1">{cat.name}</h3>
+                    <span className="inline-flex items-center gap-1 text-white/80 text-[10px] md:text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                      Explore <ArrowRight size={12} />
                     </span>
                   </div>
                 </Link>
