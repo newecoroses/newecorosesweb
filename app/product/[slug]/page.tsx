@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -45,6 +45,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imgError, setImgError] = useState(false);
     const [quantity, setQuantity] = useState(1);
+    const [selectedVariant, setSelectedVariant] = useState('6 Roses');
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [activeTab, setActiveTab] = useState<'about' | 'details' | 'reviews'>('about');
     const [justAdded, setJustAdded] = useState(false);
@@ -137,13 +138,45 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         const productUrl = `https://www.newecoroses.com/product/${product.slug}`;
         fetchWhatsappSettings().then(s => {
             const phone = s?.phone_number ?? FALLBACK_PHONE;
-            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
+            const msg = `Hi, I'm interested in ${product.name} (${selectedVariant}). Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
         }).catch(() => {
-            const msg = `Hi, I'm interested in ${product.name}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
+            const msg = `Hi, I'm interested in ${product.name} (${selectedVariant}). Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${FALLBACK_PHONE}?text=${encodeURIComponent(msg)}`);
         });
+    }, [product, selectedVariant]);
+
+    // Variant options logic
+    const isCake = useMemo(() => {
+        if (!product) return false;
+        return product.collection_slug === 'cake' || product.name.toLowerCase().includes('cake');
     }, [product]);
+
+    const variantOptions = useMemo(() => {
+        if (isCake) {
+            return [
+                { label: '0.5 kg', multiplier: 1.0 },
+                { label: '1 kg', multiplier: 1.8 },
+                { label: '1.5 kg', multiplier: 2.6 },
+                { label: '2 kg', multiplier: 3.4 },
+            ];
+        }
+        return [
+            { label: '6 Roses', multiplier: 1.0 },
+            { label: '9 Roses', multiplier: 1.45 },
+            { label: '12 Roses', multiplier: 1.85 },
+            { label: '18 Roses', multiplier: 2.55 },
+        ];
+    }, [isCake]);
+
+    // Set initial default variant
+    useEffect(() => {
+        if (isCake) {
+            setSelectedVariant('0.5 kg');
+        } else {
+            setSelectedVariant('6 Roses');
+        }
+    }, [isCake]);
 
     if (loading) {
         return (
@@ -185,9 +218,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     if (!product) {
         return (
             <div className="pt-32 pb-20 min-h-screen bg-[#faf8f5] flex flex-col items-center justify-center text-center px-6">
-                <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#1c1917] mb-4">Product Not Found</h1>
-                <p className="text-gray-500 mb-8 font-light">The floral arrangement you&apos;re looking for doesn&apos;t exist or has been archived.</p>
-                <Link href="/shop" className="inline-flex items-center gap-2 bg-[#2d3a27] text-white px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold hover:opacity-90 transition-all shadow-sm">
+                <h1 className="font-cormorant text-3xl sm:text-4xl text-[#1c1917] mb-4">Product Not Found</h1>
+                <p className="font-dm-sans text-gray-500 mb-8 font-normal">The floral arrangement you&apos;re looking for doesn&apos;t exist or has been archived.</p>
+                <Link href="/shop" className="font-dm-sans font-medium inline-flex items-center gap-2 bg-[#2d3a27] text-white px-8 py-3.5 rounded-full text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-sm">
                     <ArrowLeft size={14} /> Browse All Flowers
                 </Link>
             </div>
@@ -197,13 +230,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const allImages = product.images?.length > 0 ? product.images : [product.image_url];
     const images = allImages.filter(img => !img.startsWith('HIDDEN::'));
 
-    const { hasPrice, price, originalPrice, discountPercent, rating, reviewCount } = getProductPriceInfo(product);
+    const { hasPrice, price: rawPrice, originalPrice: rawOriginalPrice, discountPercent, rating, reviewCount } = getProductPriceInfo(product);
+
+    // Calculate dynamic price based on selected rose quantity
+    const activeMultiplier = variantOptions.find(o => o.label === selectedVariant)?.multiplier || 1.0;
+    const price = Math.round(rawPrice * activeMultiplier);
+    const originalPrice = rawOriginalPrice > rawPrice 
+        ? Math.round(rawOriginalPrice * activeMultiplier) 
+        : Math.round(price * 1.25);
 
     const handleAddToCart = () => {
         for (let i = 0; i < quantity; i++) {
             addItem({
-                id: product.id,
-                name: product.name,
+                id: `${product.id}-${selectedVariant}`,
+                name: `${product.name} (${selectedVariant})`,
                 slug: product.slug,
                 image_url: product.image_url,
                 price: price,
@@ -216,22 +256,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const handleBuyNow = () => {
         if (!product) return;
         openAddonModal({
-            id: product.id,
-            name: product.name,
+            id: `${product.id}-${selectedVariant}`,
+            name: `${product.name} (${selectedVariant})`,
             slug: product.slug,
             image_url: product.image_url,
             price: price,
         });
     };
 
-    const categoryTitle = product.collection_name?.toUpperCase() || 'ROSE BOUQUETS';
-
     return (
         <div className="pt-[72px] sm:pt-[76px] lg:pt-[82px] pb-16 bg-[#faf8f5] min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                {/* ── 1. Breadcrumb Bar (Matches Reference Layout) ── */}
-                <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6 font-normal overflow-x-auto whitespace-nowrap py-1">
+                {/* ── 1. Navigation: Breadcrumb Bar (DM Sans) ── */}
+                <nav className="font-dm-sans flex items-center gap-2 text-xs text-gray-500 mb-6 font-normal overflow-x-auto whitespace-nowrap py-1">
                     <Link href="/" className="hover:text-black transition-colors">Home</Link>
                     <span>/</span>
                     <Link href={`/shop?cat=${product.collection_slug}`} className="hover:text-black transition-colors capitalize">
@@ -302,14 +340,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     {/* ══ RIGHT: Product Details Panel (5 Cols) ══ */}
                     <div className="lg:col-span-5 flex flex-col justify-start">
                         
-                        {/* Eyebrow Category Tag */}
-                        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-[0.2em] mb-2 block">
-                            {categoryTitle}
-                        </span>
-
                         {/* Title & Wishlist Row */}
-                        <div className="flex items-start justify-between gap-4 mb-4">
-                            <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl lg:text-[40px] font-medium sm:font-semibold text-[#1c1917] leading-[1.18] tracking-tight">
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                            {/* Product Title: Cormorant Garamond */}
+                            <h1 className="font-cormorant text-3xl sm:text-4xl lg:text-[44px] font-normal sm:font-medium text-[#1c1917] leading-[1.12] tracking-tight">
                                 {product.name}
                             </h1>
 
@@ -317,7 +351,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             <button
                                 type="button"
                                 onClick={toggleWishlist}
-                                className="w-10 h-10 rounded-full border border-gray-200 hover:border-gray-400 bg-white flex items-center justify-center transition-all cursor-pointer shadow-2xs group flex-shrink-0 mt-1"
+                                className="font-dm-sans w-10 h-10 rounded-full border border-gray-200/90 hover:border-gray-400 bg-white flex items-center justify-center transition-all cursor-pointer shadow-2xs group flex-shrink-0 mt-1"
                                 aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                                 title="Save to wishlist"
                             >
@@ -332,27 +366,27 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </button>
                         </div>
 
-                        {/* Price & Discount Row */}
-                        <div className="flex items-baseline gap-3 mb-5">
+                        {/* Prices: DM Sans */}
+                        <div className="font-dm-sans flex items-baseline gap-3 mb-5">
                             {hasPrice ? (
                                 <>
-                                    <span className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-medium text-[#1c1917] tracking-tight">
+                                    <span className="font-dm-sans text-3xl sm:text-4xl font-semibold text-[#1c1917] tracking-tight">
                                         ₹{price}
                                     </span>
                                     {originalPrice > price && (
-                                        <span className="text-lg text-gray-400 line-through font-normal">
+                                        <span className="font-dm-sans text-base sm:text-lg text-gray-400 line-through font-normal">
                                             ₹{originalPrice}
                                         </span>
                                     )}
                                     {discountPercent > 0 && (
-                                        <span className="text-xs font-semibold text-[#b85c3c] bg-[#f8ede8] px-2.5 py-1 rounded-full">
+                                        <span className="font-dm-sans text-xs font-semibold text-[#8a4a36] bg-[#fbece7] px-2.5 py-0.5 rounded-full">
                                             {discountPercent}% OFF
                                         </span>
                                     )}
                                 </>
                             ) : (
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold text-[#1c1917]">Price on Request</span>
+                                <div className="font-dm-sans flex items-center gap-2">
+                                    <span className="text-2xl font-semibold text-[#1c1917]">Price on Request</span>
                                     <span className="text-xs text-gray-500 bg-white border border-gray-200 px-2.5 py-1 rounded-full">
                                         Contact florist for latest batch
                                     </span>
@@ -360,24 +394,52 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             )}
                         </div>
 
-                        {/* ── Deliver to Pincode Bar (Exact Reference Match) ── */}
-                        <button
-                            type="button"
-                            onClick={() => setIsDeliveryModalOpen(true)}
-                            className="w-full flex items-center justify-between py-3.5 px-4 rounded-xl border border-gray-200/90 bg-white hover:bg-gray-50/70 transition-all text-left shadow-2xs group cursor-pointer mb-6"
-                        >
-                            <div className="flex items-center gap-2.5">
-                                <MapPin size={16} className="text-gray-600 group-hover:text-black transition-colors" />
-                                <span className="text-xs sm:text-sm text-gray-600 font-normal">
-                                    Deliver to <strong className="font-semibold text-[#1c1917]">{deliveryLoc}</strong>
-                                </span>
-                            </div>
-                            <ChevronRight size={16} className="text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
-                        </button>
+                        {/* Navigation: Deliver to Pincode Bar (DM Sans) */}
+                        <div className="border-t border-gray-200/70 pt-4 mb-5">
+                            <button
+                                type="button"
+                                onClick={() => setIsDeliveryModalOpen(true)}
+                                className="font-dm-sans w-full flex items-center justify-between py-2.5 px-3 sm:px-4 rounded-xl border border-gray-200/80 bg-white/70 hover:bg-white transition-all text-left shadow-2xs group cursor-pointer"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <MapPin size={16} className="text-gray-600 group-hover:text-black transition-colors" />
+                                    <span className="font-dm-sans text-xs sm:text-sm text-gray-600 font-normal">
+                                        Deliver to <strong className="font-semibold text-[#1c1917]">{deliveryLoc}</strong>
+                                    </span>
+                                </div>
+                                <ChevronRight size={15} className="text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+                            </button>
+                        </div>
 
-                        {/* ── Quantity Selector (Reference Pill) ── */}
+                        {/* ── Number of Roses / Quantity Selector (Exact Inspiration) ── */}
+                        <div className="mb-5">
+                            <span className="font-dm-sans text-xs sm:text-[13px] font-semibold text-[#1c1917] mb-2.5 block">
+                                {isCake ? 'Select Weight' : 'Number of Roses'}
+                            </span>
+                            <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                                {variantOptions.map((opt) => {
+                                    const isSelected = selectedVariant === opt.label;
+                                    return (
+                                        <button
+                                            key={opt.label}
+                                            type="button"
+                                            onClick={() => setSelectedVariant(opt.label)}
+                                            className={`font-dm-sans text-xs sm:text-sm py-2 px-4 sm:px-5 rounded-full transition-all cursor-pointer ${
+                                                isSelected
+                                                    ? 'bg-[#fbf3e4] border border-[#e8c688] text-[#1c1917] font-semibold shadow-2xs'
+                                                    : 'bg-white/80 border border-gray-200 text-gray-700 hover:border-gray-400 font-normal'
+                                            }`}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Quantity Counter Pill: DM Sans Medium */}
                         <div className="mb-6">
-                            <div className="inline-flex items-center justify-between w-32 bg-[#f4f2ee] rounded-full px-3 py-2 border border-gray-200/80 shadow-2xs">
+                            <div className="font-dm-sans font-medium inline-flex items-center justify-between w-32 bg-[#f4f2ee] rounded-full px-3 py-2 border border-gray-200/80 shadow-2xs">
                                 <button
                                     type="button"
                                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
@@ -386,7 +448,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 >
                                     <Minus size={14} />
                                 </button>
-                                <span className="text-sm font-semibold text-[#1c1917] select-none">
+                                <span className="font-dm-sans text-sm font-medium text-[#1c1917] select-none">
                                     {quantity}
                                 </span>
                                 <button
@@ -400,46 +462,46 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </div>
                         </div>
 
-                        {/* ── Action Buttons (Dual Buttons: Add to Cart & Buy Now) ── */}
+                        {/* Buttons: DM Sans Medium */}
                         {hasPrice ? (
                             <div className="space-y-3 mb-6">
                                 <div className="flex items-center gap-3">
-                                    {/* Add to Cart */}
+                                    {/* Add to Cart: DM Sans Medium */}
                                     <button
                                         type="button"
                                         onClick={handleAddToCart}
-                                        className="flex-1 bg-[#2d3a27] hover:bg-[#222c1e] text-white py-3.5 px-6 rounded-full font-medium text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all duration-300 cursor-pointer active:scale-[0.99]"
+                                        className="font-dm-sans font-medium flex-1 bg-[#2d3a27] hover:bg-[#222c1e] text-white py-3.5 px-6 rounded-full text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all duration-300 cursor-pointer active:scale-[0.99]"
                                     >
                                         {justAdded ? (
                                             <>
                                                 <Check size={16} className="text-emerald-400" />
-                                                <span>Added to Cart!</span>
+                                                <span className="font-dm-sans font-medium">Added to Cart!</span>
                                             </>
                                         ) : (
                                             <>
                                                 <ShoppingCart size={16} />
-                                                <span>Add to Cart</span>
+                                                <span className="font-dm-sans font-medium">Add to Cart</span>
                                             </>
                                         )}
                                     </button>
 
-                                    {/* Buy Now */}
+                                    {/* Buy Now: DM Sans Medium */}
                                     <button
                                         type="button"
                                         onClick={handleBuyNow}
-                                        className="flex-1 bg-transparent hover:bg-black/[0.04] text-[#1c1917] border border-[#2d3a27] py-3.5 px-6 rounded-full font-medium text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.99]"
+                                        className="font-dm-sans font-medium flex-1 bg-transparent hover:bg-black/[0.04] text-[#1c1917] border border-[#2d3a27] py-3.5 px-6 rounded-full text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.99]"
                                     >
-                                        <span>Buy Now</span>
+                                        <span className="font-dm-sans font-medium">Buy Now</span>
                                     </button>
                                 </div>
 
-                                {/* WhatsApp Concierge Enquiry */}
+                                {/* WhatsApp Concierge Enquiry: DM Sans */}
                                 <a
                                     href={whatsappLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => trackEnquiry(product.id, product.name)}
-                                    className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs text-gray-500 hover:text-gray-800 transition-colors"
+                                    className="font-dm-sans font-medium w-full flex items-center justify-center gap-2 py-2 px-3 text-xs text-gray-500 hover:text-gray-800 transition-colors"
                                 >
                                     <WhatsappIcon size={14} className="text-[#25D366]" />
                                     <span>Have a special request? Ask our florist on WhatsApp</span>
@@ -452,41 +514,41 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => trackEnquiry(product.id, product.name)}
-                                    className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#2d3a27] hover:bg-[#222c1e] text-white text-xs sm:text-sm font-medium tracking-wide shadow-sm hover:shadow transition-all"
+                                    className="font-dm-sans font-medium w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#2d3a27] hover:bg-[#222c1e] text-white text-xs sm:text-sm tracking-wide shadow-sm hover:shadow transition-all"
                                 >
                                     <WhatsappIcon size={18} className="text-[#25D366]" />
-                                    <span>Enquire Price &amp; Availability</span>
+                                    <span className="font-dm-sans font-medium">Enquire Price &amp; Availability</span>
                                 </a>
                             </div>
                         )}
 
-                        {/* ── Trust Badges Strip (3 Columns with Dividers) ── */}
-                        <div className="grid grid-cols-3 divide-x divide-gray-200/90 pt-6 mt-2 border-t border-gray-200/70 text-center">
+                        {/* Trust Badges Strip: DM Sans */}
+                        <div className="font-dm-sans grid grid-cols-3 divide-x divide-gray-200/90 pt-6 mt-2 border-t border-gray-200/70 text-center">
                             <div className="flex flex-col items-center gap-1.5 px-2">
                                 <Leaf size={20} className="text-gray-700 stroke-[1.5]" />
-                                <span className="text-[11px] sm:text-xs font-medium text-gray-700">Fresh Flowers</span>
+                                <span className="font-dm-sans text-[11px] sm:text-xs font-medium text-gray-700">Fresh Flowers</span>
                             </div>
                             <div className="flex flex-col items-center gap-1.5 px-2">
                                 <Truck size={20} className="text-gray-700 stroke-[1.5]" />
-                                <span className="text-[11px] sm:text-xs font-medium text-gray-700">Same-Day Delivery</span>
+                                <span className="font-dm-sans text-[11px] sm:text-xs font-medium text-gray-700">Same-Day Delivery</span>
                             </div>
                             <div className="flex flex-col items-center gap-1.5 px-2">
                                 <Gift size={20} className="text-gray-700 stroke-[1.5]" />
-                                <span className="text-[11px] sm:text-xs font-medium text-gray-700">Premium Packaging</span>
+                                <span className="font-dm-sans text-[11px] sm:text-xs font-medium text-gray-700">Premium Packaging</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* ── 3. Tabs Section: About, Details, Reviews (Exact Inspiration) ── */}
+                {/* ── 3. Tabs Section: About, Details, Reviews (Navigation: DM Sans, Descriptions: DM Sans) ── */}
                 <div className="mt-14 sm:mt-18 pt-8 border-t border-gray-200/80">
                     
-                    {/* Tab Navigation */}
-                    <div className="flex items-center gap-8 border-b border-gray-200/90">
+                    {/* Navigation: Tab Nav (DM Sans) */}
+                    <div className="font-dm-sans flex items-center gap-8 border-b border-gray-200/90">
                         <button
                             type="button"
                             onClick={() => setActiveTab('about')}
-                            className={`pb-3 text-sm sm:text-base transition-all relative cursor-pointer ${
+                            className={`font-dm-sans pb-3 text-sm sm:text-base transition-all relative cursor-pointer ${
                                 activeTab === 'about'
                                     ? 'text-[#1c1917] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#2d3a27]'
                                     : 'text-gray-400 hover:text-gray-700 font-medium'
@@ -497,7 +559,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         <button
                             type="button"
                             onClick={() => setActiveTab('details')}
-                            className={`pb-3 text-sm sm:text-base transition-all relative cursor-pointer ${
+                            className={`font-dm-sans pb-3 text-sm sm:text-base transition-all relative cursor-pointer ${
                                 activeTab === 'details'
                                     ? 'text-[#1c1917] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#2d3a27]'
                                     : 'text-gray-400 hover:text-gray-700 font-medium'
@@ -508,7 +570,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         <button
                             type="button"
                             onClick={() => setActiveTab('reviews')}
-                            className={`pb-3 text-sm sm:text-base transition-all relative cursor-pointer ${
+                            className={`font-dm-sans pb-3 text-sm sm:text-base transition-all relative cursor-pointer ${
                                 activeTab === 'reviews'
                                     ? 'text-[#1c1917] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#2d3a27]'
                                     : 'text-gray-400 hover:text-gray-700 font-medium'
@@ -518,32 +580,32 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         </button>
                     </div>
 
-                    {/* Tab Content Panes */}
-                    <div className="py-6">
+                    {/* Product descriptions: DM Sans */}
+                    <div className="font-dm-sans py-6">
                         {activeTab === 'about' && (
-                            <div className="text-sm sm:text-base text-gray-700 leading-relaxed font-light max-w-3xl space-y-3">
+                            <div className="font-dm-sans text-sm sm:text-base text-gray-700 leading-relaxed font-normal max-w-3xl space-y-3">
                                 <p>
                                     {product.description ||
                                         "A beautiful arrangement of blush pink roses complemented by delicate baby's breath."}
                                 </p>
-                                <p className="text-xs sm:text-sm text-gray-500 font-normal">
+                                <p className="font-dm-sans text-xs sm:text-sm text-gray-500 font-normal">
                                     Handcrafted daily by master florists at our Kolkata floral studio using the freshest morning harvests. Delivered in signature gift presentation with personalized greeting note card.
                                 </p>
                             </div>
                         )}
 
                         {activeTab === 'details' && (
-                            <div className="max-w-3xl space-y-4 text-xs sm:text-sm text-gray-700">
+                            <div className="font-dm-sans max-w-3xl space-y-4 text-xs sm:text-sm text-gray-700">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-2xs">
-                                        <span className="font-semibold block text-[#1c1917] mb-1">Flower Care Tips</span>
-                                        <p className="text-gray-600 text-xs leading-relaxed">
+                                        <span className="font-dm-sans font-semibold block text-[#1c1917] mb-1">Flower Care Tips</span>
+                                        <p className="font-dm-sans text-gray-600 text-xs leading-relaxed font-normal">
                                             Trim stems at a 45° angle before placing in a clean vase filled with fresh water. Keep away from direct sunlight, air conditioners, and fruit bowls. Refresh water every 2 days.
                                         </p>
                                     </div>
                                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-2xs">
-                                        <span className="font-semibold block text-[#1c1917] mb-1">Vase Life &amp; Freshness</span>
-                                        <p className="text-gray-600 text-xs leading-relaxed">
+                                        <span className="font-dm-sans font-semibold block text-[#1c1917] mb-1">Vase Life &amp; Freshness</span>
+                                        <p className="font-dm-sans text-gray-600 text-xs leading-relaxed font-normal">
                                             Guaranteed fresh for 5–7 days with proper hydration. Direct cold-chain air cargo from premier rose gardens ensures pristine petal texture and vibrant scent.
                                         </p>
                                     </div>
@@ -552,10 +614,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         )}
 
                         {activeTab === 'reviews' && (
-                            <div className="max-w-3xl space-y-4">
+                            <div className="font-dm-sans max-w-3xl space-y-4">
                                 <div className="flex items-center gap-5 p-5 rounded-2xl bg-white border border-gray-100 shadow-2xs">
                                     <div className="text-center">
-                                        <span className="font-[family-name:var(--font-playfair)] text-4xl font-semibold text-[#1c1917]">
+                                        <span className="font-dm-sans text-4xl font-semibold text-[#1c1917]">
                                             {rating || '4.9'}
                                         </span>
                                         <div className="flex items-center justify-center gap-0.5 mt-1.5">
@@ -563,12 +625,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                                 <Star key={i} size={13} className="text-amber-500 fill-amber-500" />
                                             ))}
                                         </div>
-                                        <span className="text-[11px] text-gray-400 mt-1 block font-medium">
+                                        <span className="font-dm-sans text-[11px] text-gray-400 mt-1 block font-medium">
                                             {reviewCount || 144} verified ratings
                                         </span>
                                     </div>
                                     <div className="h-12 w-px bg-gray-200" />
-                                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-light">
+                                    <p className="font-dm-sans text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
                                         &ldquo;The flowers arrived exactly as pictured—fresh, fragrant, and exquisitely wrapped. The recipient was absolutely thrilled with the presentation!&rdquo;
                                     </p>
                                 </div>
@@ -577,10 +639,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     </div>
                 </div>
 
-                {/* ── 4. You May Also Like Section (Deeper Browsing) ── */}
+                {/* ── 4. Product Titles: You May Also Like (Cormorant Garamond) ── */}
                 {relatedProducts.length > 0 && (
                     <section className="mt-16 sm:mt-20 pt-10 border-t border-gray-200/80">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-3xl font-medium text-[#1c1917] tracking-tight mb-6">
+                        <h2 className="font-cormorant text-2xl sm:text-3xl font-semibold text-[#1c1917] tracking-tight mb-6">
                             You May Also Like
                         </h2>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5">

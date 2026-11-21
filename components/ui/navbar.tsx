@@ -88,7 +88,7 @@ export default function Navbar() {
                 {/* Main Single-Row Navbar (Matches Exact Reference Image) */}
                 <nav
                     ref={navRef}
-                    className={`w-full transition-all duration-200 bg-white border-b border-black/[0.06] ${
+                    className={`w-full transition-all duration-200 bg-white border-b border-black/[0.06] font-dm-sans ${
                         isScrolled ? 'shadow-sm' : 'shadow-2xs'
                     }`}
                 >

@@ -233,15 +233,15 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
             {/* ── Product Info & Pricing ── */}
             <div className="p-3 sm:p-3.5 flex flex-col flex-grow justify-between bg-white">
                 <div>
-                    {/* Title */}
+                    {/* Title: Cormorant Garamond */}
                     <Link href={`/product/${product.slug}`} className="block">
-                        <h3 className="text-[13px] sm:text-[14px] font-semibold text-[#1c1917] group-hover:text-primary transition-colors line-clamp-1 leading-snug">
+                        <h3 className="font-cormorant text-[16px] sm:text-[17px] font-semibold text-[#1c1917] group-hover:text-primary transition-colors line-clamp-1 leading-snug">
                             {product.name}
                         </h3>
                     </Link>
 
                     {/* Tag Badge & Rating Row */}
-                    <div className="flex items-center justify-between gap-2 mt-1.5 mb-1.5 min-h-[20px]">
+                    <div className="font-dm-sans flex items-center justify-between gap-2 mt-1.5 mb-1.5 min-h-[20px]">
                         {tagInfo ? (
                             <span className={`inline-flex items-center px-1.5 py-0.5 rounded-[3px] text-[9.5px] font-bold uppercase tracking-wider ${tagInfo.bg}`}>
                                 {tagInfo.label}
@@ -259,20 +259,20 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         </div>
                     </div>
 
-                    {/* Price Display */}
-                    <div className="flex items-baseline gap-1.5 mb-2 min-h-[22px]">
+                    {/* Price Display: DM Sans */}
+                    <div className="font-dm-sans flex items-baseline gap-1.5 mb-2 min-h-[22px]">
                         {hasPrice ? (
                             <>
-                                <span className="text-[14px] sm:text-[15px] font-bold text-[#1c1917]">
+                                <span className="font-dm-sans text-[14px] sm:text-[15px] font-semibold text-[#1c1917]">
                                     ₹{price}
                                 </span>
                                 {originalPrice > price && (
                                     <>
-                                        <span className="text-[11px] text-gray-400 line-through">
+                                        <span className="font-dm-sans text-[11px] text-gray-400 line-through">
                                             ₹{originalPrice}
                                         </span>
                                         {discountPercent > 0 && (
-                                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1 rounded">
+                                            <span className="font-dm-sans text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1 rounded">
                                                 {discountPercent}% OFF
                                             </span>
                                         )}
@@ -280,20 +280,20 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                 )}
                             </>
                         ) : (
-                            <span className="text-[11px] font-medium text-gray-500 italic">
+                            <span className="font-dm-sans text-[11px] font-medium text-gray-500 italic">
                                 Price on Request
                             </span>
                         )}
                     </div>
                 </div>
 
-                {/* ── Action Buttons: Cart for ALL + Buy Now (Gold) or Enquire (WhatsApp) ── */}
-                <div className="pt-2 border-t border-gray-100 flex items-center gap-1.5">
-                    {/* Add to Cart (Available for ALL products) */}
+                {/* ── Action Buttons: DM Sans Medium ── */}
+                <div className="font-dm-sans font-medium pt-2 border-t border-gray-100 flex items-center gap-1.5">
+                    {/* Add to Cart */}
                     <button
                         type="button"
                         onClick={handleAddToCart}
-                        className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl transition-all duration-200 text-[11px] font-semibold flex-shrink-0 cursor-pointer border active:scale-95 ${
+                        className={`font-dm-sans font-medium flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl transition-all duration-200 text-[11px] flex-shrink-0 cursor-pointer border active:scale-95 ${
                             justAdded
                                 ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
                                 : cartQuantity > 0
@@ -315,12 +315,12 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                         )}
                     </button>
 
-                    {/* Secondary Action: Buy Now (in Top Banner Gold) OR Enquire (WhatsApp Green) */}
+                    {/* Secondary Action: Buy Now */}
                     {hasPrice ? (
                         <button
                             type="button"
                             onClick={handleBuyNow}
-                            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] border border-[#a89216] text-white text-[11px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                            className="font-dm-sans font-medium flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] border border-[#a89216] text-white text-[11px] transition-all active:scale-95 shadow-2xs cursor-pointer"
                             title="Buy Now"
                         >
                             <ShoppingCart size={12} />
@@ -335,7 +335,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                                 e.stopPropagation();
                                 trackEnquiry(product.name, 'card_whatsapp');
                             }}
-                            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] text-white text-[11px] font-bold transition-all duration-200 active:scale-95 shadow-2xs group/wa"
+                            className="font-dm-sans font-medium flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl bg-[#bfa81f] hover:bg-[#a89216] text-white text-[11px] transition-all duration-200 active:scale-95 shadow-2xs group/wa"
                             title="Enquire on WhatsApp"
                         >
                             <svg className="w-3.5 h-3.5 fill-white group-hover/wa:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
