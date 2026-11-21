@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display, Poppins } from 'next/font/google';
+import { Inter, Playfair_Display, Poppins, Cormorant_Garamond, DM_Sans } from 'next/font/google';
 import './globals.css';
 import LayoutWrapper from '@/components/ui/layout-wrapper';
 import AnalyticsTracker from '@/components/analytics/analytics-tracker';
@@ -20,6 +20,20 @@ const poppins = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-poppins',
+  display: 'swap',
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-dm-sans',
   display: 'swap',
 });
 
@@ -59,7 +73,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable} ${cormorant.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
         {/* Preconnect & Google Fonts: Cormorant Garamond & DM Sans */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

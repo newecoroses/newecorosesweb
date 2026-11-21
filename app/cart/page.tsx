@@ -22,18 +22,22 @@ import {
     Heart,
     Sparkles,
     Zap,
-    Clock
+    Clock,
+    AlertCircle,
+    Sun,
+    PartyPopper
 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { ADDON_ITEMS } from '@/lib/addons';
 import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
 import DeliveryLocationModal from '@/components/ui/delivery-location-modal';
 import AuthDrawer from '@/components/cart/auth-drawer';
+import AnimatedDeliveryScooter, { FreeDeliveryBadge, FreeDeliveryPillButton } from '@/components/ui/animated-delivery-scooter';
 
 interface OccasionOption {
     id: string;
     label: string;
-    emoji: string;
+    image: string;
     title: string;
     suggestionIds: string[];
 }
@@ -42,63 +46,63 @@ const OCCASIONS: OccasionOption[] = [
     {
         id: 'birthday',
         label: 'Birthday',
-        emoji: '??',
+        image: '/images/occasions/birthday.jpg',
         title: 'Birthday Celebration',
         suggestionIds: ['addon-truffle-cake', 'addon-birthday-topper', 'addon-card-occasion', 'addon-chocolate-combo'],
     },
     {
         id: 'anniversary',
         label: 'Anniversary',
-        emoji: '??',
+        image: '/images/occasions/anniversary.jpg',
         title: 'Anniversary Special',
         suggestionIds: ['addon-scented-candle', 'addon-ferrero-box', 'addon-strawberry-cake', 'addon-card-occasion'],
     },
     {
         id: 'romance',
         label: 'Romance & Love',
-        emoji: '??',
+        image: '/images/occasions/romance.jpg',
         title: 'Love & Romance',
         suggestionIds: ['addon-plush-teddy', 'addon-ferrero-box', 'addon-scented-candle', 'addon-card-occasion'],
     },
     {
         id: 'wedding',
         label: 'Wedding / Engagement',
-        emoji: '??',
+        image: '/images/occasions/wedding.jpg',
         title: 'Wedding & Engagement',
         suggestionIds: ['addon-scented-candle', 'addon-butterscotch-cake', 'addon-card-occasion', 'addon-ferrero-box'],
     },
     {
         id: 'congratulations',
         label: 'Congratulations',
-        emoji: '??',
+        image: '/images/occasions/congratulations.jpg',
         title: 'Congratulations',
         suggestionIds: ['addon-butterscotch-cake', 'addon-lucky-bamboo', 'addon-chocolate-combo', 'addon-card-occasion'],
     },
     {
         id: 'get-well',
         label: 'Get Well Soon',
-        emoji: '??',
+        image: '/images/occasions/get-well.jpg',
         title: 'Get Well Soon',
         suggestionIds: ['addon-lucky-bamboo', 'addon-jade-plant', 'addon-flower-food', 'addon-card-occasion'],
     },
     {
         id: 'thank-you',
         label: 'Thank You',
-        emoji: '??',
+        image: '/images/occasions/thank-you.jpg',
         title: 'Thank You & Gratitude',
         suggestionIds: ['addon-ferrero-box', 'addon-lucky-bamboo', 'addon-card-occasion'],
     },
     {
         id: 'housewarming',
         label: 'Housewarming',
-        emoji: '??',
+        image: '/images/occasions/housewarming.jpg',
         title: 'Housewarming',
         suggestionIds: ['addon-jade-plant', 'addon-lucky-bamboo', 'addon-scented-candle', 'addon-card-occasion'],
     },
     {
         id: 'just-because',
         label: 'Just Because / Surprise',
-        emoji: '?',
+        image: '/images/occasions/just-because.jpg',
         title: 'Special Surprise',
         suggestionIds: ['addon-chocolate-combo', 'addon-plush-teddy', 'addon-truffle-cake', 'addon-card-occasion'],
     },
@@ -108,66 +112,66 @@ type MessageTone = 'sweet' | 'romantic' | 'warm' | 'playful';
 
 const MESSAGE_SUGGESTIONS: Record<string, Record<MessageTone, string[]>> = {
     birthday: {
-        sweet: ["May your birthday bloom as beautifully as these flowers! ?? Wishing you joy, laughter, and a day as magical as you are. Happy Birthday!", "Sending you a bouquet full of birthday wishes and warm hugs! ?? Hope your special day is filled with everything you love."],
-        romantic: ["On your birthday, I want you to know how deeply loved you are. ?? Every day with you is a gift — today we celebrate YOU. Happy Birthday, my love.", "You make every day feel special just by being in my life. ?? Happy Birthday — here's to another year of love and adventures together."],
-        warm: ["Wishing you a birthday that's as warm and wonderful as you are. ?? May this year bring you everything your heart desires. Happy Birthday!", "So grateful to celebrate another year of your amazing life! ?? Sending all my love and best wishes on your special day."],
-        playful: ["Happy Birthday! ?? You're not getting older — you're just getting more fabulous! Hope your day is as awesome as you are! ????", "Warning: These flowers may cause extreme happiness and uncontrollable smiling! ?? Happy Birthday — have the most epic day ever!"],
+        sweet: ["May your birthday bloom as beautifully as these flowers! 🌸 Wishing you joy, laughter, and a day as magical as you are. Happy Birthday!", "Sending you a bouquet full of birthday wishes and warm hugs! 🌷 Hope your special day is filled with everything you love."],
+        romantic: ["On your birthday, I want you to know how deeply loved you are. 💕 Every day with you is a gift — today we celebrate YOU. Happy Birthday, my love.", "You make every day feel special just by being in my life. 💝 Happy Birthday — here's to another year of love and adventures together."],
+        warm: ["Wishing you a birthday that's as warm and wonderful as you are. 🌻 May this year bring you everything your heart desires. Happy Birthday!", "So grateful to celebrate another year of your amazing life! 🎉 Sending all my love and best wishes on your special day."],
+        playful: ["Happy Birthday! 🎂 You're not getting older — you're just getting more fabulous! Hope your day is as awesome as you are! 🎂🎈", "Warning: These flowers may cause extreme happiness and uncontrollable smiling! 🎁 Happy Birthday — have the most epic day ever!"],
     },
     anniversary: {
-        sweet: ["Every year with you is a beautiful chapter in our story. ?? Happy Anniversary — here's to forever and beyond.", "These flowers are as timeless as the love we share. ?? Wishing us many more beautiful years together. Happy Anniversary!"],
-        romantic: ["From the moment I met you, my world became more beautiful. ?? Happy Anniversary, my love — you are my greatest adventure.", "Every rose in this bouquet represents a reason I love you more with each passing day. ?? Happy Anniversary!"],
-        warm: ["Happy Anniversary! ?? Celebrating the love, laughter, and beautiful memories we've built together. Here's to us!", "Another year of growing together, laughing together, and loving each other. ?? Happy Anniversary — you mean the world to me."],
-        playful: ["Happy Anniversary! ?? Still my favourite person to be weird with after all these years! Love you tons! ??", "Roses are red, violets are blue — these flowers are for you because I love only you! ?? Happy Anniversary!"],
+        sweet: ["Every year with you is a beautiful chapter in our story. 💍 Happy Anniversary — here's to forever and beyond.", "These flowers are as timeless as the love we share. 🌹 Wishing us many more beautiful years together. Happy Anniversary!"],
+        romantic: ["From the moment I met you, my world became more beautiful. ✨ Happy Anniversary, my love — you are my greatest adventure.", "Every rose in this bouquet represents a reason I love you more with each passing day. 🌹 Happy Anniversary!"],
+        warm: ["Happy Anniversary! 💕 Celebrating the love, laughter, and beautiful memories we've built together. Here's to us!", "Another year of growing together, laughing together, and loving each other. 💕 Happy Anniversary — you mean the world to me."],
+        playful: ["Happy Anniversary! 💕 Still my favourite person to be weird with after all these years! Love you tons! 💕", "Roses are red, violets are blue — these flowers are for you because I love only you! 💐 Happy Anniversary!"],
     },
     romance: {
-        sweet: ["Just wanted to remind you how special you are to me. ?? These flowers carry all the love I have for you. With all my heart.", "No reason needed to say 'I love you'. ?? You make my world so much brighter just by being in it."],
-        romantic: ["You are the poetry my heart writes every single day. ?? These roses are just a small reflection of how deeply I love you.", "In a garden full of flowers, you would still be my favourite bloom. ?? Yours, forever."],
-        warm: ["Thinking of you today and always. ?? Sending these flowers with all the love and warmth I feel for you every day.", "You deserve all the beautiful things in this world. ?? Starting with these flowers and all the love I have for you."],
-        playful: ["Surprise! These flowers are as extra as my love for you! ???? Just because you're awesome and I love you tons!", "I saw these flowers and thought of you. ?? Because you're beautiful, wonderful, and I really like you a lot (understatement of the year)!"],
+        sweet: ["Just wanted to remind you how special you are to me. 💐 These flowers carry all the love I have for you. With all my heart.", "No reason needed to say 'I love you'. 💗 You make my world so much brighter just by being in it."],
+        romantic: ["You are the poetry my heart writes every single day. 🌹 These roses are just a small reflection of how deeply I love you.", "In a garden full of flowers, you would still be my favourite bloom. 🌹 Yours, forever."],
+        warm: ["Thinking of you today and always. 💕 Sending these flowers with all the love and warmth I feel for you every day.", "You deserve all the beautiful things in this world. 🌸 Starting with these flowers and all the love I have for you."],
+        playful: ["Surprise! These flowers are as extra as my love for you! 💐💕 Just because you're awesome and I love you tons!", "I saw these flowers and thought of you. 🌸 Because you're beautiful, wonderful, and I really like you a lot (understatement of the year)!"],
     },
     wedding: {
-        sweet: ["Wishing you both a lifetime of love, laughter, and endless joy. ?? May your journey together be as beautiful as today. Congratulations!", "May your marriage be filled with all the magic and wonder of this day. ?? Wishing you both endless happiness. Congratulations!"],
-        romantic: ["Two souls becoming one — today marks the beginning of your most beautiful story. ?? May your love grow deeper with every passing day.", "Love found its perfect home in both of you. ?? Wishing you a lifetime of romance, adventure, and unwavering love. Congratulations!"],
-        warm: ["Warmest congratulations on your wedding! ?? May your home be filled with love, your hearts with laughter, and your life with blessings.", "What a beautiful day to celebrate two beautiful people! ?? Wishing you both a lifetime of happiness. Congratulations!"],
-        playful: ["You two are officially stuck with each other — and we couldn't be happier about it! ?? Congratulations and welcome to forever!", "Love is in the air (and so are flower petals)! ?? Congratulations on your wedding — may you always make each other laugh!"],
+        sweet: ["Wishing you both a lifetime of love, laughter, and endless joy. 💒 May your journey together be as beautiful as today. Congratulations!", "May your marriage be filled with all the magic and wonder of this day. 💍 Wishing you both endless happiness. Congratulations!"],
+        romantic: ["Two souls becoming one — today marks the beginning of your most beautiful story. 💑 May your love grow deeper with every passing day.", "Love found its perfect home in both of you. 💕 Wishing you a lifetime of romance, adventure, and unwavering love. Congratulations!"],
+        warm: ["Warmest congratulations on your wedding! 💐 May your home be filled with love, your hearts with laughter, and your life with blessings.", "What a beautiful day to celebrate two beautiful people! 🎊 Wishing you both a lifetime of happiness. Congratulations!"],
+        playful: ["You two are officially stuck with each other — and we couldn't be happier about it! 🎉 Congratulations and welcome to forever!", "Love is in the air (and so are flower petals)! 💐 Congratulations on your wedding — may you always make each other laugh!"],
     },
     congratulations: {
-        sweet: ["Your hard work and dedication have truly paid off. ?? So proud of you and everything you've achieved. Congratulations!", "Every great achievement begins with someone who dared to dream. ?? Congratulations on making yours come true!"],
-        romantic: ["Your success is a reflection of your beautiful soul and incredible spirit. ?? So incredibly proud of you. Congratulations, my love!", "Celebrating your amazing achievement with all the love in my heart. ?? You deserve every bit of this success. Congratulations!"],
-        warm: ["Congratulations! ?? Your determination and passion brought you here. We're all so proud and happy for you!", "This is YOUR moment — earned by your talent, your effort, and your beautiful heart. ?? Congratulations!"],
-        playful: ["YOU DID IT! ???? We always knew you would — now it's time to celebrate! Congratulations, superstar!", "Warning: This success may lead to even greater things! ?? Congratulations — here's to the first of many achievements!"],
+        sweet: ["Your hard work and dedication have truly paid off. 🌟 So proud of you and everything you've achieved. Congratulations!", "Every great achievement begins with someone who dared to dream. ✨ Congratulations on making yours come true!"],
+        romantic: ["Your success is a reflection of your beautiful soul and incredible spirit. 💫 So incredibly proud of you. Congratulations, my love!", "Celebrating your amazing achievement with all the love in my heart. 💕 You deserve every bit of this success. Congratulations!"],
+        warm: ["Congratulations! 🎉 Your determination and passion brought you here. We're all so proud and happy for you!", "This is YOUR moment — earned by your talent, your effort, and your beautiful heart. 🌟 Congratulations!"],
+        playful: ["YOU DID IT! 🎉🎊 We always knew you would — now it's time to celebrate! Congratulations, superstar!", "Warning: This success may lead to even greater things! 🚀 Congratulations — here's to the first of many achievements!"],
     },
     'get-well': {
-        sweet: ["Sending you these flowers and all my healing thoughts. ?? Wishing you a quick and peaceful recovery. Take care!", "May these blooms brighten your day and remind you that you're deeply loved. ?? Get well soon!"],
-        romantic: ["Being apart from you while you're unwell is hard — these flowers carry all my love to you. ?? Get well soon, my darling.", "I'm sending all my love and warmth with these flowers. ?? Come back to full health soon — I miss you dearly."],
-        warm: ["Hope these flowers bring a little sunshine to your recovery. ?? Sending warm thoughts, healing wishes, and lots of love your way!", "Take all the rest you need — healing takes time. ?? These flowers are here to cheer you on. Get well soon!"],
-        playful: ["Get well soon! ?? The world is a better place with you healthy and happy in it! These flowers are rooting for you!", "Doctor's orders: Accept these flowers, rest lots, and get back to being your amazing self ASAP! ?? Get well soon!"],
+        sweet: ["Sending you these flowers and all my healing thoughts. 🌿 Wishing you a quick and peaceful recovery. Take care!", "May these blooms brighten your day and remind you that you're deeply loved. 🌸 Get well soon!"],
+        romantic: ["Being apart from you while you're unwell is hard — these flowers carry all my love to you. 💕 Get well soon, my darling.", "I'm sending all my love and warmth with these flowers. 💐 Come back to full health soon — I miss you dearly."],
+        warm: ["Hope these flowers bring a little sunshine to your recovery. ☀️ Sending warm thoughts, healing wishes, and lots of love your way!", "Take all the rest you need — healing takes time. 🌸 These flowers are here to cheer you on. Get well soon!"],
+        playful: ["Get well soon! 🌿 The world is a better place with you healthy and happy in it! These flowers are rooting for you!", "Doctor's orders: Accept these flowers, rest lots, and get back to being your amazing self ASAP! 💪 Get well soon!"],
     },
     'thank-you': {
-        sweet: ["These flowers are a small token of my deep gratitude. ?? Thank you so much for everything — you truly made a difference.", "Your kindness means more than words can express. ?? Thank you from the bottom of my heart."],
-        romantic: ["You are the most thoughtful person I know. ?? Thank you for everything you do — I'm so grateful to have you in my life.", "Every act of kindness you show makes my world a little brighter. ?? Thank you for being so wonderful."],
-        warm: ["Thank you for your warmth, generosity, and kindness. ?? These flowers are a small reflection of how grateful I am for you!", "Your support means everything to me. ?? Thank you so much — you are truly one in a million!"],
-        playful: ["THANK YOU! ?? You're basically a superhero and these flowers are your cape! So grateful for you! ??", "These flowers = 1% of how grateful I am (the other 99% is in my heart)! ?? Thank you so much!"],
+        sweet: ["These flowers are a small token of my deep gratitude. 🙏 Thank you so much for everything — you truly made a difference.", "Your kindness means more than words can express. 💐 Thank you from the bottom of my heart."],
+        romantic: ["You are the most thoughtful person I know. 💕 Thank you for everything you do — I'm so grateful to have you in my life.", "Every act of kindness you show makes my world a little brighter. ✨ Thank you for being so wonderful."],
+        warm: ["Thank you for your warmth, generosity, and kindness. 🌻 These flowers are a small reflection of how grateful I am for you!", "Your support means everything to me. 💕 Thank you so much — you are truly one in a million!"],
+        playful: ["THANK YOU! 🙏 You're basically a superhero and these flowers are your cape! So grateful for you! 💐", "These flowers = 1% of how grateful I am (the other 99% is in my heart)! 💕 Thank you so much!"],
     },
     housewarming: {
-        sweet: ["May your new home be filled with love, laughter, and beautiful memories. ?? Wishing you all the warmth and happiness in your new space!", "A new home is where new stories begin. ?? Wishing you joy and peace in every corner of your beautiful new home!"],
-        romantic: ["A new home, a new chapter — may it be filled with all our love and dreams. ?? Here's to building our most beautiful life together.", "Every corner of your new home will hold a piece of our hearts. ?? Wishing you endless happiness here."],
-        warm: ["Warmest wishes for your beautiful new home! ?? May it be a place of comfort, joy, and endless wonderful memories.", "May your new home always be filled with laughter, the smell of fresh flowers, and the warmth of loved ones. ?? Congratulations!"],
-        playful: ["Welcome to your new home! ?? May it be as amazing as you are (and may the Wi-Fi always be strong)! ??", "New house alert! ?? These flowers are your first official housewarming gift — may many more good things follow! Congratulations!"],
+        sweet: ["May your new home be filled with love, laughter, and beautiful memories. 🏠 Wishing you all the warmth and happiness in your new space!", "A new home is where new stories begin. 🏡 Wishing you joy and peace in every corner of your beautiful new home!"],
+        romantic: ["A new home, a new chapter — may it be filled with all our love and dreams. 🏠 Here's to building our most beautiful life together.", "Every corner of your new home will hold a piece of our hearts. 💕 Wishing you endless happiness here."],
+        warm: ["Warmest wishes for your beautiful new home! 🏡 May it be a place of comfort, joy, and endless wonderful memories.", "May your new home always be filled with laughter, the smell of fresh flowers, and the warmth of loved ones. 🌷 Congratulations!"],
+        playful: ["Welcome to your new home! 🏡 May it be as amazing as you are (and may the Wi-Fi always be strong)! 🏠", "New house alert! 🏠 These flowers are your first official housewarming gift — may many more good things follow! Congratulations!"],
     },
     'just-because': {
-        sweet: ["No special occasion needed — you deserve beautiful things every day. ?? Just a little reminder of how special you are to me.", "Sometimes love needs no reason. ?? These flowers are just a small way of saying how much you mean to me."],
-        romantic: ["Just wanted you to know that I'm thinking of you today and always. ?? You make my ordinary days extraordinary. With all my love.", "You deserve to be surprised with flowers just because — because you're wonderful, because you're you. ?? Thinking of you always."],
-        warm: ["Just because you're amazing and you deserve lovely things! ?? Sending these with all my warmth and affection. Hope this makes you smile!", "Life is better with you in it. ?? These flowers are just a little thank-you for being the wonderful person you are!"],
-        playful: ["SURPRISE! ?? No reason needed — just wanted to remind you that you're awesome! ?? Hope these flowers make your day!", "These flowers arrived with a simple mission: make you smile! ?? Mission status: hopefully accomplished! Just because you're wonderful! ??"],
+        sweet: ["No special occasion needed — you deserve beautiful things every day. 🌸 Just a little reminder of how special you are to me.", "Sometimes love needs no reason. 💐 These flowers are just a small way of saying how much you mean to me."],
+        romantic: ["Just wanted you to know that I'm thinking of you today and always. 💕 You make my ordinary days extraordinary. With all my love.", "You deserve to be surprised with flowers just because — because you're wonderful, because you're you. 🌹 Thinking of you always."],
+        warm: ["Just because you're amazing and you deserve lovely things! 🌻 Sending these with all my warmth and affection. Hope this makes you smile!", "Life is better with you in it. 💕 These flowers are just a little thank-you for being the wonderful person you are!"],
+        playful: ["SURPRISE! 🎁 No reason needed — just wanted to remind you that you're awesome! 🌸 Hope these flowers make your day!", "These flowers arrived with a simple mission: make you smile! 🌸 Mission status: hopefully accomplished! Just because you're wonderful! 💐"],
     },
 };
 
-const TONES: { id: MessageTone; label: string; emoji: string }[] = [
-    { id: 'sweet', label: 'Sweet', emoji: '??' },
-    { id: 'romantic', label: 'Romantic', emoji: '??' },
-    { id: 'warm', label: 'Warm', emoji: '??' },
-    { id: 'playful', label: 'Playful', emoji: '??' },
+const TONES: { id: MessageTone; label: string; icon: React.ReactNode }[] = [
+    { id: 'sweet', label: 'Sweet', icon: <Sparkles size={11} className="inline mr-1" /> },
+    { id: 'romantic', label: 'Romantic', icon: <Heart size={11} className="inline mr-1" /> },
+    { id: 'warm', label: 'Warm', icon: <Sun size={11} className="inline mr-1" /> },
+    { id: 'playful', label: 'Playful', icon: <PartyPopper size={11} className="inline mr-1" /> },
 ];
 
 export default function CartPage() {
@@ -456,13 +460,23 @@ export default function CartPage() {
                         {/* Step 1: Login */}
                         <div className="flex items-center gap-1.5 sm:gap-2">
                             <div
-                                className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold transition-all shadow-2xs ${
+                                className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold transition-all shadow-2xs overflow-hidden relative ${
                                     isVerified
                                         ? 'bg-[#16a34a] text-white'
-                                        : 'bg-[#bfa81f] text-white'
+                                        : 'border border-amber-300 bg-white'
                                 }`}
                             >
-                                {isVerified ? <Check size={14} className="stroke-[3]" /> : '?'}
+                                {isVerified ? (
+                                    <Check size={14} className="stroke-[3]" />
+                                ) : (
+                                    <Image
+                                        src="/images/cart/login-icon.jpg"
+                                        alt="Login"
+                                        fill
+                                        className="object-cover"
+                                        sizes="28px"
+                                    />
+                                )}
                             </div>
                             <span
                                 className={`text-[12px] sm:text-[13px] font-bold tracking-tight whitespace-nowrap ${
@@ -551,69 +565,81 @@ export default function CartPage() {
                         <div className="lg:col-span-7 space-y-4">
                             
                             {/* 1. Deliver To Card */}
-                            <div className="bg-white border border-black/[0.08] rounded-[16px] p-4 flex items-center justify-between shadow-2xs">
+                            <div className="bg-white border border-[#e8e4dc] rounded-[16px] p-4 flex items-center justify-between shadow-2xs">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-[#f3f4e8] border border-[#bfa81f]/20 flex items-center justify-center flex-shrink-0 text-[#bfa81f]">
-                                        <MapPin size={18} className="stroke-[2.3]" />
+                                    <div className="w-9 h-9 rounded-full bg-gray-100 border border-black/[0.08] flex items-center justify-center flex-shrink-0 text-black">
+                                        <MapPin size={18} className="stroke-[2.3] text-black" />
                                     </div>
                                     <div>
-                                        <div className="text-[13.5px] font-semibold text-[#111] tracking-tight leading-snug">
-                                            Deliver to: {deliveryPincode}
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <div className="text-[13.5px] font-semibold text-[#111] tracking-tight leading-snug">
+                                                Deliver to: {deliveryPincode}
+                                            </div>
+                                            <FreeDeliveryPillButton onClick={() => setIsLocationModalOpen(true)} showScooter={false} className="hidden sm:inline-flex" />
                                         </div>
-                                        <div className="text-[12px] text-[#666] font-medium leading-tight">
+                                        <div className="text-[12px] text-[#666] font-medium leading-tight mt-0.5">
                                             {deliveryArea}
                                         </div>
                                     </div>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setIsLocationModalOpen(true)}
-                                    className="px-3.5 py-1.5 rounded-[8px] border border-black/[0.18] hover:border-black/[0.35] bg-white hover:bg-gray-50 text-[12px] font-medium text-[#111] transition-all cursor-pointer shadow-2xs"
-                                >
-                                    Change
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    <FreeDeliveryPillButton onClick={() => setIsLocationModalOpen(true)} showScooter={false} className="sm:hidden" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsLocationModalOpen(true)}
+                                        className="px-3.5 py-1.5 rounded-[8px] border border-black/[0.18] hover:border-black/[0.35] bg-white hover:bg-gray-50 text-[12px] font-medium text-[#111] transition-all cursor-pointer shadow-2xs"
+                                    >
+                                        Change
+                                    </button>
+                                </div>
                             </div>
 
                             {/* 2. Delivery Date Header + Product Rows */}
-                            <div className="border border-black/[0.08] rounded-[16px] overflow-hidden shadow-2xs">
-                                {/* Soft warm banner with 8:00 PM cutoff notice */}
-                                <div className="bg-[#f9f7f2] px-4 py-3 flex items-center justify-between gap-3 border-b border-black/[0.06]">
-                                    <div className="flex items-center gap-2.5 min-w-0">
-                                        <div className="w-7 h-7 rounded-full bg-[#f1eedf] flex items-center justify-center flex-shrink-0 text-[#bfa81f]">
-                                            <Calendar size={14} className="stroke-[2.4]" />
+                            <div className="bg-white border border-[#e8e4dc] rounded-[16px] overflow-hidden shadow-2xs">
+                                {/* Attractive, warm luxury banner with perfectly aligned delivery badge */}
+                                <div className="bg-gradient-to-r from-[#fbf9f5] via-[#f7f5ed] to-[#f2f9f4] px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#ece7dc]">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-8 h-8 rounded-full bg-white shadow-2xs border border-gray-300 flex items-center justify-center flex-shrink-0 text-black">
+                                            <Calendar size={15} className="stroke-[2.4] text-black" />
                                         </div>
                                         <div className="min-w-0">
-                                            <div className="flex items-center gap-1.5 flex-wrap">
-                                                <span className="text-[13px] font-bold text-[#1a1a1a] tracking-tight">
+                                            <div className="flex items-baseline gap-1.5 flex-wrap">
+                                                <span className="text-[13.5px] font-bold text-[#1c1917] tracking-tight">
                                                     {deliveryInfo.bannerText}
                                                 </span>
-                                                <span className="text-[11.5px] text-[#777] font-medium hidden md:inline">
+                                                <span className="text-[11.5px] text-[#78716c] font-medium">
                                                     (9:00 AM – 9:00 PM)
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Modern, Aesthetic Cutoff Pill */}
-                                    <div className="flex-shrink-0">
+                                    {/* Perfectly Aligned Attractive Same-Day / Next-Day Delivery Pill (Clean, no scooty in cart) */}
+                                    <div className="flex-shrink-0 flex items-center">
                                         {deliveryInfo.isSameDay ? (
-                                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs">
-                                                <Zap size={12} className="fill-emerald-600 text-emerald-600 flex-shrink-0" />
-                                                <span className="text-[11.5px] font-bold tracking-tight whitespace-nowrap">
-                                                    Same-Day Delivery
-                                                </span>
-                                                <span className="text-[11px] text-emerald-700/80 font-medium whitespace-nowrap hidden sm:inline">
-                                                    · Order by 8:00 PM
+                                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#16a34a]/[0.08] border border-[#16a34a]/30 text-[#16a34a] shadow-2xs">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="w-2 h-2 rounded-full bg-[#16a34a] animate-pulse flex-shrink-0" />
+                                                    <span className="text-[11.5px] sm:text-xs font-bold text-[#16a34a] tracking-wide whitespace-nowrap">
+                                                        Same-Day Delivery
+                                                    </span>
+                                                </div>
+                                                <span className="text-[#16a34a]/30 font-light hidden sm:inline">|</span>
+                                                <span className="text-[11px] sm:text-xs font-bold text-[#16a34a] whitespace-nowrap hidden sm:inline">
+                                                    Order by 8:00 PM
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200/90 shadow-2xs">
-                                                <Clock size={12} className="text-amber-700 flex-shrink-0 stroke-[2.2]" />
-                                                <span className="text-[11.5px] font-bold tracking-tight whitespace-nowrap">
-                                                    Next-Day Delivery
-                                                </span>
-                                                <span className="text-[11px] text-amber-800/80 font-medium whitespace-nowrap hidden sm:inline">
-                                                    · After 8:00 PM cutoff
+                                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#fffbeb] border border-[#fde68a] text-amber-900 shadow-2xs">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
+                                                    <span className="text-[11.5px] sm:text-xs font-bold text-amber-900 tracking-wide whitespace-nowrap">
+                                                        Next-Day Delivery
+                                                    </span>
+                                                </div>
+                                                <span className="text-amber-300 font-light hidden sm:inline">|</span>
+                                                <span className="text-[11px] font-semibold text-amber-800 whitespace-nowrap hidden sm:inline">
+                                                    After 8:00 PM cutoff
                                                 </span>
                                             </div>
                                         )}
@@ -650,7 +676,7 @@ export default function CartPage() {
                                                     </Link>
 
                                                     <div className="text-[15px] font-bold text-[#111] mt-1">
-                                                        ?{price.toLocaleString('en-IN')}
+                                                        ₹{price.toLocaleString('en-IN')}
                                                     </div>
 
                                                     {/* Dropdown Qty Selector (Matches "Qty 1 ?" in Image 1) */}
@@ -714,8 +740,8 @@ export default function CartPage() {
                             >
                                 <div className="flex items-center justify-between gap-2 mb-2">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-[#faf8f0] text-[#bfa81f] flex items-center justify-center flex-shrink-0 border border-[#bfa81f]/25">
-                                            <Gift size={16} className="stroke-[2.3]" />
+                                        <div className="w-8 h-8 rounded-full bg-gray-100 text-black flex items-center justify-center flex-shrink-0 border border-black/[0.08]">
+                                            <Gift size={16} className="stroke-[2.3] text-black" />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
@@ -739,8 +765,8 @@ export default function CartPage() {
                                 </div>
 
                                 {occasionError && (
-                                    <div className="mb-3 px-3 py-2 rounded-[8px] bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5">
-                                        <span>??</span>
+                                    <div className="mb-3 px-3 py-2 rounded-[8px] bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+                                        <AlertCircle size={15} className="flex-shrink-0 text-rose-600" />
                                         <span>Please select an occasion for your order before proceeding to checkout.</span>
                                     </div>
                                 )}
@@ -754,14 +780,29 @@ export default function CartPage() {
                                                 key={occ.id}
                                                 type="button"
                                                 onClick={() => handleSelectOccasion(occ.id)}
-                                                className={`flex items-center gap-2 px-3 py-2.5 rounded-[11px] text-left text-[12.5px] transition-all cursor-pointer border ${
+                                                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-[12px] text-left text-[12.5px] transition-all cursor-pointer border ${
                                                     isSelected
                                                         ? 'bg-[#bfa81f] text-white border-[#bfa81f] font-semibold shadow-xs'
-                                                        : 'bg-[#fafafa] hover:bg-white text-[#333] border-black/[0.08] hover:border-[#bfa81f]/40 font-medium'
+                                                        : 'bg-[#fafafa] hover:bg-white text-[#111] border-black/[0.08] hover:border-black/30 font-medium'
                                                 }`}
                                             >
-                                                <span className="text-base flex-shrink-0">{occ.emoji}</span>
-                                                <span className="truncate flex-1">{occ.label}</span>
+                                                <div
+                                                    className={`w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0 transition-all ${
+                                                        isSelected
+                                                            ? 'ring-1.5 ring-white shadow-xs scale-105'
+                                                            : 'bg-white shadow-2xs border border-black/[0.06]'
+                                                    }`}
+                                                >
+                                                    <Image
+                                                        src={occ.image}
+                                                        alt={occ.label}
+                                                        width={28}
+                                                        height={28}
+                                                        className="object-cover w-full h-full"
+                                                        unoptimized
+                                                    />
+                                                </div>
+                                                <span className="truncate flex-1 font-semibold">{occ.label}</span>
                                                 <div
                                                     className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 border ${
                                                         isSelected
@@ -812,10 +853,10 @@ export default function CartPage() {
                                                                         {addon.name}
                                                                     </p>
                                                                     <div className="flex items-center gap-1.5 text-[11px]">
-                                                                        <span className="font-bold text-[#111]">?{addon.price}</span>
+                                                                        <span className="font-bold text-[#111]">₹{addon.price}</span>
                                                                         {addon.originalPrice && (
                                                                             <span className="text-gray-400 line-through text-[10px]">
-                                                                                ?{addon.originalPrice}
+                                                                                ₹{addon.originalPrice}
                                                                             </span>
                                                                         )}
                                                                     </div>
@@ -856,8 +897,16 @@ export default function CartPage() {
                             <div className="bg-white border border-black/[0.08] rounded-[16px] p-4 shadow-2xs space-y-3.5">
                                 {/* Accordion Header */}
                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Gift size={18} className="text-[#bfa81f] stroke-[2.3]" />
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="relative w-6 h-6 rounded-md overflow-hidden flex-shrink-0 shadow-2xs border border-amber-200/80">
+                                            <Image
+                                                src="/images/cart/make-it-extra-special.jpg"
+                                                alt="Make It Extra Special"
+                                                fill
+                                                className="object-cover"
+                                                sizes="24px"
+                                            />
+                                        </div>
                                         <h3 className="font-sans text-[15px] font-bold text-[#111] tracking-tight">
                                             Make It Extra Special!
                                         </h3>
@@ -957,11 +1006,11 @@ export default function CartPage() {
                                                             {/* Price */}
                                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                                 <span className="text-[13px] font-semibold text-[#111]">
-                                                                    ?{addon.price}
+                                                                    ₹{addon.price}
                                                                 </span>
                                                                 {addon.originalPrice && (
                                                                     <span className="text-[11px] text-gray-400 line-through font-normal">
-                                                                        ?{addon.originalPrice}
+                                                                        ₹{addon.originalPrice}
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -995,8 +1044,14 @@ export default function CartPage() {
                                     className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50/70 transition-colors cursor-pointer"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[#f3f4e8] text-[#bfa81f] flex items-center justify-center flex-shrink-0">
-                                            <Heart size={16} className="stroke-[2.3]" />
+                                        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-amber-200/80 flex items-center justify-center flex-shrink-0 bg-white shadow-2xs">
+                                            <Image
+                                                src="/images/cart/message-card-icon.jpg"
+                                                alt="Message Card"
+                                                fill
+                                                className="object-cover"
+                                                sizes="32px"
+                                            />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
@@ -1008,7 +1063,7 @@ export default function CartPage() {
                                                 </span>
                                             </div>
                                             <p className="text-[11.5px] text-[#666] font-medium leading-tight">
-                                                {messageSaved ? 'Card message added ?' : 'Make your gift more special'}
+                                                {messageSaved ? 'Card message added ✨' : 'Make your gift more special'}
                                             </p>
                                         </div>
                                     </div>
@@ -1026,24 +1081,25 @@ export default function CartPage() {
                                         {/* Smart Suggestions — show when occasion is selected */}
                                         {selectedOccasion && MESSAGE_SUGGESTIONS[selectedOccasion] && (
                                             <div className="space-y-2">
-                                                <p className="text-[11px] font-bold text-[#bfa81f] flex items-center gap-1.5">
-                                                    <Sparkles size={12} />
+                                                <p className="text-[11px] font-bold text-black flex items-center gap-1.5">
+                                                    <Sparkles size={12} className="text-black" />
                                                     Message suggestions for {OCCASIONS.find(o => o.id === selectedOccasion)?.label}:
                                                 </p>
-                                                {/* Tone selector */}
+                                                {/* Tone selector with black icons */}
                                                 <div className="flex gap-1.5 flex-wrap">
                                                     {TONES.map(t => (
                                                         <button
                                                             key={t.id}
                                                             type="button"
                                                             onClick={() => setMessageTone(prev => prev === t.id ? '' : t.id)}
-                                                            className={`px-2.5 py-1 rounded-[8px] border text-[11px] font-bold transition-all cursor-pointer ${
+                                                            className={`px-2.5 py-1 rounded-[8px] border text-[11px] font-bold transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                                                                 messageTone === t.id
                                                                     ? 'bg-[#111] text-white border-[#111]'
-                                                                    : 'bg-white text-[#444] border-black/[0.12] hover:bg-gray-50'
+                                                                    : 'bg-white text-black border-black/[0.15] hover:bg-gray-50'
                                                             }`}
                                                         >
-                                                            {t.emoji} {t.label}
+                                                            <span className={messageTone === t.id ? 'text-white' : 'text-black'}>{t.icon}</span>
+                                                            <span>{t.label}</span>
                                                         </button>
                                                     ))}
                                                 </div>
@@ -1110,8 +1166,8 @@ export default function CartPage() {
                                     className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50/70 transition-colors cursor-pointer"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[#f3f4e8] text-[#bfa81f] flex items-center justify-center flex-shrink-0">
-                                            <Tag size={16} className="stroke-[2.3]" />
+                                        <div className="w-8 h-8 rounded-full bg-gray-100 text-black border border-black/[0.08] flex items-center justify-center flex-shrink-0">
+                                            <Tag size={16} className="stroke-[2.3] text-black" />
                                         </div>
                                         <div>
                                             <div className="text-[13.5px] font-semibold text-[#111] tracking-tight">
@@ -1119,7 +1175,7 @@ export default function CartPage() {
                                             </div>
                                             {appliedCoupon && (
                                                 <p className="text-[11.5px] text-[#16a34a] font-bold leading-tight">
-                                                    {appliedCoupon.code} applied (-?{discountAmount})
+                                                    {appliedCoupon.code} applied (-₹{discountAmount})
                                                 </p>
                                             )}
                                         </div>
@@ -1136,13 +1192,21 @@ export default function CartPage() {
                                     <div className="px-4 pb-4 pt-1 border-t border-black/[0.06] space-y-3 bg-[#faf9f6]/40">
                                         {appliedCoupon ? (
                                             <div className="flex items-center justify-between p-2.5 rounded-[10px] bg-emerald-50 border border-emerald-200">
-                                                <div>
-                                                    <span className="text-xs font-semibold text-emerald-800 tracking-wide">
-                                                        {appliedCoupon.code}
+                                                <div className="flex items-center gap-2">
+                                                    <span className="flex-shrink-0 w-4 h-4 flex items-center justify-center">
+                                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4">
+                                                            <circle cx="12" cy="12" r="10" fill="#16a34a" fillOpacity="0.15" stroke="#16a34a" strokeWidth="1.5" />
+                                                            <path d="M12 7 L13 10.5 L16.5 11.5 L13.8 13.8 L14.5 17.5 L12 15.5 L9.5 17.5 L10.2 13.8 L7.5 11.5 L11 10.5 Z" fill="#15803d" />
+                                                        </svg>
                                                     </span>
-                                                    <p className="text-[11px] text-emerald-700 font-medium">
-                                                        ?{discountAmount} saved on this order
-                                                    </p>
+                                                    <div>
+                                                        <span className="text-xs font-semibold text-emerald-800 tracking-wide">
+                                                            {appliedCoupon.code}
+                                                        </span>
+                                                        <p className="text-[11px] text-emerald-700 font-medium">
+                                                            ₹{discountAmount} saved on this order
+                                                        </p>
+                                                    </div>
                                                 </div>
                                                 <button
                                                     type="button"
@@ -1213,10 +1277,10 @@ export default function CartPage() {
                                                     Total Bill
                                                 </span>
                                                 <span className="text-[17px] font-black text-[#111]">
-                                                    ?{totalBill.toLocaleString('en-IN')}
+                                                    ₹{totalBill.toLocaleString('en-IN')}
                                                 </span>
                                                 <span className="text-xs text-gray-400 line-through font-semibold">
-                                                    ?{estimatedMRP.toLocaleString('en-IN')}
+                                                    ₹{estimatedMRP.toLocaleString('en-IN')}
                                                 </span>
                                             </div>
                                             <p className="text-[10.5px] text-[#777] font-medium leading-none mt-0.5">
@@ -1237,7 +1301,7 @@ export default function CartPage() {
                                     <div className="pt-2 border-t border-black/[0.06] space-y-2 text-xs">
                                         <div className="flex justify-between text-[#666]">
                                             <span className="font-normal">Cart Subtotal</span>
-                                            <span className="font-bold text-[#111]">?{subtotal.toLocaleString('en-IN')}</span>
+                                            <span className="font-bold text-[#111]">₹{subtotal.toLocaleString('en-IN')}</span>
                                         </div>
                                         <div className="flex justify-between text-[#666]">
                                             <span className="font-normal">Delivery Charges</span>
@@ -1250,17 +1314,35 @@ export default function CartPage() {
                                         {discountAmount > 0 && (
                                             <div className="flex justify-between text-emerald-700 font-bold">
                                                 <span>Coupon Discount</span>
-                                                <span>-?{discountAmount.toLocaleString('en-IN')}</span>
+                                                <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
                                             </div>
                                         )}
                                     </div>
                                 )}
 
-                                {/* Savings Banner (Reference Image 1) */}
-                                <div className="bg-[#fef9e7] border border-[#fef08a] rounded-[10px] p-2.5 flex items-center gap-2 text-[12px] font-medium text-[#854d0e]">
-                                    <span>??</span>
+                                {/* Savings Banner with Modern Luxury SVG */}
+                                <div className="bg-gradient-to-r from-[#fefce8] via-[#fef9c3]/50 to-[#fefce8] border border-[#fde047]/80 rounded-[12px] p-2.5 sm:p-3 flex items-center gap-2.5 text-[12px] sm:text-[12.5px] font-semibold text-[#854d0e] shadow-2xs">
+                                    <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                            <defs>
+                                                <linearGradient id="premiumGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" stopColor="#ca8a04" />
+                                                    <stop offset="50%" stopColor="#eab308" />
+                                                    <stop offset="100%" stopColor="#854d0e" />
+                                                </linearGradient>
+                                            </defs>
+                                            <circle cx="12" cy="12" r="10" fill="url(#premiumGoldGrad)" fillOpacity="0.18" stroke="url(#premiumGoldGrad)" strokeWidth="1.5" />
+                                            <circle cx="12" cy="12" r="7.2" stroke="#ca8a04" strokeWidth="0.8" strokeDasharray="1.5 1.5" opacity="0.6" />
+                                            <path
+                                                d="M12 6.5 L13.3 10.3 L17.5 11.2 L14.2 13.8 L15.2 18 L12 15.8 L8.8 18 L9.8 13.8 L6.5 11.2 L10.7 10.3 Z"
+                                                fill="url(#premiumGoldGrad)"
+                                            />
+                                            <circle cx="17.5" cy="6.5" r="1.2" fill="#eab308" />
+                                            <path d="M17.5 4.5 V8.5 M15.5 6.5 H19.5" stroke="#ca8a04" strokeWidth="0.8" strokeLinecap="round" />
+                                        </svg>
+                                    </span>
                                     <span>
-                                        You saved ?{(estimatedSavings + discountAmount).toLocaleString('en-IN')} on this order
+                                        You saved ₹{(estimatedSavings + discountAmount).toLocaleString('en-IN')} on this order
                                     </span>
                                 </div>
 
@@ -1270,6 +1352,17 @@ export default function CartPage() {
                                     onClick={handleMainCtaClick}
                                     className="w-full h-[50px] rounded-[12px] bg-[#bfa81f] hover:bg-[#a89216] active:scale-[0.99] text-white font-bold text-[14px] uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                                 >
+                                    {!isVerified && (
+                                        <div className="relative w-5 h-5 rounded-full overflow-hidden flex-shrink-0 border border-white/60 shadow-2xs">
+                                            <Image
+                                                src="/images/cart/login-icon.jpg"
+                                                alt="Login"
+                                                fill
+                                                className="object-cover"
+                                                sizes="20px"
+                                            />
+                                        </div>
+                                    )}
                                     <span>{isVerified ? 'Proceed to Checkout' : 'Login/Signup'}</span>
                                     <ArrowRight size={15} />
                                 </button>

@@ -24,7 +24,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         name: 'Greeting Card As Per Occasion',
         category: 'cards',
         price: 99,
-        image_url: '/images/products/celebrations-gift-box-2.jpg',
+        image_url: '/images/addons/addon-greeting-card.jpg',
         description: 'Personalized heartfelt greeting card matching your celebration',
     },
     {
@@ -42,7 +42,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         category: 'accessories',
         price: 59,
         originalPrice: 99,
-        image_url: '/images/products/Golden 50th Birthday Floral Hamper.webp',
+        image_url: '/images/addons/addon-birthday-topper.jpg',
         description: 'Golden glittering celebration cake topper',
     },
     {
@@ -51,7 +51,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         category: 'accessories',
         price: 19,
         originalPrice: 49,
-        image_url: '/images/products/baby-breath-bouquet.jpeg',
+        image_url: '/images/addons/addon-flower-food.jpg',
         description: 'Extends flower vase life & blooming freshness',
     },
     {
@@ -69,7 +69,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         category: 'chocolates',
         price: 209,
         originalPrice: 250,
-        image_url: '/images/products/5-piece-dairy-milk-little-hamper.jpeg',
+        image_url: '/images/addons/addon-chocolate-combo.jpg',
         description: 'Cadbury Dairy Milk & 5-Star assorted chocolate treat',
     },
     {
@@ -78,7 +78,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         category: 'chocolates',
         price: 199,
         originalPrice: 249,
-        image_url: '/images/products/ferrero-rocher-hamper.jpeg',
+        image_url: '/images/addons/addon-ferrero-box.jpg',
         description: 'Crisp hazelnut and milk chocolate pralines',
     },
     {
@@ -105,7 +105,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         category: 'keepsakes',
         price: 149,
         originalPrice: 249,
-        image_url: '/images/products/4-teddy-bouquet.jpeg',
+        image_url: '/images/addons/addon-plush-teddy.jpg',
         description: 'Soft plush mini teddy for a warm surprise',
     },
     {
@@ -114,7 +114,7 @@ export const ADDON_ITEMS: AddonItem[] = [
         category: 'keepsakes',
         price: 199,
         originalPrice: 299,
-        image_url: '/images/products/scented-candle-gift-1.jpg',
+        image_url: '/images/addons/addon-scented-candle.jpg',
         description: 'Hand-poured soothing floral fragrance candle',
     },
     {

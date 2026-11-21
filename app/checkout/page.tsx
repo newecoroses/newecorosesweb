@@ -7,6 +7,7 @@ import { useCart } from '@/lib/cart-context';
 import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
 import OtpModal from '@/components/checkout/otp-modal';
 import { evaluatePincode, PincodeCheckResult } from '@/lib/kolkata-pincodes';
+import AnimatedDeliveryScooter from '@/components/ui/animated-delivery-scooter';
 
 declare global {
     interface Window { Razorpay: any; }
@@ -667,7 +668,10 @@ function CheckoutContent() {
                                                     <div style={{ flex: 1 }}>
                                                         <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Delivery Available</p>
                                                         {pincodeStatus.area && <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#374151', fontWeight: 500 }}>📍 {pincodeStatus.area}, Kolkata</p>}
-                                                        <p style={{ margin: '1px 0 0', fontSize: 11.5, color: '#16a34a', fontWeight: 500 }}>9 AM – 9 PM · Free delivery</p>
+                                                        <div style={{ margin: '1px 0 0', fontSize: 11.5, color: '#16a34a', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+                                                            <span>9 AM – 9 PM · Free delivery</span>
+                                                            <AnimatedDeliveryScooter className="w-4 h-3 text-emerald-600 inline" />
+                                                        </div>
                                                     </div>
                                                     {pincodeStatus.distanceKm !== undefined && (
                                                         <span style={{ fontSize: 11, fontWeight: 700, background: 'rgba(22,163,74,0.12)', color: '#15803d', padding: '3px 8px', borderRadius: 20, whiteSpace: 'nowrap' }}>~{pincodeStatus.distanceKm} km</span>
@@ -697,13 +701,13 @@ function CheckoutContent() {
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6 }}>
                                     <p className="ner-cx-section-title" style={{ margin: 0 }}>Delivery Schedule</p>
                                     {deliveryInfo.isSameDay ? (
-                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#15803d', background: 'rgba(22,163,74,0.1)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(22,163,74,0.25)' }}>
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="#15803d" stroke="#15803d" strokeWidth="1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#15803d', background: 'rgba(22,163,74,0.1)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(22,163,74,0.25)' }}>
+                                            <AnimatedDeliveryScooter className="w-4 h-3.2 text-emerald-700" />
                                             Same-Day Delivery
                                         </span>
                                     ) : (
-                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#854d0e', background: 'rgba(234,179,8,0.12)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(234,179,8,0.25)' }}>
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#854d0e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#854d0e', background: 'rgba(234,179,8,0.12)', padding: '3px 9px', borderRadius: 20, border: '1px solid rgba(234,179,8,0.25)' }}>
+                                            <AnimatedDeliveryScooter className="w-4 h-3.2 text-amber-700" color="#b45309" boxColor="#d97706" speedColor="#f59e0b" />
                                             Next-Day Delivery
                                         </span>
                                     )}

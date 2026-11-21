@@ -25,8 +25,9 @@ import ProductCard, { getProductPriceInfo } from '@/components/product/product-c
 import WhatsAppFloat from '@/components/ui/whatsapp-float';
 import WhatsappIcon from '@/components/ui/whatsapp-icon';
 import DeliveryLocationModal from '@/components/ui/delivery-location-modal';
+import AnimatedDeliveryScooter, { FreeDeliveryPillButton } from '@/components/ui/animated-delivery-scooter';
 import { fetchProductBySlug, fetchProductsByCollection, fetchWhatsappSettings, DBProduct } from '@/lib/supabase';
-import { getProductBySlug, getProductsByCollection } from '@/lib/products';
+import { getProductBySlug, getProductsByCollection, PRODUCTS } from '@/lib/products';
 import { trackEnquiry } from '@/lib/analytics';
 import { useCart } from '@/lib/cart-context';
 
@@ -39,11 +40,62 @@ const FONT_DM_SANS = { fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const router = useRouter();
     const { slug } = use(params);
+
+    // Instant synchronous catalog resolution — zero network delay, instant SSR
+    const initialProduct = getProductBySlug(slug);
+    const initialDbProduct: DBProduct | null = initialProduct ? {
+        id: initialProduct.id,
+        name: initialProduct.name,
+        slug: initialProduct.slug,
+        description: initialProduct.description,
+        collection_name: initialProduct.collection,
+        collection_slug: initialProduct.collectionSlug,
+        relationships: initialProduct.relationships,
+        celebrations: initialProduct.celebrations,
+        tag: initialProduct.tag,
+        image_url: initialProduct.images[0] || initialProduct.image_url,
+        images: initialProduct.images,
+        image_scale: initialProduct.imageScale ?? 1,
+        stock: initialProduct.stock,
+        item_count: initialProduct.itemCount ?? 0,
+        is_visible: true,
+        is_featured: false,
+        sort_order: 0,
+        created_at: '',
+        updated_at: '',
+    } : null;
+
+    const initialSuggestions: DBProduct[] = initialProduct ? (() => {
+        const coll = getProductsByCollection(initialProduct.collectionSlug).filter(p => p.id !== initialProduct.id);
+        const others = PRODUCTS.filter(p => p.id !== initialProduct.id && !coll.some(c => c.id === p.id));
+        return [...coll, ...others].slice(0, 8).map(p => ({
+            id: p.id,
+            name: p.name,
+            slug: p.slug,
+            description: p.description,
+            collection_name: p.collection,
+            collection_slug: p.collectionSlug,
+            relationships: p.relationships,
+            celebrations: p.celebrations,
+            tag: p.tag,
+            image_url: p.images[0] || p.image_url,
+            images: p.images,
+            image_scale: p.imageScale ?? 1,
+            stock: p.stock,
+            item_count: p.itemCount ?? 0,
+            is_visible: true,
+            is_featured: false,
+            sort_order: 0,
+            created_at: '',
+            updated_at: '',
+        }));
+    })() : [];
+
     const [selectedImage, setSelectedImage] = useState(0);
-    const [product, setProduct] = useState<DBProduct | null>(null);
-    const [relatedProducts, setRelatedProducts] = useState<DBProduct[]>([]);
+    const [product, setProduct] = useState<DBProduct | null>(initialDbProduct);
+    const [relatedProducts, setRelatedProducts] = useState<DBProduct[]>(initialSuggestions);
     const [whatsappLink, setWhatsappLink] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!initialDbProduct);
     const [deliveryLoc, setDeliveryLoc] = useState('Kolkata, 700001');
     const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -54,7 +106,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [activeTab, setActiveTab] = useState<'about' | 'details' | 'reviews'>('about');
     const [justAdded, setJustAdded] = useState(false);
 
-    const { addItem, openDrawer, openAddonModal } = useCart();
+    const { items, addItem, removeItem, updateQuantity, openDrawer, openAddonModal } = useCart();
+    const [addedSuggestedId, setAddedSuggestedId] = useState<string | null>(null);
 
     useEffect(() => {
         setImgError(false);
@@ -116,10 +169,19 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 updated_at: '',
             };
             setProduct(dbLike);
-            const related = getProductsByCollection(staticProduct.collectionSlug)
-                .filter(p => p.id !== staticProduct.id)
-                .slice(0, 4);
-            setRelatedProducts(related as unknown as DBProduct[]);
+
+            // Populate up to 8 rich product suggestions
+            const collectionProducts = getProductsByCollection(staticProduct.collectionSlug)
+                .filter(p => p.id !== staticProduct.id);
+            const allStatic = PRODUCTS.filter(p => p.id !== staticProduct.id);
+            const merged = [...collectionProducts];
+            for (const p of allStatic) {
+                if (merged.length >= 8) break;
+                if (!merged.some(m => m.id === p.id)) {
+                    merged.push(p);
+                }
+            }
+            setRelatedProducts(merged.slice(0, 8) as unknown as DBProduct[]);
             setLoading(false);
         }
 
@@ -128,7 +190,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             if (dbProduct) {
                 setProduct(dbProduct);
                 const related = await fetchProductsByCollection(dbProduct.collection_slug).catch(() => []);
-                setRelatedProducts(related.filter(p => p.id !== dbProduct.id).slice(0, 4));
+                const filtered = related.filter(p => p.id !== dbProduct.id);
+                if (filtered.length >= 8) {
+                    setRelatedProducts(filtered.slice(0, 8));
+                } else {
+                    const fallback = PRODUCTS.filter(p => p.id !== dbProduct.id && !filtered.some(f => f.id === p.id));
+                    setRelatedProducts([...filtered, ...(fallback as unknown as DBProduct[])].slice(0, 8));
+                }
             }
             if (!staticProduct) setLoading(false);
         }).catch(() => {
@@ -200,7 +268,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                     <div key={i} className="aspect-square w-full rounded-xl bg-gray-200" />
                                 ))}
                             </div>
-                            <div className="aspect-[4/3] sm:aspect-square flex-1 rounded-3xl bg-gray-200" />
+                            <div className="aspect-[4/5] flex-1 rounded-3xl bg-gray-200" />
                         </div>
                         <div className="lg:col-span-5 flex flex-col gap-5 pt-2">
                             <div className="h-4 w-28 bg-gray-200 rounded" />
@@ -243,18 +311,53 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         ? Math.round(rawOriginalPrice * activeMultiplier) 
         : Math.round(price * 1.25);
 
+    const displaySuggestions = relatedProducts.length > 0
+        ? relatedProducts
+        : (initialSuggestions.length > 0 ? initialSuggestions : (PRODUCTS.filter(p => p.id !== product.id).slice(0, 8) as unknown as DBProduct[]));
+
+    // Product tag badge (Bestseller, New Arrival, etc.)
+    const tagInfo = (() => {
+        if (!product?.tag || product.tag === 'Standard') return null;
+        const lower = product.tag.toLowerCase();
+        if (lower.includes('best') || lower.includes('bestseller')) return { label: 'Bestseller', bg: 'bg-[#581c87] text-white' };
+        if (lower.includes('new')) return { label: 'New Arrival', bg: 'bg-[#1d4ed8] text-white' };
+        if (lower.includes('trend')) return { label: 'Trending', bg: 'bg-amber-600 text-white' };
+        if (lower.includes('feature')) return { label: 'Featured', bg: 'bg-purple-700 text-white' };
+        if (lower.includes('sale')) return { label: 'Sale', bg: 'bg-rose-600 text-white' };
+        if (lower.includes('limit')) return { label: 'Limited Edition', bg: 'bg-emerald-700 text-white' };
+        if (lower.includes('luxe') || lower.includes('luxury')) return { label: 'LUXE', bg: 'bg-[#18181b] text-white' };
+        if (lower.includes('season')) return { label: 'Seasonal', bg: 'bg-[#047857] text-white' };
+        return { label: product.tag, bg: 'bg-[#2d3a27] text-white' };
+    })();
+
+    // Calculate exact quantity of this specific product / variant currently in the cart
+    const variantItemId = `${product.id}-${selectedVariant}`;
+    const cartItem = items.find(i => i.id === variantItemId || (i.slug === product.slug && i.id === product.id));
+    const currentCartQty = cartItem ? cartItem.quantity : 0;
+
     const handleAddToCart = () => {
-        for (let i = 0; i < quantity; i++) {
-            addItem({
-                id: `${product.id}-${selectedVariant}`,
-                name: `${product.name} (${selectedVariant})`,
-                slug: product.slug,
-                image_url: product.image_url,
-                price: price,
-            });
-        }
+        addItem({
+            id: variantItemId,
+            name: `${product.name} (${selectedVariant})`,
+            slug: product.slug,
+            image_url: product.image_url,
+            price: price,
+        });
         setJustAdded(true);
-        setTimeout(() => setJustAdded(false), 2500);
+        setTimeout(() => setJustAdded(false), 2000);
+    };
+
+    const handleAddSuggestedToCart = (item: DBProduct) => {
+        const itemPricing = getProductPriceInfo(item);
+        addItem({
+            id: item.id,
+            name: item.name,
+            slug: item.slug,
+            image_url: item.image_url,
+            price: itemPricing.hasPrice ? itemPricing.price : 549,
+        });
+        setAddedSuggestedId(item.id);
+        setTimeout(() => setAddedSuggestedId(null), 1500);
     };
 
     const handleBuyNow = () => {
@@ -291,7 +394,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         
                         {/* Vertical Thumbnail Strip */}
                         {images.length > 1 && (
-                            <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-[540px] w-full sm:w-[84px] flex-shrink-0 no-scrollbar pb-1 sm:pb-0">
+                            <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-[560px] w-full sm:w-20 flex-shrink-0 no-scrollbar pb-1 sm:pb-0">
                                 {images.map((img, i) => (
                                     <button
                                         key={i}
@@ -308,7 +411,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             alt={`${product.name} thumbnail ${i + 1}`} 
                                             fill 
                                             className="object-cover" 
-                                            sizes="84px"
+                                            sizes="80px"
                                             unoptimized
                                         />
                                     </button>
@@ -316,8 +419,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </div>
                         )}
 
-                        {/* Main Showcase Image */}
-                        <div className="relative aspect-[4/3] sm:aspect-square w-full rounded-[24px] sm:rounded-[32px] overflow-hidden bg-white border border-[#ece6de] shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-center group">
+                        {/* 
+                          * Main Showcase Image: 
+                          * Exactly 4:5 aspect ratio (`aspect-[4/5]`)
+                          * Fills the left column generously (`flex-1 w-full`)
+                          * with luxury rounded corners and high-res presentation matching inspiration.
+                          */}
+                        <div className="relative flex-1 w-full aspect-[4/5] rounded-[24px] sm:rounded-[32px] overflow-hidden bg-white border border-[#ece6de] shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-center group">
                             <Image
                                 src={imgError ? '/images/placeholder.webp' : (images[selectedImage] || product.image_url || '/images/placeholder.webp')}
                                 onError={() => setImgError(true)}
@@ -344,21 +452,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     {/* ══ RIGHT: Product Details Panel (5 Cols) ══ */}
                     <div className="lg:col-span-5 flex flex-col justify-start">
                         
-                        {/* Title & Wishlist Row */}
-                        <div className="flex items-start justify-between gap-4 mb-3">
-                            {/* Product Title: Cormorant Garamond */}
-                            <h1 
-                                style={FONT_CORMORANT} 
-                                className="font-cormorant text-3xl sm:text-4xl lg:text-[45px] font-normal sm:font-medium text-[#1c1917] leading-[1.12] tracking-tight"
+                        {/* Category Eyebrow & Wishlist Row */}
+                        <div className="flex items-center justify-between mb-2">
+                            <span 
+                                style={FONT_DM_SANS} 
+                                className="font-dm-sans text-xs uppercase tracking-[0.22em] font-medium text-[#8a8077]"
                             >
-                                {product.name}
-                            </h1>
+                                {product.collection_name ? product.collection_name.toUpperCase() : 'FRESH FLOWER'}
+                            </span>
 
                             {/* Circular Wishlist Button */}
                             <button
                                 type="button"
                                 onClick={toggleWishlist}
-                                className="w-10 h-10 rounded-full border border-gray-200/90 hover:border-gray-400 bg-white flex items-center justify-center transition-all cursor-pointer shadow-2xs group flex-shrink-0 mt-1"
+                                className="w-10 h-10 rounded-full border border-gray-200/90 hover:border-gray-400 bg-white flex items-center justify-center transition-all cursor-pointer shadow-2xs group flex-shrink-0"
                                 aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                                 title="Save to wishlist"
                             >
@@ -373,8 +480,28 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </button>
                         </div>
 
-                        {/* Prices: DM Sans */}
-                        <div style={FONT_DM_SANS} className="font-dm-sans flex items-baseline gap-3 mb-5">
+                        {/* Product Title: Cormorant Garamond */}
+                        <h1 
+                            style={FONT_CORMORANT} 
+                            className="font-cormorant text-3xl sm:text-4xl lg:text-[44px] font-normal text-[#1c1917] leading-[1.15] tracking-tight mb-2"
+                        >
+                            {product.name}
+                        </h1>
+
+                        {/* Product Tag Badge */}
+                        {tagInfo && (
+                            <div className="mb-3">
+                                <span
+                                    style={FONT_DM_SANS}
+                                    className={`font-dm-sans inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider select-none ${tagInfo.bg}`}
+                                >
+                                    {tagInfo.label}
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Prices & Badges Row: DM Sans (Free delivery aligned with discount box) */}
+                        <div style={FONT_DM_SANS} className="font-dm-sans flex items-center gap-2.5 sm:gap-3 mb-5 flex-wrap">
                             {hasPrice ? (
                                 <>
                                     <span style={FONT_DM_SANS} className="font-dm-sans text-3xl sm:text-4xl font-semibold text-[#1c1917] tracking-tight">
@@ -386,17 +513,19 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                         </span>
                                     )}
                                     {discountPercent > 0 && (
-                                        <span style={FONT_DM_SANS} className="font-dm-sans text-xs font-semibold text-[#8a4a36] bg-[#fbece7] px-2.5 py-0.5 rounded-full">
+                                        <span style={FONT_DM_SANS} className="font-dm-sans text-xs font-semibold text-[#8a4a36] bg-[#fbece7] border border-[#f5d5cc] px-2.5 py-0.5 rounded-md leading-normal select-none">
                                             {discountPercent}% OFF
                                         </span>
                                     )}
+                                    <FreeDeliveryPillButton onClick={() => setIsDeliveryModalOpen(true)} />
                                 </>
                             ) : (
-                                <div style={FONT_DM_SANS} className="font-dm-sans flex items-center gap-2">
+                                <div style={FONT_DM_SANS} className="font-dm-sans flex items-center gap-2.5 flex-wrap">
                                     <span className="text-2xl font-semibold text-[#1c1917]">Price on Request</span>
-                                    <span className="text-xs text-gray-500 bg-white border border-gray-200 px-2.5 py-1 rounded-full">
+                                    <span className="text-xs text-gray-500 bg-white border border-gray-200 px-2.5 py-1 rounded-md">
                                         Contact florist for latest batch
                                     </span>
+                                    <FreeDeliveryPillButton onClick={() => setIsDeliveryModalOpen(true)} />
                                 </div>
                             )}
                         </div>
@@ -407,7 +536,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                 type="button"
                                 onClick={() => setIsDeliveryModalOpen(true)}
                                 style={FONT_DM_SANS}
-                                className="font-dm-sans w-full flex items-center justify-between py-2.5 px-3 sm:px-4 rounded-xl border border-gray-200/80 bg-white/70 hover:bg-white transition-all text-left shadow-2xs group cursor-pointer"
+                                className="font-dm-sans w-full flex items-center justify-between py-2.5 px-4 rounded-xl border border-gray-200/80 bg-white/70 hover:bg-white transition-all text-left shadow-2xs group cursor-pointer"
                             >
                                 <div className="flex items-center gap-2.5">
                                     <MapPin size={16} className="text-gray-600 group-hover:text-black transition-colors" />
@@ -433,7 +562,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             type="button"
                                             onClick={() => setSelectedVariant(opt.label)}
                                             style={FONT_DM_SANS}
-                                            className={`font-dm-sans text-xs sm:text-sm py-2 px-4 sm:px-5 rounded-full transition-all cursor-pointer ${
+                                            className={`font-dm-sans text-xs sm:text-sm py-2 px-4 sm:px-5 rounded-full transition-all cursor-pointer select-none ${
                                                 isSelected
                                                     ? 'bg-[#fbf3e4] border border-[#e8c688] text-[#1c1917] font-semibold shadow-2xs'
                                                     : 'bg-white/80 border border-gray-200 text-gray-700 hover:border-gray-400 font-normal'
@@ -446,61 +575,67 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </div>
                         </div>
 
-                        {/* Quantity Counter Pill: DM Sans Medium */}
-                        <div className="mb-6">
-                            <div style={FONT_DM_SANS} className="font-dm-sans font-medium inline-flex items-center justify-between w-32 bg-[#f4f2ee] rounded-full px-3 py-2 border border-gray-200/80 shadow-2xs">
-                                <button
-                                    type="button"
-                                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-black transition-colors cursor-pointer select-none"
-                                    aria-label="Decrease quantity"
-                                >
-                                    <Minus size={14} />
-                                </button>
-                                <span style={FONT_DM_SANS} className="font-dm-sans text-sm font-medium text-[#1c1917] select-none">
-                                    {quantity}
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={() => setQuantity(q => q + 1)}
-                                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-black transition-colors cursor-pointer select-none"
-                                    aria-label="Increase quantity"
-                                >
-                                    <Plus size={14} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Buttons: DM Sans Medium */}
+                        {/* Buttons: DM Sans Medium (Add to Cart transforms into +/- in-cart quantity controller) */}
                         {hasPrice ? (
-                            <div className="space-y-3 mb-6">
+                            <div className="space-y-2 mb-3 mt-1">
                                 <div className="flex items-center gap-3">
-                                    {/* Add to Cart: DM Sans Medium */}
-                                    <button
-                                        type="button"
-                                        onClick={handleAddToCart}
-                                        style={FONT_DM_SANS}
-                                        className="font-dm-sans font-medium flex-1 bg-[#2d3a27] hover:bg-[#222c1e] text-white py-3.5 px-6 rounded-full text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all duration-300 cursor-pointer active:scale-[0.99]"
-                                    >
-                                        {justAdded ? (
-                                            <>
-                                                <Check size={16} className="text-emerald-400" />
-                                                <span style={FONT_DM_SANS} className="font-dm-sans font-medium">Added to Cart!</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ShoppingCart size={16} />
-                                                <span style={FONT_DM_SANS} className="font-dm-sans font-medium">Add to Cart</span>
-                                            </>
-                                        )}
-                                    </button>
+                                    {/* Add to Cart / Interactive In-Cart Quantity Button */}
+                                    {currentCartQty === 0 ? (
+                                        <button
+                                            type="button"
+                                            onClick={handleAddToCart}
+                                            style={FONT_DM_SANS}
+                                            className="font-dm-sans font-medium flex-1 bg-[#2d3a27] hover:bg-[#222c1e] text-white h-[48px] px-6 rounded-full text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all duration-300 cursor-pointer active:scale-[0.99]"
+                                        >
+                                            <ShoppingCart size={16} />
+                                            <span>Add to Cart</span>
+                                        </button>
+                                    ) : (
+                                        <div 
+                                            style={FONT_DM_SANS} 
+                                            className="font-dm-sans font-medium flex-1 h-[48px] bg-[#2d3a27] text-white rounded-full px-3 flex items-center justify-between shadow-sm transition-all select-none"
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const targetId = cartItem?.id || variantItemId;
+                                                    if (currentCartQty <= 1) {
+                                                        removeItem(targetId);
+                                                    } else {
+                                                        updateQuantity(targetId, currentCartQty - 1);
+                                                    }
+                                                }}
+                                                className="w-8 h-8 rounded-full hover:bg-white/20 active:scale-95 flex items-center justify-center text-white transition-all cursor-pointer"
+                                                aria-label="Decrease quantity in cart"
+                                            >
+                                                <Minus size={15} />
+                                            </button>
+
+                                            <div className="flex items-center gap-1.5 px-1">
+                                                <span className="text-sm font-semibold">{currentCartQty}</span>
+                                                <span className="text-[11px] text-white/80 font-normal">in cart</span>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const targetId = cartItem?.id || variantItemId;
+                                                    updateQuantity(targetId, currentCartQty + 1);
+                                                }}
+                                                className="w-8 h-8 rounded-full hover:bg-white/20 active:scale-95 flex items-center justify-center text-white transition-all cursor-pointer"
+                                                aria-label="Increase quantity in cart"
+                                            >
+                                                <Plus size={15} />
+                                            </button>
+                                        </div>
+                                    )}
 
                                     {/* Buy Now: DM Sans Medium */}
                                     <button
                                         type="button"
                                         onClick={handleBuyNow}
                                         style={FONT_DM_SANS}
-                                        className="font-dm-sans font-medium flex-1 bg-transparent hover:bg-black/[0.04] text-[#1c1917] border border-[#2d3a27] py-3.5 px-6 rounded-full text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.99]"
+                                        className="font-dm-sans font-medium flex-1 bg-white hover:bg-black/[0.04] text-[#1c1917] border border-[#2d3a27] h-[48px] px-6 rounded-full text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.99]"
                                     >
                                         <span style={FONT_DM_SANS} className="font-dm-sans font-medium">Buy Now</span>
                                     </button>
@@ -513,21 +648,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                     rel="noopener noreferrer"
                                     onClick={() => trackEnquiry(product.id, product.name)}
                                     style={FONT_DM_SANS}
-                                    className="font-dm-sans font-medium w-full flex items-center justify-center gap-2 py-2 px-3 text-xs text-gray-500 hover:text-gray-800 transition-colors"
+                                    className="font-dm-sans font-medium w-full flex items-center justify-center gap-1.5 py-1 text-[11px] sm:text-xs text-gray-500 hover:text-gray-800 transition-colors"
                                 >
-                                    <WhatsappIcon size={14} className="text-[#25D366]" />
+                                    <WhatsappIcon size={13} className="text-[#25D366]" />
                                     <span style={FONT_DM_SANS}>Have a special request? Ask our florist on WhatsApp</span>
                                 </a>
                             </div>
                         ) : (
-                            <div className="space-y-3 mb-6">
+                            <div className="space-y-2 mb-2.5">
                                 <a
                                     href={whatsappLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => trackEnquiry(product.id, product.name)}
                                     style={FONT_DM_SANS}
-                                    className="font-dm-sans font-medium w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-[#2d3a27] hover:bg-[#222c1e] text-white text-xs sm:text-sm tracking-wide shadow-sm hover:shadow transition-all"
+                                    className="font-dm-sans font-medium w-full flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#2d3a27] hover:bg-[#222c1e] text-white text-xs sm:text-sm tracking-wide shadow-sm hover:shadow transition-all"
                                 >
                                     <WhatsappIcon size={18} className="text-[#25D366]" />
                                     <span style={FONT_DM_SANS} className="font-dm-sans font-medium">Enquire Price &amp; Availability</span>
@@ -535,26 +670,134 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </div>
                         )}
 
-                        {/* Trust Badges Strip: DM Sans */}
-                        <div style={FONT_DM_SANS} className="font-dm-sans grid grid-cols-3 divide-x divide-gray-200/90 pt-6 mt-2 border-t border-gray-200/70 text-center">
-                            <div className="flex flex-col items-center gap-1.5 px-2">
-                                <Leaf size={20} className="text-gray-700 stroke-[1.5]" />
-                                <span style={FONT_DM_SANS} className="font-dm-sans text-[11px] sm:text-xs font-medium text-gray-700">Fresh Flowers</span>
+                        {/* Trust Badges Strip: DM Sans (Shifted upwards with reduced space) */}
+                        <div style={FONT_DM_SANS} className="font-dm-sans grid grid-cols-3 divide-x divide-gray-200/90 pt-2 pb-2 border-t border-b border-gray-200/60 text-center">
+                            <div className="flex flex-col items-center gap-1 px-1">
+                                <Leaf size={15} className="text-gray-700 stroke-[1.5]" />
+                                <span style={FONT_DM_SANS} className="font-dm-sans text-[10px] sm:text-[11px] font-medium text-gray-700">Fresh Flowers</span>
                             </div>
-                            <div className="flex flex-col items-center gap-1.5 px-2">
-                                <Truck size={20} className="text-gray-700 stroke-[1.5]" />
-                                <span style={FONT_DM_SANS} className="font-dm-sans text-[11px] sm:text-xs font-medium text-gray-700">Same-Day Delivery</span>
+                            <div className="flex flex-col items-center gap-1 px-1">
+                                <AnimatedDeliveryScooter className="w-5.5 h-4" color="#374151" boxColor="#15803d" />
+                                <span style={FONT_DM_SANS} className="font-dm-sans text-[10px] sm:text-[11px] font-medium text-gray-700">Same-Day Delivery</span>
                             </div>
-                            <div className="flex flex-col items-center gap-1.5 px-2">
-                                <Gift size={20} className="text-gray-700 stroke-[1.5]" />
-                                <span style={FONT_DM_SANS} className="font-dm-sans text-[11px] sm:text-xs font-medium text-gray-700">Premium Packaging</span>
+                            <div className="flex flex-col items-center gap-1 px-1">
+                                <Gift size={15} className="text-gray-700 stroke-[1.5]" />
+                                <span style={FONT_DM_SANS} className="font-dm-sans text-[10px] sm:text-[11px] font-medium text-gray-700">Premium Packaging</span>
+                            </div>
+                        </div>
+
+                        {/* Immediate Suggested Products In-Panel Preview (Aligned perfectly with bottom of main image) */}
+                        <div className="pt-2">
+                            <div className="flex items-center justify-between mb-1.5">
+                                <span style={FONT_DM_SANS} className="font-dm-sans text-xs font-semibold text-[#1c1917] tracking-tight">
+                                    Suggested Products
+                                </span>
+                                <a 
+                                    href="#suggested-products" 
+                                    style={FONT_DM_SANS} 
+                                    className="font-dm-sans text-[11px] font-medium text-[#2d3a27] hover:underline flex items-center gap-1"
+                                >
+                                    <span>View all ({displaySuggestions.length})</span>
+                                    <span>&darr;</span>
+                                </a>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {displaySuggestions.slice(0, 3).map((item) => {
+                                    const isAdded = addedSuggestedId === item.id;
+                                    const itemCartCount = items.filter(i => i.slug === item.slug || i.id.startsWith(item.id)).reduce((s, i) => s + i.quantity, 0);
+
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className="group relative block rounded-xl overflow-hidden border border-gray-200/80 hover:border-[#2d3a27] transition-all bg-white p-1 shadow-2xs hover:shadow-xs text-center"
+                                        >
+                                            <Link href={`/product/${item.slug}`} className="block">
+                                                <div className="relative aspect-[4/5] w-full rounded-lg overflow-hidden mb-1 bg-[#faf7f2]">
+                                                    <Image
+                                                        src={item.image_url}
+                                                        alt={item.name}
+                                                        fill
+                                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        sizes="90px"
+                                                        unoptimized
+                                                    />
+
+                                                    {/* In-cart count indicator badge on thumbnail */}
+                                                    {itemCartCount > 0 && (
+                                                        <span className="absolute top-1 left-1 z-10 text-[9px] font-bold bg-[#2d3a27] text-white w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                                                            {itemCartCount}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p style={FONT_CORMORANT} className="font-cormorant text-xs font-semibold text-[#1c1917] truncate leading-tight px-0.5">
+                                                    {item.name}
+                                                </p>
+                                            </Link>
+
+                                            {/* Plus button to add directly to cart (Hover on desktop, always visible on mobile) */}
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleAddSuggestedToCart(item);
+                                                }}
+                                                className={`absolute bottom-5 right-2 z-20 w-6 h-6 rounded-full flex items-center justify-center shadow-sm transition-all duration-200 cursor-pointer ${
+                                                    isAdded
+                                                        ? 'bg-emerald-600 text-white scale-110'
+                                                        : 'bg-[#2d3a27] hover:bg-black text-white opacity-90 sm:opacity-0 sm:group-hover:opacity-100 active:scale-95'
+                                                }`}
+                                                title={`Add ${item.name} to cart`}
+                                                aria-label={`Add ${item.name} to cart`}
+                                            >
+                                                {isAdded ? (
+                                                    <Check size={11} className="stroke-[2.5]" />
+                                                ) : (
+                                                    <Plus size={12} className="stroke-[2.5]" />
+                                                )}
+                                            </button>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {/* ── 4. Suggested Products (You May Also Like) ── */}
+                {displaySuggestions.length > 0 && (
+                    <section id="suggested-products" className="mt-10 sm:mt-14 pt-8 border-t border-gray-200/80">
+                        <div className="flex items-baseline justify-between mb-6">
+                            <div>
+                                <span style={FONT_DM_SANS} className="font-dm-sans text-[11px] uppercase tracking-[0.2em] font-semibold text-[#8a8077] block mb-1">
+                                    CURATED FOR YOU
+                                </span>
+                                <h2 style={FONT_CORMORANT} className="font-cormorant text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#1c1917] tracking-tight">
+                                    Suggested Products
+                                </h2>
+                            </div>
+                            <Link 
+                                href="/shop" 
+                                style={FONT_DM_SANS} 
+                                className="font-dm-sans text-xs font-semibold text-[#1c1917] hover:text-gray-600 transition-colors"
+                            >
+                                Browse All &rarr;
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5">
+                            {displaySuggestions.map((p, idx) => (
+                                <ProductCard
+                                    key={p.id}
+                                    product={p as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }}
+                                    index={idx}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                )}
+
                 {/* ── 3. Tabs Section: About, Details, Reviews (Navigation: DM Sans, Descriptions: DM Sans) ── */}
-                <div className="mt-14 sm:mt-18 pt-8 border-t border-gray-200/80">
+                <div className="mt-12 sm:mt-16 pt-10 border-t border-gray-200/80">
                     
                     {/* Navigation: Tab Nav (DM Sans) */}
                     <div style={FONT_DM_SANS} className="font-dm-sans flex items-center gap-8 border-b border-gray-200/90">
@@ -654,24 +897,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         )}
                     </div>
                 </div>
-
-                {/* ── 4. Product Titles: You May Also Like (Cormorant Garamond) ── */}
-                {relatedProducts.length > 0 && (
-                    <section className="mt-16 sm:mt-20 pt-10 border-t border-gray-200/80">
-                        <h2 style={FONT_CORMORANT} className="font-cormorant text-2xl sm:text-3xl font-semibold text-[#1c1917] tracking-tight mb-6">
-                            You May Also Like
-                        </h2>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5">
-                            {relatedProducts.map((p, idx) => (
-                                <ProductCard
-                                    key={p.id}
-                                    product={p as unknown as { id: string; name: string; image_url: string; slug: string; stock: number; image_scale?: number; tag?: string }}
-                                    index={idx}
-                                />
-                            ))}
-                        </div>
-                    </section>
-                )}
             </div>
 
             {/* Lightbox Preview Modal */}
@@ -715,7 +940,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 }}
             />
 
-            <WhatsAppFloat />
+            {/* Hide floating WP icon when product has no price (inline Enquire button is already shown) */}
+            {hasPrice && <WhatsAppFloat />}
         </div>
     );
 }

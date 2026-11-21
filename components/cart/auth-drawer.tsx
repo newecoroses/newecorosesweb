@@ -328,7 +328,16 @@ export default function AuthDrawer({ isOpen, onClose, onSuccess, initialEmail = 
                                         transition={{ duration: 0.2 }}
                                         className="space-y-5"
                                     >
-                                        <div className="text-center pt-2">
+                                        <div className="text-center pt-2 flex flex-col items-center">
+                                            <div className="relative w-14 h-14 rounded-full overflow-hidden mb-2.5 shadow-md border border-amber-300">
+                                                <Image
+                                                    src="/images/cart/login-icon.jpg"
+                                                    alt="Login"
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="56px"
+                                                />
+                                            </div>
                                             <h2 className="font-sans text-[24px] sm:text-[27px] font-black text-[#111] tracking-tight">
                                                 Sign Up/Login to NER!
                                             </h2>

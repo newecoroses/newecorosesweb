@@ -158,11 +158,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.3) }}
-            viewport={{ once: true, margin: '0px' }}
+        <div
             className="group flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden relative"
         >
             {/* ── Image Container with Dot Indicators ── */}
@@ -349,6 +345,6 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
                     )}
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 }

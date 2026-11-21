@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, MapPin, Navigation, CheckCircle2, AlertTriangle, Search, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { evaluatePincode, PincodeCheckResult } from '@/lib/kolkata-pincodes';
+import AnimatedDeliveryScooter from './animated-delivery-scooter';
 
 interface DeliveryLocationModalProps {
     isOpen: boolean;
@@ -230,11 +231,16 @@ export default function DeliveryLocationModal({ isOpen, onClose, onLocationSet }
                                         <AlertTriangle size={17} className="text-amber-700 stroke-[2.2] flex-shrink-0 mt-0.5" />
                                     )}
                                     <div className="flex-1">
-                                        <p className="text-xs font-bold leading-tight">
-                                            {checkResult.isServiceable
-                                                ? 'Same-Day Delivery Available ✓'
-                                                : 'Special Delivery Route Required'}
-                                        </p>
+                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                            <p className="text-xs font-bold leading-tight">
+                                                {checkResult.isServiceable
+                                                    ? 'Same-Day Delivery Available'
+                                                    : 'Special Delivery Route Required'}
+                                            </p>
+                                            {checkResult.isServiceable && (
+                                                <AnimatedDeliveryScooter className="w-5 h-3.6 inline" />
+                                            )}
+                                        </div>
                                         <p className="text-[11.5px] opacity-90 leading-snug mt-1">
                                             {checkResult.message}
                                         </p>
