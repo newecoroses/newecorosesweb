@@ -61,7 +61,7 @@ const FALLBACK_CATEGORIES = COLLECTIONS.map((c, i) => ({
   image_url: `/images/collections/${c.slug}.webp`, description: '', is_visible: true, sort_order: i + 1, created_at: '',
 }));
 
-const COLLECTION_SPANS = ['md:col-span-2 md:row-span-2', '', '', '', '', 'md:col-span-2', 'md:col-span-2', 'md:col-span-4 md:row-span-1'];
+const COLLECTION_SPANS = ['md:col-span-2 md:row-span-2', '', '', '', '', 'md:col-span-2', 'md:col-span-2', 'md:col-span-4 md:row-span-1', 'md:col-span-4 md:row-span-1'];
 
 // ── Stagger animation container ──
 const staggerContainer = {
@@ -351,7 +351,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: idx * 0.06 }}
                 viewport={{ once: true }}
-                className={COLLECTION_SPANS[idx] || ''}
+                className={cat.slug === 'decorations' || cat.slug === 'balloon-bouquet' ? 'md:col-span-4 md:row-span-1' : (COLLECTION_SPANS[idx] || '')}
               >
                 <Link href={`/shop?cat=${cat.slug}`} className="group relative block h-full overflow-hidden rounded-2xl md:rounded-3xl shadow-sm hover:shadow-card transition-shadow duration-500">
                   <Image
@@ -365,6 +365,7 @@ export default function Home() {
                         'plants': '/images/collections/plants.png',
                         'cake': '/images/collections/cake.png',
                         'balloon-bouquet': '/images/collections/baloon.png',
+                        'decorations': '/images/categories/decorations.webp',
                       }[cat.slug] || cat.image_url || `/images/collections/${cat.slug}.png`
                     }
                     alt={cat.name}
