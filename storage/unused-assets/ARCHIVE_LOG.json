@@ -1,0 +1,242 @@
+{
+  "timestamp": "2026-11-21T22:44:12.337Z",
+  "copied": 39,
+  "failed": 0,
+  "deleted": 39,
+  "log": [
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/Beauty in Every Bloom.webp",
+      "dst": "duplicates/banners-hero-display-names/Beauty in Every Bloom.webp",
+      "size": 230910
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/Colour Me Happy Floral Still Life.webp",
+      "dst": "duplicates/banners-hero-display-names/Colour Me Happy Floral Still Life.webp",
+      "size": 256056
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/Naturally Beautiful Eco Roses.webp",
+      "dst": "duplicates/banners-hero-display-names/Naturally Beautiful Eco Roses.webp",
+      "size": 194756
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/A Little More Beauty This Lakshmi Puja.webp",
+      "dst": "duplicates/banners-hero-display-names/A Little More Beauty This Lakshmi Puja.webp",
+      "size": 243074
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/a-little-more-beauty-this-lakshmi-puja.webp",
+      "dst": "duplicates/banners-hero-display-names/a-little-more-beauty-this-lakshmi-puja.webp",
+      "size": 243074
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/NEW HEROS/Beauty in Every Bloom.webp",
+      "dst": "duplicates/banners-hero-NEW-HEROS/Beauty in Every Bloom.webp",
+      "size": 230910
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/NEW HEROS/Colour Me Happy Floral Still Life.webp",
+      "dst": "duplicates/banners-hero-NEW-HEROS/Colour Me Happy Floral Still Life.webp",
+      "size": 256056
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero/NEW HEROS/Naturally Beautiful Eco Roses.webp",
+      "dst": "duplicates/banners-hero-NEW-HEROS/Naturally Beautiful Eco Roses.webp",
+      "size": 194756
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/Elegant Birthday Gifts That Delight.webp",
+      "dst": "duplicates/banners-promo-display-names/Elegant Birthday Gifts That Delight.webp",
+      "size": 221944
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/Elegant Sage Wedding Gift Display.webp",
+      "dst": "duplicates/banners-promo-display-names/Elegant Sage Wedding Gift Display.webp",
+      "size": 253532
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/Luxury Rose Collection.webp",
+      "dst": "duplicates/banners-promo-display-names/Luxury Rose Collection.webp",
+      "size": 153980
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/Romantic Anniversary Gift Collection.webp",
+      "dst": "duplicates/banners-promo-display-names/Romantic Anniversary Gift Collection.webp",
+      "size": 226362
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/luxary rose collection.webp",
+      "dst": "duplicates/banners-promo-display-names/luxary rose collection.webp",
+      "size": 153980
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/annieversary specials.webp",
+      "dst": "duplicates/banners-promo-display-names/annieversary specials.webp",
+      "size": 226362
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/birthday gifts that delights.webp",
+      "dst": "duplicates/banners-promo-display-names/birthday gifts that delights.webp",
+      "size": 221944
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/promo/wedding gifting.webp",
+      "dst": "duplicates/banners-promo-display-names/wedding gifting.webp",
+      "size": 253532
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/celebrations calender/eid.webp",
+      "dst": "duplicates/celebrations-calender/eid.webp",
+      "size": 489766
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/celebrations calender/holi.webp",
+      "dst": "duplicates/celebrations-calender/holi.webp",
+      "size": 3060240
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/celebrations calender/husband appriciation.webp",
+      "dst": "duplicates/celebrations-calender/husband appriciation.webp",
+      "size": 118912
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/celebrations calender/navratri.webp",
+      "dst": "duplicates/celebrations-calender/navratri.webp",
+      "size": 948174
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/celebrations calender/womensday.webp",
+      "dst": "duplicates/celebrations-calender/womensday.webp",
+      "size": 108158
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/annieversay collection.webp",
+      "dst": "unused/remaining-pictures/annieversay collection.webp",
+      "size": 201966
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/bday specials.webp",
+      "dst": "unused/remaining-pictures/bday specials.webp",
+      "size": 236068
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/Garden Elegance.webp",
+      "dst": "unused/remaining-pictures/Garden Elegance.webp",
+      "size": 129930
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/ivory dream.webp",
+      "dst": "unused/remaining-pictures/ivory dream.webp",
+      "size": 109718
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/lux bouquets.webp",
+      "dst": "unused/remaining-pictures/lux bouquets.webp",
+      "size": 219552
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/pastel brush.webp",
+      "dst": "unused/remaining-pictures/pastel brush.webp",
+      "size": 160964
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/personalized gifts.webp",
+      "dst": "unused/remaining-pictures/personalized gifts.webp",
+      "size": 189648
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/red romance.webp",
+      "dst": "unused/remaining-pictures/red romance.webp",
+      "size": 160616
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/roses collection.webp",
+      "dst": "unused/remaining-pictures/roses collection.webp",
+      "size": 316862
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/remaining pictures/why new eco roses.webp",
+      "dst": "unused/remaining-pictures/why new eco roses.webp",
+      "size": 60494
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/our story.webp",
+      "dst": "unused/root-loose-images/our story.webp",
+      "size": 332722
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/readytomakesome.jpg",
+      "dst": "unused/root-loose-images/readytomakesome.jpg",
+      "size": 886547
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/ready to make someones day banner.webp",
+      "dst": "unused/root-loose-images/ready to make someones day banner.webp",
+      "size": 195342
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/landing-hero.webp",
+      "dst": "unused/root-loose-images/landing-hero.webp",
+      "size": 85280
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/banners/hero.webp",
+      "dst": "unused/root-loose-images/hero.webp",
+      "size": 85280
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/lily.webp",
+      "dst": "unused/root-loose-images/lily.webp",
+      "size": 78114
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/garland.webp",
+      "dst": "unused/root-loose-images/garland.webp",
+      "size": 317370
+    },
+    {
+      "status": "SUCCESS",
+      "src": "images/whatsappiconforen.png",
+      "dst": "unused/root-loose-images/whatsappiconforen.png",
+      "size": 9450
+    }
+  ]
+}
