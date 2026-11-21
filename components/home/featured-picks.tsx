@@ -31,10 +31,18 @@ interface PickItem {
 
 function ScrollRow({ items, cardWidth }: { items: PickItem[]; cardWidth: string }) {
     return (
+        /* 
+         * Full-bleed horizontal scroll on mobile:
+         * - Negative margin pulls the scroll container to the screen edges
+         * - Padding on the scroll container adds the visual inset back inside
+         * - This allows smooth edge-to-edge scrolling without clipping (no "white wall")
+         * - On md+ the layout switches to a flex-wrap grid so no horizontal scroll needed
+         */
         <div
-            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-mandatory md:overflow-visible overscroll-x-contain"
+            className="w-full overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity md:overflow-visible overscroll-x-contain -mx-4 sm:-mx-6 md:mx-0"
+            style={{ WebkitOverflowScrolling: 'touch' }}
         >
-            <div className="flex md:flex-wrap gap-3.5 md:gap-4 w-max md:w-full pb-1">
+            <div className="flex md:flex-wrap gap-3.5 md:gap-4 w-max md:w-full pb-1 px-4 sm:px-6 md:px-0">
                 {items.map((item, idx) => (
                     <motion.div
                         key={item.name}
@@ -73,7 +81,7 @@ export default function FeaturedPicks() {
     return (
         <>
             {/* ── Pick Their Fav Flowers ── */}
-            <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
+            <section className="py-3 md:py-6 bg-white w-full max-w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}
@@ -89,7 +97,7 @@ export default function FeaturedPicks() {
             </section>
 
             {/* ── Birthday Gifts That Wow ── */}
-            <section className="py-3 md:py-6 bg-white w-full max-w-full overflow-hidden">
+            <section className="py-3 md:py-6 bg-white w-full max-w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                     <motion.h2
                         initial={{ opacity: 0 }}

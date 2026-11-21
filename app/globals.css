@@ -24,7 +24,6 @@
 
 /* ===== Base ===== */
 html {
-  scroll-behavior: smooth;
   overflow-x: clip;
 }
 

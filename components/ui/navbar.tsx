@@ -102,7 +102,8 @@ export default function Navbar() {
                                     className="group flex items-center flex-shrink-0 gap-2 select-none"
                                     aria-label="New Eco Roses – Home"
                                     onClick={(e) => {
-                                        sessionStorage.removeItem('scroll:/');
+                                        // Clear saved scroll for homepage so ScrollRestorer goes to top
+                                        sessionStorage.removeItem('__scroll__/');
                                         if (pathname === '/') {
                                             e.preventDefault();
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
