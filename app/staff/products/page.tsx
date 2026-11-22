@@ -735,9 +735,14 @@ export default function StaffProductsPage() {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ productId: p.id, slug: p.slug, name: p.name, is_visible: nextState }),
-        }).catch(() => {
+        }).then(async res => {
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Server error');
+            }
+        }).catch((err) => {
             setProducts(prev => prev.map(prod => prod.id === p.id ? { ...prod, is_visible: prevState } : prod));
-            showNotice(`Failed to update visibility for "${p.name}" — reverted.`);
+            showNotice(`Failed to update visibility for "${p.name}" — reverted. ${err?.message || ''}`);
         });
     };
 

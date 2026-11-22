@@ -187,18 +187,21 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
         // 2. BACKGROUND: Silently upgrade with live Supabase data
         fetchProductBySlug(slug).then(async (dbProduct) => {
-            if (dbProduct) {
+            if (dbProduct && dbProduct.is_visible !== false) {
                 setProduct(dbProduct);
                 const related = await fetchProductsByCollection(dbProduct.collection_slug).catch(() => []);
-                const filtered = related.filter(p => p.id !== dbProduct.id);
+                const filtered = related.filter(p => p.id !== dbProduct.id && p.is_visible !== false);
                 if (filtered.length >= 8) {
                     setRelatedProducts(filtered.slice(0, 8));
                 } else {
                     const fallback = PRODUCTS.filter(p => p.id !== dbProduct.id && !filtered.some(f => f.id === p.id));
                     setRelatedProducts([...filtered, ...(fallback as unknown as DBProduct[])].slice(0, 8));
                 }
+            } else {
+                // Product is hidden or does not exist
+                setProduct(null);
             }
-            if (!staticProduct) setLoading(false);
+            setLoading(false);
         }).catch(() => {
             if (!staticProduct) setLoading(false);
         });

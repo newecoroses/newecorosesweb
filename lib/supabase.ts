@@ -127,13 +127,38 @@ function staticToDBProduct(p: any): DBProduct {
 export function fetchProducts(): Promise<DBProduct[]> {
     return cachedQuery('products:all', async () => {
         let dbProds: DBProduct[] = [];
+        const dbSlugs = new Set<string>();
+        const dbIds = new Set<string>();
+        const hiddenSlugs = new Set<string>();
+        const hiddenIds = new Set<string>();
+
         try {
+            // Fetch all products from Supabase to track visibility state
             const { data } = await supabase
                 .from('products')
                 .select('*')
-                .eq('is_visible', true)
                 .order('sort_order');
-            dbProds = (data ?? []).map((p: any) => ({ ...p, image_url: resolveImage(p.image_url), images: resolveImages(p.images) })) as DBProduct[];
+
+            if (data && Array.isArray(data)) {
+                for (const p of data) {
+                    const slugKey = (p.slug || '').toLowerCase().trim();
+                    const idKey = String(p.id || '').trim();
+
+                    if (slugKey) dbSlugs.add(slugKey);
+                    if (idKey) dbIds.add(idKey);
+
+                    if (p.is_visible === false) {
+                        if (slugKey) hiddenSlugs.add(slugKey);
+                        if (idKey) hiddenIds.add(idKey);
+                    } else {
+                        dbProds.push({
+                            ...p,
+                            image_url: resolveImage(p.image_url),
+                            images: resolveImages(p.images),
+                        } as DBProduct);
+                    }
+                }
+            }
         } catch (_) {}
 
         let priceOverrides: Record<string, { price: number; original_price?: number }> = {};
@@ -148,8 +173,14 @@ export function fetchProducts(): Promise<DBProduct[]> {
             }
         } catch (_) {}
 
-        const dbSlugs = new Set(dbProds.map(p => p.slug));
-        const extraStatic = PRODUCTS.filter(p => !dbSlugs.has(p.slug)).map(staticToDBProduct);
+        // Never resurrect a product from static catalog if it's already in DB or explicitly hidden
+        const extraStatic = PRODUCTS.filter(p => {
+            const slugKey = (p.slug || '').toLowerCase().trim();
+            const idKey = String(p.id || '').trim();
+            if (hiddenSlugs.has(slugKey) || hiddenIds.has(idKey)) return false;
+            if (dbSlugs.has(slugKey) || dbIds.has(idKey)) return false;
+            return true;
+        }).map(staticToDBProduct);
 
         const oct16Items = extraStatic.filter(p => p.id.startsWith('oct16-'));
         const oct1Items = extraStatic.filter(p => p.id.startsWith('oct1-'));
@@ -159,21 +190,24 @@ export function fetchProducts(): Promise<DBProduct[]> {
 
         const all = [...oct16Items, ...oct1Items, ...sep28Items, ...ganeshItems, ...dbProds, ...otherExtra];
 
-        return all.map(p => {
-            const override = priceOverrides[p.id] || priceOverrides[p.slug];
-            const rawPrice = override && override.price > 0 ? override.price : p.price;
-            const rawOrig = override && override.price > 0 ? (override.original_price || p.original_price) : p.original_price;
+        // Filter out any hidden products
+        return all
+            .filter(p => p.is_visible !== false && !hiddenSlugs.has((p.slug || '').toLowerCase().trim()) && !hiddenIds.has(String(p.id || '').trim()))
+            .map(p => {
+                const override = priceOverrides[p.id] || priceOverrides[p.slug];
+                const rawPrice = override && override.price > 0 ? override.price : p.price;
+                const rawOrig = override && override.price > 0 ? (override.original_price || p.original_price) : p.original_price;
 
-            if (typeof rawPrice === 'number' && rawPrice > 0) {
-                const pricing = resolveProductPricing(rawPrice, rawOrig, p.slug || p.id || p.name);
-                return {
-                    ...p,
-                    price: pricing.price,
-                    original_price: pricing.originalPrice,
-                };
-            }
-            return p;
-        });
+                if (typeof rawPrice === 'number' && rawPrice > 0) {
+                    const pricing = resolveProductPricing(rawPrice, rawOrig, p.slug || p.id || p.name);
+                    return {
+                        ...p,
+                        price: pricing.price,
+                        original_price: pricing.originalPrice,
+                    };
+                }
+                return p;
+            });
     });
 }
 
@@ -226,15 +260,31 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
             .eq('slug', slug)
             .maybeSingle();
         if (data) {
+            if (data.is_visible === false) {
+                return null; // Product explicitly hidden
+            }
             prod = { ...data, image_url: resolveImage((data as any).image_url), images: resolveImages((data as any).images) } as DBProduct;
         }
     } catch (_) {}
 
     if (!prod && staticMatch) {
+        // Also check if staticMatch was marked hidden in DB by slug or id
+        try {
+            const { data: dbCheck } = await supabase
+                .from('products')
+                .select('is_visible')
+                .or(`slug.eq.${slug},id.eq.${staticMatch.id}`)
+                .maybeSingle();
+            if (dbCheck && dbCheck.is_visible === false) {
+                return null; // Product explicitly hidden
+            }
+        } catch (_) {}
         prod = staticToDBProduct(staticMatch);
     }
 
     if (prod) {
+        if (prod.is_visible === false) return null;
+
         const override = priceOverrides[prod.id] || priceOverrides[prod.slug];
         const rawPrice = override && override.price > 0 ? override.price : prod.price;
         const rawOrig = override && override.price > 0 ? (override.original_price || prod.original_price) : prod.original_price;

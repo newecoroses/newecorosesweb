@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getStaffSession } from '@/lib/staff-session';
 import { logStaffActivity } from '@/lib/staff-activity';
 import { getProductPriceOverrides, setProductPriceOverride } from '@/lib/product-pricing';
+import { getAllProductMetadata, setProductMetadata } from '@/lib/product-metadata';
 import { computeOriginalPrice } from '@/lib/pricing-utils';
 import { PRODUCTS, COLLECTIONS } from '@/lib/products';
 
@@ -40,8 +41,9 @@ export async function GET() {
             console.error('Error fetching DB products:', e);
         }
 
-        // 2. Fetch price overrides
+        // 2. Fetch price overrides and extra metadata
         const priceOverrides = await getProductPriceOverrides();
+        const extraMetaMap = await getAllProductMetadata();
 
         // 3. Merge with static products if not in DB
         const dbSlugs = new Set(dbProds.map(p => p.slug));
@@ -69,10 +71,14 @@ export async function GET() {
 
         const allProducts = [...dbProds, ...extraStatic].map(p => {
             const override = priceOverrides[p.id] || priceOverrides[p.slug];
+            const extraMeta = extraMetaMap[p.id] || extraMetaMap[p.slug] || {};
             return {
                 ...p,
                 price: override?.price !== undefined ? override.price : (p.price ?? null),
                 original_price: override?.original_price !== undefined ? override.original_price : (p.original_price ?? null),
+                pre_order: extraMeta.pre_order ?? p.pre_order ?? false,
+                same_day_delivery: extraMeta.same_day_delivery ?? p.same_day_delivery ?? true,
+                variants: extraMeta.variants ?? p.variants ?? [],
             };
         });
 
@@ -199,8 +205,10 @@ export async function PATCH(request: Request) {
         }
 
         // ── 3. Validate permissions for other fields ──
+        const isDirector = session.role === 'director';
+
         if (name !== undefined || description !== undefined) {
-            if (!session.permissions.canEditDetails) {
+            if (!isDirector && !session.permissions?.canEditDetails) {
                 return NextResponse.json({ error: 'Permission denied: Cannot edit product details' }, { status: 403 });
             }
             if (name !== undefined) changesList.push('Name updated');
@@ -208,28 +216,28 @@ export async function PATCH(request: Request) {
         }
 
         if (is_visible !== undefined) {
-            if (!session.permissions.canEditVisibility) {
+            if (!isDirector && !session.permissions?.canEditVisibility) {
                 return NextResponse.json({ error: 'Permission denied: Cannot toggle visibility' }, { status: 403 });
             }
             changesList.push(`Visibility set to ${is_visible ? 'Visible' : 'Hidden'}`);
         }
 
         if (stock !== undefined) {
-            if (!session.permissions.canEditStock) {
+            if (!isDirector && !session.permissions?.canEditStock) {
                 return NextResponse.json({ error: 'Permission denied: Cannot edit stock' }, { status: 403 });
             }
             changesList.push(`Stock set to ${stock}`);
         }
 
         if (collection_name !== undefined || collection_slug !== undefined) {
-            if (!session.permissions.canManageCategories) {
+            if (!isDirector && !session.permissions?.canManageCategories) {
                 return NextResponse.json({ error: 'Permission denied: Cannot manage categories' }, { status: 403 });
             }
             changesList.push(`Category updated to ${collection_name || collection_slug}`);
         }
 
         if (is_featured !== undefined || sort_order !== undefined || tag !== undefined) {
-            if (!session.permissions.canManageHomepage) {
+            if (!isDirector && !session.permissions?.canManageHomepage) {
                 return NextResponse.json({ error: 'Permission denied: Cannot manage homepage/tags' }, { status: 403 });
             }
             if (is_featured !== undefined) changesList.push(`Featured set to ${is_featured}`);
@@ -242,6 +250,19 @@ export async function PATCH(request: Request) {
         if (variants !== undefined) changesList.push('Variants/pricing updated');
         if (relationships !== undefined) changesList.push('Relationships updated');
         if (celebrations !== undefined) changesList.push('Celebrations updated');
+
+        // Persist extra metadata (pre_order, same_day_delivery, variants) to site_settings
+        if (pre_order !== undefined || same_day_delivery !== undefined || variants !== undefined) {
+            const metaKey = productId || slug;
+            const metaUpdates: any = {};
+            if (pre_order !== undefined) metaUpdates.pre_order = Boolean(pre_order);
+            if (same_day_delivery !== undefined) metaUpdates.same_day_delivery = Boolean(same_day_delivery);
+            if (variants !== undefined) metaUpdates.variants = variants;
+            await setProductMetadata(metaKey, metaUpdates, session.name);
+            if (slug && slug !== metaKey) {
+                await setProductMetadata(slug, metaUpdates, session.name);
+            }
+        }
 
         // ── 4. Safely query existing DB product without causing UUID cast errors ──
         let existing: any = null;
@@ -286,9 +307,6 @@ export async function PATCH(request: Request) {
         if (collection_name !== undefined) dbUpdates.collection_name = collection_name;
         if (collection_slug !== undefined) dbUpdates.collection_slug = collection_slug;
         if (item_count !== undefined) dbUpdates.item_count = Number(item_count);
-        if (pre_order !== undefined) dbUpdates.pre_order = Boolean(pre_order);
-        if (same_day_delivery !== undefined) dbUpdates.same_day_delivery = Boolean(same_day_delivery);
-        if (variants !== undefined) dbUpdates.variants = variants;
         if (relationships !== undefined) dbUpdates.relationships = relationships;
         if (celebrations !== undefined) dbUpdates.celebrations = celebrations;
 
