@@ -84,17 +84,39 @@ const CELEBRATION_OPTIONS = [
     'Graduation', 'Festival', 'Housewarming', 'Baby Shower',
 ];
 
-// ─── Smart Item Count Label ───────────────────────────────────────────────────
+// ─── Smart Item Count Label (Bouquets only) ───────────────────────────────────
 
 function getItemCountLabel(name: string, collectionSlug: string): string | null {
     const n = name.toLowerCase();
     const c = (collectionSlug || '').toLowerCase();
 
-    // Only bouquets get a count
+    // Strict non-bouquet exclusions: Crowns, Garlands, Boxes, Vases, Baskets, Hampers, etc. NEVER get flower counts
+    if (
+        n.includes('crown') ||
+        n.includes('tiara') ||
+        n.includes('garland') ||
+        n.includes('box') ||
+        n.includes('vase') ||
+        n.includes('basket') ||
+        n.includes('hamper') ||
+        n.includes('mug') ||
+        n.includes('bottle') ||
+        n.includes('frame') ||
+        n.includes('candle') ||
+        n.includes('plant') ||
+        n.includes('pot') ||
+        c === 'plants' ||
+        c === 'hamper' ||
+        c === 'personalized' ||
+        c === 'decorations' ||
+        c === 'cake' ||
+        n.includes('cake')
+    ) {
+        return null;
+    }
+
     const isBouquet =
         n.includes('bouquet') ||
-        c.includes('bouquet') ||
-        c === 'fresh-flower' ||
         c === 'chocolate-bouquet' ||
         c === 'teddy-and-bouquet';
 
@@ -102,9 +124,17 @@ function getItemCountLabel(name: string, collectionSlug: string): string | null 
 
     if (n.includes('kinder') || n.includes('kinderjoy')) return 'No. of Kinder Joys';
     if (n.includes('teddy') || c === 'teddy-and-bouquet') return 'Teddy Count';
-    if (n.includes('chocolate') || c === 'chocolate-bouquet') return 'No. of Chocolates';
+    if (n.includes('chocolate') || c === 'chocolate-bouquet' || n.includes('ferrero') || n.includes('kitkat')) return 'No. of Chocolates';
+
+    // Flower count
+    const knownFlowers = ['rose', 'lily', 'lilies', 'orchid', 'carnation', 'gerbera', 'sunflower', 'tulip', 'gypsophila', 'baby\'s breath', 'daisy', 'hydrangea', 'anthurium'];
+    const matches = knownFlowers.filter(f => n.includes(f));
+    if (matches.length >= 2 || n.includes('mixed') || n.includes('assorted')) {
+        return 'No. of Flowers';
+    }
     if (n.includes('rose')) return 'Rose Count';
-    // multi-flower or general bouquet
+    if (n.includes('orchid')) return 'Orchid Count';
+    if (n.includes('lily') || n.includes('lilies')) return 'Lily Count';
     return 'No. of Flowers';
 }
 
@@ -181,6 +211,77 @@ function ProductEditModal({ product, collections, onSave, onClose, saving }: Edi
     };
 
     const countLabel = getItemCountLabel(name, collectionSlug);
+
+    // Smart default item count for bouquet types
+    const smartDefaultCount = useMemo(() => {
+        const n = name.toLowerCase();
+        const c = collectionSlug.toLowerCase();
+        if (!countLabel) return null;
+        if (n.includes('kinder') || n.includes('kinderjoy')) return 4;
+        if (n.includes('teddy') || c === 'teddy-and-bouquet') return 2;
+        if (n.includes('chocolate') || c === 'chocolate-bouquet' || n.includes('ferrero') || n.includes('kitkat')) return 6;
+        if (n.includes('orchid')) return 6;
+        if (n.includes('lily') || n.includes('lilies')) return 4;
+        if (n.includes('carnation')) return 8;
+        if (n.includes('rose')) return 6;
+        return 6; // general bouquet
+    }, [name, collectionSlug, countLabel]);
+
+    // Smart default variants for bouquet types
+    const smartDefaultVariants = useMemo((): ProductVariant[] => {
+        const n = name.toLowerCase();
+        const c = collectionSlug.toLowerCase();
+        if (!countLabel) return [];
+        const basePrice = product.price ?? 0;
+        if (n.includes('kinder') || n.includes('kinderjoy')) return [
+            { label: '4 Kinder Joys', price: basePrice },
+            { label: '6 Kinder Joys', price: Math.round(basePrice * 1.45) },
+            { label: '8 Kinder Joys', price: Math.round(basePrice * 1.85) },
+            { label: '12 Kinder Joys', price: Math.round(basePrice * 2.55) },
+        ];
+        if (n.includes('teddy') || c === 'teddy-and-bouquet') return [
+            { label: '2 Teddies', price: basePrice },
+            { label: '4 Teddies', price: Math.round(basePrice * 1.45) },
+            { label: '6 Teddies', price: Math.round(basePrice * 1.85) },
+            { label: '8 Teddies', price: Math.round(basePrice * 2.35) },
+        ];
+        if (n.includes('chocolate') || c === 'chocolate-bouquet' || n.includes('ferrero') || n.includes('kitkat')) return [
+            { label: '6 Chocolates', price: basePrice },
+            { label: '10 Chocolates', price: Math.round(basePrice * 1.45) },
+            { label: '15 Chocolates', price: Math.round(basePrice * 1.95) },
+            { label: '20 Chocolates', price: Math.round(basePrice * 2.55) },
+        ];
+        if (n.includes('orchid')) return [
+            { label: '6 Orchids', price: basePrice },
+            { label: '10 Orchids', price: Math.round(basePrice * 1.45) },
+            { label: '15 Orchids', price: Math.round(basePrice * 1.85) },
+            { label: '20 Orchids', price: Math.round(basePrice * 2.55) },
+        ];
+        if (n.includes('lily') || n.includes('lilies')) return [
+            { label: '4 Lilies', price: basePrice },
+            { label: '6 Lilies', price: Math.round(basePrice * 1.45) },
+            { label: '8 Lilies', price: Math.round(basePrice * 1.85) },
+            { label: '12 Lilies', price: Math.round(basePrice * 2.55) },
+        ];
+        if (n.includes('carnation')) return [
+            { label: '8 Carnations', price: basePrice },
+            { label: '12 Carnations', price: Math.round(basePrice * 1.45) },
+            { label: '16 Carnations', price: Math.round(basePrice * 1.85) },
+            { label: '24 Carnations', price: Math.round(basePrice * 2.55) },
+        ];
+        if (n.includes('rose')) return [
+            { label: '6 Roses', price: basePrice },
+            { label: '9 Roses', price: Math.round(basePrice * 1.45) },
+            { label: '12 Roses', price: Math.round(basePrice * 1.85) },
+            { label: '18 Roses', price: Math.round(basePrice * 2.55) },
+        ];
+        return [
+            { label: '6 Flowers', price: basePrice },
+            { label: '10 Flowers', price: Math.round(basePrice * 1.45) },
+            { label: '15 Flowers', price: Math.round(basePrice * 1.85) },
+            { label: '20 Flowers', price: Math.round(basePrice * 2.55) },
+        ];
+    }, [name, collectionSlug, countLabel, product.price]);
 
     const handleSubmit = () => {
         const updates: Partial<ProductItem> = {
@@ -315,17 +416,28 @@ function ProductEditModal({ product, collections, onSave, onClose, saving }: Edi
                                     Quantity Variants
                                     <span className="ml-2 font-normal text-zinc-400 dark:text-zinc-500">e.g. 6 Roses = ₹999, 12 Roses = ₹1,499</span>
                                 </label>
-                                <button
-                                    type="button"
-                                    onClick={addVariant}
-                                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold hover:opacity-80 transition-opacity cursor-pointer"
-                                >
-                                    <Plus size={11} />
-                                    Add Variant
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    {countLabel && variants.length === 0 && smartDefaultVariants.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setVariants(smartDefaultVariants)}
+                                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-700 dark:bg-zinc-700 text-zinc-200 text-xs font-bold hover:opacity-80 transition-opacity cursor-pointer border border-zinc-600"
+                                        >
+                                            ✦ Suggest defaults
+                                        </button>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={addVariant}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold hover:opacity-80 transition-opacity cursor-pointer"
+                                    >
+                                        <Plus size={11} />
+                                        Add Variant
+                                    </button>
+                                </div>
                             </div>
                             {variants.length === 0 ? (
-                                <p className="text-xs text-zinc-400 dark:text-zinc-500 italic">No variants — single price applies</p>
+                                <p className="text-xs text-zinc-400 dark:text-zinc-500 italic">No variants — single price applies{countLabel ? '. Click "Suggest defaults" to auto-fill.' : '.'}</p>
                             ) : (
                                 <div className="space-y-2">
                                     {variants.map((v, i) => (
@@ -380,13 +492,24 @@ function ProductEditModal({ product, collections, onSave, onClose, saving }: Edi
                             </div>
                             {countLabel && (
                                 <div>
-                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">{countLabel}</label>
+                                    <div className="flex items-center justify-between mb-1.5">
+                                        <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">{countLabel}</label>
+                                        {smartDefaultCount && !itemCount && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setItemCount(String(smartDefaultCount))}
+                                                className="text-[10px] font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                                            >
+                                                Use {smartDefaultCount} (suggested)
+                                            </button>
+                                        )}
+                                    </div>
                                     <input
                                         type="number"
                                         min="1"
                                         value={itemCount}
                                         onChange={e => setItemCount(e.target.value)}
-                                        placeholder="e.g. 12"
+                                        placeholder={smartDefaultCount ? `Suggested: ${smartDefaultCount}` : 'e.g. 6'}
                                         className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm text-zinc-900 dark:text-white tabular-nums focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500"
                                     />
                                 </div>

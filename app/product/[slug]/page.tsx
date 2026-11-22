@@ -221,13 +221,22 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             if (valid.length > 0) {
                 const name = product.name.toLowerCase();
                 const col = (product.collection_slug || '').toLowerCase();
+                // Check exclusions first — crowns, garlands, etc. never get flower count labels
+                const isExcluded = name.includes('crown') || name.includes('tiara') || name.includes('garland') ||
+                    name.includes('box') || name.includes('vase') || name.includes('basket') || name.includes('hamper') ||
+                    name.includes('mug') || name.includes('bottle') || name.includes('frame') || name.includes('candle') ||
+                    name.includes('plant') || name.includes('pot');
                 let title = 'Select Option';
-                if (name.includes('teddy') || col === 'teddy-and-bouquet') title = 'Number of Teddies';
+                if (col === 'cake' || name.includes('cake')) title = 'Select Weight';
+                else if (isExcluded) title = 'Select Option';
+                else if (name.includes('teddy') || col === 'teddy-and-bouquet') title = 'Number of Teddies';
                 else if (name.includes('kinder') || name.includes('kinderjoy')) title = 'Number of Kinder Joys';
                 else if (name.includes('chocolate') || col === 'chocolate-bouquet') title = 'Number of Chocolates';
+                else if (name.includes('orchid')) title = 'Number of Orchids';
+                else if (name.includes('lily') || name.includes('lilies')) title = 'Number of Lilies';
+                else if (name.includes('carnation')) title = 'Number of Carnations';
                 else if (name.includes('rose')) title = 'Number of Roses';
-                else if (name.includes('bouquet') || col.includes('bouquet') || col === 'fresh-flower') title = 'Number of Flowers';
-                else if (col === 'cake' || name.includes('cake')) title = 'Select Weight';
+                else if (name.includes('bouquet') || col.includes('bouquet')) title = 'Number of Flowers';
 
                 return {
                     title,
@@ -257,21 +266,42 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             };
         }
 
-        // 3. Bouquets only:
-        const isBouquet =
-            name.includes('bouquet') ||
-            col.includes('bouquet') ||
-            colName.includes('bouquet') ||
-            col === 'fresh-flower' ||
-            col === 'teddy-and-bouquet' ||
-            col === 'chocolate-bouquet';
+        // 3. Strict non-bouquet exclusions: Crowns, Garlands, Boxes, Vases, Baskets, Hampers, etc. NEVER get flower counts
+        const isExcludedNonBouquet =
+            name.includes('crown') ||
+            name.includes('tiara') ||
+            name.includes('garland') ||
+            name.includes('box') ||
+            name.includes('vase') ||
+            name.includes('basket') ||
+            name.includes('hamper') ||
+            name.includes('mug') ||
+            name.includes('bottle') ||
+            name.includes('frame') ||
+            name.includes('candle') ||
+            name.includes('plant') ||
+            name.includes('pot') ||
+            col === 'plants' ||
+            col === 'hamper' ||
+            col === 'personalized' ||
+            col === 'decorations';
 
-        if (!isBouquet) {
-            // Non-bouquet items (plants, hampers, mugs, gifts, decor) do NOT have quantity/variants
-            return null;
+        if (isExcludedNonBouquet) {
+            return null; // NO quantity options on crowns, boxes, hampers, gifts, decor
         }
 
-        // 3a. Teddy Bouquet
+        // 4. Bouquets only: must be an actual bouquet
+        const isBouquet =
+            name.includes('bouquet') ||
+            col === 'chocolate-bouquet' ||
+            col === 'teddy-and-bouquet' ||
+            (col.includes('bouquet') && !isExcludedNonBouquet);
+
+        if (!isBouquet) {
+            return null; // NOT a bouquet -> NO quantity/flower count
+        }
+
+        // 4a. Teddy Bouquet
         if (name.includes('teddy') || col === 'teddy-and-bouquet') {
             return {
                 title: 'Number of Teddies',
@@ -284,7 +314,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             };
         }
 
-        // 3b. Kinder Joy Bouquet
+        // 4b. Kinder Joy Bouquet
         if (name.includes('kinder') || name.includes('kinderjoy')) {
             return {
                 title: 'Number of Kinder Joys',
@@ -297,7 +327,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             };
         }
 
-        // 3c. Chocolate Bouquet
+        // 4c. Chocolate Bouquet
         if (
             name.includes('chocolate') ||
             col === 'chocolate-bouquet' ||
@@ -317,7 +347,24 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             };
         }
 
-        // 3d. Rose Bouquet
+        // 4d. Multi-flower Bouquet (2 or more flowers mentioned, e.g. Rose and Lily, Orchid and Carnation, Mixed)
+        const flowerList = ['rose', 'lily', 'lilies', 'orchid', 'carnation', 'gerbera', 'sunflower', 'tulip', 'gypsophila', 'baby\'s breath', 'daisy', 'hydrangea', 'anthurium'];
+        const matchedFlowers = flowerList.filter(f => name.includes(f));
+        const isMultiFlower = matchedFlowers.length >= 2 || name.includes('mixed') || name.includes('assorted') || name.includes('rainbow') || name.includes('colorful');
+
+        if (isMultiFlower) {
+            return {
+                title: 'Number of Flowers',
+                options: [
+                    { label: '6 Flowers', multiplier: 1.0 },
+                    { label: '10 Flowers', multiplier: 1.45 },
+                    { label: '15 Flowers', multiplier: 1.85 },
+                    { label: '20 Flowers', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        // 4e. Single flower type bouquets:
         if (name.includes('rose')) {
             return {
                 title: 'Number of Roses',
@@ -330,7 +377,43 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             };
         }
 
-        // 3e. Multi-flower Bouquet (Orchids, Carnations, Lilies, Gerberas, Gypsophila, Sunflowers, etc.)
+        if (name.includes('orchid')) {
+            return {
+                title: 'Number of Orchids',
+                options: [
+                    { label: '6 Orchids', multiplier: 1.0 },
+                    { label: '10 Orchids', multiplier: 1.45 },
+                    { label: '15 Orchids', multiplier: 1.85 },
+                    { label: '20 Orchids', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        if (name.includes('lily') || name.includes('lilies')) {
+            return {
+                title: 'Number of Lilies',
+                options: [
+                    { label: '4 Lilies', multiplier: 1.0 },
+                    { label: '6 Lilies', multiplier: 1.45 },
+                    { label: '8 Lilies', multiplier: 1.85 },
+                    { label: '12 Lilies', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        if (name.includes('carnation')) {
+            return {
+                title: 'Number of Carnations',
+                options: [
+                    { label: '8 Carnations', multiplier: 1.0 },
+                    { label: '12 Carnations', multiplier: 1.45 },
+                    { label: '16 Carnations', multiplier: 1.85 },
+                    { label: '24 Carnations', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        // 4f. General bouquet fallback
         return {
             title: 'Number of Flowers',
             options: [
