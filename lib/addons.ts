@@ -30,6 +30,58 @@ export const ADDON_CATEGORIES = [
   { id: 'packaging', label: 'Packaging', icon: '🎀' },
 ];
 
+export const AVAILABLE_ADDON_IMAGE_PATHS = new Set<string>([
+  '/images/addons/cakes/truffle-cake.webp',
+  '/images/addons/cakes/butterscotch-cake.webp',
+  '/images/addons/cakes/strawberry-cake.webp',
+  '/images/addons/cakes/black-forest-cake.webp',
+  '/images/addons/cakes/red-velvet-cake.webp',
+  '/images/addons/cakes/chocolate-fudge-cake.webp',
+  '/images/addons/cakes/white-forest-cake.webp',
+  '/images/addons/cakes/bento-cake.webp',
+  '/images/addons/chocolates/ferrero-4pc.webp',
+  '/images/addons/chocolates/ferrero-8pc.webp',
+  '/images/addons/chocolates/ferrero-moments-8pc.webp',
+  '/images/addons/chocolates/ferrero-moments-10pc.webp',
+  '/images/addons/chocolates/ferrero-moments-16pc.webp',
+  '/images/addons/chocolates/dairy-milk-silk.webp',
+  '/images/addons/chocolates/celebrations-mini.webp',
+  '/images/addons/chocolates/celebrations-small.webp',
+  '/images/addons/chocolates/celebrations-medium.webp',
+  '/images/addons/chocolates/lindt-lindor.webp',
+  '/images/addons/chocolates/hersheys-kisses-milk.webp',
+  '/images/addons/chocolates/hersheys-kisses-almonds.webp',
+  '/images/addons/chocolates/hersheys-kisses-cookies.webp',
+  '/images/addons/chocolates/hersheys-kisses-hazelnut.webp',
+  '/images/addons/chocolates/hersheys-kisses-gift.webp',
+  '/images/addons/chocolates/hersheys-kisses-gift-125g.webp',
+  '/images/addons/chocolates/hersheys-kisses-tin.webp',
+  '/images/addons/chocolates/melt-munch-combo.webp',
+  '/images/addons/chocolates/premium-choc-box.webp',
+  '/images/addons/chocolates/choc-love-combo.webp',
+  '/images/addons/chocolates/heart-choc-box.webp',
+  '/images/addons/addon-greeting-card.jpg',
+  '/images/addons/personalisation/personalised-msg-card.webp',
+  '/images/addons/personalisation/handwritten-letter.webp',
+  '/images/addons/personalisation/photo-prints.webp',
+  '/images/addons/personalisation/photo-strip.webp',
+  '/images/addons/personalisation/name-tag.webp',
+  '/images/addons/personalisation/message-bottle.webp',
+  '/images/addons/personalisation/photo-frame.webp',
+  '/images/addons/personalisation/couple-frame.webp',
+  '/images/addons/personalisation/mini-scrapbook.webp',
+  '/images/addons/packaging/gift-tag.webp',
+  '/images/addons/addon-flower-food.jpg',
+  '/images/addons/addon-birthday-topper.jpg',
+  '/images/addons/addon-plush-teddy.jpg',
+  '/images/addons/addon-scented-candle.jpg',
+]);
+
+export function addonHasImage(addon?: AddonItem | null): boolean {
+  if (!addon || !addon.image_url) return false;
+  return AVAILABLE_ADDON_IMAGE_PATHS.has(addon.image_url);
+}
+
 export const ADDON_ITEMS: AddonItem[] = [
   // ── CAKES ──
   {

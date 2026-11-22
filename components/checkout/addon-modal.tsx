@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { X, Plus, Minus } from 'lucide-react';
-import { ADDON_CATEGORIES, ADDON_ITEMS, AddonItem } from '@/lib/addons';
+import { ADDON_CATEGORIES, ADDON_ITEMS, AddonItem, addonHasImage } from '@/lib/addons';
 import { useCart } from '@/lib/cart-context';
 import { useRouter } from 'next/navigation';
 
@@ -22,9 +22,17 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
 
     if (!isOpen) return null;
 
-    const filteredItems = activeTab === 'all'
+    const availableCategories = useMemo(() => {
+        return ADDON_CATEGORIES.filter(cat => {
+            if (cat.id === 'all') return true;
+            return ADDON_ITEMS.some(item => item.category === cat.id && addonHasImage(item));
+        });
+    }, []);
+
+    const filteredItems = (activeTab === 'all'
         ? ADDON_ITEMS
-        : ADDON_ITEMS.filter(item => item.category === activeTab);
+        : ADDON_ITEMS.filter(item => item.category === activeTab)
+    ).filter(addonHasImage);
 
     const handleAdd = (item: AddonItem) => {
         setSelectedAddons(prev => ({
@@ -130,7 +138,7 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                     </h2>
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 rounded-full border border-gray-300 hover:border-[#bfa81f] text-gray-500 hover:text-[#bfa81f] flex items-center justify-center transition-colors cursor-pointer"
+                        className="w-8 h-8 rounded-full border border-gray-300 hover:border-black text-gray-500 hover:text-black flex items-center justify-center transition-colors cursor-pointer"
                         aria-label="Close"
                     >
                         <X size={18} />
@@ -139,7 +147,7 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
 
                 {/* ── Category Tabs Horizontal Scrollbar ── */}
                 <div className="border-b border-gray-100 bg-white px-4 py-2.5 overflow-x-auto no-scrollbar flex items-center gap-6 sm:gap-8 flex-nowrap">
-                    {ADDON_CATEGORIES.map(cat => {
+                    {availableCategories.map(cat => {
                         const isActive = activeTab === cat.id;
                         return (
                             <button
@@ -152,14 +160,14 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                                 <div
                                     className={`w-11 h-11 rounded-full flex items-center justify-center text-lg bg-gray-50 border transition-all ${
                                         isActive
-                                            ? 'border-[#bfa81f] ring-2 ring-[#bfa81f]/20 bg-amber-50/50'
+                                            ? 'border-black ring-2 ring-black/10 bg-gray-100 font-bold'
                                             : 'border-gray-200 hover:border-gray-300'
                                     }`}
                                 >
                                     <span>{cat.icon}</span>
                                 </div>
                                 <span className={`text-[11px] font-semibold tracking-tight whitespace-nowrap ${
-                                    isActive ? 'text-[#bfa81f] font-bold border-b-2 border-[#bfa81f] pb-0.5' : 'text-gray-700'
+                                    isActive ? 'text-black font-bold border-b-2 border-black pb-0.5' : 'text-gray-700'
                                 }`}>
                                     {cat.label}
                                 </span>
@@ -214,24 +222,24 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                                             {qty === 0 ? (
                                                 <button
                                                     onClick={() => handleAdd(item)}
-                                                    className="px-3 py-1 rounded-md border border-[#bfa81f] text-[#bfa81f] hover:bg-[#bfa81f] hover:text-white text-[11px] font-bold uppercase transition-colors cursor-pointer"
+                                                    className="px-3 py-1 rounded-md border border-black text-black hover:bg-black hover:text-white text-[11px] font-bold uppercase transition-colors cursor-pointer"
                                                 >
                                                     ADD
                                                 </button>
                                             ) : (
-                                                <div className="flex items-center border border-[#bfa81f] rounded-md overflow-hidden bg-white">
+                                                <div className="flex items-center border border-black rounded-md overflow-hidden bg-white">
                                                     <button
                                                         onClick={() => handleUpdateQty(item.id, -1)}
-                                                        className="px-1.5 py-1 text-[#bfa81f] hover:bg-amber-50 transition-colors cursor-pointer"
+                                                        className="px-1.5 py-1 text-black hover:bg-gray-100 transition-colors cursor-pointer"
                                                     >
                                                         <Minus size={11} />
                                                     </button>
-                                                    <span className="px-1.5 text-xs font-bold text-[#bfa81f]">
+                                                    <span className="px-1.5 text-xs font-bold text-black">
                                                         {qty}
                                                     </span>
                                                     <button
                                                         onClick={() => handleUpdateQty(item.id, 1)}
-                                                        className="px-1.5 py-1 text-[#bfa81f] hover:bg-amber-50 transition-colors cursor-pointer"
+                                                        className="px-1.5 py-1 text-black hover:bg-gray-100 transition-colors cursor-pointer"
                                                     >
                                                         <Plus size={11} />
                                                     </button>
@@ -250,14 +258,14 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                     {totalSelectedCount === 0 ? (
                         <button
                             onClick={handleProceed}
-                            className="px-6 py-2.5 rounded-lg border border-[#bfa81f] text-[#bfa81f] hover:bg-[#bfa81f] hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer"
+                            className="px-6 py-2.5 rounded-lg border border-black text-black hover:bg-black hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer"
                         >
                             Skip & Continue
                         </button>
                     ) : (
                         <button
                             onClick={handleProceed}
-                            className="px-7 py-2.5 rounded-lg bg-[#bfa81f] hover:bg-[#a89216] text-white text-xs sm:text-sm font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
+                            className="px-7 py-2.5 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
                         >
                             Continue • {totalSelectedCount} {totalSelectedCount === 1 ? 'Add-on' : 'Add-ons'}
                         </button>
