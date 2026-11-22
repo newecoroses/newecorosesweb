@@ -186,6 +186,9 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
                                             fill
                                             className="object-cover"
                                             sizes="160px"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                                            }}
                                         />
                                     </div>
 

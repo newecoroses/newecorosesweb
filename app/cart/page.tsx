@@ -25,10 +25,20 @@ import {
     Clock,
     AlertCircle,
     Sun,
-    PartyPopper
+    PartyPopper,
+    Crown,
+    Edit3,
+    Camera
 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
-import { ADDON_ITEMS } from '@/lib/addons';
+import {
+    ADDON_ITEMS,
+    ADDON_CATEGORIES,
+    OCCASION_RECOMMENDATION_MAP,
+    UNIVERSAL_ADDON_IDS,
+    PREMIUM_ADDON_IDS,
+    AddonItem,
+} from '@/lib/addons';
 import { AVAILABLE_COUPONS, calculateDiscount, Coupon } from '@/lib/coupons';
 import DeliveryLocationModal from '@/components/ui/delivery-location-modal';
 import AuthDrawer from '@/components/cart/auth-drawer';
@@ -48,63 +58,63 @@ const OCCASIONS: OccasionOption[] = [
         label: 'Birthday',
         image: '/images/occasions/birthday.jpg',
         title: 'Birthday Celebration',
-        suggestionIds: ['addon-truffle-cake', 'addon-birthday-topper', 'addon-card-occasion', 'addon-chocolate-combo'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['birthday'] || [],
     },
     {
         id: 'anniversary',
         label: 'Anniversary',
         image: '/images/occasions/anniversary.jpg',
         title: 'Anniversary Special',
-        suggestionIds: ['addon-scented-candle', 'addon-ferrero-box', 'addon-strawberry-cake', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['anniversary'] || [],
     },
     {
         id: 'romance',
         label: 'Romance & Love',
         image: '/images/occasions/romance.jpg',
         title: 'Love & Romance',
-        suggestionIds: ['addon-plush-teddy', 'addon-ferrero-box', 'addon-scented-candle', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['romance'] || [],
     },
     {
         id: 'wedding',
         label: 'Wedding / Engagement',
         image: '/images/occasions/wedding.jpg',
         title: 'Wedding & Engagement',
-        suggestionIds: ['addon-scented-candle', 'addon-butterscotch-cake', 'addon-card-occasion', 'addon-ferrero-box'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['wedding'] || [],
     },
     {
         id: 'congratulations',
         label: 'Congratulations',
         image: '/images/occasions/congratulations.jpg',
         title: 'Congratulations',
-        suggestionIds: ['addon-butterscotch-cake', 'addon-lucky-bamboo', 'addon-chocolate-combo', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['congratulations'] || [],
     },
     {
         id: 'get-well',
         label: 'Get Well Soon',
         image: '/images/occasions/get-well.jpg',
         title: 'Get Well Soon',
-        suggestionIds: ['addon-lucky-bamboo', 'addon-jade-plant', 'addon-flower-food', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['get-well'] || [],
     },
     {
         id: 'thank-you',
         label: 'Thank You',
         image: '/images/occasions/thank-you.jpg',
         title: 'Thank You & Gratitude',
-        suggestionIds: ['addon-ferrero-box', 'addon-lucky-bamboo', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['thank-you'] || [],
     },
     {
         id: 'housewarming',
         label: 'Housewarming',
         image: '/images/occasions/housewarming.jpg',
         title: 'Housewarming',
-        suggestionIds: ['addon-jade-plant', 'addon-lucky-bamboo', 'addon-scented-candle', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['housewarming'] || [],
     },
     {
         id: 'just-because',
-        label: 'Just Because / Surprise',
+        label: 'Just Because / Thinking of You',
         image: '/images/occasions/just-because.jpg',
         title: 'Special Surprise',
-        suggestionIds: ['addon-chocolate-combo', 'addon-plush-teddy', 'addon-truffle-cake', 'addon-card-occasion'],
+        suggestionIds: OCCASION_RECOMMENDATION_MAP['just-because'] || [],
     },
 ];
 
@@ -198,6 +208,14 @@ export default function CartPage() {
     const [occasionError, setOccasionError] = useState(false);
     const occasionSectionRef = useRef<HTMLDivElement>(null);
 
+    // Occasion recommendation expanded view
+    const [viewAllOccasionAddons, setViewAllOccasionAddons] = useState(false);
+
+    // Personalisation modal & storage state
+    const [personalisationModalItem, setPersonalisationModalItem] = useState<AddonItem | null>(null);
+    const [personalisationData, setPersonalisationData] = useState<Record<string, { message?: string; recipientName?: string; note?: string }>>({});
+    const [activePersonalisationInput, setActivePersonalisationInput] = useState<{ message: string; recipientName: string; note: string }>({ message: '', recipientName: '', note: '' });
+
     // Right column expandables
     const [isMessageCardOpen, setIsMessageCardOpen] = useState(false);
     const [messageCardText, setMessageCardText] = useState('');
@@ -241,6 +259,11 @@ export default function CartPage() {
             const savedOccasion = localStorage.getItem('ner_cart_occasion');
             if (savedOccasion) {
                 setSelectedOccasion(savedOccasion);
+            }
+
+            const savedP = sessionStorage.getItem('ner_addon_personalisation');
+            if (savedP) {
+                setPersonalisationData(JSON.parse(savedP));
             }
         } catch {}
     }, []);
@@ -369,29 +392,71 @@ export default function CartPage() {
         }
     };
 
-    // Filter addons by category tab
+    // Dynamic occasion-based add-ons
+    const occasionAddons = useMemo(() => {
+        if (!selectedOccasion) return [];
+        const ids = OCCASION_RECOMMENDATION_MAP[selectedOccasion] || [];
+        return ids.map(id => ADDON_ITEMS.find(a => a.id === id)).filter(Boolean) as AddonItem[];
+    }, [selectedOccasion]);
+
+    // Personalise your gift products (greeting cards, custom letters, photo prints, frames, message bottles, tags)
+    const personaliseAddons = useMemo(() => {
+        return ADDON_ITEMS.filter(item => item.personalisable || item.category === 'personalisation');
+    }, []);
+
+    // Premium add-ons prioritised by selected occasion
+    const premiumAddons = useMemo(() => {
+        const pool = PREMIUM_ADDON_IDS.map(id => ADDON_ITEMS.find(a => a.id === id)).filter(Boolean) as AddonItem[];
+        if (!selectedOccasion) return pool;
+        return [...pool].sort((a, b) => {
+            const aMatch = a.occasions.includes(selectedOccasion) || a.occasions.includes('all');
+            const bMatch = b.occasions.includes(selectedOccasion) || b.occasions.includes('all');
+            if (aMatch && !bMatch) return -1;
+            if (!aMatch && bMatch) return 1;
+            return 0;
+        });
+    }, [selectedOccasion]);
+
+    // Filter universal/catalogue addons by category tab
     const filteredAddons = useMemo(() => {
-        if (selectedAddonCategory === 'all') return ADDON_ITEMS;
-        if (selectedAddonCategory === 'gourmet') {
-            return ADDON_ITEMS.filter(a => a.category === 'chocolates');
+        if (selectedAddonCategory === 'all') {
+            return UNIVERSAL_ADDON_IDS.map(id => ADDON_ITEMS.find(a => a.id === id)).filter(Boolean) as AddonItem[];
         }
-        if (selectedAddonCategory === 'keepsakes') {
-            return ADDON_ITEMS.filter(a => a.category === 'keepsakes');
-        }
-        if (selectedAddonCategory === 'accessories') {
-            return ADDON_ITEMS.filter(a => a.category === 'accessories');
-        }
-        if (selectedAddonCategory === 'cards') {
-            return ADDON_ITEMS.filter(a => a.category === 'cards');
-        }
-        if (selectedAddonCategory === 'cakes') {
-            return ADDON_ITEMS.filter(a => a.category === 'cakes');
-        }
-        if (selectedAddonCategory === 'plants') {
-            return ADDON_ITEMS.filter(a => a.category === 'plants');
-        }
-        return ADDON_ITEMS;
+        return ADDON_ITEMS.filter(a => a.category === selectedAddonCategory);
     }, [selectedAddonCategory]);
+
+    const handleOpenPersonalisation = (addon: AddonItem) => {
+        const existing = personalisationData[addon.id] || { message: '', recipientName: '', note: '' };
+        setActivePersonalisationInput({
+            message: existing.message || '',
+            recipientName: existing.recipientName || '',
+            note: existing.note || '',
+        });
+        setPersonalisationModalItem(addon);
+    };
+
+    const handleSavePersonalisation = () => {
+        if (!personalisationModalItem) return;
+        const updated = {
+            ...personalisationData,
+            [personalisationModalItem.id]: { ...activePersonalisationInput }
+        };
+        setPersonalisationData(updated);
+        try {
+            sessionStorage.setItem('ner_addon_personalisation', JSON.stringify(updated));
+        } catch {}
+
+        if (!items.some(i => i.id === personalisationModalItem.id)) {
+            addItem({
+                id: personalisationModalItem.id,
+                name: personalisationModalItem.name,
+                slug: personalisationModalItem.id,
+                price: personalisationModalItem.price,
+                image_url: personalisationModalItem.image_url,
+            });
+        }
+        setPersonalisationModalItem(null);
+    };
 
     const scrollAddonsRight = () => {
         if (addonsScrollRef.current) {
@@ -745,14 +810,14 @@ export default function CartPage() {
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-sans text-[14.5px] sm:text-[15px] font-bold text-[#111] tracking-tight">
-                                                    Select Occasion
+                                                    What&apos;s the Occasion?
                                                 </h3>
                                                 <span className="px-1.5 py-0.5 rounded-[4px] bg-rose-500 text-white text-[9.5px] font-bold uppercase tracking-wide">
                                                     Mandatory
                                                 </span>
                                             </div>
                                             <p className="text-[11.5px] text-[#666] font-normal leading-tight">
-                                                Helps us customize the arrangement, ribbon &amp; presentation
+                                                Let us make your gift even more special. Choose the occasion to discover thoughtful additions.
                                             </p>
                                         </div>
                                     </div>
@@ -816,93 +881,114 @@ export default function CartPage() {
                                     })}
                                 </div>
 
-                                {/* Dynamic Product Suggestions based on selected occasion */}
-                                {selectedOccasion && (
-                                    <div className="mt-4 pt-3.5 border-t border-black/[0.06]">
-                                        <div className="flex items-center gap-2 mb-2.5">
-                                            <div className="relative w-5 h-5 rounded-[5px] overflow-hidden flex-shrink-0 shadow-2xs border border-amber-200/80">
+                                {!selectedOccasion && (
+                                    <div className="mt-3.5 pt-3.5 border-t border-black/[0.06] flex items-center gap-2.5 text-[#888] text-[12px] bg-amber-50/30 p-2.5 rounded-[10px]">
+                                        <Sparkles size={14} className="text-[#bfa81f] flex-shrink-0" />
+                                        <span>Select an occasion above to discover personalized gift add-ons and curated recommendations.</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* ── SECTION A: OCCASION RECOMMENDATIONS ── */}
+                            {selectedOccasion && occasionAddons.length > 0 && (
+                                <div className="bg-white border border-black/[0.08] rounded-[16px] p-4 shadow-2xs space-y-3.5">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="relative w-6 h-6 rounded-md overflow-hidden flex-shrink-0 shadow-2xs border border-amber-200/80">
                                                 <Image
                                                     src="/images/cart/recommended-addons-icon.jpg"
                                                     alt="Recommended Add-ons"
                                                     fill
                                                     className="object-cover"
-                                                    sizes="20px"
+                                                    sizes="24px"
                                                 />
                                             </div>
-                                            <p className="text-[12px] font-semibold text-[#111]">
-                                                Recommended add-ons for {OCCASIONS.find(o => o.id === selectedOccasion)?.title || 'this occasion'}:
-                                            </p>
+                                            <div>
+                                                <h3 className="font-sans text-[14.5px] font-bold text-[#111] tracking-tight">
+                                                    Recommended Add-ons for {OCCASIONS.find(o => o.id === selectedOccasion)?.label || 'This Occasion'}
+                                                </h3>
+                                                <p className="text-[11px] text-[#666]">
+                                                    Thoughtfully selected additions to make your gift unforgettable.
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                            {(OCCASIONS.find(o => o.id === selectedOccasion)?.suggestionIds || [])
-                                                .map(id => ADDON_ITEMS.find(a => a.id === id))
-                                                .filter(Boolean)
-                                                .map(addon => {
-                                                    if (!addon) return null;
-                                                    const inCart = items.some(i => i.id === addon.id);
-                                                    return (
-                                                        <div
-                                                            key={addon.id}
-                                                            className="flex items-center justify-between gap-2.5 p-2 rounded-[10px] bg-[#faf8f0]/80 border border-[#bfa81f]/20"
-                                                        >
-                                                            <div className="flex items-center gap-2.5 min-w-0">
-                                                                <div className="relative w-10 h-10 rounded-[8px] overflow-hidden bg-white border border-black/[0.06] flex-shrink-0">
-                                                                    <Image
-                                                                        src={addon.image_url}
-                                                                        alt={addon.name}
-                                                                        fill
-                                                                        className="object-cover"
-                                                                        sizes="40px"
-                                                                    />
-                                                                </div>
-                                                                <div className="min-w-0">
-                                                                    <p className="text-[12px] font-semibold text-[#111] truncate leading-snug">
-                                                                        {addon.name}
-                                                                    </p>
-                                                                    <div className="flex items-center gap-1.5 text-[11px]">
-                                                                        <span className="font-bold text-[#111]">₹{addon.price}</span>
-                                                                        {addon.originalPrice && (
-                                                                            <span className="text-gray-400 line-through text-[10px]">
-                                                                                ₹{addon.originalPrice}
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    if (inCart) {
-                                                                        removeItem(addon.id);
-                                                                    } else {
-                                                                        addItem({
-                                                                            id: addon.id,
-                                                                            name: addon.name,
-                                                                            slug: addon.id,
-                                                                            price: addon.price,
-                                                                            image_url: addon.image_url,
-                                                                        });
-                                                                    }
-                                                                }}
-                                                                className={`px-2.5 py-1 rounded-[6px] text-[11px] font-bold cursor-pointer transition-all flex-shrink-0 ${
-                                                                    inCart
-                                                                        ? 'bg-[#16a34a] text-white'
-                                                                        : 'bg-[#bfa81f] hover:bg-[#a89216] text-white shadow-2xs'
-                                                                }`}
-                                                            >
-                                                                {inCart ? '? Added' : '+ Add'}
-                                                            </button>
-                                                        </div>
-                                                    );
-                                                })}
+                                        {occasionAddons.length > 4 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setViewAllOccasionAddons(!viewAllOccasionAddons)}
+                                                className="text-[11.5px] font-bold text-[#bfa81f] hover:underline whitespace-nowrap cursor-pointer flex items-center gap-1"
+                                            >
+                                                {viewAllOccasionAddons ? 'Show Less' : `View All (${occasionAddons.length})`}
+                                                <ChevronRight size={13} className={`transition-transform ${viewAllOccasionAddons ? 'rotate-90' : ''}`} />
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                                        {(viewAllOccasionAddons ? occasionAddons : occasionAddons.slice(0, 6)).map((addon) => {
+                                            const inCart = items.some(i => i.id === addon.id);
+                                            return (
+                                                <AddonCard
+                                                    key={addon.id}
+                                                    addon={addon}
+                                                    inCart={inCart}
+                                                    onAdd={() => addon.personalisable ? handleOpenPersonalisation(addon) : addItem({ id: addon.id, name: addon.name, slug: addon.id, price: addon.price, image_url: addon.image_url })}
+                                                    onRemove={() => removeItem(addon.id)}
+                                                    onPersonalise={addon.personalisable ? () => handleOpenPersonalisation(addon) : undefined}
+                                                    hasPersonalisation={Boolean(personalisationData[addon.id])}
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* ── SECTION B: PERSONALISED GIFTS ── */}
+                            {personaliseAddons.length > 0 && (
+                                <div className="bg-gradient-to-br from-[#fcfbf7] to-white border border-[#bfa81f]/30 rounded-[16px] p-4 shadow-2xs space-y-3.5">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-6 h-6 rounded-md bg-[#bfa81f]/15 text-[#8f7d14] flex items-center justify-center flex-shrink-0 border border-[#bfa81f]/30">
+                                                <Sparkles size={14} className="text-[#8f7d14]" />
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <h3 className="font-sans text-[14.5px] font-bold text-[#111] tracking-tight">
+                                                        Make It Personal
+                                                    </h3>
+                                                    <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#bfa81f]/15 text-[#8f7d14]">
+                                                        Custom
+                                                    </span>
+                                                </div>
+                                                <p className="text-[11px] text-[#666]">
+                                                    Add a personal touch that makes your gift truly yours.
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                )}
-                            </div>
 
-                            {/* 4. "Make It Extra Special!" Shelf (Reference Image 1) */}
+                                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                                        {personaliseAddons.map((addon) => {
+                                            const inCart = items.some(i => i.id === addon.id);
+                                            return (
+                                                <AddonCard
+                                                    key={addon.id}
+                                                    addon={addon}
+                                                    inCart={inCart}
+                                                    onAdd={() => handleOpenPersonalisation(addon)}
+                                                    onRemove={() => removeItem(addon.id)}
+                                                    onPersonalise={() => handleOpenPersonalisation(addon)}
+                                                    hasPersonalisation={Boolean(personalisationData[addon.id])}
+                                                    badge="Custom"
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* ── SECTION C: UNIVERSAL ADD-ONS ── */}
                             <div className="bg-white border border-black/[0.08] rounded-[16px] p-4 shadow-2xs space-y-3.5">
-                                {/* Accordion Header */}
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2.5">
                                         <div className="relative w-6 h-6 rounded-md overflow-hidden flex-shrink-0 shadow-2xs border border-amber-200/80">
@@ -914,14 +1000,20 @@ export default function CartPage() {
                                                 sizes="24px"
                                             />
                                         </div>
-                                        <h3 className="font-sans text-[15px] font-bold text-[#111] tracking-tight">
-                                            Make It Extra Special!
-                                        </h3>
+                                        <div>
+                                            <h3 className="font-sans text-[14.5px] font-bold text-[#111] tracking-tight">
+                                                Make Your Gift Extra Special
+                                            </h3>
+                                            <p className="text-[11px] text-[#666]">
+                                                Little additions that make every gift more memorable.
+                                            </p>
+                                        </div>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={() => setIsAddonsExpanded(!isAddonsExpanded)}
                                         className="p-1 text-gray-500 hover:text-black cursor-pointer"
+                                        aria-label="Toggle section"
                                     >
                                         {isAddonsExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                                     </button>
@@ -931,28 +1023,21 @@ export default function CartPage() {
                                     <>
                                         {/* Category Filter Tabs */}
                                         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-[11.5px] font-bold select-none">
-                                            {[
-                                                { id: 'all', label: 'All' },
-                                                { id: 'gourmet', label: 'Gourmet' },
-                                                { id: 'accessories', label: 'Cake Accessories' },
-                                                { id: 'cards', label: 'Greeting Cards' },
-                                                { id: 'cakes', label: 'Cakes' },
-                                                { id: 'plants', label: 'Plants' },
-                                                { id: 'keepsakes', label: 'Keepsakes' },
-                                            ].map((tab) => {
+                                            {ADDON_CATEGORIES.map((tab) => {
                                                 const isActive = selectedAddonCategory === tab.id;
                                                 return (
                                                     <button
                                                         key={tab.id}
                                                         type="button"
                                                         onClick={() => setSelectedAddonCategory(tab.id)}
-                                                        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer ${
+                                                        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer flex items-center gap-1 ${
                                                             isActive
                                                                 ? 'bg-[#111] text-white shadow-2xs'
                                                                 : 'bg-[#f5f5f5] hover:bg-[#eaeaea] text-[#666]'
                                                         }`}
                                                     >
-                                                        {tab.label}
+                                                        <span>{tab.icon}</span>
+                                                        <span>{tab.label}</span>
                                                     </button>
                                                 );
                                             })}
@@ -969,33 +1054,48 @@ export default function CartPage() {
                                                     return (
                                                         <div
                                                             key={addon.id}
-                                                            className="flex-shrink-0 w-[110px] sm:w-[125px] flex flex-col group select-none"
+                                                            className="flex-shrink-0 w-[115px] sm:w-[130px] flex flex-col group select-none"
                                                         >
                                                             {/* Addon Image with Overlay '+' Button */}
-                                                            <div className="relative w-full h-[110px] sm:h-[125px] rounded-[12px] overflow-hidden bg-gray-50 border border-black/[0.08]">
+                                                            <div className="relative w-full h-[115px] sm:h-[130px] rounded-[12px] overflow-hidden bg-gray-50 border border-black/[0.08]">
                                                                 <Image
-                                                                    src={addon.image_url}
+                                                                    src={addon.image_url || '/images/placeholder.webp'}
                                                                     alt={addon.name}
                                                                     fill
                                                                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                                    sizes="125px"
+                                                                    sizes="130px"
+                                                                    onError={(e) => {
+                                                                        (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                                                                    }}
                                                                 />
-                                                                {/* Plus Button in White Circle (Matches Image 1) */}
+                                                                {addon.isUniversal && (
+                                                                    <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[8px] font-semibold">
+                                                                        Popular
+                                                                    </span>
+                                                                )}
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => addItem({
-                                                                        id: addon.id,
-                                                                        name: addon.name,
-                                                                        slug: addon.id,
-                                                                        price: addon.price,
-                                                                        image_url: addon.image_url,
-                                                                    })}
+                                                                    onClick={() => {
+                                                                        if (isAlreadyInCart) {
+                                                                            removeItem(addon.id);
+                                                                        } else if (addon.personalisable) {
+                                                                            handleOpenPersonalisation(addon);
+                                                                        } else {
+                                                                            addItem({
+                                                                                id: addon.id,
+                                                                                name: addon.name,
+                                                                                slug: addon.id,
+                                                                                price: addon.price,
+                                                                                image_url: addon.image_url,
+                                                                            });
+                                                                        }
+                                                                    }}
                                                                     className={`absolute bottom-2 right-2 w-7 h-7 rounded-full flex items-center justify-center shadow-md transition-transform active:scale-90 cursor-pointer ${
                                                                         isAlreadyInCart
                                                                             ? 'bg-[#16a34a] text-white'
                                                                             : 'bg-white hover:bg-gray-100 text-[#111]'
                                                                     }`}
-                                                                    title="Add to order"
+                                                                    title={isAlreadyInCart ? 'Remove from order' : 'Add to order'}
                                                                 >
                                                                     {isAlreadyInCart ? (
                                                                         <Check size={14} className="stroke-[3]" />
@@ -1006,17 +1106,17 @@ export default function CartPage() {
                                                             </div>
 
                                                             {/* Name */}
-                                                            <div className="mt-2 text-[12px] font-medium text-[#222] line-clamp-1 leading-snug">
+                                                            <div className="mt-1.5 text-[11.5px] font-medium text-[#222] line-clamp-1 leading-snug">
                                                                 {addon.name}
                                                             </div>
 
                                                             {/* Price */}
                                                             <div className="flex items-center gap-1.5 mt-0.5">
-                                                                <span className="text-[13px] font-semibold text-[#111]">
+                                                                <span className="text-[12.5px] font-semibold text-[#111]">
                                                                     ₹{addon.price}
                                                                 </span>
                                                                 {addon.originalPrice && (
-                                                                    <span className="text-[11px] text-gray-400 line-through font-normal">
+                                                                    <span className="text-[10px] text-gray-400 line-through font-normal">
                                                                         ₹{addon.originalPrice}
                                                                     </span>
                                                                 )}
@@ -1026,11 +1126,12 @@ export default function CartPage() {
                                                 })}
                                             </div>
 
-                                            {/* Right Scroll Arrow Button (Matches Image 1) */}
+                                            {/* Right Scroll Arrow Button */}
                                             <button
                                                 type="button"
                                                 onClick={scrollAddonsRight}
                                                 className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#111] shadow-md border border-black/[0.1] flex items-center justify-center hover:bg-gray-50 transition-transform active:scale-95 cursor-pointer z-10"
+                                                aria-label="Scroll right"
                                             >
                                                 <ChevronRight size={16} className="stroke-[2.5]" />
                                             </button>
@@ -1038,6 +1139,50 @@ export default function CartPage() {
                                     </>
                                 )}
                             </div>
+
+                            {/* ── SECTION D: PREMIUM ADD-ONS ── */}
+                            {premiumAddons.length > 0 && (
+                                <div className="bg-gradient-to-b from-[#1c1917]/[0.02] to-white border border-amber-300/60 rounded-[16px] p-4 shadow-2xs space-y-3.5">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-6 h-6 rounded-md bg-[#bfa81f] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                                                <Crown size={14} className="stroke-[2.5]" />
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <h3 className="font-sans text-[14.5px] font-bold text-[#111] tracking-tight">
+                                                        Something Extra Special
+                                                    </h3>
+                                                    <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                                                        👑 Premium
+                                                    </span>
+                                                </div>
+                                                <p className="text-[11px] text-[#666]">
+                                                    Thoughtful upgrades for an unforgettable gifting experience.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                                        {premiumAddons.slice(0, 6).map((addon) => {
+                                            const inCart = items.some(i => i.id === addon.id);
+                                            return (
+                                                <AddonCard
+                                                    key={addon.id}
+                                                    addon={addon}
+                                                    inCart={inCart}
+                                                    onAdd={() => addon.personalisable ? handleOpenPersonalisation(addon) : addItem({ id: addon.id, name: addon.name, slug: addon.id, price: addon.price, image_url: addon.image_url })}
+                                                    onRemove={() => removeItem(addon.id)}
+                                                    onPersonalise={addon.personalisable ? () => handleOpenPersonalisation(addon) : undefined}
+                                                    hasPersonalisation={Boolean(personalisationData[addon.id])}
+                                                    badge="Luxury"
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* -- RIGHT COLUMN (5 COLS): Message Card + Coupon + nerCash + Total Bill -- */}
@@ -1405,6 +1550,225 @@ export default function CartPage() {
                     if (match) setDeliveryPincode(match[0]);
                 }}
             />
+
+            {/* -- Add-on Personalisation Modal -- */}
+            {personalisationModalItem && (
+                <div
+                    className="fixed inset-0 z-[130] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+                    onClick={() => setPersonalisationModalItem(null)}
+                >
+                    <div
+                        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-5 sm:p-6 overflow-hidden space-y-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-start justify-between gap-3 border-b border-black/[0.08] pb-3.5">
+                            <div className="flex items-center gap-3">
+                                <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 border border-black/[0.08] flex-shrink-0">
+                                    <Image
+                                        src={personalisationModalItem.image_url || '/images/placeholder.webp'}
+                                        alt={personalisationModalItem.name}
+                                        fill
+                                        className="object-cover"
+                                        sizes="48px"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#bfa81f] block">
+                                        Personalise Your Gift
+                                    </span>
+                                    <h3 className="text-sm sm:text-base font-bold text-[#111] line-clamp-1">
+                                        {personalisationModalItem.name}
+                                    </h3>
+                                    <span className="text-xs font-semibold text-[#111]">
+                                        ₹{personalisationModalItem.price}
+                                    </span>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setPersonalisationModalItem(null)}
+                                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-black flex items-center justify-center cursor-pointer transition-colors"
+                            >
+                                <X size={15} />
+                            </button>
+                        </div>
+
+                        {/* Input Fields based on personalisationType */}
+                        <div className="space-y-3.5 text-left">
+                            {(personalisationModalItem.personalisationType === 'name' || personalisationModalItem.category === 'personalisation') && (
+                                <div>
+                                    <label className="block text-xs font-bold text-[#111] mb-1">
+                                        Recipient / Inscription Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        maxLength={40}
+                                        placeholder="e.g. Priya & Rahul, or Mom"
+                                        value={activePersonalisationInput.recipientName}
+                                        onChange={(e) => setActivePersonalisationInput(prev => ({ ...prev, recipientName: e.target.value }))}
+                                        className="w-full h-10 px-3 rounded-[10px] border border-black/[0.12] focus:border-[#bfa81f] focus:ring-2 focus:ring-[#bfa81f]/20 text-xs text-[#111] outline-hidden transition-all"
+                                    />
+                                </div>
+                            )}
+
+                            {(personalisationModalItem.personalisationType === 'message' || personalisationModalItem.category === 'cards' || personalisationModalItem.category === 'personalisation') && (
+                                <div>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <label className="block text-xs font-bold text-[#111]">
+                                            Personal Note / Message
+                                        </label>
+                                        <span className="text-[10px] text-gray-400">
+                                            {activePersonalisationInput.message.length}/200
+                                        </span>
+                                    </div>
+                                    <textarea
+                                        rows={3}
+                                        maxLength={200}
+                                        placeholder="Write your heartfelt message here..."
+                                        value={activePersonalisationInput.message}
+                                        onChange={(e) => setActivePersonalisationInput(prev => ({ ...prev, message: e.target.value }))}
+                                        className="w-full p-2.5 rounded-[10px] border border-black/[0.12] focus:border-[#bfa81f] focus:ring-2 focus:ring-[#bfa81f]/20 text-xs text-[#111] outline-hidden resize-none transition-all"
+                                    />
+                                </div>
+                            )}
+
+                            {['photo', 'photos2', 'photos4', 'scrapbook'].includes(personalisationModalItem.personalisationType || '') && (
+                                <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-1.5">
+                                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                                        <Camera size={14} className="text-[#bfa81f]" />
+                                        <span>Photo Sharing Instructions</span>
+                                    </div>
+                                    <p className="text-[11px] text-amber-800 leading-relaxed">
+                                        You can WhatsApp your photos to our team at <strong className="font-bold text-black">+91 82403 91617</strong> along with your order number after placing the order, or enter special photo notes below.
+                                    </p>
+                                    <input
+                                        type="text"
+                                        placeholder="Optional instructions (e.g. Portrait photo of couple)"
+                                        value={activePersonalisationInput.note}
+                                        onChange={(e) => setActivePersonalisationInput(prev => ({ ...prev, note: e.target.value }))}
+                                        className="w-full h-8 px-2.5 rounded-lg border border-amber-300/70 bg-white text-[11px] text-[#111] outline-hidden mt-1"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Modal Action Buttons */}
+                        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-black/[0.06]">
+                            <button
+                                type="button"
+                                onClick={() => setPersonalisationModalItem(null)}
+                                className="px-4 py-2 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleSavePersonalisation}
+                                className="px-5 py-2 rounded-lg bg-[#bfa81f] hover:bg-[#a89216] text-white text-xs font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
+                            >
+                                Save &amp; Add to Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function AddonCard({
+    addon,
+    inCart,
+    onAdd,
+    onRemove,
+    onPersonalise,
+    hasPersonalisation,
+    badge
+}: {
+    addon: AddonItem;
+    inCart: boolean;
+    onAdd: () => void;
+    onRemove: () => void;
+    onPersonalise?: () => void;
+    hasPersonalisation?: boolean;
+    badge?: string;
+}) {
+    return (
+        <div className="flex flex-col justify-between p-2.5 rounded-[12px] bg-white border border-black/[0.08] hover:border-black/20 hover:shadow-xs transition-all group">
+            <div className="flex items-start gap-2.5">
+                <div className="relative w-12 h-12 rounded-[9px] overflow-hidden bg-gray-50 border border-black/[0.06] flex-shrink-0">
+                    <Image
+                        src={addon.image_url || '/images/placeholder.webp'}
+                        alt={addon.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="48px"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/images/placeholder.webp';
+                        }}
+                    />
+                    {badge && (
+                        <span className="absolute top-0.5 left-0.5 px-1 py-0.2 rounded-[3px] bg-[#bfa81f] text-white text-[7.5px] font-bold uppercase tracking-wider">
+                            {badge}
+                        </span>
+                    )}
+                </div>
+                <div className="min-w-0 flex-1">
+                    <p className="text-[12px] font-semibold text-[#111] line-clamp-2 leading-tight">
+                        {addon.name}
+                    </p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                        <span className="text-[12px] font-bold text-[#111]">₹{addon.price}</span>
+                        {addon.originalPrice && (
+                            <span className="text-gray-400 line-through text-[10px]">
+                                ₹{addon.originalPrice}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-2.5 pt-2 border-t border-black/[0.04] flex items-center justify-between gap-1.5">
+                {onPersonalise ? (
+                    <button
+                        type="button"
+                        onClick={onPersonalise}
+                        className="text-[10.5px] font-semibold text-[#bfa81f] hover:underline flex items-center gap-1 cursor-pointer truncate"
+                    >
+                        <Edit3 size={11} />
+                        {hasPersonalisation ? 'Edit Note' : 'Customise'}
+                    </button>
+                ) : (
+                    <span className="text-[10px] text-gray-400 capitalize truncate">
+                        {addon.category}
+                    </span>
+                )}
+
+                <button
+                    type="button"
+                    onClick={inCart ? onRemove : onAdd}
+                    className={`px-3 py-1 rounded-[6px] text-[11px] font-bold cursor-pointer transition-all flex items-center gap-1 ${
+                        inCart
+                            ? 'bg-[#16a34a] text-white'
+                            : 'bg-[#bfa81f] hover:bg-[#a89216] text-white shadow-2xs'
+                    }`}
+                >
+                    {inCart ? (
+                        <>
+                            <Check size={11} className="stroke-[3]" />
+                            <span>Added</span>
+                        </>
+                    ) : (
+                        <>
+                            <Plus size={15} className="stroke-[2.5]" />
+                            <span>Add</span>
+                        </>
+                    )}
+                </button>
+            </div>
         </div>
     );
 }
