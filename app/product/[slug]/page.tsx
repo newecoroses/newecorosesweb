@@ -101,7 +101,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imgError, setImgError] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [selectedVariant, setSelectedVariant] = useState('6 Roses');
+    const [selectedVariant, setSelectedVariant] = useState('');
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [activeTab, setActiveTab] = useState<'about' | 'details' | 'reviews'>('about');
     const [justAdded, setJustAdded] = useState(false);
@@ -207,51 +207,168 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         });
     }, [slug]);
 
+    // ── Smart Variant System (Bouquets & Cakes only) ──
+    const variantConfig = useMemo<{
+        title: string;
+        options: { label: string; multiplier?: number; fixedPrice?: number }[];
+    } | null>(() => {
+        if (!product) return null;
+
+        // 1. Custom variants defined by staff (e.g. from staff product edit modal)
+        const customVariants = (product as any).variants as { label: string; price: number }[] | undefined;
+        if (customVariants && Array.isArray(customVariants) && customVariants.length > 0) {
+            const valid = customVariants.filter(v => v.label && v.label.trim());
+            if (valid.length > 0) {
+                const name = product.name.toLowerCase();
+                const col = (product.collection_slug || '').toLowerCase();
+                let title = 'Select Option';
+                if (name.includes('teddy') || col === 'teddy-and-bouquet') title = 'Number of Teddies';
+                else if (name.includes('kinder') || name.includes('kinderjoy')) title = 'Number of Kinder Joys';
+                else if (name.includes('chocolate') || col === 'chocolate-bouquet') title = 'Number of Chocolates';
+                else if (name.includes('rose')) title = 'Number of Roses';
+                else if (name.includes('bouquet') || col.includes('bouquet') || col === 'fresh-flower') title = 'Number of Flowers';
+                else if (col === 'cake' || name.includes('cake')) title = 'Select Weight';
+
+                return {
+                    title,
+                    options: valid.map(v => ({
+                        label: v.label,
+                        fixedPrice: Number(v.price) > 0 ? Number(v.price) : undefined,
+                        multiplier: 1.0,
+                    })),
+                };
+            }
+        }
+
+        const name = product.name.toLowerCase();
+        const col = (product.collection_slug || '').toLowerCase();
+        const colName = (product.collection_name || '').toLowerCase();
+
+        // 2. Cakes: Select Weight
+        if (col === 'cake' || name.includes('cake')) {
+            return {
+                title: 'Select Weight',
+                options: [
+                    { label: '0.5 kg', multiplier: 1.0 },
+                    { label: '1 kg', multiplier: 1.8 },
+                    { label: '1.5 kg', multiplier: 2.6 },
+                    { label: '2 kg', multiplier: 3.4 },
+                ],
+            };
+        }
+
+        // 3. Bouquets only:
+        const isBouquet =
+            name.includes('bouquet') ||
+            col.includes('bouquet') ||
+            colName.includes('bouquet') ||
+            col === 'fresh-flower' ||
+            col === 'teddy-and-bouquet' ||
+            col === 'chocolate-bouquet';
+
+        if (!isBouquet) {
+            // Non-bouquet items (plants, hampers, mugs, gifts, decor) do NOT have quantity/variants
+            return null;
+        }
+
+        // 3a. Teddy Bouquet
+        if (name.includes('teddy') || col === 'teddy-and-bouquet') {
+            return {
+                title: 'Number of Teddies',
+                options: [
+                    { label: '2 Teddies', multiplier: 1.0 },
+                    { label: '4 Teddies', multiplier: 1.45 },
+                    { label: '6 Teddies', multiplier: 1.85 },
+                    { label: '8 Teddies', multiplier: 2.35 },
+                ],
+            };
+        }
+
+        // 3b. Kinder Joy Bouquet
+        if (name.includes('kinder') || name.includes('kinderjoy')) {
+            return {
+                title: 'Number of Kinder Joys',
+                options: [
+                    { label: '4 Kinder Joys', multiplier: 1.0 },
+                    { label: '6 Kinder Joys', multiplier: 1.45 },
+                    { label: '8 Kinder Joys', multiplier: 1.85 },
+                    { label: '12 Kinder Joys', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        // 3c. Chocolate Bouquet
+        if (
+            name.includes('chocolate') ||
+            col === 'chocolate-bouquet' ||
+            name.includes('ferrero') ||
+            name.includes('kitkat') ||
+            name.includes('cadbury') ||
+            name.includes('dairy milk')
+        ) {
+            return {
+                title: 'Number of Chocolates',
+                options: [
+                    { label: '6 Chocolates', multiplier: 1.0 },
+                    { label: '10 Chocolates', multiplier: 1.45 },
+                    { label: '15 Chocolates', multiplier: 1.95 },
+                    { label: '20 Chocolates', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        // 3d. Rose Bouquet
+        if (name.includes('rose')) {
+            return {
+                title: 'Number of Roses',
+                options: [
+                    { label: '6 Roses', multiplier: 1.0 },
+                    { label: '9 Roses', multiplier: 1.45 },
+                    { label: '12 Roses', multiplier: 1.85 },
+                    { label: '18 Roses', multiplier: 2.55 },
+                ],
+            };
+        }
+
+        // 3e. Multi-flower Bouquet (Orchids, Carnations, Lilies, Gerberas, Gypsophila, Sunflowers, etc.)
+        return {
+            title: 'Number of Flowers',
+            options: [
+                { label: '6 Flowers', multiplier: 1.0 },
+                { label: '10 Flowers', multiplier: 1.45 },
+                { label: '15 Flowers', multiplier: 1.85 },
+                { label: '20 Flowers', multiplier: 2.55 },
+            ],
+        };
+    }, [product]);
+
+    // Keep selectedVariant in sync with available options
+    useEffect(() => {
+        if (variantConfig && variantConfig.options.length > 0) {
+            setSelectedVariant(prev => {
+                if (variantConfig.options.some(o => o.label === prev)) return prev;
+                return variantConfig.options[0].label;
+            });
+        } else {
+            setSelectedVariant('');
+        }
+    }, [variantConfig]);
+
     // Build WhatsApp link
     useEffect(() => {
         if (!product) return;
         const productUrl = `https://www.newecoroses.com/product/${product.slug}`;
         fetchWhatsappSettings().then(s => {
             const phone = s?.phone_number ?? FALLBACK_PHONE;
-            const msg = `Hi, I'm interested in ${product.name} (${selectedVariant}). Is it available for delivery today?\n\nProduct: ${productUrl}`;
+            const variantNote = variantConfig && selectedVariant ? ` (${selectedVariant})` : '';
+            const msg = `Hi, I'm interested in ${product.name}${variantNote}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
         }).catch(() => {
-            const msg = `Hi, I'm interested in ${product.name} (${selectedVariant}). Is it available for delivery today?\n\nProduct: ${productUrl}`;
+            const variantNote = variantConfig && selectedVariant ? ` (${selectedVariant})` : '';
+            const msg = `Hi, I'm interested in ${product.name}${variantNote}. Is it available for delivery today?\n\nProduct: ${productUrl}`;
             setWhatsappLink(`https://wa.me/${FALLBACK_PHONE}?text=${encodeURIComponent(msg)}`);
         });
-    }, [product, selectedVariant]);
-
-    // Variant options logic
-    const isCake = useMemo(() => {
-        if (!product) return false;
-        return product.collection_slug === 'cake' || product.name.toLowerCase().includes('cake');
-    }, [product]);
-
-    const variantOptions = useMemo(() => {
-        if (isCake) {
-            return [
-                { label: '0.5 kg', multiplier: 1.0 },
-                { label: '1 kg', multiplier: 1.8 },
-                { label: '1.5 kg', multiplier: 2.6 },
-                { label: '2 kg', multiplier: 3.4 },
-            ];
-        }
-        return [
-            { label: '6 Roses', multiplier: 1.0 },
-            { label: '9 Roses', multiplier: 1.45 },
-            { label: '12 Roses', multiplier: 1.85 },
-            { label: '18 Roses', multiplier: 2.55 },
-        ];
-    }, [isCake]);
-
-    // Set initial default variant
-    useEffect(() => {
-        if (isCake) {
-            setSelectedVariant('0.5 kg');
-        } else {
-            setSelectedVariant('6 Roses');
-        }
-    }, [isCake]);
+    }, [product, selectedVariant, variantConfig]);
 
     if (loading) {
         return (
@@ -307,11 +424,15 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     const { hasPrice, price: rawPrice, originalPrice: rawOriginalPrice, discountPercent, rating, reviewCount } = getProductPriceInfo(product);
 
-    // Calculate dynamic price based on selected rose quantity
-    const activeMultiplier = variantOptions.find(o => o.label === selectedVariant)?.multiplier || 1.0;
-    const price = Math.round(rawPrice * activeMultiplier);
+    // Calculate dynamic price based on selected variant (if any)
+    const activeOption = variantConfig?.options.find(o => o.label === selectedVariant);
+    const activeMultiplier = activeOption?.multiplier ?? 1.0;
+    const price = activeOption?.fixedPrice !== undefined && activeOption.fixedPrice > 0
+        ? activeOption.fixedPrice
+        : (variantConfig ? Math.round(rawPrice * activeMultiplier) : rawPrice);
+
     const originalPrice = rawOriginalPrice > rawPrice 
-        ? Math.round(rawOriginalPrice * activeMultiplier) 
+        ? (variantConfig ? Math.round(rawOriginalPrice * activeMultiplier) : rawOriginalPrice)
         : Math.round(price * 1.25);
 
     const displaySuggestions = relatedProducts.length > 0
@@ -334,14 +455,16 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     })();
 
     // Calculate exact quantity of this specific product / variant currently in the cart
-    const variantItemId = `${product.id}-${selectedVariant}`;
-    const cartItem = items.find(i => i.id === variantItemId || (i.slug === product.slug && i.id === product.id));
+    const hasActiveVariant = Boolean(variantConfig && selectedVariant);
+    const variantItemId = hasActiveVariant ? `${product.id}-${selectedVariant}` : product.id;
+    const cartItem = items.find(i => i.id === variantItemId || (!hasActiveVariant && (i.slug === product.slug || i.id === product.id)));
     const currentCartQty = cartItem ? cartItem.quantity : 0;
 
     const handleAddToCart = () => {
+        const itemName = hasActiveVariant ? `${product.name} (${selectedVariant})` : product.name;
         addItem({
             id: variantItemId,
-            name: `${product.name} (${selectedVariant})`,
+            name: itemName,
             slug: product.slug,
             image_url: product.image_url,
             price: price,
@@ -365,9 +488,10 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     const handleBuyNow = () => {
         if (!product) return;
+        const itemName = hasActiveVariant ? `${product.name} (${selectedVariant})` : product.name;
         openAddonModal({
-            id: `${product.id}-${selectedVariant}`,
-            name: `${product.name} (${selectedVariant})`,
+            id: variantItemId,
+            name: itemName,
             slug: product.slug,
             image_url: product.image_url,
             price: price,
@@ -551,32 +675,34 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             </button>
                         </div>
 
-                        {/* ── Number of Roses / Quantity Selector (Exact Inspiration) ── */}
-                        <div className="mb-5">
-                            <span style={FONT_DM_SANS} className="font-dm-sans text-xs sm:text-[13px] font-semibold text-[#1c1917] mb-2.5 block">
-                                {isCake ? 'Select Weight' : 'Number of Roses'}
-                            </span>
-                            <div className="flex flex-wrap gap-2 sm:gap-2.5">
-                                {variantOptions.map((opt) => {
-                                    const isSelected = selectedVariant === opt.label;
-                                    return (
-                                        <button
-                                            key={opt.label}
-                                            type="button"
-                                            onClick={() => setSelectedVariant(opt.label)}
-                                            style={FONT_DM_SANS}
-                                            className={`font-dm-sans text-xs sm:text-sm py-2 px-4 sm:px-5 rounded-full transition-all cursor-pointer select-none ${
-                                                isSelected
-                                                    ? 'bg-[#fbf3e4] border border-[#e8c688] text-[#1c1917] font-semibold shadow-2xs'
-                                                    : 'bg-white/80 border border-gray-200 text-gray-700 hover:border-gray-400 font-normal'
-                                            }`}
-                                        >
-                                            {opt.label}
-                                        </button>
-                                    );
-                                })}
+                        {/* ── Dynamic Variant / Quantity Selector: ONLY shown for bouquets and cakes ── */}
+                        {variantConfig && variantConfig.options.length > 0 && (
+                            <div className="mb-5">
+                                <span style={FONT_DM_SANS} className="font-dm-sans text-xs sm:text-[13px] font-semibold text-[#1c1917] mb-2.5 block">
+                                    {variantConfig.title}
+                                </span>
+                                <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                                    {variantConfig.options.map((opt) => {
+                                        const isSelected = selectedVariant === opt.label;
+                                        return (
+                                            <button
+                                                key={opt.label}
+                                                type="button"
+                                                onClick={() => setSelectedVariant(opt.label)}
+                                                style={FONT_DM_SANS}
+                                                className={`font-dm-sans text-xs sm:text-sm py-2 px-4 sm:px-5 rounded-full transition-all cursor-pointer select-none ${
+                                                    isSelected
+                                                        ? 'bg-[#fbf3e4] border border-[#e8c688] text-[#1c1917] font-semibold shadow-2xs'
+                                                        : 'bg-white/80 border border-gray-200 text-gray-700 hover:border-gray-400 font-normal'
+                                                }`}
+                                            >
+                                                {opt.label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Buttons: DM Sans Medium (Add to Cart transforms into +/- in-cart quantity controller) */}
                         {hasPrice ? (
