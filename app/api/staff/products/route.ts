@@ -128,6 +128,12 @@ export async function PATCH(request: Request) {
             tag,
             collection_name,
             collection_slug,
+            item_count,
+            pre_order,
+            same_day_delivery,
+            variants,
+            relationships,
+            celebrations,
         } = body;
 
         if (!productId && !slug) {
@@ -162,7 +168,13 @@ export async function PATCH(request: Request) {
             sort_order !== undefined ||
             tag !== undefined ||
             collection_name !== undefined ||
-            collection_slug !== undefined;
+            collection_slug !== undefined ||
+            item_count !== undefined ||
+            pre_order !== undefined ||
+            same_day_delivery !== undefined ||
+            variants !== undefined ||
+            relationships !== undefined ||
+            celebrations !== undefined;
 
         let updatedProduct: any = null;
         let productName = name || slug || productId;
@@ -224,6 +236,13 @@ export async function PATCH(request: Request) {
             if (tag !== undefined) changesList.push(`Tag set to ${tag}`);
         }
 
+        if (item_count !== undefined) changesList.push(`Item count updated to ${item_count}`);
+        if (pre_order !== undefined) changesList.push(`Pre-order set to ${pre_order}`);
+        if (same_day_delivery !== undefined) changesList.push(`Same-day delivery set to ${same_day_delivery}`);
+        if (variants !== undefined) changesList.push('Variants/pricing updated');
+        if (relationships !== undefined) changesList.push('Relationships updated');
+        if (celebrations !== undefined) changesList.push('Celebrations updated');
+
         // ── 4. Safely query existing DB product without causing UUID cast errors ──
         let existing: any = null;
 
@@ -266,6 +285,12 @@ export async function PATCH(request: Request) {
         if (tag !== undefined) dbUpdates.tag = tag;
         if (collection_name !== undefined) dbUpdates.collection_name = collection_name;
         if (collection_slug !== undefined) dbUpdates.collection_slug = collection_slug;
+        if (item_count !== undefined) dbUpdates.item_count = Number(item_count);
+        if (pre_order !== undefined) dbUpdates.pre_order = Boolean(pre_order);
+        if (same_day_delivery !== undefined) dbUpdates.same_day_delivery = Boolean(same_day_delivery);
+        if (variants !== undefined) dbUpdates.variants = variants;
+        if (relationships !== undefined) dbUpdates.relationships = relationships;
+        if (celebrations !== undefined) dbUpdates.celebrations = celebrations;
 
         if (existing) {
             const { data, error }: any = await (supabaseAdmin as any)
