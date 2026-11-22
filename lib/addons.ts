@@ -31,6 +31,7 @@ export const ADDON_CATEGORIES = [
 ];
 
 export const AVAILABLE_ADDON_IMAGE_PATHS = new Set<string>([
+  // ── Cakes ──
   '/images/addons/cakes/truffle-cake.webp',
   '/images/addons/cakes/butterscotch-cake.webp',
   '/images/addons/cakes/strawberry-cake.webp',
@@ -39,6 +40,7 @@ export const AVAILABLE_ADDON_IMAGE_PATHS = new Set<string>([
   '/images/addons/cakes/chocolate-fudge-cake.webp',
   '/images/addons/cakes/white-forest-cake.webp',
   '/images/addons/cakes/bento-cake.webp',
+  // ── Chocolates ──
   '/images/addons/chocolates/ferrero-4pc.webp',
   '/images/addons/chocolates/ferrero-8pc.webp',
   '/images/addons/chocolates/ferrero-moments-8pc.webp',
@@ -60,7 +62,9 @@ export const AVAILABLE_ADDON_IMAGE_PATHS = new Set<string>([
   '/images/addons/chocolates/premium-choc-box.webp',
   '/images/addons/chocolates/choc-love-combo.webp',
   '/images/addons/chocolates/heart-choc-box.webp',
+  // ── Cards ──
   '/images/addons/addon-greeting-card.jpg',
+  // ── Personalisation ──
   '/images/addons/personalisation/personalised-msg-card.webp',
   '/images/addons/personalisation/handwritten-letter.webp',
   '/images/addons/personalisation/photo-prints.webp',
@@ -70,11 +74,47 @@ export const AVAILABLE_ADDON_IMAGE_PATHS = new Set<string>([
   '/images/addons/personalisation/photo-frame.webp',
   '/images/addons/personalisation/couple-frame.webp',
   '/images/addons/personalisation/mini-scrapbook.webp',
+  // ── Packaging ──
   '/images/addons/packaging/gift-tag.webp',
+  // ── Flower Care ──
   '/images/addons/addon-flower-food.jpg',
+  // ── Accessories ──
   '/images/addons/addon-birthday-topper.jpg',
-  '/images/addons/addon-plush-teddy.jpg',
-  '/images/addons/addon-scented-candle.jpg',
+  '/images/addons/accessories/metallic-candles.webp',
+  '/images/addons/accessories/number-candle.webp',
+  '/images/addons/accessories/led-birthday-candle.webp',
+  '/images/addons/accessories/rose-petals-pouch.webp',
+  // ── Balloons ──
+  '/images/addons/balloons/birthday-foil-balloon.webp',
+  '/images/addons/balloons/heart-foil-balloon.webp',
+  '/images/addons/balloons/balloon-bunch-5.webp',
+  '/images/addons/balloons/balloon-bunch-10.webp',
+  '/images/addons/balloons/birthday-banner.webp',
+  // ── Keepsakes ──
+  '/images/addons/keepsakes/mini-teddy.webp',
+  '/images/addons/keepsakes/cuddle-teddy.webp',
+  '/images/addons/keepsakes/medium-teddy.webp',
+  '/images/addons/keepsakes/heart-cushion.webp',
+  '/images/addons/keepsakes/love-cushion.webp',
+  '/images/addons/keepsakes/scented-candle.webp',
+  '/images/addons/keepsakes/premium-candle-jar.webp',
+  // ── Romantic ──
+  '/images/addons/romantic/velvet-ring-box.webp',
+  '/images/addons/romantic/led-fairy-lights.webp',
+  '/images/addons/romantic/marry-me-led.webp',
+  '/images/addons/romantic/romantic-candle-set.webp',
+  '/images/addons/romantic/romantic-msg-bottle.webp',
+  // ── Plants ──
+  '/images/addons/plants/lucky-bamboo.webp',
+  '/images/addons/plants/jade-plant.webp',
+  '/images/addons/plants/money-plant.webp',
+  '/images/addons/plants/small-succulent.webp',
+  '/images/addons/plants/peace-lily.webp',
+  '/images/addons/plants/snake-plant.webp',
+  '/images/addons/plants/mini-indoor-plant.webp',
+  '/images/addons/plants/premium-planter.webp',
+  // ── Home & Lifestyle ──
+  '/images/addons/homedecor/reed-diffuser.webp',
 ]);
 
 export function addonHasImage(addon?: AddonItem | null): boolean {
@@ -568,6 +608,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 129,
     occasions: ['birthday'],
     image_url: '/images/addons/balloons/birthday-foil-balloon.webp',
+    isActive: true,
     description: 'Bright shiny foil balloon — Happy Birthday printed',
   },
   {
@@ -577,6 +618,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 129,
     occasions: ['anniversary', 'romance', 'wedding'],
     image_url: '/images/addons/balloons/heart-foil-balloon.webp',
+    isActive: true,
     description: 'Metallic heart-shaped foil balloon — romantic red',
   },
   {
@@ -586,6 +628,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 249,
     occasions: ['birthday', 'congratulations'],
     image_url: '/images/addons/balloons/balloon-bunch-5.webp',
+    isActive: true,
     description: 'Colourful helium-style balloon bunch — 5 pcs',
   },
   {
@@ -596,6 +639,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['birthday', 'congratulations', 'wedding'],
     isPremium: true,
     image_url: '/images/addons/balloons/balloon-bunch-10.webp',
+    isActive: true,
     description: 'Grand premium balloon bunch — 10 pcs for a spectacular display',
   },
   {
@@ -605,6 +649,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 179,
     occasions: ['birthday'],
     image_url: '/images/addons/balloons/birthday-banner.webp',
+    isActive: true,
     description: 'Cheerful mini Happy Birthday banner — perfect for decoration',
   },
 
@@ -625,6 +670,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 69,
     occasions: ['birthday'],
     image_url: '/images/addons/accessories/metallic-candles.webp',
+    isActive: true,
     description: 'Elegant metallic birthday candle set — set of 6',
   },
   {
@@ -634,6 +680,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 69,
     occasions: ['birthday'],
     image_url: '/images/addons/accessories/number-candle.webp',
+    isActive: true,
     description: 'Gold glitter number candle — customise your age',
   },
   {
@@ -643,6 +690,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 119,
     occasions: ['birthday', 'anniversary'],
     image_url: '/images/addons/accessories/led-birthday-candle.webp',
+    isActive: true,
     description: 'Reusable LED flickering birthday candle',
   },
   {
@@ -652,6 +700,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 129,
     occasions: ['anniversary', 'romance', 'wedding'],
     image_url: '/images/addons/accessories/rose-petals-pouch.webp',
+    isActive: true,
     description: 'Fragrant dried rose petals in an elegant gift pouch',
   },
 
@@ -662,7 +711,8 @@ export const ADDON_ITEMS: AddonItem[] = [
     category: 'keepsakes',
     price: 199,
     occasions: ['birthday', 'romance', 'get-well', 'just-because'],
-    image_url: '/images/addons/addon-plush-teddy.jpg',
+    image_url: '/images/addons/keepsakes/mini-teddy.webp',
+    isActive: true,
     description: 'Adorable super-soft plush mini teddy bear',
   },
   {
@@ -671,7 +721,8 @@ export const ADDON_ITEMS: AddonItem[] = [
     category: 'keepsakes',
     price: 349,
     occasions: ['birthday', 'romance', 'just-because'],
-    image_url: '/images/addons/addon-plush-teddy.jpg',
+    image_url: '/images/addons/keepsakes/cuddle-teddy.webp',
+    isActive: true,
     description: 'Soft and cuddly plush teddy for a warm surprise',
   },
   {
@@ -682,6 +733,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['birthday', 'romance', 'anniversary'],
     isPremium: true,
     image_url: '/images/addons/keepsakes/medium-teddy.webp',
+    isActive: true,
     description: 'Huggable premium medium teddy bear — 12 inches of love',
   },
   {
@@ -691,6 +743,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 299,
     occasions: ['anniversary', 'romance', 'wedding'],
     image_url: '/images/addons/keepsakes/heart-cushion.webp',
+    isActive: true,
     description: 'Soft heart-shaped cushion in romantic hues',
   },
   {
@@ -700,6 +753,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 349,
     occasions: ['anniversary', 'romance'],
     image_url: '/images/addons/keepsakes/love-cushion.webp',
+    isActive: true,
     description: '"Love You" embroidered plush cushion',
   },
   {
@@ -708,7 +762,8 @@ export const ADDON_ITEMS: AddonItem[] = [
     category: 'keepsakes',
     price: 249,
     occasions: ['anniversary', 'romance', 'wedding', 'housewarming'],
-    image_url: '/images/addons/addon-scented-candle.jpg',
+    image_url: '/images/addons/keepsakes/scented-candle.webp',
+    isActive: true,
     description: 'Hand-poured rose-scented candle in a ceramic jar',
   },
   {
@@ -719,6 +774,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['anniversary', 'romance', 'wedding', 'housewarming', 'thank-you'],
     isPremium: true,
     image_url: '/images/addons/keepsakes/premium-candle-jar.webp',
+    isActive: true,
     description: 'Luxury hand-poured scented candle in a glass jar',
   },
 
@@ -731,6 +787,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['romance', 'wedding'],
     isPremium: true,
     image_url: '/images/addons/romantic/velvet-ring-box.webp',
+    isActive: true,
     description: 'Elegant velvet jewellery ring box — perfect for proposals',
   },
   {
@@ -740,6 +797,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 199,
     occasions: ['anniversary', 'romance', 'wedding'],
     image_url: '/images/addons/romantic/led-fairy-lights.webp',
+    isActive: true,
     description: 'Warm white LED fairy light string for a magical ambiance',
   },
   {
@@ -750,6 +808,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['romance', 'wedding'],
     isPremium: true,
     image_url: '/images/addons/romantic/marry-me-led.webp',
+    isActive: true,
     description: 'Glowing "Marry Me" LED sign — a proposal to remember',
   },
   {
@@ -759,6 +818,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 299,
     occasions: ['anniversary', 'romance', 'wedding'],
     image_url: '/images/addons/romantic/romantic-candle-set.webp',
+    isActive: true,
     description: 'Set of 2 pillar candles in romantic rose & vanilla scent',
   },
   {
@@ -770,6 +830,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     personalisable: true,
     personalisationType: 'message',
     image_url: '/images/addons/romantic/romantic-msg-bottle.webp',
+    isActive: true,
     description: 'Your romantic message sealed in a decorative glass bottle',
   },
 
@@ -781,6 +842,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 349,
     occasions: ['congratulations', 'get-well', 'thank-you', 'housewarming'],
     image_url: '/images/addons/plants/lucky-bamboo.webp',
+    isActive: true,
     description: 'Good luck & prosperity indoor lucky bamboo plant',
   },
   {
@@ -790,6 +852,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 399,
     occasions: ['get-well', 'housewarming', 'congratulations'],
     image_url: '/images/addons/plants/jade-plant.webp',
+    isActive: true,
     description: 'Resilient air-purifying jade plant in ceramic pot',
   },
   {
@@ -799,6 +862,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 299,
     occasions: ['housewarming', 'congratulations', 'get-well'],
     image_url: '/images/addons/plants/money-plant.webp',
+    isActive: true,
     description: 'Lucky money plant — a symbol of prosperity & growth',
   },
   {
@@ -808,6 +872,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 249,
     occasions: ['thank-you', 'housewarming', 'just-because'],
     image_url: '/images/addons/plants/small-succulent.webp',
+    isActive: true,
     description: 'Cute low-maintenance succulent in a ceramic pot',
   },
   {
@@ -818,6 +883,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['get-well', 'housewarming', 'thank-you'],
     isPremium: true,
     image_url: '/images/addons/plants/peace-lily.webp',
+    isActive: true,
     description: 'Elegant peace lily — purifies air and lifts moods',
   },
   {
@@ -828,6 +894,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['housewarming', 'congratulations'],
     isPremium: true,
     image_url: '/images/addons/plants/snake-plant.webp',
+    isActive: true,
     description: 'Architectural snake plant in a decorative pot',
   },
   {
@@ -837,6 +904,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 249,
     occasions: ['get-well', 'thank-you', 'housewarming'],
     image_url: '/images/addons/plants/mini-indoor-plant.webp',
+    isActive: true,
     description: 'Cheerful mini indoor plant — a living gift that keeps growing',
   },
   {
@@ -847,6 +915,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     occasions: ['housewarming', 'wedding', 'congratulations'],
     isPremium: true,
     image_url: '/images/addons/plants/premium-planter.webp',
+    isActive: true,
     description: 'Luxury decorative planter — a statement piece for any home',
   },
 
@@ -858,6 +927,7 @@ export const ADDON_ITEMS: AddonItem[] = [
     price: 349,
     occasions: ['housewarming', 'anniversary', 'wedding', 'thank-you'],
     image_url: '/images/addons/homedecor/reed-diffuser.webp',
+    isActive: true,
     description: 'Elegant reed diffuser with premium botanical fragrance',
   },
   {
