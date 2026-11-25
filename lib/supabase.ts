@@ -239,14 +239,20 @@ export async function fetchProductsByCollection(collectionSlug: string): Promise
 /** Fetch a single product by slug — fast: checks static catalog first, then Supabase */
 export async function fetchProductBySlug(slug: string): Promise<DBProduct | null> {
     let priceOverrides: Record<string, { price: number; original_price?: number }> = {};
+    let extraMetaMap: Record<string, { pre_order?: boolean; same_day_delivery?: boolean; variants?: { label: string; price: number }[] }> = {};
     try {
-        const { data: priceData } = await supabase
-            .from('site_settings')
-            .select('value')
-            .eq('key', 'product_prices')
-            .single();
-        if (priceData?.value) {
-            priceOverrides = JSON.parse(priceData.value);
+        const [priceRes, metaRes] = await Promise.all([
+            supabase.from('site_settings').select('value').eq('key', 'product_prices').single(),
+            supabase.from('site_settings').select('value').eq('key', 'product_extra_metadata').single(),
+        ]);
+        if (priceRes.data?.value) {
+            priceOverrides = JSON.parse(priceRes.data.value);
+        }
+        if (metaRes.data?.value) {
+            const parsed = JSON.parse(metaRes.data.value);
+            if (typeof parsed === 'object' && parsed !== null) {
+                extraMetaMap = parsed;
+            }
         }
     } catch (_) {}
 
@@ -285,6 +291,7 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
     if (prod) {
         if (prod.is_visible === false) return null;
 
+        // Apply price overrides from site_settings
         const override = priceOverrides[prod.id] || priceOverrides[prod.slug];
         const rawPrice = override && override.price > 0 ? override.price : prod.price;
         const rawOrig = override && override.price > 0 ? (override.original_price || prod.original_price) : prod.original_price;
@@ -293,6 +300,14 @@ export async function fetchProductBySlug(slug: string): Promise<DBProduct | null
             const pricing = resolveProductPricing(rawPrice, rawOrig, prod.slug || prod.id || prod.name);
             prod.price = pricing.price;
             prod.original_price = pricing.originalPrice;
+        }
+
+        // Apply extra metadata (variants, pre_order, same_day_delivery) from site_settings
+        const extraMeta = extraMetaMap[prod.id] || extraMetaMap[prod.slug];
+        if (extraMeta) {
+            if (extraMeta.variants !== undefined) (prod as any).variants = extraMeta.variants;
+            if (extraMeta.pre_order !== undefined) (prod as any).pre_order = extraMeta.pre_order;
+            if (extraMeta.same_day_delivery !== undefined) (prod as any).same_day_delivery = extraMeta.same_day_delivery;
         }
     }
     return prod;

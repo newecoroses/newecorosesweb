@@ -578,7 +578,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             slug: product.slug,
             image_url: product.image_url,
             price: price,
-        });
+        }, true);
     };
 
     return (
