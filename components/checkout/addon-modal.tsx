@@ -20,8 +20,6 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
     // Map of addon id -> selected quantity in modal
     const [selectedAddons, setSelectedAddons] = useState<Record<string, number>>({});
 
-    if (!isOpen) return null;
-
     const availableCategories = useMemo(() => {
         return ADDON_CATEGORIES.filter(cat => {
             if (cat.id === 'all') return true;
@@ -29,10 +27,12 @@ export default function AddonModal({ isOpen, onClose, onContinue }: AddonModalPr
         });
     }, []);
 
-    const filteredItems = (activeTab === 'all'
+    const filteredItems = useMemo(() => (activeTab === 'all'
         ? ADDON_ITEMS
         : ADDON_ITEMS.filter(item => item.category === activeTab)
-    ).filter(addonHasImage);
+    ).filter(addonHasImage), [activeTab]);
+
+    if (!isOpen) return null;
 
     const handleAdd = (item: AddonItem) => {
         setSelectedAddons(prev => ({
